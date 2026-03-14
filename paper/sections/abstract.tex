@@ -1,0 +1,16 @@
+% abstract.tex -- Abstract
+Training-free protein sequence generation via stochastic attention produces plausible family members from
+small alignments, but treats all stored patterns equally and cannot direct generation toward a
+user-specified functional subset---for example, sequences known from experimental screens to bind a
+particular target. We show that assigning multiplicity weights $r_k$ to stored patterns defines a
+tilted Hopfield energy whose Langevin dynamics sample from a known Boltzmann distribution---requiring
+only a log-multiplicity bias on the softmax logits and no retraining. A single scalar, the multiplicity
+ratio $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, continuously interpolates between
+unconditioned generation ($\rho=1$) and hard subset curation ($\rho\to\infty$). We characterize the phase transition $\beta^{*}(\rho)$ as a function of the
+effective pattern count $K_{\mathrm{eff}}(\vr)$ and identify a family-dependent calibration gap
+between energy-level conditioning and decoded sequence phenotype. The gap is predicted quantitatively
+by the Fisher separation of functional subsets in PCA space: families with separation index
+$S>0.3$ achieve near-perfect phenotype transfer via multiplicity weighting alone, while families
+with $S<0.15$ require hard curation. Experiments on Kunitz, SH3, and WW domains validate the
+theory across a tenfold range of separation indices ($S=0.11$--$0.34$) and calibration gaps
+($\Delta=0.01$--$0.63$), with $R^{2}\approx 1.0$ on the predicted linear relationship.

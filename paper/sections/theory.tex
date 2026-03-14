@@ -1,0 +1,105 @@
+% theory.tex -- Theory subsections under Materials and Methods
+\subsection{From Hopfield Energy to Multiplicity-Weighted Score Function}\label{sec:theory}
+
+Let $\vX = [\vm_1, \ldots, \vm_K] \in \R^{d \times K}$ be a memory matrix whose columns are
+unit-norm, PCA-encoded protein sequences from a family alignment of $K$ members, each represented
+in $d$ dimensions. The modern Hopfield energy~\cite{ramsauerHopfieldNetworksAll2021} at state
+$\vxi \in \R^d$ is $E(\vxi) = \tfrac{1}{2}\|\vxi\|^{2} - \tfrac{1}{\beta}\log\sum_{k}\exp(\beta\,\vm_{k}^{\!\top}\vxi)$, where $\beta > 0$ is an inverse temperature. The score function
+$\nabla_{\vxi}\log p_{\beta}(\vxi) = \vX\,\softmax(\beta\,\vX^{\!\top}\vxi) - \vxi$ is
+\emph{exact} and computed by a single attention operation; applying the unadjusted Langevin
+algorithm (ULA) with step size $\alpha \in (0,1)$ yields the stochastic attention
+update~\cite{varnerSAProtein2026}:
+\begin{equation}\label{eq:ula}
+  \vxi_{t+1}
+    = (1-\alpha)\,\vxi_{t}
+    + \alpha\,\vX\,\softmax\!\bigl(\beta\,\vX^{\!\top}\vxi_{t}\bigr)
+    + \sqrt{2\alpha/\beta}\;\veps_{t},
+  \qquad \veps_{t} \sim \mathcal{N}(\mathbf{0},\,\mathbf{I}_{d}).
+\end{equation}
+We extend this framework to condition generation on a functional subset by assigning a
+multiplicity weight $r_k > 0$ to each stored pattern. The \emph{multiplicity-weighted} Hopfield
+energy is
+\begin{equation}\label{eq:weighted-energy}
+  \boxed{
+  E_{\vr}(\vxi) = \tfrac{1}{2}\|\vxi\|^{2}
+    - \tfrac{1}{\beta}\log\sum_{k=1}^{K} r_k\,\exp\!\bigl(\beta\,\vm_{k}^{\!\top}\vxi\bigr),}
+\end{equation}
+where $\vr = (r_1, \ldots, r_K)^{\!\top}$.
+When $r_k = 1$ for all $k$, Eq.~\eqref{eq:weighted-energy} reduces to the standard energy.
+Patterns with higher multiplicity deepen the energy wells in their vicinity; this is equivalent
+to storing $r_k$ copies of pattern $\vm_k$ without the $\mathcal{O}(d \cdot \sum_k r_k)$
+memory cost.
+
+\begin{proposition}[Score function]\label{prop:score}
+The score function of $p_{\vr}(\vxi) \propto \exp(-\beta\,E_{\vr}(\vxi))$ is
+$\nabla_{\vxi}\log p_{\vr}(\vxi) = \vX\,\softmax(\beta\,\vX^{\!\top}\vxi + \log\vr) - \vxi$,
+where $\log\vr = (\log r_1, \ldots, \log r_K)^{\!\top}$ is the elementwise log-multiplicity.
+\end{proposition}
+
+The proof follows from the identity $r_k\,\exp(a_k) = \exp(a_k + \log r_k)$: the weights are
+absorbed into the softmax logits. The resulting Langevin update is
+\begin{equation}\label{eq:weighted-ula}
+  \boxed{
+  \vxi_{t+1}
+    = (1-\alpha)\,\vxi_{t}
+    + \alpha\,\vX\,\softmax\!\bigl(\beta\,\vX^{\!\top}\vxi_{t} + \log\vr\bigr)
+    + \sqrt{2\alpha/\beta}\;\veps_{t}.}
+\end{equation}
+The \emph{only} change from Eq.~\eqref{eq:ula} is the addition of $\log r_k$ to each logit
+before the softmax. The memory matrix $\vX$ is unchanged, the noise schedule is unchanged, and
+the sampler retains its $\mathcal{O}(dK)$ per-step cost.
+
+\subsection{Multiplicity Ratio and Phase Transition}\label{sec:phase}
+
+For a binary functional split (designated subset vs.\ background), we parameterize the multiplicity
+vector by a single scalar $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, setting
+$r_k = \rho$ for patterns in the user-designated subset and $r_k = 1$ otherwise. The effective
+designated fraction---the share of the softmax probability mass attributable to designated
+patterns when all patterns have equal similarity to $\vxi$---is
+$f_{\mathrm{eff}}(\rho) = K_{\mathrm{des}}\rho/(K_{\mathrm{des}}\rho + K_{\mathrm{bg}})$, where
+$K_{\mathrm{des}}$ and $K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ are the number of designated and
+background patterns. At $\rho=1$,
+$f_{\mathrm{eff}} = K_{\mathrm{des}}/K$; as $\rho \to \infty$, $f_{\mathrm{eff}} \to 1$. Inverting
+gives the multiplicity ratio needed for a target fraction $f$:
+\begin{equation}\label{eq:rho-inverse}
+  \rho(f) = \frac{f \cdot K_{\mathrm{bg}}}{K_{\mathrm{des}}\,(1-f)}.
+\end{equation}
+The standard SA framework exhibits a phase transition at critical inverse temperature $\beta^{*}$
+that depends on the PCA dimension $d$ and the number of stored patterns. Under multiplicity
+weighting, the relevant quantity is the effective number of patterns
+$K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2} / \sum_k r_k^{2}$, which equals $K$ when all $r_k$
+are equal and converges to $K_{\mathrm{des}}$ as $\rho \to \infty$. Empirically, $\beta^{*}$
+increases monotonically from 4.3 ($\rho = 1$, $K_{\mathrm{eff}} = 99$) to 10.1 ($\rho = 1000$,
+$K_{\mathrm{eff}} = 32.1$) in the Kunitz domain, consistent with the system becoming harder to
+order as fewer effective patterns contribute competing attractors.
+
+\subsection{The Calibration Gap}\label{sec:gap}
+
+The signal chain from multiplicity weights to decoded sequence phenotype passes through several
+transformations:
+\begin{equation}\label{eq:signal-chain}
+  \rho
+  \;\xrightarrow{\;\text{exact}\;}\;
+  f_{\mathrm{eff}}
+  \;\xrightarrow{\;\text{exact}\;}\;
+  \bar{a}_{\mathrm{des}}
+  \;\xrightarrow{\;\text{lossy}\;}\;
+  f_{\mathrm{soft}}
+  \;\xrightarrow{\;\text{nonlinear}\;}\;
+  f_{\mathrm{obs}},
+\end{equation}
+where $\bar{a}_{\mathrm{des}}$ is the mean attention weight on designated patterns during
+sampling, $f_{\mathrm{soft}}$ is the continuous-valued residue probability at the marker position,
+and $f_{\mathrm{obs}}$ is the fraction of generated sequences displaying the designated phenotype
+after argmax decoding. We define the calibration gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$
+and decompose it into three independently measurable components:
+\begin{equation}\label{eq:gap-decomp}
+  \Delta = \underbrace{(f_{\mathrm{eff}} - \bar{a}_{\mathrm{des}})}_{\Delta_{\mathrm{attn}}\;\approx\;0}
+  + \underbrace{(\bar{a}_{\mathrm{des}} - f_{\mathrm{soft}})}_{\Delta_{\mathrm{PCA}}}
+  + \underbrace{(f_{\mathrm{soft}} - f_{\mathrm{obs}})}_{\Delta_{\mathrm{argmax}}}.
+\end{equation}
+To predict the PCA gap across families, we define the Fisher separation index
+$S = (\bar{c}_{\mathrm{within}} - \bar{c}_{\mathrm{between}}) /
+[\tfrac{1}{2}(\sigma_{\mathrm{within}} + \sigma_{\mathrm{between}})]$, where $\bar{c}$ and
+$\sigma$ denote the mean and standard deviation of pairwise cosine similarities within and
+between functional groups in PCA space.

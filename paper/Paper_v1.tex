@@ -1,0 +1,132 @@
+\documentclass{article}
+\PassOptionsToPackage{numbers, compress}{natbib}
+\usepackage[preprint]{neurips_2026}
+
+% --- standard packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[colorlinks=true,linkcolor=blue!70!black,citecolor=blue!70!black,urlcolor=blue!70!black]{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{bm}
+\usepackage{multirow}
+
+% --- figure/table placement ---
+\setcounter{topnumber}{1}
+\setcounter{bottomnumber}{1}
+\renewcommand{\topfraction}{0.5}
+
+% --- theorem environments ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% --- custom commands ---
+\newcommand{\vxi}{\bm{\xi}}
+\newcommand{\vX}{\mathbf{X}}
+\newcommand{\vm}{\mathbf{m}}
+\newcommand{\vr}{\mathbf{r}}
+\newcommand{\veps}{\bm{\epsilon}}
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator{\softmax}{softmax}
+
+\title{Conditioning Protein Sequence Generation via Pattern Multiplicity\\in the Modern Hopfield Energy}
+
+\author{%
+  Jeffrey D.~Varner \\
+  R.F. Smith School of Chemical and Biomolecular Engineering\\
+  Cornell University, Ithaca, NY 14850 \\
+  \texttt{jdv27@cornell.edu} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\noindent\fbox{\parbox{\textwidth}{\small\textbf{Significance Statement.}
+Protein engineers routinely isolate a handful of functional binders---via phage display, yeast
+surface display, or functional selections---but lack a systematic way to expand these small sets
+into diverse candidate libraries without retraining a generative model. We show that a single
+scalar parameter added to the softmax logits of a Hopfield-energy sampler continuously conditions
+generation from ``any family member'' to ``only binders,'' with no training, no GPU, and no
+architectural changes. The effectiveness of this conditioning is predicted \emph{a priori} by a
+cheap geometric property of the alignment, giving practitioners a decision rule before any
+sequences are generated.}}
+
+\bigskip
+
+\section{Introduction}
+\input{sections/introduction}
+
+\section{Results}
+\input{sections/results}
+
+\section{Discussion}
+\input{sections/discussion}
+
+\section{Materials and Methods}
+\input{sections/theory}
+\input{sections/methods}
+
+\section*{Acknowledgments}
+% TODO: Acknowledgments
+
+\paragraph{Author contributions.}
+J.D.V.\ conceived the study, developed the theory, wrote the code, performed the experiments, and wrote the paper.
+
+\paragraph{Competing interests.}
+The author declares no competing interests.
+
+\paragraph{Data availability.}
+All Pfam seed alignments are publicly available from InterPro. Source code and experiment scripts
+are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
+
+\bibliographystyle{unsrtnat}
+\bibliography{References_v1}
+
+% --- Figures and Tables (placed after bibliography, PNAS-style) ---
+\clearpage
+
+% TODO: Add figures here with [p] full-page placement
+% Table 1: Cross-family comparison
+% Fig 1: P1 phenotype inheritance (Kunitz)
+% Fig 2: Binder scaling (fidelity/diversity/KL)
+% Fig 3: rho sweep (4-panel)
+% Fig 4: Phase transition entropy curves
+% Fig 5: Calibration gap decomposition
+% Fig 6: Cross-family calibration + separation vs gap
+% Fig 7: Per-family rho sweep panels
+
+% --- SI Appendix ---
+\clearpage
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{section}{0}
+\renewcommand{\thesection}{S\arabic{section}}
+
+\section*{SI Appendix}
+\input{sections/appendix}
+
+\end{document}

@@ -1,0 +1,92 @@
+% results.tex
+We first asked whether restricting the memory matrix to a user-designated functional subset
+transfers the subset's phenotype to generated sequences. As a test case, we used Kunitz domains
+(PF00014; $K=99$ sequences, $L=53$ aligned positions), a family of serine protease inhibitors
+whose binding specificity is known from decades of biochemistry to depend on the P1 residue at
+the primary contact site with the target protease: Lys or Arg at P1 confers strong trypsin
+inhibition, while other residues (Gly, Gln, Asn) do not~\cite{laskowskiProteinInhibitors1980}.
+Using this external knowledge, we designated the 32 sequences with K/R at P1 as the functional
+subset ($K_{\mathrm{des}} = 32$) and the remaining 67 as background ($K_{\mathrm{bg}} = 67$),
+built separate memory matrices from each group, found $\beta^{*}$ for each via entropy
+inflection, and generated 930 sequences per condition (30 chains $\times$ 5{,}000 steps, thinned
+after burn-in). The result was unambiguous: 100\% of designated-subset-conditioned sequences had
+K/R at P1; 0\% of background-conditioned sequences did. Generation from the full family produced
+39\% K/R, matching the natural proportion ($32/99 = 32\%$) within sampling noise. All generated
+sequences had 100\% valid residues, and KL divergence of amino acid composition remained below
+0.012 for all conditions. The designated phenotype was inherited perfectly; the fold-level
+composition was preserved (Fig.~\ref{fig:phenotype}).
+
+We next assessed the minimum number of designated input sequences required for reliable phenotype
+transfer by subsampling $K_{\mathrm{des}} \in \{3, 5, 8, 10, 15, 20, 25, 32\}$ from the Kunitz
+K/R subset (3~replicates each), building curated memory matrices, and generating sequences. P1
+phenotype fidelity was 100\% at \emph{every} sample size, including $K_{\mathrm{des}} = 3$. The
+cost of small input sets was reduced diversity: pairwise sequence diversity increased from 0.36
+($K_{\mathrm{des}} = 3$) to 0.50 ($K_{\mathrm{des}} = 32$), and KL divergence decreased from
+0.047 to 0.009 over the same range. These trends are expected: fewer stored patterns constrain the
+PCA subspace, reducing the volume accessible to the Langevin chain. Phenotype fidelity, however,
+was never compromised (Fig.~\ref{fig:scaling}). This result validates the ``small-set amplifier''
+framing: a practitioner with as few as 5--10 experimentally characterized sequences---for
+instance, hits from a phage display screen---can generate hundreds of novel candidates that
+maintain the input phenotype while introducing substantial sequence diversity (pairwise diversity
+$\geq 0.45$ for $K_{\mathrm{des}} \geq 10$).
+
+We then turned to multiplicity-weighted generation, sweeping $\rho$ from 1 (standard SA) to
+1{,}000 on the full Kunitz family ($K = 99$). For each $\rho$, we computed the multiplicity
+vector $\vr$, found $\beta^{*}(\vr)$ via entropy inflection on the weighted attention
+distribution, and generated 930 sequences (30 chains). The attention weight on designated patterns
+tracked $f_{\mathrm{eff}}$ with negligible deviation ($< 0.3\%$) at all $\rho$ values,
+confirming Proposition~\ref{prop:score}: the multiplicity weights tilt the energy landscape
+exactly as intended. The observed P1~K/R fraction increased monotonically from 0.39 ($\rho=1$)
+to 0.63 ($\rho=500$), substantially exceeding the natural proportion but falling short of the
+$f_{\mathrm{eff}} = 0.996$ predicted by the energy-level conditioning. Sequence diversity
+decreased modestly from 0.56 to 0.51 over this range; KL divergence increased from 0.007 to
+0.017 (Fig.~\ref{fig:rho-sweep}).
+
+The phase transition $\beta^{*}$ shifted from 4.3 at $\rho=1$ ($K_{\mathrm{eff}} = 99$) to 10.1
+at $\rho=1{,}000$ ($K_{\mathrm{eff}} = 32.1$), consistent with fewer effective patterns requiring
+higher inverse temperature to produce an ordered phase. The entropy curves at different $\rho$
+values formed a family of sigmoidal profiles with systematically rightward-shifted inflection
+points, confirming that $\beta^{*}(\vr)$ depends on $K_{\mathrm{eff}}(\vr)$ rather than the raw
+pattern count $K$ (Fig.~\ref{fig:phase-transition}).
+
+To understand why $f_{\mathrm{obs}}$ lagged $f_{\mathrm{eff}}$, we measured all three layers of
+the signal chain (Eq.~\ref{eq:gap-decomp}) independently across a fine $\rho$ sweep
+($\rho \in [1, 1000]$, 17~values, 5~replicates each). At each sampling step, we recorded:
+(i)~the total softmax attention weight on designated patterns ($\bar{a}_{\mathrm{des}}$), (ii)~the
+continuous K/R probability at P1 in the PCA-reconstructed one-hot vector ($f_{\mathrm{soft}}$),
+and (iii)~the hard-decoded residue identity ($f_{\mathrm{obs}}$). The decomposition revealed a
+striking structure. The attention gap was $\Delta_{\mathrm{attn}} \approx 0$ across all $\rho$
+values ($< 0.3\%$), confirming that the energy-level conditioning is exact. The PCA gap was the
+dominant component: $f_{\mathrm{soft}}$ was effectively flat at $\sim\!0.27$ regardless of $\rho$,
+varying by less than 0.04 across a thousandfold range of multiplicity ratios. The argmax gap was
+negative ($\approx -0.25$), indicating that discrete decoding partially recovered signal lost in
+the PCA reconstruction (Fig.~\ref{fig:gap-decomposition}). The flatness of $f_{\mathrm{soft}}$
+implies that the PCA encoding maps designated and background sequences to overlapping regions at the
+P1 position: even when 99.8\% of attention weight is on the designated patterns, the continuous one-hot
+reconstruction cannot resolve K~vs.~G at P1 because this variation is not well-captured by the
+top $d=80$ principal components. The Fisher separation index for the Kunitz designated/background
+split was $S = 0.20$, confirming moderate but incomplete geometric separation.
+
+We repeated the multiplicity analysis on two additional families---SH3 domains (PF00018; $K=55$,
+split by conserved Trp at the binding groove) and WW domains (PF00397; $K=420$, split by
+specificity-loop residue)---yielding three families with distinct PCA-space geometries
+(Table~\ref{tab:cross-family}). The calibration gap decreased monotonically with increasing
+separation index: WW domains ($S = 0.11$, functional subsets heavily interleaved in PCA space)
+exhibited the largest gap ($\Delta = 0.63$); Kunitz domains ($S = 0.20$) an intermediate gap
+($\Delta = 0.37$); and SH3 domains ($S = 0.34$, well-separated functional subsets) a near-zero
+gap ($\Delta = 0.01$, $f_{\mathrm{obs}} = 0.989$ at $f_{\mathrm{eff}} = 0.999$). A linear fit
+yielded $\Delta \approx 0.84 - 2.5\,S$ with $R^{2} \approx 1.0$. The attention weights tracked
+$f_{\mathrm{eff}}$ perfectly in all three families, confirming that the multiplicity-weighted
+energy is exact regardless of the downstream calibration gap. Hard curation achieved 100\%
+phenotype transfer in all three families, regardless of separation index---as expected, since
+curated memory matrices are built from designated-subset-only PCA, which by construction captures
+subset-specific variation in its leading components
+(Fig.~\ref{fig:cross-family}).
+
+Finally, we asked whether increasing $\beta$ beyond $\beta^{*}$ could push more phenotype signal
+through the PCA bottleneck. At fixed $\rho$, sweeping $\beta/\beta^{*}$ from 0.5 to 3.0 revealed
+a consistent tradeoff across all three $\rho$ values tested ($\rho = 10, 50, 200$): higher
+$\beta$ increased P1~K/R fraction at the cost of reduced diversity. At $\rho = 200$ and
+$\beta = 3\beta^{*}$, P1~K/R reached 0.71 (versus 0.61 at $\beta^{*}$), while diversity dropped
+from 0.53 to 0.46. This provides a second continuous dial: the practitioner can tune
+$(\rho,\, \beta/\beta^{*})$ jointly to navigate the fidelity--diversity tradeoff.

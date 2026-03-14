@@ -1,0 +1,55 @@
+% methods.tex -- Experimental methods (paragraph-level headings under Materials and Methods)
+For each experiment, we followed the stochastic attention pipeline
+of~\cite{varnerSAProtein2026} without modification to the core sampler. Seed alignments were
+downloaded from InterPro/Pfam in Stockholm format. Alignments were cleaned by removing columns
+with $>50\%$ gaps and sequences with $>30\%$ gaps in the remaining columns. The cleaned alignment
+was one-hot encoded ($20$ amino acid channels per position, gaps mapped to zero vectors) yielding
+a $20L \times K$ matrix, reduced by PCA (retaining $95\%$ of variance) to a $d \times K$ matrix,
+and column-normalized to unit norm. ULA chains were run with step size $\alpha = 0.01$ for
+$T = 5{,}000$ steps, initialized near random stored patterns with small Gaussian perturbation.
+Samples were collected after a burn-in of 2{,}000 steps with thinning every 100 steps. For
+multiplicity-weighted runs, $\beta^{*}(\vr)$ was found by sweeping 50--60 logarithmically spaced
+$\beta$ values in $[0.1,\, 500]$ and locating the inflection point of the weighted attention
+entropy.
+
+\paragraph{Protein families and functional splits.}
+We tested three Pfam families: Kunitz domains (PF00014, $K=99$, $L=53$), SH3 domains (PF00018,
+$K=55$, $L=48$), and WW domains (PF00397, $K=420$, $L=31$). For each family, we defined a binary
+functional split based on a single marker position. For Kunitz, the P1 position---the primary contact residue with serine proteases, known from
+structural and biochemical studies to determine inhibitory specificity---was identified as the
+column with the highest Lys frequency; sequences with K or R at P1 were designated as the
+functional subset ($K_{\mathrm{des}} = 32$) based on their known association with trypsin
+inhibition. For SH3, the conserved Trp in the hydrophobic binding groove was identified as the
+column with intermediate Trp frequency ($0.15 < f_W < 0.85$); sequences with W formed the
+designated subset ($K_{\mathrm{des}} = 33$). For WW, the specificity-determining position was the
+highest-entropy column in the middle third of the alignment; sequences with the most common
+residue formed the designated subset ($K_{\mathrm{des}} = 69$). In each case, the designation
+reflects external biological knowledge, not a property discovered by the method.
+
+\paragraph{Multiplicity-weighted sampling.}
+For each $\rho$ value, the multiplicity vector was set to $r_k = \rho$ for designated patterns and
+$r_k = 1$ for background patterns. Weighted samples were generated using the modified Langevin update
+(Eq.~\ref{eq:weighted-ula}). Twenty to thirty independent chains were run per condition, yielding
+620--930 sequences after burn-in and thinning.
+
+\paragraph{Evaluation metrics.}
+Phenotype fidelity was measured as the fraction of generated sequences displaying the designated
+subset's marker residue at the marker position. Attention diagnostics recorded the mean softmax
+weight on designated patterns during sampling. The soft P1 score was computed by reconstructing the PCA-space
+sample to one-hot space and applying a temperature-scaled softmax ($T=0.2$) to the amino acid
+channels at the marker position. Sequence diversity was computed as one minus the mean pairwise
+sequence identity among generated sequences (estimated from 300--500 random pairs). Amino acid
+composition fidelity was measured by KL divergence between generated and reference amino acid
+frequencies.
+
+\paragraph{Fisher separation index.}
+For each functional split, pairwise cosine similarities were computed between all unit-norm PCA
+vectors within Group~A, within Group~B, and between groups. The pooled within-group mean
+$\bar{c}_{\mathrm{within}}$ and standard deviation $\sigma_{\mathrm{within}}$ were computed by
+weighting by group size; the separation index $S$ was then computed as defined in
+Section~\ref{sec:gap}.
+
+\paragraph{Software.}
+All experiments were implemented in Julia~1.12 using NNlib.jl (softmax),
+MultivariateStats.jl (PCA), and Distributions.jl. Source code and experiment scripts are available
+at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
