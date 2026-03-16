@@ -108,18 +108,45 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \clearpage
 
 % -----------------------------------------------------------------------
+% Table 1: Cross-family summary (first, to set the stage)
+% -----------------------------------------------------------------------
+\begin{table}[p]
+  \centering
+  \caption{\textbf{Cross-family summary of all protein families tested.}
+  For each family: source database, number of sequences ($K$), aligned length ($L$), PCA
+  dimensionality ($d$, capturing 95\% variance), designated subset size ($K_{\mathrm{des}}$),
+  phenotype marker, natural designated fraction ($f_{\mathrm{nat}}$), Fisher separation index
+  ($S$), observed phenotype fraction under hard curation ($f_{\mathrm{obs}}^{\mathrm{hard}}$),
+  and calibration gap ($\Delta$ at $\rho=500$). The first three families were used in the
+  multiplicity $\rho$ sweep; $\omega$-conotoxin was tested with hard curation only.}
+  \label{tab:cross-family}
+  \small
+  \begin{tabular}{lcccccccccc}
+    \toprule
+    Family & Source & $K$ & $L$ & $d$ & $K_{\mathrm{des}}$ & Marker
+           & $f_{\mathrm{nat}}$ & $S$
+           & $f_{\mathrm{obs}}^{\mathrm{hard}}$ & $\Delta$ \\
+    \midrule
+    Kunitz & PF00014 & 99  & 53 & 80  & 32 & P1 K/R  & 0.32 & 0.20 & 1.00 & 0.37 \\
+    SH3    & PF00018 & 55  & 48 & 46  & 33 & Trp     & 0.60 & 0.34 & 1.00 & 0.01 \\
+    WW     & PF00397 & 420 & 31 & 186 & 69 & Spec.\ loop & 0.16 & 0.11 & 1.00 & 0.63 \\
+    $\omega$-Conotoxin & SwissProt & 74 & 26 & 20 & 23 & Tyr13 & 0.34 & --- & 0.98 & --- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------
 % Fig 1: Binder scaling (old Fig 2; old Fig 1 bar chart removed)
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth]{sections/figs/study1_binder_scaling.pdf}
-  \caption{\textbf{Phenotype fidelity is invariant to input set size; diversity
-  and composition fidelity improve with more binders.}
+  \caption{\textbf{Diversity and composition fidelity improve with more input
+  binders; phenotype fidelity is perfect at every sample size.}
   Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
-  the Kunitz strong-binder set (3 replicates each).
-  \textit{Left:} P1 K/R fraction remains at 1.0 at every sample size,
-  including $K_{\mathrm{des}}=3$.
-  \textit{Centre:} Pairwise sequence diversity increases from 0.36
+  the Kunitz strong-binder set (3 replicates each; shaded bands show $\pm 1$
+  s.d.). P1 K/R fraction was 1.0 at every sample size (not shown).
+  \textit{Left:} Pairwise sequence diversity increases from 0.36
   ($K_{\mathrm{des}}=3$) to 0.50 ($K_{\mathrm{des}}=32$).
   \textit{Right:} KL divergence of amino acid composition decreases from 0.047
   to 0.009 over the same range. Three input binders suffice for perfect
@@ -129,28 +156,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{figure}
 
 % -----------------------------------------------------------------------
-% Fig 3: rho sweep
-% -----------------------------------------------------------------------
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=\textwidth]{sections/figs/fig2_rho_sweep.pdf}
-  \caption{\textbf{Multiplicity-weighted generation sweeping
-  $\rho \in [1,500]$ on the Kunitz family ($K=99$).}
-  \textit{Top left:} P1 K/R fraction increases monotonically from 0.39
-  ($\rho=1$, natural proportion) to 0.63 ($\rho=500$); dashed line shows the
-  natural proportion.
-  \textit{Top right:} Pairwise sequence diversity decreases modestly from 0.56
-  to 0.51.
-  \textit{Bottom left:} KL divergence of amino acid composition increases from
-  0.007 to 0.017, remaining low throughout.
-  \textit{Bottom right:} Per-position binding-loop entropy decreases from 1.68
-  to 1.52\,nats, reflecting progressive constraint on the interface residues.
-  All quantities are plotted against $\log_{10}(\rho)$.}
-  \label{fig:rho-sweep}
-\end{figure}
-
-% -----------------------------------------------------------------------
-% Fig 4: Phase transition entropy curves
+% Fig 2: Phase transition entropy curves (old rho sweep figure removed)
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
@@ -169,45 +175,8 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   \label{fig:phase-transition}
 \end{figure}
 
-% -----------------------------------------------------------------------
-% Fig 5: Calibration gap decomposition
-% -----------------------------------------------------------------------
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=0.82\textwidth]{sections/figs/fig2_gap_decomposition.pdf}
-  \caption{\textbf{Calibration gap decomposition: three independently measured
-  signal layers.}
-  Each point corresponds to one $\rho$ value in a fine sweep
-  ($\rho \in [1,1000]$, 17 values, 5 replicates).
-  Orange diamonds: attention weight on designated binder patterns
-  ($\bar{a}_{\mathrm{des}}$) — tracks the ideal diagonal ($y=x$) with
-  $<0.3\%$ deviation, confirming that the multiplicity-weighted energy is exact.
-  Purple squares: soft P1 K/R score ($f_{\mathrm{soft}}$) after PCA
-  reconstruction — nearly flat at $\approx 0.27$ regardless of $\rho$,
-  identifying the PCA encoding as the dominant bottleneck.
-  Blue circles: hard-decoded P1 K/R fraction ($f_{\mathrm{obs}}$) — lies
-  above $f_{\mathrm{soft}}$, indicating that argmax decoding partially recovers
-  signal lost in the PCA projection (negative argmax gap).}
-  \label{fig:gap-decomposition}
-\end{figure}
-
-% -----------------------------------------------------------------------
-% Fig 6: Separation predicts gap (money figure)
-% -----------------------------------------------------------------------
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=0.72\textwidth]{sections/figs/fig2_separation_vs_gap.pdf}
-  \caption{\textbf{Fisher separation index quantitatively predicts the
-  calibration gap across protein families.}
-  Calibration gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$ at $\rho=500$
-  plotted against Fisher separation index $S$ for three families: WW domains
-  ($S=0.11$, $\Delta=0.63$), Kunitz domains ($S=0.20$, $\Delta=0.37$), and
-  SH3 domains ($S=0.34$, $\Delta \approx 0$). Dashed line: linear fit
-  $\Delta \approx 0.84 - 2.5\,S$ ($R^{2} \approx 1.0$). The separation index,
-  computable from the alignment alone before any sequences are generated,
-  serves as an \emph{a priori} predictor of conditioning effectiveness.}
-  \label{fig:cross-family}
-\end{figure}
+% Gap decomposition and separation-vs-gap figures removed;
+% data is in the per-family rho sweep table and text.
 
 % -----------------------------------------------------------------------
 % Table: Per-family rho sweep (replaces old Fig 7)
@@ -258,56 +227,36 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{table}
 
 % -----------------------------------------------------------------------
-% Table 2: Structural and language-model validation
+% Table 2: Merged validation + baseline comparison
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
-  \caption{\textbf{Structural and language-model validation on the Kunitz domain.}
-  ESMFold pLDDT (predicted confidence, 0--100; $>70$ = confident), TM-score against the
-  experimental structure 1BPI chain~A ($>0.5$ = same fold), and ESM2-650M masked-marginal
-  pseudo-perplexity (PPL; lower = more plausible). Values are mean $\pm$ s.d.\ across 50
-  sequences per source. SA-generated sequences are structurally and linguistically
-  indistinguishable from natural sequences; HMM-emitted sequences are substantially worse on
-  all three metrics.}
+  \caption{\textbf{Structural, linguistic, and functional validation on the Kunitz domain.}
+  pLDDT: ESMFold predicted confidence (0--100; $>70$ = confident).
+  TM: TM-score against 1BPI chain~A ($>0.5$ = same fold).
+  PPL: ESM2-650M masked-marginal pseudo-perplexity (lower = more plausible).
+  P1~K/R: fraction with Lys/Arg at the primary trypsin contact.
+  KL: amino acid composition divergence ($\times 10^{3}$).
+  $D$: mean pairwise diversity.
+  Structural and LM values are mean $\pm$ s.d.\ across 50 sequences;
+  sequence-level metrics are mean $\pm$ s.d.\ across 5 replicates.
+  SA-generated sequences are indistinguishable from natural sequences on all
+  structural and linguistic metrics; SA strong-conditioning achieves perfect
+  phenotype transfer, a capability unavailable to unconditional baselines.}
   \label{fig:structure-validation}
-  \small
-  \begin{tabular}{lccccc}
-    \toprule
-    Source & pLDDT & \% $>70$ & TM-score & \% $>0.5$ & ESM2 PPL \\
-    \midrule
-    Stored (natural)      & $89.3 \pm 3.2$  & 100 & $0.83 \pm 0.03$ & 100 & $4.97 \pm 0.98$ \\
-    SA (full family)      & $90.4 \pm 1.2$  & 100 & $0.84 \pm 0.01$ & 100 & $4.78 \pm 0.64$ \\
-    SA (strong binders)   & $90.7 \pm 1.1$  & 100 & $0.83 \pm 0.01$ & 100 & $4.72 \pm 0.60$ \\
-    SA (weak binders)     & $91.0 \pm 1.2$  & 100 & $0.85 \pm 0.01$ & 100 & $4.73 \pm 0.72$ \\
-    HMM emit (HMMER3)     & $60.4 \pm 13.1$ &  20 & $0.60 \pm 0.10$ &  88 & $16.1 \pm 4.2$  \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-% -----------------------------------------------------------------------
-% Table 3: Baseline comparison (SA vs HMM vs Bootstrap)
-% -----------------------------------------------------------------------
-\begin{table}[p]
-  \centering
-  \caption{\textbf{Sequence-level metrics: SA generation vs.\ baselines on the Kunitz domain.}
-  P1~K/R: fraction of sequences with Lys/Arg at the primary trypsin contact position.
-  KL: KL divergence of amino acid composition (lower = closer to natural). Novelty: mean
-  cosine distance to nearest stored pattern in PCA space. Seq.~ID: nearest sequence identity
-  to stored sequences. Diversity: mean pairwise cosine distance. Values are mean $\pm$ s.d.\
-  across 5 independent replicates (SA, bootstrap) or 30 chain-groups (HMM). SA full-family
-  generation best preserves the natural amino acid composition; SA strong-conditioning achieves
-  perfect phenotype transfer, which is fundamentally unavailable to unconditional baselines.}
   \label{fig:baseline-comparison}
   \label{fig:esm2-perplexity}
   \small
-  \begin{tabular}{lccccc}
+  \begin{tabular}{lcccccc}
     \toprule
-    Method & P1 K/R & KL div.\ ($\times 10^{3}$) & Novelty & Seq.~ID & Diversity \\
+    Source & pLDDT & TM & PPL & P1 K/R & KL ($\times 10^{3}$) & $D$ \\
     \midrule
-    SA (full family)      & $0.41 \pm 0.01$ & $6.9 \pm 0.1$  & $0.42 \pm 0.00$ & $0.58 \pm 0.00$ & $0.56 \pm 0.00$ \\
-    SA (strong binders)   & $1.00 \pm 0.00$ & $19.5 \pm 0.4$ & $0.33 \pm 0.00$ & $0.67 \pm 0.00$ & $0.50 \pm 0.00$ \\
-    HMM emit (HMMER3)     & $0.15 \pm 0.03$ & $29.7 \pm 11.3$ & $0.31 \pm 0.01$ & $0.62 \pm 0.00$ & $0.56 \pm 0.00$ \\
-    Bootstrap (resample)  & $0.30 \pm 0.04$ & $1.0 \pm 0.3$  & $0.00 \pm 0.00$ & $1.00 \pm 0.00$ & $0.56 \pm 0.00$ \\
+    Stored (natural)      & $89.3 \pm 3.2$  & $0.83 \pm 0.03$ & $4.97 \pm 0.98$ & 0.32 & --- & --- \\
+    SA (full family)      & $90.4 \pm 1.2$  & $0.84 \pm 0.01$ & $4.78 \pm 0.64$ & $0.41 \pm 0.01$ & $6.9 \pm 0.1$ & 0.56 \\
+    SA (strong binders)   & $90.7 \pm 1.1$  & $0.83 \pm 0.01$ & $4.72 \pm 0.60$ & $1.00 \pm 0.00$ & $19.5 \pm 0.4$ & 0.50 \\
+    SA (weak binders)     & $91.0 \pm 1.2$  & $0.85 \pm 0.01$ & $4.73 \pm 0.72$ & $0.00 \pm 0.00$ & --- & 0.50 \\
+    HMM emit (HMMER3)     & $60.4 \pm 13.1$ & $0.60 \pm 0.10$ & $16.1 \pm 4.2$  & $0.15 \pm 0.03$ & $29.7 \pm 11.3$ & 0.56 \\
+    Bootstrap (resample)  & ---             & ---              & ---              & $0.30 \pm 0.04$ & $1.0 \pm 0.3$ & 0.56 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -357,36 +306,6 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   the input. Blue: enrichment; red: depletion; white: no change.}
   \label{fig:conotoxin-loop}
 \end{figure}
-
-% -----------------------------------------------------------------------
-% Table 1: Cross-family summary
-% -----------------------------------------------------------------------
-\clearpage
-
-\begin{table}[p]
-  \centering
-  \caption{\textbf{Cross-family summary of protein families used in the multiplicity study.}
-  For each family: Pfam accession, number of sequences ($K$), aligned length ($L$), PCA
-  dimensionality ($d$, capturing 95\% variance), designated subset size ($K_{\mathrm{des}}$),
-  phenotype marker, natural designated fraction ($f_{\mathrm{nat}}$), Fisher separation index
-  ($S$), observed phenotype fraction under hard curation ($f_{\mathrm{obs}}^{\mathrm{hard}}$),
-  observed phenotype fraction at $\rho=500$ under multiplicity weighting
-  ($f_{\mathrm{obs}}^{\rho=500}$), and calibration gap ($\Delta = f_{\mathrm{eff}} -
-  f_{\mathrm{obs}}$ at $\rho=500$).}
-  \label{tab:cross-family}
-  \small
-  \begin{tabular}{lcccccccccc}
-    \toprule
-    Family & Pfam & $K$ & $L$ & $d$ & $K_{\mathrm{des}}$ & Marker
-           & $f_{\mathrm{nat}}$ & $S$
-           & $f_{\mathrm{obs}}^{\rho=500}$ & $\Delta$ \\
-    \midrule
-    Kunitz & PF00014 & 99  & 53 & 80  & 32 & P1 K/R  & 0.32 & 0.20 & 0.63 & 0.37 \\
-    SH3    & PF00018 & 55  & 48 & 46  & 33 & Trp     & 0.60 & 0.34 & 0.99 & 0.01 \\
-    WW     & PF00397 & 420 & 31 & 186 & 69 & Spec.\ loop & 0.16 & 0.11 & 0.36 & 0.63 \\
-    \bottomrule
-  \end{tabular}
-\end{table}
 
 % --- SI Appendix ---
 \clearpage

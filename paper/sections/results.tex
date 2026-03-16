@@ -1,5 +1,19 @@
 % results.tex
 
+We evaluated SA on four protein families spanning a range of sizes, functions, and PCA-space
+geometries (Table~\ref{tab:cross-family}). Three Pfam seed families---Kunitz domains (PF00014,
+$K=99$), SH3 domains (PF00018, $K=55$), and WW domains (PF00397, $K=420$)---were used to
+benchmark both hard curation and multiplicity-weighted conditioning, with designated subsets
+defined by known binding-site residues. A fourth family, the $\omega$-conotoxin O-superfamily
+($K=74$, curated from SwissProt), was used to test hard curation on a therapeutically relevant
+peptide system targeting the Cav2.2 calcium channel. For each family, we split sequences into
+designated and background subsets based on an experimentally validated phenotype marker,
+built conditioned memory matrices, and generated sequences via Langevin dynamics at the
+entropy-inflection inverse temperature $\beta^{*}$. The Fisher separation index $S$---a
+measure of how well PCA separates designated from background sequences---varied from 0.11
+(WW, heavily interleaved) to 0.34 (SH3, well-separated), providing a natural axis along which
+to test the limits of multiplicity-weighted conditioning.
+
 We restricted the memory matrix to a user-designated functional subset of Kunitz domains
 (PF00014; $K=99$ sequences, $L=53$ aligned positions) and tested whether subset-specific
 phenotype transfers to generated sequences (Fig.~\ref{fig:scaling}). Kunitz domains are serine protease inhibitors whose binding
@@ -28,8 +42,8 @@ maintain the input phenotype while introducing substantial sequence diversity (p
 $\geq 0.45$ for $K_{\mathrm{des}} \geq 10$).
 
 We swept $\rho$ from 1 (standard SA) to 1{,}000 on the full Kunitz family ($K = 99$) to test
-multiplicity-weighted generation (Fig.~\ref{fig:rho-sweep},
-Fig.~\ref{fig:phase-transition}, Fig.~\ref{fig:gap-decomposition}). For each $\rho$, we
+multiplicity-weighted generation (Fig.~\ref{fig:phase-transition},
+Table~\ref{fig:per-family-rho}). For each $\rho$, we
 computed the multiplicity vector $\vr$, found $\beta^{*}(\vr)$ via entropy inflection on the
 weighted attention distribution, and generated 930 sequences (30 chains). We observed that the
 attention weight on designated patterns tracked $f_{\mathrm{eff}}$ with negligible deviation
@@ -38,7 +52,7 @@ weights tilted the energy landscape exactly as intended. The observed P1~K/R fra
 monotonically from 0.39 ($\rho=1$) to 0.63 ($\rho=500$), substantially exceeding the natural
 proportion but falling short of the $f_{\mathrm{eff}} = 0.996$ predicted by the energy-level
 conditioning; sequence diversity decreased modestly from 0.56 to 0.51 over this range and KL
-divergence increased from 0.007 to 0.017 (Fig.~\ref{fig:rho-sweep}). The phase transition
+divergence increased from 0.007 to 0.017. The phase transition
 $\beta^{*}$ shifted from 4.3 at $\rho=1$ ($K_{\mathrm{eff}} = 99$) to 10.1 at
 $\rho=1{,}000$ ($K_{\mathrm{eff}} = 32.1$), and the entropy curves at different $\rho$ values
 formed a family of sigmoidal profiles with systematically rightward-shifted inflection points,
@@ -55,7 +69,7 @@ energy-level conditioning was exact; the PCA gap was the dominant component, wit
 $f_{\mathrm{soft}}$ effectively flat at $\sim\!0.27$ regardless of $\rho$, varying by less than
 0.04 across a thousandfold range of multiplicity ratios; and the argmax gap was negative
 ($\approx -0.25$), indicating that discrete decoding partially recovered signal lost in the PCA
-reconstruction (Fig.~\ref{fig:gap-decomposition}). These observations suggest that the PCA
+reconstruction. These observations suggest that the PCA
 encoding mapped designated and background sequences to overlapping regions at the P1 position:
 even when 99.8\% of attention weight was on the designated patterns, the continuous one-hot
 reconstruction could not resolve K~vs.~G at P1 because this variation was not well-captured by
@@ -66,8 +80,7 @@ separation.
 We repeated the multiplicity analysis on two additional families---SH3 domains (PF00018;
 $K=55$, split by conserved Trp at the binding groove) and WW domains (PF00397; $K=420$, split
 by specificity-loop residue)---yielding three families with distinct PCA-space geometries
-(Table~\ref{tab:cross-family}, Fig.~\ref{fig:cross-family},
-Table~\ref{fig:per-family-rho}). We found that the calibration gap decreased monotonically with
+(Table~\ref{tab:cross-family}, Table~\ref{fig:per-family-rho}). We found that the calibration gap decreased monotonically with
 increasing separation index: WW domains ($S = 0.11$, functional subsets heavily interleaved in
 PCA space) exhibited the largest gap ($\Delta = 0.63$); Kunitz domains ($S = 0.20$) an
 intermediate gap ($\Delta = 0.37$); and SH3 domains ($S = 0.34$, well-separated functional
@@ -78,7 +91,7 @@ perfectly in all three families, which confirms that the multiplicity-weighted e
 regardless of the downstream calibration gap, while hard curation achieved 100\% phenotype
 transfer in all three families regardless of separation index---as expected, since curated
 memory matrices are built from designated-subset-only PCA, which by construction captures
-subset-specific variation in its leading components (Fig.~\ref{fig:cross-family}). To test
+subset-specific variation in its leading components. To test
 whether increasing $\beta$ beyond $\beta^{*}$ could push more phenotype signal through the PCA
 bottleneck, we swept $\beta/\beta^{*}$ from 0.5 to 3.0 at three fixed $\rho$ values
 ($\rho = 10, 50, 200$) and observed a consistent tradeoff: higher $\beta$ increased P1~K/R
