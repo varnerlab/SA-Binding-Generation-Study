@@ -68,10 +68,32 @@ The standard SA framework exhibits a phase transition at critical inverse temper
 that depends on the PCA dimension $d$ and the number of stored patterns. Under multiplicity
 weighting, the relevant quantity is the effective number of patterns
 $K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2} / \sum_k r_k^{2}$, which equals $K$ when all $r_k$
-are equal and converges to $K_{\mathrm{des}}$ as $\rho \to \infty$. Empirically, $\beta^{*}$
-increases monotonically from 4.3 ($\rho = 1$, $K_{\mathrm{eff}} = 99$) to 10.1 ($\rho = 1000$,
-$K_{\mathrm{eff}} = 32.1$) in the Kunitz domain, consistent with the system becoming harder to
-order as fewer effective patterns contribute competing attractors.
+are equal and converges to $K_{\mathrm{des}}$ as $\rho \to \infty$.
+
+\begin{remark}[Phase transition: analytic baseline and multiplicity shift]\label{rem:beta-star}
+The companion paper~\cite{varnerSAProtein2026} establishes, via a concentration-of-measure
+argument on the softmax attention entropy, that for the \emph{unweighted} SA sampler ($\rho=1$)
+the phase transition satisfies
+\begin{equation}\label{eq:beta-star}
+  \beta^{*} \;\approx\; 1.57 + 0.28\sqrt{d},
+\end{equation}
+with $R^{2}=0.97$ across eight Pfam families spanning $d \in [18, 186]$, and is nearly
+independent of $K$ for $K \geq 30$.
+At $\rho=1$, Eq.~\eqref{eq:beta-star} therefore gives the analytic value directly from the
+alignment. For $\rho > 1$, the logit biases $\log r_k$ pre-concentrate the attention
+distribution at $\beta=0$: the weighted entropy at zero temperature is $H_{\vr}(0) = \log
+K_{\mathrm{eff}}(\vr) < \log K$, a lower starting entropy than the unweighted case.
+Reaching the retrieval-phase inflection from this pre-concentrated starting point requires
+a higher inverse temperature, so $\beta^{*}(\rho) \geq \beta^{*}(1)$.
+For intermediate $\rho$, $\beta^{*}(\rho)$ is located as the inflection of the weighted
+attention entropy $H_{\vr}(\beta)$ via a one-dimensional sweep, a negligible computation
+relative to sequence generation.
+\end{remark}
+
+Empirically, $\beta^{*}$ increases monotonically from 4.3 ($\rho = 1$, $K_{\mathrm{eff}} = 99$)
+to 10.1 ($\rho = 1000$, $K_{\mathrm{eff}} = 32.1$) in the Kunitz domain, consistent with
+Remark~\ref{rem:beta-star}: more inverse temperature is required as the logit biases concentrate
+probability mass on fewer effective patterns.
 
 \subsection{The Calibration Gap}\label{sec:gap}
 

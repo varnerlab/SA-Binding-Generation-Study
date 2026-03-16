@@ -46,7 +46,7 @@
 \newcommand{\R}{\mathbb{R}}
 \DeclareMathOperator{\softmax}{softmax}
 
-\title{Conditioning Protein Sequence Generation via Pattern Multiplicity\\in the Modern Hopfield Energy}
+\title{Conditioning Protein Generation via Hopfield Pattern Multiplicity}
 
 \author{%
   Jeffrey D.~Varner \\
@@ -107,15 +107,229 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 % --- Figures and Tables (placed after bibliography, PNAS-style) ---
 \clearpage
 
-% TODO: Add figures here with [p] full-page placement
-% Table 1: Cross-family comparison
-% Fig 1: P1 phenotype inheritance (Kunitz)
-% Fig 2: Binder scaling (fidelity/diversity/KL)
-% Fig 3: rho sweep (4-panel)
+% -----------------------------------------------------------------------
+% Fig 1: Kunitz P1 phenotype inheritance
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.82\textwidth]{sections/figs/p1_phenotype_inheritance.pdf}
+  \caption{\textbf{P1 residue phenotype inheritance on the Kunitz domain.}
+  Fraction of sequences with Lys or Arg at the P1 contact position (col.~25)
+  for input strong binders ($K_b=32$, K/R at P1), input weak binders
+  ($K_{nb}=67$, other residues), sequences generated from the full family, and
+  sequences generated from each conditioned memory matrix (strong- and
+  weak-conditioned, 930 sequences each). Strong-conditioned generation achieves
+  100\% K/R at P1; weak-conditioned achieves 0\%; full-family generation
+  reproduces the natural proportion (32\%). Dashed line at 0.5 for reference.}
+  \label{fig:phenotype}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Fig 2: Binder scaling
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/study1_binder_scaling.pdf}
+  \caption{\textbf{Phenotype fidelity is invariant to input set size; diversity
+  and composition fidelity improve with more binders.}
+  Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
+  the Kunitz strong-binder set (3 replicates each).
+  \textit{Left:} P1 K/R fraction remains at 1.0 at every sample size,
+  including $K_{\mathrm{des}}=3$.
+  \textit{Centre:} Pairwise sequence diversity increases from 0.36
+  ($K_{\mathrm{des}}=3$) to 0.50 ($K_{\mathrm{des}}=32$).
+  \textit{Right:} KL divergence of amino acid composition decreases from 0.047
+  to 0.009 over the same range. Three input binders suffice for perfect
+  phenotype transfer; more binders improve the compositional and diversity
+  quality of the generated library.}
+  \label{fig:scaling}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Fig 3: rho sweep
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/fig2_rho_sweep.pdf}
+  \caption{\textbf{Multiplicity-weighted generation sweeping
+  $\rho \in [1,500]$ on the Kunitz family ($K=99$).}
+  \textit{Top left:} P1 K/R fraction increases monotonically from 0.39
+  ($\rho=1$, natural proportion) to 0.63 ($\rho=500$); dashed line shows the
+  natural proportion.
+  \textit{Top right:} Pairwise sequence diversity decreases modestly from 0.56
+  to 0.51.
+  \textit{Bottom left:} KL divergence of amino acid composition increases from
+  0.007 to 0.017, remaining low throughout.
+  \textit{Bottom right:} Per-position binding-loop entropy decreases from 1.68
+  to 1.52\,nats, reflecting progressive constraint on the interface residues.
+  All quantities are plotted against $\log_{10}(\rho)$.}
+  \label{fig:rho-sweep}
+\end{figure}
+
+% -----------------------------------------------------------------------
 % Fig 4: Phase transition entropy curves
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.82\textwidth]{sections/figs/fig5_entropy_curves.pdf}
+  \caption{\textbf{Phase transition shifts rightward with increasing multiplicity
+  ratio $\rho$.}
+  Attention entropy $H(\beta)$ as a function of inverse temperature $\beta$
+  (log scale) for $\rho \in \{1, 5, 20, 100, 1000\}$ on the Kunitz family.
+  Each curve shows a sigmoidal drop from high entropy (exploration phase) to
+  near-zero entropy (retrieval phase); dashed vertical lines mark the inflection
+  point $\beta^{*}(\rho)$ for each curve.
+  As $\rho$ increases, $K_{\mathrm{eff}}$ decreases and $\beta^{*}$ shifts
+  rightward (from 4.3 at $\rho=1$ to 10.1 at $\rho=1000$), consistent with
+  fewer effective competing attractors requiring higher inverse temperature to
+  produce an ordered phase.}
+  \label{fig:phase-transition}
+\end{figure}
+
+% -----------------------------------------------------------------------
 % Fig 5: Calibration gap decomposition
-% Fig 6: Cross-family calibration + separation vs gap
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.82\textwidth]{sections/figs/fig2_gap_decomposition.pdf}
+  \caption{\textbf{Calibration gap decomposition: three independently measured
+  signal layers.}
+  Each point corresponds to one $\rho$ value in a fine sweep
+  ($\rho \in [1,1000]$, 17 values, 5 replicates).
+  Orange diamonds: attention weight on designated binder patterns
+  ($\bar{a}_{\mathrm{des}}$) — tracks the ideal diagonal ($y=x$) with
+  $<0.3\%$ deviation, confirming that the multiplicity-weighted energy is exact.
+  Purple squares: soft P1 K/R score ($f_{\mathrm{soft}}$) after PCA
+  reconstruction — nearly flat at $\approx 0.27$ regardless of $\rho$,
+  identifying the PCA encoding as the dominant bottleneck.
+  Blue circles: hard-decoded P1 K/R fraction ($f_{\mathrm{obs}}$) — lies
+  above $f_{\mathrm{soft}}$, indicating that argmax decoding partially recovers
+  signal lost in the PCA projection (negative argmax gap).}
+  \label{fig:gap-decomposition}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Fig 6: Separation predicts gap (money figure)
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.72\textwidth]{sections/figs/fig2_separation_vs_gap.pdf}
+  \caption{\textbf{Fisher separation index quantitatively predicts the
+  calibration gap across protein families.}
+  Calibration gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$ at $\rho=500$
+  plotted against Fisher separation index $S$ for three families: WW domains
+  ($S=0.11$, $\Delta=0.63$), Kunitz domains ($S=0.20$, $\Delta=0.37$), and
+  SH3 domains ($S=0.34$, $\Delta \approx 0$). Dashed line: linear fit
+  $\Delta \approx 0.84 - 2.5\,S$ ($R^{2} \approx 1.0$). The separation index,
+  computable from the alignment alone before any sequences are generated,
+  serves as an \emph{a priori} predictor of conditioning effectiveness.}
+  \label{fig:cross-family}
+\end{figure}
+
+% -----------------------------------------------------------------------
 % Fig 7: Per-family rho sweep panels
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/fig3_per_family_rho.pdf}
+  \caption{\textbf{Per-family $\rho$ sweep: attention weights track
+  $f_{\mathrm{eff}}$ exactly; decoded phenotype fidelity depends on separation.}
+  For each of the three families, attention on designated patterns (orange
+  diamonds) follows the hard-curation ceiling (dashed green line) as $\rho$
+  increases, confirming that the energy-level conditioning is exact regardless
+  of family geometry. Hard-decoded phenotype fraction $f_{\mathrm{obs}}$ (blue
+  circles) rises steeply for SH3 ($S=0.34$, near-perfect transfer) and
+  modestly for WW ($S=0.11$, large calibration gap), with Kunitz intermediate.
+  Dotted horizontal line: natural phenotype proportion at $\rho=1$.}
+  \label{fig:per-family-rho}
+\end{figure}
+
+% ω-Conotoxin figures
+\begin{figure}[p]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{sections/figs/tyr_pharmacophore_inheritance.pdf}
+    \caption{Tyr pharmacophore inheritance at position~13 across input and generated conditions.
+    Strong-binder seeding raises Tyr frequency from 82.6\% (input) to 98.3\% (generated);
+    full-family seeding produces only 46.9\%.}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{sections/figs/basic_residue_fraction.pdf}
+    \caption{Basic residue (Lys + Arg) fraction. Strong-binder-seeded generation (20.1\%)
+    matches the input (19.7\%) exactly; full-family generation (12.0\%) reflects the lower K/R
+    content of the structurally diverse O-superfamily.}
+  \end{subfigure}
+  \caption{\textbf{Cav2.2 pharmacophore inheritance under full-family vs.\ curated seeding.}
+  Bar charts showing Tyr13 frequency (left) and basic-residue fraction (right) for input
+  and generated sequence sets under two SA seed conditions.
+  Dashed line at 0.5 for reference.}
+  \label{fig:conotoxin-pharmacophore}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{sections/figs/loop_input_strong.pdf}
+    \caption{Input: strong Cav2.2 binders (23 sequences).}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{sections/figs/loop_gen_strong.pdf}
+    \caption{Generated: strong-binder-seeded SA (1\,550 sequences).}
+  \end{subfigure}
+
+  \vspace{1em}
+
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{sections/figs/loop_input_full.pdf}
+    \caption{Input: full O-superfamily (74 sequences).}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{sections/figs/loop_gen_full.pdf}
+    \caption{Generated: full-family-seeded SA (1\,550 sequences).}
+  \end{subfigure}
+  \caption{\textbf{Per-position amino acid frequency heatmaps across the binding loop
+  (positions 9--17).}
+  Each cell shows the fraction of sequences with a given amino acid at a given alignment
+  position. The strong-binder input (a) and generated (b) heatmaps are nearly
+  indistinguishable: the Tyr signal at position~13, the conserved Cys framework at
+  positions~14--16, and the variable-loop diversity at positions~9--12 are reproduced with
+  high fidelity. Full-family seeding (c,d) matches its input similarly, but the Tyr signal
+  is diffuse, reflecting structural heterogeneity across the O-superfamily.}
+  \label{fig:conotoxin-loop}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Table 1: Cross-family summary
+% -----------------------------------------------------------------------
+\clearpage
+
+\begin{table}[p]
+  \centering
+  \caption{\textbf{Cross-family summary of protein families used in the multiplicity study.}
+  For each family: Pfam accession, number of sequences ($K$), aligned length ($L$), PCA
+  dimensionality ($d$, capturing 95\% variance), designated subset size ($K_{\mathrm{des}}$),
+  phenotype marker, natural designated fraction ($f_{\mathrm{nat}}$), Fisher separation index
+  ($S$), observed phenotype fraction under hard curation ($f_{\mathrm{obs}}^{\mathrm{hard}}$),
+  observed phenotype fraction at $\rho=500$ under multiplicity weighting
+  ($f_{\mathrm{obs}}^{\rho=500}$), and calibration gap ($\Delta = f_{\mathrm{eff}} -
+  f_{\mathrm{obs}}$ at $\rho=500$).}
+  \label{tab:cross-family}
+  \small
+  \begin{tabular}{lcccccccccc}
+    \toprule
+    Family & Pfam & $K$ & $L$ & $d$ & $K_{\mathrm{des}}$ & Marker
+           & $f_{\mathrm{nat}}$ & $S$
+           & $f_{\mathrm{obs}}^{\rho=500}$ & $\Delta$ \\
+    \midrule
+    Kunitz & PF00014 & 99  & 53 & 80  & 32 & P1 K/R  & 0.32 & 0.20 & 0.63 & 0.37 \\
+    SH3    & PF00018 & 55  & 48 & 46  & 33 & Trp     & 0.60 & 0.34 & 0.99 & 0.01 \\
+    WW     & PF00397 & 420 & 31 & 186 & 69 & Spec.\ loop & 0.16 & 0.11 & 0.36 & 0.63 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 % --- SI Appendix ---
 \clearpage

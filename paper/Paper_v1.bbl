@@ -1,4 +1,4 @@
-\begin{thebibliography}{2}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -10,6 +10,40 @@ Jeffrey~D. Varner et~al.
 \newblock Training-free generation of protein sequences from small family
   alignments via stochastic attention.
 \newblock \emph{In preparation}, 2026.
+
+\bibitem[Laskowski and Kato(1980)]{laskowskiProteinInhibitors1980}
+Michael Laskowski and Izydor Kato.
+\newblock Protein inhibitors of proteinases.
+\newblock \emph{Annual Review of Biochemistry}, 49:\penalty0 593--626, 1980.
+
+\bibitem[Adams et~al.(2006)Adams, Smith, Schroeder, Yasuda, and
+  Lewis]{omegaConotoxinSAR2006}
+David~J. Adams, Aaron~B. Smith, Christina~I. Schroeder, Toshihide Yasuda, and
+  Richard~J. Lewis.
+\newblock $\omega$-conotoxins {GVIA}, {MVIIA} and {CVID}: structure--activity
+  relationships and therapeutic potential.
+\newblock \emph{CNS \& Neurological Disorders Drug Targets}, 5\penalty0
+  (4):\penalty0 445--452, 2006.
+
+\bibitem[Miljanich(2004)]{ziconotideReview2004}
+George~P. Miljanich.
+\newblock Ziconotide: a review of its pharmacology and use in the treatment of
+  pain.
+\newblock \emph{Current Medicinal Chemistry}, 11\penalty0 (23):\penalty0
+  3029--3040, 2004.
+
+\bibitem[Song and Varner(2009)]{songModelingAnalysis2009}
+Sang~Ok Song and Jeffrey Varner.
+\newblock Modeling and analysis of the molecular basis of pain in sensory
+  neurons.
+\newblock \emph{{PLOS ONE}}, 4\penalty0 (9):\penalty0 e6758, 2009.
+
+\bibitem[Katoh and Standley(2013)]{mafft2013}
+Kazutaka Katoh and Daron~M. Standley.
+\newblock {MAFFT} multiple sequence alignment software version 7: improvements
+  in performance and usability.
+\newblock \emph{Molecular Biology and Evolution}, 30\penalty0 (4):\penalty0
+  772--780, 2013.
 
 \bibitem[Ramsauer et~al.(2021)Ramsauer, Sch{\"a}fl, Lehner, Seidl, Widrich,
   Adler, Gruber, Holzleitner, Pavlovi{\'c}, Sandve,

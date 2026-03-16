@@ -1,0 +1,12 @@
+uniprot_id,name,species,mature_sequence,target,IC50_nM_cav22,KD_pM_cav22,selectivity,reversibility,clinical_status,notes
+P05484,Omega-conotoxin MVIIA,Conus magus,CKGKGAKCSRLMYDCCTGSCRSGKCG,Cav2.2,5-50,55-60,N-type selective,reversible,FDA-approved (Prialt/ziconotide),SNX-111; reference standard
+P37300,Omega-conotoxin MVIIC,Conus magus,CKGKGAPCRKTMYDCCSGSCGRRGKCG,Cav2.1,200,,P/Q-type selective,poor,research,SNX-230; primarily P/Q not N-type
+P05485,Omega-conotoxin MVIIB,Conus magus,CKGKGASCHRTSYDCCTGSCNRGKC,Cav2.2,~50,,N-type selective,reversible,research,SNX-159
+Q26350,Omega-conotoxin MVIID,Conus magus,CQGRGASCRKTMYNCCSGSCNRGRCG,Cav2.1/2.2,~200,,moderate N-type,poor,research,SNX-238; low selectivity
+P29187,Omega-conotoxin GVIA,Conus geographus,CKSPGSSCSPTSYNCCRSCNPYTKRCYG,Cav2.2,72,68,N-type selective,irreversible,research,contains hydroxyprolines; highest in vivo potency
+Q9N633,Omega conotoxin-CVIE,Conus catus,CKGKGASCRRTSYDCCTGSCRSGRCG,Cav2.2,~1,,N-type selective,voltage-dependent,research,higher affinity for inactivated state
+P0DQD4,Omega conotoxin-CVIF,Conus catus,CKGKGASCRRTSYDCCTGSCRLGRC,Cav2.2,~1,,N-type selective,voltage-dependent,research,higher affinity for inactivated state
+Q95957,Omega-conotoxin CVID,Conus catus,CKSKGAKCSKLMYDCCSGSCSGTVGRCG,Cav2.2,9-22,70,N-type (6 orders over P/Q),nearly complete,Phase II (AM336/leconotide),highest subtype selectivity
+P28880,Omega-conotoxin SVIA,Conus striatus,CRSSGSPCGVTSICCGRCYRGKCT,Cav2.2,~80,,N-type selective,reversible,research,SNX-157
+Q7YZJ1,Omega-conotoxin SVIB,Conus striatus,CKLKGQSCRKTSYDCCSGSCGRSGKCG,Cav2.2,~100,,N-type selective,moderate,research,
+P56676,Omega-conotoxin TVIA,Conus tulipa,CLSPGSSCSPTSYNCCRSCNPYSRKC,Cav2.2,~100,,N-type selective,moderate,research,

@@ -44,6 +44,26 @@ property. The scaling study confirms that even $K_{\mathrm{des}} = 3$ suffices f
 transfer; diversity improves with more input sequences but saturates near
 $K_{\mathrm{des}} = 20$.
 
+The $\omega$-conotoxin experiment extends the small-set amplifier result to a therapeutically
+relevant peptide family and illustrates a practically important design choice: whether to seed SA
+from the full family or from a curated functional subset. Full-family seeding is appropriate when
+the goal is to generate novel family members with broad structural diversity; curated seeding is
+necessary when the goal is to preserve a specific pharmacophore. In the $\omega$-conotoxin case,
+the O-superfamily is structurally coherent (all members share the C--C--CC--C--C disulfide
+framework) but functionally heterogeneous (members block N-type, P/Q-type, or sodium channels
+with varying selectivity). Full-family seeding dilutes the Cav2.2-specific Tyr pharmacophore
+because the PCA encoding reflects the full structural diversity; curated seeding from the 23
+N-type blockers concentrates the PCA subspace on Cav2.2-relevant variation, allowing SA to
+regenerate it with 98\% fidelity. This generalizes the separation-index interpretation: even
+when $S$ is moderate, hard curation can achieve near-perfect pharmacophore transfer by
+restricting the memory to the functional subset of interest. The cost---lower sequence diversity
+and reduced novelty (0.46 vs.\ 0.60)---reflects the narrower PCA basis, consistent with the
+Kunitz scaling study. Importantly, a practitioner holding 23 experimentally validated Cav2.2
+blockers---a realistic output from a phage display screen or a literature curation
+exercise~\cite{songModelingAnalysis2009}---can generate thousands of novel candidates that
+inherit the Tyr13 pharmacophore and basic-residue electrostatics of the input set, providing a
+starting point for computational docking or experimental synthesis without retraining any model.
+
 Several limitations should be acknowledged. The cross-family regression rests on three points;
 additional families are needed to confirm the linearity of the $S$--$\Delta$ relationship and to
 establish its generality beyond single-position phenotypic markers. Our functional splits are

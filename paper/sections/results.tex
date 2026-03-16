@@ -90,3 +90,55 @@ $\beta$ increased P1~K/R fraction at the cost of reduced diversity. At $\rho = 2
 $\beta = 3\beta^{*}$, P1~K/R reached 0.71 (versus 0.61 at $\beta^{*}$), while diversity dropped
 from 0.53 to 0.46. This provides a second continuous dial: the practitioner can tune
 $(\rho,\, \beta/\beta^{*})$ jointly to navigate the fidelity--diversity tradeoff.
+
+\paragraph{Application to therapeutic peptide design: $\omega$-conotoxins and Cav2.2.}
+To test whether curated memory conditioning generalizes beyond classical protein domains to
+therapeutically relevant peptide families, we applied SA to the $\omega$-conotoxin
+O-superfamily---disulfide-rich peptides from predatory cone snails that block voltage-gated
+N-type calcium channels (Cav2.2) in sensory neurons~\cite{omegaConotoxinSAR2006}. Cav2.2 is a
+primary gatekeeper of pain signaling in dorsal root ganglion (DRG) neurons: channel block
+attenuates synaptic transmission between peripheral nociceptors and the spinal cord. This family
+has direct therapeutic relevance---$\omega$-conotoxin MVIIA (ziconotide) is an FDA-approved
+non-opioid analgesic for intractable pain~\cite{ziconotideReview2004}---and is motivated by
+prior computational modeling of ATP-gated calcium dynamics in DRG neurons that identified Cav2.2
+as a central node in the pain signaling network~\cite{songModelingAnalysis2009}. The primary
+Cav2.2 pharmacophore is Tyr13 (MVIIA numbering): the hydroxyl group of this residue contacts
+the channel pore directly, and its substitution abolishes binding. Basic residues (Lys, Arg)
+distributed across the peptide contribute electrostatic complementarity with the negatively
+charged channel entrance.
+
+We compiled 74 SwissProt $\omega$-conotoxin sequences, computed a multiple sequence alignment
+with MAFFT~\cite{mafft2013}, and retained 26 positions after gap filtering. From this set we
+designated 23 sequences as strong Cav2.2 binders (confirmed or predicted N-type channel
+blockers, including MVIIA, GVIA, CVID, CVIE, CVIF, and close homologs) and 2 sequences as
+weak or non-N-type-selective (MVIIC and MVIID, which preferentially block P/Q-type channels
+with IC$_{50} \geq 200$\,nM against Cav2.2). We then ran two independent SA experiments
+(50~chains $\times$ 5\,000 steps, $\alpha = 0.01$), generating 1\,550 sequences per condition:
+one seeded from the full family ($K = 74$, $\beta^{*} = 3.23$) and one seeded from the strong
+binders only ($K = 23$, $\beta^{*} = 2.72$).
+
+Pharmacophore inheritance was near-complete under strong-binder seeding and substantially
+attenuated under full-family seeding. In the full-family input, only 33.8\% of the 74 sequences
+carry Tyr at the pharmacophore position (col.~13), reflecting the structural heterogeneity of
+the O-superfamily. Full-family-seeded generation raised this fraction modestly to 46.9\%. By
+contrast, 82.6\% of the 23 strong binders carry Tyr13, and strong-binder-seeded SA amplified
+this to 98.3\%---essentially locking the primary Cav2.2 pharmacophore across the generated
+library. The basic-residue (Lys + Arg) fraction was also faithfully inherited: strong-binder
+generation produced 20.1\% basic residues versus 19.7\% in the input, while full-family
+generation produced only 12.0\%, matching the lower K/R content of the diverse full-family
+input. All generated sequences had 100\% valid residues; KL divergence of amino acid
+composition was 0.0075 (full-seeded) and 0.0083 (strong-seeded); mean novelty
+(1 $-$ max cosine similarity to stored patterns) was 0.60 and 0.46 respectively, confirming
+that the strong-binder-seeded library is both pharmacophore-constrained and genuinely
+novel (Fig.~\ref{fig:conotoxin-pharmacophore}, Fig.~\ref{fig:conotoxin-loop}).
+
+The per-position amino acid frequency heatmaps make the conditioning effect visually transparent
+(Fig.~\ref{fig:conotoxin-loop}). The strong-binder input and strong-binder-generated heatmaps
+are nearly indistinguishable: the deep-red Tyr signal at position~13, the conserved Cys
+framework at positions~14--16, and the variable-loop diversity at positions~9--12 are all
+reproduced with high fidelity. The full-family input and full-family-generated heatmaps match
+each other similarly well, but the Tyr signal at position~13 is diffuse---consistent with a
+structurally diverse superfamily that includes non-Cav2.2-blocking members. Together, these
+results confirm that curated memory conditioning transfers Cav2.2 pharmacophore statistics from
+a small set of 23 characterized sequences to a diverse library of 1\,550 novel candidates, with
+no training and no target structure required.
