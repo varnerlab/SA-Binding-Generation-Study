@@ -168,8 +168,10 @@ scaling_agg = combine(groupby(scaling_results, :n_binders),
     :p1_kr_frac => mean => :p1_kr_mean,
     :p1_kr_frac => std => :p1_kr_std,
     :diversity => mean => :diversity_mean,
+    :diversity => std => :diversity_std,
     :mean_novelty => mean => :novelty_mean,
     :kl_aa => mean => :kl_mean,
+    :kl_aa => std => :kl_std,
     :loop_entropy => mean => :entropy_mean,
 )
 show(stdout, scaling_agg)
@@ -353,20 +355,17 @@ println()
 @info "Generating figures"
 @info "="^70
 
-# --- Figure 1: Scaling study ---
-p1 = plot(layout=(1, 3), size=(1200, 400), margin=8Plots.mm,
-    title=["P1 Phenotype Fidelity" "Sequence Diversity" "AA KL Divergence"])
+# --- Figure 1: Scaling study (2-panel: diversity + KL) ---
+p1 = plot(layout=(1, 2), size=(900, 400), margin=8Plots.mm,
+    title=["Sequence Diversity" "AA KL Divergence"])
 
-plot!(p1[1], scaling_agg.n_binders, scaling_agg.p1_kr_mean,
-    ribbon=scaling_agg.p1_kr_std, fillalpha=0.3,
-    marker=:circle, linewidth=2, color=:steelblue, label="",
-    xlabel="Number of input binders", ylabel="Fraction K/R at P1", ylim=(0, 1.05))
-
-plot!(p1[2], scaling_agg.n_binders, scaling_agg.diversity_mean,
+plot!(p1[1], scaling_agg.n_binders, scaling_agg.diversity_mean,
+    ribbon=scaling_agg.diversity_std, fillalpha=0.3,
     marker=:circle, linewidth=2, color=:coral, label="",
     xlabel="Number of input binders", ylabel="Pairwise diversity")
 
-plot!(p1[3], scaling_agg.n_binders, scaling_agg.kl_mean,
+plot!(p1[2], scaling_agg.n_binders, scaling_agg.kl_mean,
+    ribbon=scaling_agg.kl_std, fillalpha=0.3,
     marker=:circle, linewidth=2, color=:forestgreen, label="",
     xlabel="Number of input binders", ylabel="KL(AA)")
 

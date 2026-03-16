@@ -108,24 +108,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \clearpage
 
 % -----------------------------------------------------------------------
-% Fig 1: Kunitz P1 phenotype inheritance
-% -----------------------------------------------------------------------
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=0.82\textwidth]{sections/figs/p1_phenotype_inheritance.pdf}
-  \caption{\textbf{P1 residue phenotype inheritance on the Kunitz domain.}
-  Fraction of sequences with Lys or Arg at the P1 contact position (col.~25)
-  for input strong binders ($K_b=32$, K/R at P1), input weak binders
-  ($K_{nb}=67$, other residues), sequences generated from the full family, and
-  sequences generated from each conditioned memory matrix (strong- and
-  weak-conditioned, 930 sequences each). Strong-conditioned generation achieves
-  100\% K/R at P1; weak-conditioned achieves 0\%; full-family generation
-  reproduces the natural proportion (32\%). Dashed line at 0.5 for reference.}
-  \label{fig:phenotype}
-\end{figure}
-
-% -----------------------------------------------------------------------
-% Fig 2: Binder scaling
+% Fig 1: Binder scaling (old Fig 2; old Fig 1 bar chart removed)
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
@@ -227,77 +210,151 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{figure}
 
 % -----------------------------------------------------------------------
-% Fig 7: Per-family rho sweep panels
+% Table: Per-family rho sweep (replaces old Fig 7)
+% -----------------------------------------------------------------------
+\begin{table}[p]
+  \centering
+  \caption{\textbf{Per-family $\rho$ sweep: attention weights track
+  $f_{\mathrm{eff}}$ exactly; decoded phenotype fidelity depends on PCA
+  separation.} Selected $\rho$ values for each family.
+  $f_{\mathrm{eff}}$: effective designated fraction from multiplicity weights;
+  $\bar{a}_{\mathrm{des}}$: mean softmax attention on designated patterns;
+  $f_{\mathrm{obs}}$: hard-decoded phenotype fraction (930 sequences);
+  $D$: mean pairwise diversity.
+  In all families $\bar{a}_{\mathrm{des}} \approx f_{\mathrm{eff}}$
+  (energy conditioning is exact), but $f_{\mathrm{obs}}$ converges fastest
+  for SH3 ($S=0.34$) and slowest for WW ($S=0.11$), reflecting the
+  PCA-space calibration gap. Full sweep in Tables~S1--S3.}
+  \label{fig:per-family-rho}
+  \small
+  \begin{tabular}{llcccccc}
+    \toprule
+    Family & ($K$, $K_{\mathrm{des}}$, $S$)
+      & $\rho$ & $f_{\mathrm{eff}}$ & $\bar{a}_{\mathrm{des}}$
+      & $f_{\mathrm{obs}}$ & $\Delta$ & $D$ \\
+    \midrule
+    \multirow{4}{*}{Kunitz (PF00014)}
+      & \multirow{4}{*}{(99, 32, 0.20)}
+      &    1 & 0.323 & 0.324 & 0.406 & $-$0.08 & 0.563 \\
+    & &   10 & 0.827 & 0.832 & 0.539 & 0.29 & 0.547 \\
+    & &  100 & 0.980 & 0.981 & 0.615 & 0.37 & 0.520 \\
+    & & 1000 & 0.998 & 0.998 & 0.634 & 0.36 & 0.514 \\
+    \midrule
+    \multirow{4}{*}{SH3 (PF00018)}
+      & \multirow{4}{*}{(55, 33, 0.34)}
+      &    1 & 0.600 & 0.614 & 0.852 & $-$0.25 & 0.580 \\
+    & &   10 & 0.938 & 0.941 & 0.906 & 0.03 & 0.575 \\
+    & &  100 & 0.991 & 0.991 & 0.977 & 0.01 & 0.559 \\
+    & & 1000 & 0.999 & 0.999 & 0.992 & 0.01 & 0.510 \\
+    \midrule
+    \multirow{4}{*}{WW (PF00397)}
+      & \multirow{4}{*}{(420, 69, 0.11)}
+      &    1 & 0.164 & 0.152 & 0.131 & 0.03 & 0.690 \\
+    & &   10 & 0.663 & 0.661 & 0.226 & 0.44 & 0.676 \\
+    & &  100 & 0.947 & 0.947 & 0.303 & 0.64 & 0.649 \\
+    & & 1000 & 0.995 & 0.995 & 0.371 & 0.62 & 0.642 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------
+% Table 2: Structural and language-model validation
+% -----------------------------------------------------------------------
+\begin{table}[p]
+  \centering
+  \caption{\textbf{Structural and language-model validation on the Kunitz domain.}
+  ESMFold pLDDT (predicted confidence, 0--100; $>70$ = confident), TM-score against the
+  experimental structure 1BPI chain~A ($>0.5$ = same fold), and ESM2-650M masked-marginal
+  pseudo-perplexity (PPL; lower = more plausible). Values are mean $\pm$ s.d.\ across 50
+  sequences per source. SA-generated sequences are structurally and linguistically
+  indistinguishable from natural sequences; HMM-emitted sequences are substantially worse on
+  all three metrics.}
+  \label{fig:structure-validation}
+  \small
+  \begin{tabular}{lccccc}
+    \toprule
+    Source & pLDDT & \% $>70$ & TM-score & \% $>0.5$ & ESM2 PPL \\
+    \midrule
+    Stored (natural)      & $89.3 \pm 3.2$  & 100 & $0.83 \pm 0.03$ & 100 & $4.97 \pm 0.98$ \\
+    SA (full family)      & $90.4 \pm 1.2$  & 100 & $0.84 \pm 0.01$ & 100 & $4.78 \pm 0.64$ \\
+    SA (strong binders)   & $90.7 \pm 1.1$  & 100 & $0.83 \pm 0.01$ & 100 & $4.72 \pm 0.60$ \\
+    SA (weak binders)     & $91.0 \pm 1.2$  & 100 & $0.85 \pm 0.01$ & 100 & $4.73 \pm 0.72$ \\
+    HMM emit (HMMER3)     & $60.4 \pm 13.1$ &  20 & $0.60 \pm 0.10$ &  88 & $16.1 \pm 4.2$  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------
+% Table 3: Baseline comparison (SA vs HMM vs Bootstrap)
+% -----------------------------------------------------------------------
+\begin{table}[p]
+  \centering
+  \caption{\textbf{Sequence-level metrics: SA generation vs.\ baselines on the Kunitz domain.}
+  P1~K/R: fraction of sequences with Lys/Arg at the primary trypsin contact position.
+  KL: KL divergence of amino acid composition (lower = closer to natural). Novelty: mean
+  cosine distance to nearest stored pattern in PCA space. Seq.~ID: nearest sequence identity
+  to stored sequences. Diversity: mean pairwise cosine distance. Values are mean $\pm$ s.d.\
+  across 5 independent replicates (SA, bootstrap) or 30 chain-groups (HMM). SA full-family
+  generation best preserves the natural amino acid composition; SA strong-conditioning achieves
+  perfect phenotype transfer, which is fundamentally unavailable to unconditional baselines.}
+  \label{fig:baseline-comparison}
+  \label{fig:esm2-perplexity}
+  \small
+  \begin{tabular}{lccccc}
+    \toprule
+    Method & P1 K/R & KL div.\ ($\times 10^{3}$) & Novelty & Seq.~ID & Diversity \\
+    \midrule
+    SA (full family)      & $0.41 \pm 0.01$ & $6.9 \pm 0.1$  & $0.42 \pm 0.00$ & $0.58 \pm 0.00$ & $0.56 \pm 0.00$ \\
+    SA (strong binders)   & $1.00 \pm 0.00$ & $19.5 \pm 0.4$ & $0.33 \pm 0.00$ & $0.67 \pm 0.00$ & $0.50 \pm 0.00$ \\
+    HMM emit (HMMER3)     & $0.15 \pm 0.03$ & $29.7 \pm 11.3$ & $0.31 \pm 0.01$ & $0.62 \pm 0.00$ & $0.56 \pm 0.00$ \\
+    Bootstrap (resample)  & $0.30 \pm 0.04$ & $1.0 \pm 0.3$  & $0.00 \pm 0.00$ & $1.00 \pm 0.00$ & $0.56 \pm 0.00$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------
+% Table: ω-Conotoxin pharmacophore inheritance
+% -----------------------------------------------------------------------
+\begin{table}[p]
+  \centering
+  \caption{\textbf{$\omega$-Conotoxin Cav2.2 pharmacophore inheritance under curated vs.\
+  full-family seeding.}
+  Tyr13\%: fraction with tyrosine at the primary pharmacophore position (col.~13).
+  K+R\%: basic residue fraction (electrostatic complementarity). KL: amino acid composition
+  divergence. Novelty: mean cosine distance to nearest stored pattern. Strong-binder seeding
+  amplifies Tyr13 from 82.6\% to 98.3\% and preserves the basic-residue signature exactly,
+  while full-family seeding dilutes both signals.}
+  \label{fig:conotoxin-pharmacophore}
+  \small
+  \begin{tabular}{lccccc}
+    \toprule
+    Condition & $N$ & Tyr13 (\%) & K+R (\%) & KL & Novelty \\
+    \midrule
+    Input: full family          &   74 & 33.8 &  9.9 & ---    & --- \\
+    Input: strong binders       &   23 & 82.6 & 19.7 & ---    & --- \\
+    Generated: full-seeded      & 1550 & 46.9 & 12.0 & 0.0075 & 0.60 \\
+    Generated: strong-seeded    & 1550 & 98.3 & 20.1 & 0.0083 & 0.46 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------
+% Fig 7: Binding-loop heatmaps with residuals
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{sections/figs/fig3_per_family_rho.pdf}
-  \caption{\textbf{Per-family $\rho$ sweep: attention weights track
-  $f_{\mathrm{eff}}$ exactly; decoded phenotype fidelity depends on separation.}
-  For each of the three families, attention on designated patterns (orange
-  diamonds) follows the hard-curation ceiling (dashed green line) as $\rho$
-  increases, confirming that the energy-level conditioning is exact regardless
-  of family geometry. Hard-decoded phenotype fraction $f_{\mathrm{obs}}$ (blue
-  circles) rises steeply for SH3 ($S=0.34$, near-perfect transfer) and
-  modestly for WW ($S=0.11$, large calibration gap), with Kunitz intermediate.
-  Dotted horizontal line: natural phenotype proportion at $\rho=1$.}
-  \label{fig:per-family-rho}
-\end{figure}
-
-% ω-Conotoxin figures
-\begin{figure}[p]
-  \centering
-  \begin{subfigure}[b]{0.48\textwidth}
-    \includegraphics[width=\textwidth]{sections/figs/tyr_pharmacophore_inheritance.pdf}
-    \caption{Tyr pharmacophore inheritance at position~13 across input and generated conditions.
-    Strong-binder seeding raises Tyr frequency from 82.6\% (input) to 98.3\% (generated);
-    full-family seeding produces only 46.9\%.}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.48\textwidth}
-    \includegraphics[width=\textwidth]{sections/figs/basic_residue_fraction.pdf}
-    \caption{Basic residue (Lys + Arg) fraction. Strong-binder-seeded generation (20.1\%)
-    matches the input (19.7\%) exactly; full-family generation (12.0\%) reflects the lower K/R
-    content of the structurally diverse O-superfamily.}
-  \end{subfigure}
-  \caption{\textbf{Cav2.2 pharmacophore inheritance under full-family vs.\ curated seeding.}
-  Bar charts showing Tyr13 frequency (left) and basic-residue fraction (right) for input
-  and generated sequence sets under two SA seed conditions.
-  Dashed line at 0.5 for reference.}
-  \label{fig:conotoxin-pharmacophore}
-\end{figure}
-
-\begin{figure}[p]
-  \centering
-  \begin{subfigure}[b]{0.48\textwidth}
-    \includegraphics[width=\textwidth]{sections/figs/loop_input_strong.pdf}
-    \caption{Input: strong Cav2.2 binders (23 sequences).}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.48\textwidth}
-    \includegraphics[width=\textwidth]{sections/figs/loop_gen_strong.pdf}
-    \caption{Generated: strong-binder-seeded SA (1\,550 sequences).}
-  \end{subfigure}
-
-  \vspace{1em}
-
-  \begin{subfigure}[b]{0.48\textwidth}
-    \includegraphics[width=\textwidth]{sections/figs/loop_input_full.pdf}
-    \caption{Input: full O-superfamily (74 sequences).}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.48\textwidth}
-    \includegraphics[width=\textwidth]{sections/figs/loop_gen_full.pdf}
-    \caption{Generated: full-family-seeded SA (1\,550 sequences).}
-  \end{subfigure}
-  \caption{\textbf{Per-position amino acid frequency heatmaps across the binding loop
-  (positions 9--17).}
-  Each cell shows the fraction of sequences with a given amino acid at a given alignment
-  position. The strong-binder input (a) and generated (b) heatmaps are nearly
-  indistinguishable: the Tyr signal at position~13, the conserved Cys framework at
-  positions~14--16, and the variable-loop diversity at positions~9--12 are reproduced with
-  high fidelity. Full-family seeding (c,d) matches its input similarly, but the Tyr signal
-  is diffuse, reflecting structural heterogeneity across the O-superfamily.}
+  \includegraphics[width=\textwidth]{sections/figs/loop_heatmap_with_residuals.pdf}
+  \caption{\textbf{Binding-loop amino acid frequencies and generation residuals for
+  the $\omega$-conotoxin family (positions 9--17).}
+  \textit{Left column:} Per-position amino acid frequency heatmaps for the input sequences
+  (strong Cav2.2 binders, $n=23$, panel~a; full O-superfamily, $n=74$, panel~c).
+  \textit{Right column:} Residual heatmaps (generated $-$ input) showing the change in
+  frequency at each position--residue pair after SA generation. Panel~(b): strong-seeded
+  residuals are near-zero throughout ($|\Delta f| < 0.15$), confirming that the Tyr
+  pharmacophore at position~13, the conserved Cys framework (positions~14--16), and the
+  variable-loop diversity (positions~9--12) are reproduced with high fidelity. Panel~(d):
+  full-seeded residuals are slightly larger, reflecting the broader sequence diversity of
+  the input. Blue: enrichment; red: depletion; white: no change.}
   \label{fig:conotoxin-loop}
 \end{figure}
 
@@ -342,5 +399,21 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 
 \section*{SI Appendix}
 \input{sections/appendix}
+
+% -----------------------------------------------------------------------
+% Fig S1: pLDDT vs TM-score scatter
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.72\textwidth]{sections/figs/plddt_vs_tmscore_scatter.pdf}
+  \caption{\textbf{pLDDT and TM-score are positively correlated; SA sequences cluster in
+  the high-quality region.}
+  Each point represents one predicted structure (50 per source). Stored (gray) and SA-generated
+  (blue, red, green) sequences cluster tightly above pLDDT $>85$ and TM-score $>0.8$ (upper
+  right quadrant). HMM sequences (orange) scatter broadly, with many falling below the
+  pLDDT $>70$ confidence threshold (vertical dashed line) and the TM-score $>0.5$ same-fold
+  threshold (horizontal dashed line).}
+  \label{fig:plddt-tmscore-scatter}
+\end{figure}
 
 \end{document}

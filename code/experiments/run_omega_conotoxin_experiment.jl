@@ -208,74 +208,67 @@ q_strong = report_quality(gen_strong_seqs, gen_strong_pca, X̂_strong, stored_st
 # ══════════════════════════════════════════════════════════════════════════════
 @info "\nStep 8: Generating figures"
 
-# --- Figure 1: Tyr (pharmacophore) inheritance bar chart ---
-valid_results = filter(!isnothing, results)
-if !isempty(valid_results)
-    labels    = [r.label for r in valid_results]
-    frac_tyrs = [r.frac_tyr for r in valid_results]
-    colors    = [:steelblue, :steelblue, :darkorange, :crimson]
-
-    p1 = bar(labels, frac_tyrs;
-        ylabel="Fraction Tyr at pharmacophore position",
-        title="Cav2.2 Pharmacophore (Tyr) Inheritance",
-        legend=false, bar_width=0.6,
-        fillcolor=colors[1:length(frac_tyrs)],
-        ylim=(0, 1.05), size=(850, 420), margin=12Plots.mm,
-        xrotation=15)
-    hline!([0.5]; linestyle=:dash, color=:gray, label="")
-
-    savefig(p1, joinpath(FIG_DIR, "tyr_pharmacophore_inheritance.pdf"))
-    savefig(p1, joinpath(FIG_DIR, "tyr_pharmacophore_inheritance.png"))
-    @info "  Saved tyr_pharmacophore_inheritance.{pdf,png}"
-end
-
-# --- Figure 2: Basic residue fraction (electrostatic complementarity) ---
-if !isempty(valid_results)
-    frac_basics = [r.frac_basic for r in valid_results]
-    labels      = [r.label for r in valid_results]
-    colors      = [:steelblue, :steelblue, :darkorange, :crimson]
-
-    p2 = bar(labels, frac_basics;
-        ylabel="Fraction basic residues (K+R)",
-        title="Electrostatic Complementarity — Basic Residue Fraction",
-        legend=false, bar_width=0.6,
-        fillcolor=colors[1:length(frac_basics)],
-        size=(850, 420), margin=12Plots.mm,
-        xrotation=15)
-
-    savefig(p2, joinpath(FIG_DIR, "basic_residue_fraction.pdf"))
-    savefig(p2, joinpath(FIG_DIR, "basic_residue_fraction.png"))
-    @info "  Saved basic_residue_fraction.{pdf,png}"
-end
-
-# --- Figure 3: Binding loop heatmaps (per-position AA composition) ---
-function plot_loop_heatmap(seqs, label, loop, fig_name, fig_dir)
+# --- Helper: compute loop frequency matrix ---
+function loop_freq_matrix(seqs, loop)
     isempty(seqs) && return nothing
     L_max = maximum(length(s) for s in seqs)
     loop_clipped = filter(p -> p <= L_max, loop)
     isempty(loop_clipped) && return nothing
-
     freq = aa_freq_matrix(seqs, maximum(loop_clipped))
-    loop_freq = freq[:, loop_clipped]
-
-    p = heatmap(1:length(loop_clipped), 1:N_AA, loop_freq;
-        xticks=(1:length(loop_clipped), string.(loop_clipped)),
-        yticks=(1:N_AA, string.(AA_ALPHABET)),
-        xlabel="Alignment position (binding loop)",
-        ylabel="Amino acid",
-        title="$label",
-        color=:YlOrRd, clims=(0, 1), size=(620, 520))
-
-    savefig(p, joinpath(fig_dir, "$(fig_name).pdf"))
-    savefig(p, joinpath(fig_dir, "$(fig_name).png"))
-    @info "  Saved $(fig_name).{pdf,png}"
-    return p
+    return freq[:, loop_clipped], loop_clipped
 end
 
-plot_loop_heatmap(stored_full,   "Input: Full family",        loop_full,   "loop_input_full",      FIG_DIR)
-plot_loop_heatmap(stored_strong, "Input: Strong binders",     loop_strong, "loop_input_strong",    FIG_DIR)
-plot_loop_heatmap(gen_full_seqs,   "Generated: Full-seeded",  loop_full,   "loop_gen_full",        FIG_DIR)
-plot_loop_heatmap(gen_strong_seqs, "Generated: Strong-seeded",loop_strong, "loop_gen_strong",      FIG_DIR)
+# --- Redesigned Figure: Binding-loop heatmap with residual ---
+# Panel (a): Input strong binder heatmap (reference)
+# Panel (b): Residual (Generated − Input) with diverging colormap
+@info "  Generating redesigned heatmap + residual figure"
+
+freq_input_strong, loop_s   = loop_freq_matrix(stored_strong, loop_strong)
+freq_gen_strong, _          = loop_freq_matrix(gen_strong_seqs, loop_strong)
+freq_input_full, loop_f     = loop_freq_matrix(stored_full, loop_full)
+freq_gen_full, _            = loop_freq_matrix(gen_full_seqs, loop_full)
+
+# Panel (a): Strong binder input
+pa = heatmap(1:length(loop_s), 1:N_AA, freq_input_strong;
+    xticks=(1:length(loop_s), string.(loop_s)),
+    yticks=(1:N_AA, string.(AA_ALPHABET)),
+    xlabel="Position", ylabel="Amino acid",
+    title="(a) Input: strong Cav2.2 binders (n=23)",
+    color=:YlOrRd, clims=(0, 1), colorbar_title="Frequency")
+
+# Panel (b): Strong residual (generated - input)
+residual_strong = freq_gen_strong .- freq_input_strong
+max_res = max(maximum(abs.(residual_strong)), 0.15)  # floor at 0.15 for scale
+pb = heatmap(1:length(loop_s), 1:N_AA, residual_strong;
+    xticks=(1:length(loop_s), string.(loop_s)),
+    yticks=(1:N_AA, string.(AA_ALPHABET)),
+    xlabel="Position", ylabel="Amino acid",
+    title="(b) Δ: generated − input (strong-seeded)",
+    color=:RdBu, clims=(-max_res, max_res), colorbar_title="Δ freq")
+
+# Panel (c): Full family input
+pc = heatmap(1:length(loop_f), 1:N_AA, freq_input_full;
+    xticks=(1:length(loop_f), string.(loop_f)),
+    yticks=(1:N_AA, string.(AA_ALPHABET)),
+    xlabel="Position", ylabel="Amino acid",
+    title="(c) Input: full O-superfamily (n=74)",
+    color=:YlOrRd, clims=(0, 1), colorbar_title="Frequency")
+
+# Panel (d): Full family residual (generated - input)
+residual_full = freq_gen_full .- freq_input_full
+max_res_f = max(maximum(abs.(residual_full)), 0.15)
+pd = heatmap(1:length(loop_f), 1:N_AA, residual_full;
+    xticks=(1:length(loop_f), string.(loop_f)),
+    yticks=(1:N_AA, string.(AA_ALPHABET)),
+    xlabel="Position", ylabel="Amino acid",
+    title="(d) Δ: generated − input (full-seeded)",
+    color=:RdBu, clims=(-max_res_f, max_res_f), colorbar_title="Δ freq")
+
+p_combined = plot(pa, pb, pc, pd; layout=(2, 2), size=(1100, 900), dpi=300,
+    margin=5Plots.mm)
+savefig(p_combined, joinpath(FIG_DIR, "loop_heatmap_with_residuals.pdf"))
+savefig(p_combined, joinpath(FIG_DIR, "loop_heatmap_with_residuals.png"))
+@info "  Saved loop_heatmap_with_residuals.{pdf,png}"
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Step 9: Save generated sequences

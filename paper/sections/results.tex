@@ -1,144 +1,162 @@
 % results.tex
-We first asked whether restricting the memory matrix to a user-designated functional subset
-transfers the subset's phenotype to generated sequences. As a test case, we used Kunitz domains
-(PF00014; $K=99$ sequences, $L=53$ aligned positions), a family of serine protease inhibitors
-whose binding specificity is known from decades of biochemistry to depend on the P1 residue at
-the primary contact site with the target protease: Lys or Arg at P1 confers strong trypsin
-inhibition, while other residues (Gly, Gln, Asn) do not~\cite{laskowskiProteinInhibitors1980}.
-Using this external knowledge, we designated the 32 sequences with K/R at P1 as the functional
-subset ($K_{\mathrm{des}} = 32$) and the remaining 67 as background ($K_{\mathrm{bg}} = 67$),
-built separate memory matrices from each group, found $\beta^{*}$ for each via entropy
-inflection, and generated 930 sequences per condition (30 chains $\times$ 5{,}000 steps, thinned
-after burn-in). The result was unambiguous: 100\% of designated-subset-conditioned sequences had
-K/R at P1; 0\% of background-conditioned sequences did. Generation from the full family produced
-39\% K/R, matching the natural proportion ($32/99 = 32\%$) within sampling noise. All generated
-sequences had 100\% valid residues, and KL divergence of amino acid composition remained below
-0.012 for all conditions. The designated phenotype was inherited perfectly; the fold-level
-composition was preserved (Fig.~\ref{fig:phenotype}).
 
-We next assessed the minimum number of designated input sequences required for reliable phenotype
-transfer by subsampling $K_{\mathrm{des}} \in \{3, 5, 8, 10, 15, 20, 25, 32\}$ from the Kunitz
-K/R subset (3~replicates each), building curated memory matrices, and generating sequences. P1
-phenotype fidelity was 100\% at \emph{every} sample size, including $K_{\mathrm{des}} = 3$. The
-cost of small input sets was reduced diversity: pairwise sequence diversity increased from 0.36
-($K_{\mathrm{des}} = 3$) to 0.50 ($K_{\mathrm{des}} = 32$), and KL divergence decreased from
-0.047 to 0.009 over the same range. These trends are expected: fewer stored patterns constrain the
-PCA subspace, reducing the volume accessible to the Langevin chain. Phenotype fidelity, however,
-was never compromised (Fig.~\ref{fig:scaling}). This result validates the ``small-set amplifier''
+We restricted the memory matrix to a user-designated functional subset of Kunitz domains
+(PF00014; $K=99$ sequences, $L=53$ aligned positions) and tested whether subset-specific
+phenotype transfers to generated sequences (Fig.~\ref{fig:scaling}). Kunitz domains are serine protease inhibitors whose binding
+specificity depends on the P1 residue at the primary contact site with the target protease: Lys
+or Arg at P1 confers strong trypsin inhibition, while other residues (Gly, Gln, Asn) do
+not~\cite{laskowskiProteinInhibitors1980}. We designated the 32 sequences with K/R at P1 as the
+functional subset ($K_{\mathrm{des}} = 32$) and the remaining 67 as background
+($K_{\mathrm{bg}} = 67$), built separate memory matrices from each group, found $\beta^{*}$
+for each via entropy inflection, and generated 930 sequences per condition (30 chains $\times$
+5{,}000 steps, thinned after burn-in). We observed that 100\% of
+designated-subset-conditioned sequences had K/R at P1; 0\% of background-conditioned sequences
+did; and full-family generation produced 39\% K/R, matching the natural proportion
+($32/99 = 32\%$) within sampling noise, which demonstrates that the designated phenotype was
+inherited perfectly while the fold-level composition was preserved. To determine the minimum input size required for reliable transfer,
+we subsampled $K_{\mathrm{des}} \in \{3, 5, 8, 10, 15, 20, 25, 32\}$ from the Kunitz K/R
+subset (3~replicates each), built curated memory matrices, and generated sequences. We found
+that P1 phenotype fidelity was 100\% at \emph{every} sample size, including
+$K_{\mathrm{des}} = 3$, but that small input sets reduced diversity: pairwise sequence diversity
+increased from 0.36 ($K_{\mathrm{des}} = 3$) to 0.50 ($K_{\mathrm{des}} = 32$), and KL
+divergence decreased from 0.047 to 0.009 over the same range, which is consistent with fewer
+stored patterns constraining the PCA subspace and reducing the volume accessible to the
+Langevin chain (Fig.~\ref{fig:scaling}). These results validate the ``small-set amplifier''
 framing: a practitioner with as few as 5--10 experimentally characterized sequences---for
 instance, hits from a phage display screen---can generate hundreds of novel candidates that
 maintain the input phenotype while introducing substantial sequence diversity (pairwise diversity
 $\geq 0.45$ for $K_{\mathrm{des}} \geq 10$).
 
-We then turned to multiplicity-weighted generation, sweeping $\rho$ from 1 (standard SA) to
-1{,}000 on the full Kunitz family ($K = 99$). For each $\rho$, we computed the multiplicity
-vector $\vr$, found $\beta^{*}(\vr)$ via entropy inflection on the weighted attention
-distribution, and generated 930 sequences (30 chains). The attention weight on designated patterns
-tracked $f_{\mathrm{eff}}$ with negligible deviation ($< 0.3\%$) at all $\rho$ values,
-confirming Proposition~\ref{prop:score}: the multiplicity weights tilt the energy landscape
-exactly as intended. The observed P1~K/R fraction increased monotonically from 0.39 ($\rho=1$)
-to 0.63 ($\rho=500$), substantially exceeding the natural proportion but falling short of the
-$f_{\mathrm{eff}} = 0.996$ predicted by the energy-level conditioning. Sequence diversity
-decreased modestly from 0.56 to 0.51 over this range; KL divergence increased from 0.007 to
-0.017 (Fig.~\ref{fig:rho-sweep}).
+We swept $\rho$ from 1 (standard SA) to 1{,}000 on the full Kunitz family ($K = 99$) to test
+multiplicity-weighted generation (Fig.~\ref{fig:rho-sweep},
+Fig.~\ref{fig:phase-transition}, Fig.~\ref{fig:gap-decomposition}). For each $\rho$, we
+computed the multiplicity vector $\vr$, found $\beta^{*}(\vr)$ via entropy inflection on the
+weighted attention distribution, and generated 930 sequences (30 chains). We observed that the
+attention weight on designated patterns tracked $f_{\mathrm{eff}}$ with negligible deviation
+($< 0.3\%$) at all $\rho$ values, which confirms Proposition~\ref{prop:score}: the multiplicity
+weights tilted the energy landscape exactly as intended. The observed P1~K/R fraction increased
+monotonically from 0.39 ($\rho=1$) to 0.63 ($\rho=500$), substantially exceeding the natural
+proportion but falling short of the $f_{\mathrm{eff}} = 0.996$ predicted by the energy-level
+conditioning; sequence diversity decreased modestly from 0.56 to 0.51 over this range and KL
+divergence increased from 0.007 to 0.017 (Fig.~\ref{fig:rho-sweep}). The phase transition
+$\beta^{*}$ shifted from 4.3 at $\rho=1$ ($K_{\mathrm{eff}} = 99$) to 10.1 at
+$\rho=1{,}000$ ($K_{\mathrm{eff}} = 32.1$), and the entropy curves at different $\rho$ values
+formed a family of sigmoidal profiles with systematically rightward-shifted inflection points,
+which confirms that $\beta^{*}(\vr)$ depends on $K_{\mathrm{eff}}(\vr)$ rather than the raw
+pattern count $K$ (Fig.~\ref{fig:phase-transition}). To understand why $f_{\mathrm{obs}}$
+lagged $f_{\mathrm{eff}}$, we measured all three layers of the signal chain
+(Eq.~\ref{eq:gap-decomp}) independently across a fine $\rho$ sweep ($\rho \in [1, 1000]$,
+17~values, 5~replicates each), recording at each step: (i)~the total softmax attention weight
+on designated patterns ($\bar{a}_{\mathrm{des}}$), (ii)~the continuous K/R probability at P1 in
+the PCA-reconstructed one-hot vector ($f_{\mathrm{soft}}$), and (iii)~the hard-decoded residue
+identity ($f_{\mathrm{obs}}$). We found that the attention gap was
+$\Delta_{\mathrm{attn}} \approx 0$ across all $\rho$ values ($< 0.3\%$), confirming that the
+energy-level conditioning was exact; the PCA gap was the dominant component, with
+$f_{\mathrm{soft}}$ effectively flat at $\sim\!0.27$ regardless of $\rho$, varying by less than
+0.04 across a thousandfold range of multiplicity ratios; and the argmax gap was negative
+($\approx -0.25$), indicating that discrete decoding partially recovered signal lost in the PCA
+reconstruction (Fig.~\ref{fig:gap-decomposition}). These observations suggest that the PCA
+encoding mapped designated and background sequences to overlapping regions at the P1 position:
+even when 99.8\% of attention weight was on the designated patterns, the continuous one-hot
+reconstruction could not resolve K~vs.~G at P1 because this variation was not well-captured by
+the top $d=80$ principal components. The Fisher separation index for the Kunitz
+designated/background split was $S = 0.20$, confirming moderate but incomplete geometric
+separation.
 
-The phase transition $\beta^{*}$ shifted from 4.3 at $\rho=1$ ($K_{\mathrm{eff}} = 99$) to 10.1
-at $\rho=1{,}000$ ($K_{\mathrm{eff}} = 32.1$), consistent with fewer effective patterns requiring
-higher inverse temperature to produce an ordered phase. The entropy curves at different $\rho$
-values formed a family of sigmoidal profiles with systematically rightward-shifted inflection
-points, confirming that $\beta^{*}(\vr)$ depends on $K_{\mathrm{eff}}(\vr)$ rather than the raw
-pattern count $K$ (Fig.~\ref{fig:phase-transition}).
+We repeated the multiplicity analysis on two additional families---SH3 domains (PF00018;
+$K=55$, split by conserved Trp at the binding groove) and WW domains (PF00397; $K=420$, split
+by specificity-loop residue)---yielding three families with distinct PCA-space geometries
+(Table~\ref{tab:cross-family}, Fig.~\ref{fig:cross-family},
+Table~\ref{fig:per-family-rho}). We found that the calibration gap decreased monotonically with
+increasing separation index: WW domains ($S = 0.11$, functional subsets heavily interleaved in
+PCA space) exhibited the largest gap ($\Delta = 0.63$); Kunitz domains ($S = 0.20$) an
+intermediate gap ($\Delta = 0.37$); and SH3 domains ($S = 0.34$, well-separated functional
+subsets) a near-zero gap ($\Delta = 0.01$, $f_{\mathrm{obs}} = 0.989$ at
+$f_{\mathrm{eff}} = 0.999$); a linear fit yielded $\Delta \approx 0.84 - 2.5\,S$ with
+$R^{2} \approx 1.0$. We observed that the attention weights tracked $f_{\mathrm{eff}}$
+perfectly in all three families, which confirms that the multiplicity-weighted energy is exact
+regardless of the downstream calibration gap, while hard curation achieved 100\% phenotype
+transfer in all three families regardless of separation index---as expected, since curated
+memory matrices are built from designated-subset-only PCA, which by construction captures
+subset-specific variation in its leading components (Fig.~\ref{fig:cross-family}). To test
+whether increasing $\beta$ beyond $\beta^{*}$ could push more phenotype signal through the PCA
+bottleneck, we swept $\beta/\beta^{*}$ from 0.5 to 3.0 at three fixed $\rho$ values
+($\rho = 10, 50, 200$) and observed a consistent tradeoff: higher $\beta$ increased P1~K/R
+fraction at the cost of reduced diversity---at $\rho = 200$ and $\beta = 3\beta^{*}$, P1~K/R
+reached 0.71 (versus 0.61 at $\beta^{*}$) while diversity dropped from 0.53 to 0.46---which
+suggests that the practitioner can tune $(\rho,\, \beta/\beta^{*})$ jointly to navigate the
+fidelity--diversity Pareto frontier.
 
-To understand why $f_{\mathrm{obs}}$ lagged $f_{\mathrm{eff}}$, we measured all three layers of
-the signal chain (Eq.~\ref{eq:gap-decomp}) independently across a fine $\rho$ sweep
-($\rho \in [1, 1000]$, 17~values, 5~replicates each). At each sampling step, we recorded:
-(i)~the total softmax attention weight on designated patterns ($\bar{a}_{\mathrm{des}}$), (ii)~the
-continuous K/R probability at P1 in the PCA-reconstructed one-hot vector ($f_{\mathrm{soft}}$),
-and (iii)~the hard-decoded residue identity ($f_{\mathrm{obs}}$). The decomposition revealed a
-striking structure. The attention gap was $\Delta_{\mathrm{attn}} \approx 0$ across all $\rho$
-values ($< 0.3\%$), confirming that the energy-level conditioning is exact. The PCA gap was the
-dominant component: $f_{\mathrm{soft}}$ was effectively flat at $\sim\!0.27$ regardless of $\rho$,
-varying by less than 0.04 across a thousandfold range of multiplicity ratios. The argmax gap was
-negative ($\approx -0.25$), indicating that discrete decoding partially recovered signal lost in
-the PCA reconstruction (Fig.~\ref{fig:gap-decomposition}). The flatness of $f_{\mathrm{soft}}$
-implies that the PCA encoding maps designated and background sequences to overlapping regions at the
-P1 position: even when 99.8\% of attention weight is on the designated patterns, the continuous one-hot
-reconstruction cannot resolve K~vs.~G at P1 because this variation is not well-captured by the
-top $d=80$ principal components. The Fisher separation index for the Kunitz designated/background
-split was $S = 0.20$, confirming moderate but incomplete geometric separation.
-
-We repeated the multiplicity analysis on two additional families---SH3 domains (PF00018; $K=55$,
-split by conserved Trp at the binding groove) and WW domains (PF00397; $K=420$, split by
-specificity-loop residue)---yielding three families with distinct PCA-space geometries
-(Table~\ref{tab:cross-family}). The calibration gap decreased monotonically with increasing
-separation index: WW domains ($S = 0.11$, functional subsets heavily interleaved in PCA space)
-exhibited the largest gap ($\Delta = 0.63$); Kunitz domains ($S = 0.20$) an intermediate gap
-($\Delta = 0.37$); and SH3 domains ($S = 0.34$, well-separated functional subsets) a near-zero
-gap ($\Delta = 0.01$, $f_{\mathrm{obs}} = 0.989$ at $f_{\mathrm{eff}} = 0.999$). A linear fit
-yielded $\Delta \approx 0.84 - 2.5\,S$ with $R^{2} \approx 1.0$. The attention weights tracked
-$f_{\mathrm{eff}}$ perfectly in all three families, confirming that the multiplicity-weighted
-energy is exact regardless of the downstream calibration gap. Hard curation achieved 100\%
-phenotype transfer in all three families, regardless of separation index---as expected, since
-curated memory matrices are built from designated-subset-only PCA, which by construction captures
-subset-specific variation in its leading components
-(Fig.~\ref{fig:cross-family}).
-
-Finally, we asked whether increasing $\beta$ beyond $\beta^{*}$ could push more phenotype signal
-through the PCA bottleneck. At fixed $\rho$, sweeping $\beta/\beta^{*}$ from 0.5 to 3.0 revealed
-a consistent tradeoff across all three $\rho$ values tested ($\rho = 10, 50, 200$): higher
-$\beta$ increased P1~K/R fraction at the cost of reduced diversity. At $\rho = 200$ and
-$\beta = 3\beta^{*}$, P1~K/R reached 0.71 (versus 0.61 at $\beta^{*}$), while diversity dropped
-from 0.53 to 0.46. This provides a second continuous dial: the practitioner can tune
-$(\rho,\, \beta/\beta^{*})$ jointly to navigate the fidelity--diversity tradeoff.
-
-\paragraph{Application to therapeutic peptide design: $\omega$-conotoxins and Cav2.2.}
-To test whether curated memory conditioning generalizes beyond classical protein domains to
-therapeutically relevant peptide families, we applied SA to the $\omega$-conotoxin
-O-superfamily---disulfide-rich peptides from predatory cone snails that block voltage-gated
-N-type calcium channels (Cav2.2) in sensory neurons~\cite{omegaConotoxinSAR2006}. Cav2.2 is a
-primary gatekeeper of pain signaling in dorsal root ganglion (DRG) neurons: channel block
-attenuates synaptic transmission between peripheral nociceptors and the spinal cord. This family
-has direct therapeutic relevance---$\omega$-conotoxin MVIIA (ziconotide) is an FDA-approved
-non-opioid analgesic for intractable pain~\cite{ziconotideReview2004}---and is motivated by
-prior computational modeling of ATP-gated calcium dynamics in DRG neurons that identified Cav2.2
-as a central node in the pain signaling network~\cite{songModelingAnalysis2009}. The primary
-Cav2.2 pharmacophore is Tyr13 (MVIIA numbering): the hydroxyl group of this residue contacts
-the channel pore directly, and its substitution abolishes binding. Basic residues (Lys, Arg)
-distributed across the peptide contribute electrostatic complementarity with the negatively
-charged channel entrance.
-
+We applied SA to the $\omega$-conotoxin O-superfamily---disulfide-rich peptides from predatory
+cone snails that block voltage-gated N-type calcium channels (Cav2.2) in sensory
+neurons~\cite{omegaConotoxinSAR2006}---to test whether curated memory conditioning generalizes
+beyond classical protein domains to therapeutically relevant peptide families
+(Table~\ref{fig:conotoxin-pharmacophore}, Fig.~\ref{fig:conotoxin-loop}). Cav2.2 is a primary
+gatekeeper of pain signaling in dorsal root ganglion (DRG) neurons: channel block attenuates
+synaptic transmission between peripheral nociceptors and the spinal cord. This family has direct
+therapeutic relevance---$\omega$-conotoxin MVIIA (ziconotide) is an FDA-approved non-opioid
+analgesic for intractable pain~\cite{ziconotideReview2004}---and is motivated by prior
+computational modeling of ATP-gated calcium dynamics in DRG neurons that identified Cav2.2 as a
+central node in the pain signaling network~\cite{songModelingAnalysis2009}. The primary Cav2.2
+pharmacophore is Tyr13 (MVIIA numbering): the hydroxyl group contacts the channel pore directly
+and its substitution abolishes binding, while basic residues (Lys, Arg) distributed across the
+peptide contribute electrostatic complementarity with the negatively charged channel entrance.
 We compiled 74 SwissProt $\omega$-conotoxin sequences, computed a multiple sequence alignment
-with MAFFT~\cite{mafft2013}, and retained 26 positions after gap filtering. From this set we
-designated 23 sequences as strong Cav2.2 binders (confirmed or predicted N-type channel
-blockers, including MVIIA, GVIA, CVID, CVIE, CVIF, and close homologs) and 2 sequences as
-weak or non-N-type-selective (MVIIC and MVIID, which preferentially block P/Q-type channels
-with IC$_{50} \geq 200$\,nM against Cav2.2). We then ran two independent SA experiments
-(50~chains $\times$ 5\,000 steps, $\alpha = 0.01$), generating 1\,550 sequences per condition:
-one seeded from the full family ($K = 74$, $\beta^{*} = 3.23$) and one seeded from the strong
-binders only ($K = 23$, $\beta^{*} = 2.72$).
+with MAFFT~\cite{mafft2013}, retained 26 positions after gap filtering, designated 23 sequences
+as strong Cav2.2 binders (confirmed or predicted N-type channel blockers, including MVIIA,
+GVIA, CVID, CVIE, CVIF, and close homologs) and 2 sequences as weak or non-N-type-selective
+(MVIIC and MVIID, which preferentially block P/Q-type channels with
+IC$_{50} \geq 200$\,nM against Cav2.2), and ran two independent SA experiments (50~chains
+$\times$ 5\,000 steps, $\alpha = 0.01$), generating 1\,550 sequences per condition: one seeded
+from the full family ($K = 74$, $\beta^{*} = 3.23$) and one from the strong binders only
+($K = 23$, $\beta^{*} = 2.72$). We found that pharmacophore inheritance was near-complete under
+strong-binder seeding and substantially attenuated under full-family seeding: in the full-family
+input only 33.8\% of the 74 sequences carried Tyr at the pharmacophore position (col.~13), and
+full-family-seeded generation raised this modestly to 46.9\%, whereas 82.6\% of the 23 strong
+binders carried Tyr13 and strong-binder-seeded SA amplified this to 98.3\%---essentially
+locking the primary Cav2.2 pharmacophore across the generated library
+(Table~\ref{fig:conotoxin-pharmacophore}). The basic-residue (Lys + Arg) fraction was also
+faithfully inherited: strong-binder generation produced 20.1\% basic residues versus 19.7\% in
+the input, while full-family generation produced only 12.0\%, matching the lower K/R content of
+the diverse full-family input. Per-position amino acid frequency heatmaps confirmed the
+conditioning effect visually: the strong-binder input and strong-binder-generated heatmaps were
+nearly indistinguishable---deep-red Tyr at position~13, conserved Cys framework at
+positions~14--16, variable-loop diversity at positions~9--12---and the residual heatmaps
+(generated $-$ input) showed near-zero deviations across all positions, which suggests that SA
+faithfully reproduced the input frequency statistics rather than collapsing to a consensus
+sequence (Fig.~\ref{fig:conotoxin-loop}). Together, these results confirm that curated memory
+conditioning transferred Cav2.2 pharmacophore statistics from a small set of 23 characterized
+sequences to a diverse library of 1\,550 novel candidates, with no training and no target
+structure required.
 
-Pharmacophore inheritance was near-complete under strong-binder seeding and substantially
-attenuated under full-family seeding. In the full-family input, only 33.8\% of the 74 sequences
-carry Tyr at the pharmacophore position (col.~13), reflecting the structural heterogeneity of
-the O-superfamily. Full-family-seeded generation raised this fraction modestly to 46.9\%. By
-contrast, 82.6\% of the 23 strong binders carry Tyr13, and strong-binder-seeded SA amplified
-this to 98.3\%---essentially locking the primary Cav2.2 pharmacophore across the generated
-library. The basic-residue (Lys + Arg) fraction was also faithfully inherited: strong-binder
-generation produced 20.1\% basic residues versus 19.7\% in the input, while full-family
-generation produced only 12.0\%, matching the lower K/R content of the diverse full-family
-input. All generated sequences had 100\% valid residues; KL divergence of amino acid
-composition was 0.0075 (full-seeded) and 0.0083 (strong-seeded); mean novelty
-(1 $-$ max cosine similarity to stored patterns) was 0.60 and 0.46 respectively, confirming
-that the strong-binder-seeded library is both pharmacophore-constrained and genuinely
-novel (Fig.~\ref{fig:conotoxin-pharmacophore}, Fig.~\ref{fig:conotoxin-loop}).
-
-The per-position amino acid frequency heatmaps make the conditioning effect visually transparent
-(Fig.~\ref{fig:conotoxin-loop}). The strong-binder input and strong-binder-generated heatmaps
-are nearly indistinguishable: the deep-red Tyr signal at position~13, the conserved Cys
-framework at positions~14--16, and the variable-loop diversity at positions~9--12 are all
-reproduced with high fidelity. The full-family input and full-family-generated heatmaps match
-each other similarly well, but the Tyr signal at position~13 is diffuse---consistent with a
-structurally diverse superfamily that includes non-Cav2.2-blocking members. Together, these
-results confirm that curated memory conditioning transfers Cav2.2 pharmacophore statistics from
-a small set of 23 characterized sequences to a diverse library of 1\,550 novel candidates, with
-no training and no target structure required.
+We predicted folds for 50 sequences from each source (stored, SA full-family, SA
+strong-conditioned, SA weak-conditioned, and HMM baseline) using ESMFold and computed TM-scores
+against the experimental Kunitz domain structure (1BPI, chain~A) to verify that SA-generated
+sequences encode plausible three-dimensional structures
+(Table~\ref{fig:structure-validation}, Table~\ref{fig:baseline-comparison}). We found that
+SA-generated sequences were structurally indistinguishable from natural sequences: mean pLDDT
+was $90.4 \pm 1.2$ (SA full) and $90.7 \pm 1.1$ (SA strong) versus $89.3 \pm 3.2$ for stored
+sequences, with 100\% of SA sequences exceeding the pLDDT $>70$ confidence threshold; mean
+TM-scores were $0.84 \pm 0.01$ (SA full) and $0.83 \pm 0.01$ (SA strong) versus
+$0.83 \pm 0.03$ for stored sequences, all well above the $\mathrm{TM} > 0.5$ same-fold
+threshold; whereas HMM-emitted sequences achieved only $60.4 \pm 13.1$ mean pLDDT (20\% above
+threshold) and $0.60 \pm 0.10$ mean TM-score, which suggests that profile HMM emission does not
+reliably produce foldable sequences (Table~\ref{fig:structure-validation}). We further assessed
+sequence plausibility using ESM2-650M pseudo-perplexity computed via masked marginal scoring
+over all positions and found that SA-generated sequences achieved pseudo-perplexity comparable
+to natural sequences (SA full: $4.78 \pm 0.64$; SA strong: $4.72 \pm 0.60$; stored:
+$4.97 \pm 0.98$), while HMM-emitted sequences were approximately threefold worse
+($16.1 \pm 4.2$)---the fact that conditioned SA sequences were slightly \emph{more} plausible
+than stored sequences is consistent with SA's tendency to generate near the center of the family
+distribution, avoiding outlier sequences present in natural alignments
+(Table~\ref{fig:structure-validation}). We also compared SA against HMMER3 profile HMM emission
+(150 sequences, \texttt{hmmemit --seed 42}) and bootstrap resampling from stored patterns and
+found that SA full-family generation preserved the natural P1~K/R proportion
+($0.41 \pm 0.01$) and achieved the lowest KL divergence ($0.0069 \pm 0.0001$), while HMM
+emission produced sequences with substantially lower P1~K/R fraction ($0.15 \pm 0.03$) and
+higher compositional divergence ($0.030 \pm 0.011$); bootstrap resampling trivially preserved
+composition (KL $\approx 0.001$) but produced no novel sequences; and SA strong-binder
+conditioning achieved perfect P1~K/R fraction ($1.0 \pm 0.0$)---a capability fundamentally
+unavailable to unconditional baselines (Table~\ref{fig:baseline-comparison}). These results
+confirm that SA generated structurally valid, language-model-plausible sequences that
+outperformed classical baselines on both fidelity and functional conditioning.

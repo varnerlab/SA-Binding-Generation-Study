@@ -123,6 +123,13 @@ the inter-class distance to the intra-class spread (see Methods). Kunitz
 ($S=0.20$) shows partial overlap; SH3 ($S=0.34$) shows clear separation; WW ($S=0.11$) shows
 extensive overlap, consistent with the large calibration gap.
 
+\paragraph{pLDDT versus TM-score correlation.}
+Figure~\ref{fig:plddt-tmscore-scatter} shows the joint distribution of ESMFold pLDDT and
+TM-score for all 250 predicted structures. SA-generated sequences cluster tightly in the
+high-pLDDT, high-TM-score region (upper right), while HMM-emitted sequences scatter broadly
+across lower values. The two metrics are positively correlated, confirming
+that ESMFold confidence is a reliable proxy for structural accuracy on this family.
+
 \paragraph{Entropy-curve families across $\rho$.}
 Figure~\ref{fig:phase-transition} in the main text shows entropy curves for five representative
 $\rho$ values on the Kunitz family. The full sweep ($\rho \in \{1, 2, 5, 10, 20, 50, 100, 200,
