@@ -288,7 +288,44 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{table}
 
 % -----------------------------------------------------------------------
-% Fig 7: Binding-loop heatmaps with residuals
+% Table: SAR agreement
+% -----------------------------------------------------------------------
+\begin{table}[t]
+  \caption{\textbf{SA-generated $\omega$-conotoxin sequences preserve experimentally
+  validated binding determinants.}
+  Published structure--activity relationship (SAR) data for $\omega$-conotoxin
+  binding to Cav2.2 identify critical residues whose mutation abolishes or
+  substantially reduces channel block~\cite{kimTyr13Essential1995,satoBasicResidues1993,satoAlaScanMVIIC2000,schroederLys2Effects2012,lewisConotoxinSAR2012,schroederChiralityTyr131999}.
+  For each SAR-critical position, the table reports the fraction of sequences that
+  retain the wild-type residue (or a conservative K/R substitution for basic positions).
+  SA strong-seeded generation preserves the primary pharmacophore (Tyr13: 98.3\%)
+  and all six cysteines ($\geq 97.4\%$), while enriching basic residues at
+  functionally important loop~2 positions relative to the input.}
+  \label{tab:sar-agreement}
+  \centering
+  \small
+  \begin{tabular}{clllccc}
+    \toprule
+    Pos. & WT & Role & Mutation effect & Input & SA strong & SA full \\
+    \midrule
+    13 & Tyr & Primary pharmacophore & Ala: abolishes activity & 0.83 & \textbf{0.98} & 0.47 \\
+    2  & Lys & Loop 2 stabilization  & Ala: 40$\times$ loss (GVIA) & 0.96 & \textbf{0.98} & 0.46 \\
+    10 & Arg & Loop 2 binding        & Critical for interaction & 0.70 & \textbf{0.82} & 0.35 \\
+    11 & Leu & Loop 2 binding        & Critical for interaction & 0.17 & 0.24 & 0.11 \\
+    1  & Cys & Disulfide framework   & Required for fold & 1.00 & \textbf{1.00} & 1.00 \\
+    8  & Cys & Disulfide framework   & Required for fold & 1.00 & \textbf{1.00} & 1.00 \\
+    15 & Cys & Disulfide framework   & Required for fold & 1.00 & \textbf{0.97} & 1.00 \\
+    16 & Cys & Disulfide framework   & Required for fold & 0.87 & \textbf{1.00} & 1.00 \\
+    20 & Cys & Disulfide framework   & Required for fold & 0.70 & \textbf{1.00} & 1.00 \\
+    25 & Cys & Disulfide framework   & Required for fold & 0.52 & \textbf{1.00} & 1.00 \\
+    21 & Arg & Electrostatic          & Ala: reduced potency & 0.44 & \textbf{0.66} & 0.14 \\
+    4  & Lys & P/Q selectivity       & Ala: important for P/Q & 0.52 & \textbf{0.61} & 0.28 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------
+% Fig: Binding-loop heatmaps with residuals
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
@@ -360,6 +397,32 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   collapses diversity not only at the Tyr13 pharmacophore but also at co-varying
   loop residues that contribute to channel binding specificity.}
   \label{fig:conotoxin-sequence-analysis}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Fig: Combined fold superposition (Kunitz + Conotoxin)
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figs/fold_superposition_combined.pdf}
+  \caption{\textbf{SA-generated sequences fold into native-like structures for both
+  protein families.}
+  C$\alpha$ backbone superposition of the highest TM-score SA strong-conditioned
+  sequence (colored by per-residue pLDDT confidence) onto the experimental reference
+  structure (gray, semi-transparent), shown in two orthogonal views.
+  \textbf{(A,\,B)}~Kunitz domain: the SA-generated variant aligns to the BPTI crystal
+  structure (1BPI chain~A) with TM $= 0.94$, reproducing the characteristic double-loop
+  architecture, three-stranded antiparallel $\beta$-sheet, and $\alpha$-helical turn;
+  pLDDT $> 90$ throughout (deep blue) indicates high-confidence prediction.
+  \textbf{(C,\,D)}~$\omega$-Conotoxin: the SA-generated variant aligns to the MVIIA
+  NMR structure (1OMG chain~A) with TM $= 0.53$, consistent with the small peptide
+  length (26 residues) where TM-score normalization is noisy; the cystine-knot
+  topology and loop architecture are visually preserved, with pLDDT $\sim 80$
+  (cyan/green) reflecting the intrinsic flexibility of the inter-cysteine loops.
+  Colorbar: pLDDT confidence scale (red $= 50$, blue $= 100$).
+  Structures predicted by ESMFold~\cite{esmfold2022}; alignment by
+  TM-align~\cite{tmAlign2005}.}
+  \label{fig:fold-superposition}
 \end{figure}
 
 % --- SI Appendix ---

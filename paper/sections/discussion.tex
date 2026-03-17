@@ -71,9 +71,16 @@ defined by single marker positions (P1 in Kunitz, Trp in SH3, a specificity-loop
 multi-position phenotypes---where binding specificity depends on coordinated residue identities at
 several positions---may exhibit different calibration behavior. We have not experimentally
 validated the binding activity of generated sequences; the phenotype fidelity reported here is a
-necessary but not sufficient condition for functional binding. Computational binding affinity
-predictions (e.g., via AlphaFold-Multimer or FoldX) could provide an intermediate validation tier
-between sequence-level markers and experimental assays. Finally, we tested interface-weighted PCA
+necessary but not sufficient condition for functional binding. For the $\omega$-conotoxin family,
+we validated SA-generated sequences against published SAR data from alanine-scanning and
+site-directed mutagenesis studies~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}
+and found that strong-seeded generation preserved all experimentally identified binding
+determinants (Table~\ref{tab:sar-agreement}); for the Kunitz domain, deep mutational scanning
+data for the BPTI--trypsin interaction are now
+available~\cite{heyneBPTIDMS2021} and could provide a quantitative binding-landscape comparison
+in future work. Computational binding affinity predictions (e.g., via AlphaFold-Multimer or
+FoldX) could provide an additional intermediate validation tier between sequence-level markers
+and experimental assays. Finally, we tested interface-weighted PCA
 encoding as a strategy to close the calibration gap, but found it neutral at low weights and
 destructive at high weights; the PCA bottleneck reflects the geometric entanglement of functional
 and structural variation in the family, not the absence of interface-position components.

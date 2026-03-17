@@ -1,18 +1,17 @@
 % appendix.tex -- Supplementary Material
 
-\section{Sequence Encoding, PCA Projection, and Decoding}\label{app:pca}
+\section{Sequence Encoding, PCA Projection, and Multiplicity Conditioning}\label{app:pca}
 
 Stochastic attention (SA) operates on continuous vectors on the unit sphere,
 while protein sequences are discrete objects over a 20-letter amino acid
 alphabet. Bridging the two requires three transformations---one-hot encoding,
 PCA dimensionality reduction, and unit-norm projection---and the reverse path
 (inverse PCA followed by argmax decoding) recovers discrete sequences from
-continuous samples. We describe each step below, define all notation, and then
-discuss how the multiplicity vector $\mathbf{r}$ (the per-pattern weighting
-used for functional conditioning; see Section~\ref{sec:theory}) interacts with
-the PCA representation.
+continuous samples. Here we describe the full encoding--decoding pipeline,
+derive the multiplicity-weighted conditioning formulas used in the main text,
+and discuss how the multiplicity vector $\mathbf{r}$ interacts with the PCA
+representation.
 
-\paragraph{One-hot encoding.}
 Given a cleaned alignment of $K$ sequences, each of length $L$ amino acids
 over the standard 20-letter alphabet
 $\mathcal{A} = \{\text{A}, \text{R}, \text{N}, \ldots, \text{V}\}$, we
@@ -27,194 +26,149 @@ concatenating per-position indicator vectors. For sequence $k$ ($k = 1,
 where $\mathbf{e}_a \in \{0,1\}^{20}$ is the standard basis vector for amino
 acid $a$ (i.e., a one-hot indicator with a 1 in the position corresponding to
 $a$ and 0 elsewhere). The full one-hot dimensionality is
-$d_{\mathrm{full}} = 20L$, which is the total number of coordinates in the
-binary representation. For the four families studied here,
-$d_{\mathrm{full}}$ ranged from 520 ($\omega$-conotoxin, $L{=}26$) to 1{,}060
-(Kunitz, $L{=}53$).
+$d_{\mathrm{full}} = 20L$, which ranged from 520 ($\omega$-conotoxin,
+$L{=}26$) to 1{,}060 (Kunitz, $L{=}53$) across the four families. This space
+is vastly over-dimensioned relative to the number of stored patterns $K$
+($d_{\mathrm{full}}/K$ ranged from 7.0 to 10.7), which creates a problem for
+the modern Hopfield energy~\cite{ramsauerHopfieldNetworksAll2021}: the
+similarity score $e_k = \mathbf{m}_k^\top\boldsymbol{\xi}$ between a stored
+pattern $\mathbf{m}_k$ and a query state $\boldsymbol{\xi}$ has variance
+$1/d$ for a random query on the unit sphere $\mathbb{S}^{d-1}$, so when $d$
+is large all scores concentrate near zero and the inverse temperature $\beta$
+must be set extremely high to differentiate among patterns, making Langevin
+sampling inefficient. PCA removes this redundancy by projecting onto the
+$d \ll d_{\mathrm{full}}$ directions of actual variation in the alignment.
 
-\paragraph{Why dimensionality reduction is necessary.}
-The full one-hot space is vastly over-dimensioned relative to the number of
-stored patterns $K$. The ratio $d_{\mathrm{full}}/K$ ranged from 7.0
-($\omega$-conotoxin, $K{=}74$, $d_{\mathrm{full}}{=}520$) to 10.7 (Kunitz,
-$K{=}99$, $d_{\mathrm{full}}{=}1{,}060$) across the four families. This
-over-dimensioning creates a problem for the modern Hopfield
-energy~\cite{ramsauerHopfieldNetworksAll2021}: the similarity score between a
-stored pattern $\mathbf{m}_k$ (a unit-norm vector representing sequence $k$;
-defined below) and a query state $\boldsymbol{\xi}$ (the current position of
-the Langevin sampler) is the dot product
-$e_k = \mathbf{m}_k^\top\boldsymbol{\xi}$. For a random query drawn uniformly
-from the unit sphere $\mathbb{S}^{d-1}$ (the surface of the $d$-dimensional
-unit ball), these scores have variance $\mathrm{Var}(e_k) = 1/d$. When $d$ is
-large, all scores concentrate near zero and the inverse temperature $\beta$
-(a scalar parameter controlling the sharpness of the softmax attention) must be
-set extremely high to differentiate among patterns, making Langevin sampling
-inefficient. PCA removes this redundancy by projecting onto the $d \ll
-d_{\mathrm{full}}$ directions of actual variation in the alignment.
+We computed PCA from the one-hot encoded alignment by first centering the data:
+$\bar{\mathbf{x}} = K^{-1}\sum_{k=1}^K \mathbf{x}_k$ (the family's
+position-specific amino acid frequency profile),
+$\tilde{\mathbf{X}} = \mathbf{X} - \bar{\mathbf{x}}\mathbf{1}_K^\top$,
+and then computing the economy SVD
+$\tilde{\mathbf{X}} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$, where
+$\mathbf{U} \in \mathbb{R}^{d_{\mathrm{full}} \times r}$ contains the
+principal directions of variation,
+$\boldsymbol{\Sigma} = \mathrm{diag}(\sigma_1, \ldots, \sigma_r)$ the
+singular values in decreasing order, and
+$r = \mathrm{rank}(\tilde{\mathbf{X}}) \leq \min(d_{\mathrm{full}}, K) - 1$.
+We retained the smallest dimension $d$ such that
+$\sum_{j=1}^d \sigma_j^2 / \sum_{j=1}^r \sigma_j^2 \geq 0.95$ (at least
+95\% of total variance). Across the four families, $d$ ranged from 20
+($\omega$-conotoxin) to 186 (WW), yielding compression ratios of
+$3.3\times$ to $26\times$ (Table~\ref{tab:cross-family}). Each sequence was
+then projected as
+$\mathbf{z}_k = \mathbf{W}_d^\top(\mathbf{x}_k - \bar{\mathbf{x}})
+\in \mathbb{R}^d$, where
+$\mathbf{W}_d = \mathbf{U}_{:,1:d}$ is the projection matrix, and
+normalized to unit $L_2$ norm:
+$\mathbf{m}_k = \mathbf{z}_k / \|\mathbf{z}_k\|_2 \in \mathbb{S}^{d-1}$.
+This normalization ensures that similarity scores lie in $[-1, 1]$ and
+prevents patterns with larger PCA norms from dominating the softmax attention.
+The columns $\mathbf{m}_1, \ldots, \mathbf{m}_K$ form the memory matrix
+$\hat{\mathbf{X}} \in \mathbb{R}^{d \times K}$ used throughout the paper.
+The Langevin sampler (Eq.~\ref{eq:ula}) produces continuous states
+$\boldsymbol{\xi} \in \mathbb{R}^d$, which are decoded back to amino acid
+sequences by inverse PCA reconstruction
+$\hat{\mathbf{x}} = \bar{\mathbf{x}} + \mathbf{W}_d\boldsymbol{\xi}
+\in \mathbb{R}^{d_{\mathrm{full}}}$ followed by per-position argmax:
+$a_\ell = \arg\max_{a \in \mathcal{A}}\; \hat{x}_{20(\ell-1) + a}$ for
+$\ell = 1, \ldots, L$. This decoding is deterministic and produced valid
+amino acids at 100\% of positions across all families and conditions.
 
-\paragraph{PCA projection.}
-We computed PCA from the one-hot encoded alignment. Let
-$\mathbf{X} = [\mathbf{x}_1, \ldots, \mathbf{x}_K] \in
-\mathbb{R}^{d_{\mathrm{full}} \times K}$ be the matrix whose columns are the
-one-hot encoded sequences. We first centered the data by subtracting the
-column mean:
-\begin{equation}
-  \bar{\mathbf{x}} = \frac{1}{K}\sum_{k=1}^K \mathbf{x}_k \in
-  \mathbb{R}^{d_{\mathrm{full}}}, \qquad
-  \tilde{\mathbf{X}} = \mathbf{X} - \bar{\mathbf{x}}\mathbf{1}_K^\top,
+The multiplicity-weighted Hopfield energy (Eq.~\ref{eq:weighted-energy})
+assigns a weight $r_k > 0$ to each stored pattern $\mathbf{m}_k$. For the
+binary functional split used throughout this paper, we set $r_k = \rho$ for
+the $K_{\mathrm{des}}$ designated patterns and $r_k = 1$ for the
+$K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ background patterns, where
+$\rho \geq 1$ is the multiplicity ratio. The weighted score function
+(Proposition~\ref{prop:score}) adds $\log\rho$ to the pre-softmax logits of
+designated patterns and $\log 1 = 0$ to background patterns. To derive the
+effect of $\rho$ on the attention distribution, consider the idealized case
+where the query $\boldsymbol{\xi}$ has equal similarity to all stored
+patterns, i.e., $\mathbf{m}_k^\top\boldsymbol{\xi} = c$ for all $k$. The
+softmax attention weight on pattern $k$ simplifies to
+$a_k = r_k / \sum_{j} r_j$, and the total attention weight on all designated
+patterns is:
+\begin{equation}\label{eq:feff-def}
+  f_{\mathrm{eff}}(\rho)
+  \;=\; \sum_{k \in \mathrm{des}} a_k
+  \;=\; \frac{K_{\mathrm{des}}\,\rho}{K_{\mathrm{des}}\,\rho + K_{\mathrm{bg}}}.
 \end{equation}
-where $\bar{\mathbf{x}}$ is the mean one-hot vector (i.e., the family's
-position-specific amino acid frequency profile) and $\mathbf{1}_K$ is the
-$K$-vector of ones. We then computed the economy singular value decomposition
-(SVD):
-\begin{equation}
-  \tilde{\mathbf{X}} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top,
-\end{equation}
-where $\mathbf{U} \in \mathbb{R}^{d_{\mathrm{full}} \times r}$ contains the
-left singular vectors (the principal directions of variation in
-one-hot space), $\boldsymbol{\Sigma} = \mathrm{diag}(\sigma_1, \ldots,
-\sigma_r)$ contains the singular values in decreasing order
-($\sigma_1 \geq \cdots \geq \sigma_r > 0$),
-$\mathbf{V} \in \mathbb{R}^{K \times r}$ contains the right singular vectors,
-and $r = \mathrm{rank}(\tilde{\mathbf{X}}) \leq \min(d_{\mathrm{full}}, K) - 1$
-is the rank of the centered data matrix. The fraction of total variance
-explained by the first $p$ principal components is:
-\begin{equation}
-  \rho_{\mathrm{var}}(p) = \frac{\sum_{j=1}^p \sigma_j^2}{\sum_{j=1}^r \sigma_j^2}.
-\end{equation}
-We selected the retained PCA dimension $d$ as the smallest integer $p$ such
-that $\rho_{\mathrm{var}}(p) \geq 0.95$, i.e., retaining at least 95\% of
-the total variance. Across the four families, $d$ ranged from 20
-($\omega$-conotoxin) to 186 (WW), yielding compression ratios
-$d_{\mathrm{full}}/d$ of $3.3\times$ (WW) to $26\times$
-($\omega$-conotoxin) (Table~\ref{tab:cross-family}). The projection matrix is
-$\mathbf{W}_d = \mathbf{U}_{:,1:d} \in
-\mathbb{R}^{d_{\mathrm{full}} \times d}$ (the first $d$ columns of
-$\mathbf{U}$), and each sequence is projected as:
-\begin{equation}
-  \mathbf{z}_k = \mathbf{W}_d^\top(\mathbf{x}_k - \bar{\mathbf{x}}) \in \mathbb{R}^d,
-\end{equation}
-where $\mathbf{z}_k$ is the PCA-reduced representation of sequence $k$.
+At $\rho = 1$, $f_{\mathrm{eff}} = K_{\mathrm{des}} / K$ (the natural
+proportion); as $\rho \to \infty$, $f_{\mathrm{eff}} \to 1$. To find the
+multiplicity ratio needed for a target effective fraction $f \in (0, 1)$, we
+invert Eq.~\eqref{eq:feff-def} by multiplying both sides by the denominator
+and solving for $\rho$:
+\begin{align}
+  f\,(K_{\mathrm{des}}\,\rho + K_{\mathrm{bg}}) &= K_{\mathrm{des}}\,\rho,
+  \notag\\
+  f\,K_{\mathrm{bg}} &= K_{\mathrm{des}}\,\rho\,(1 - f), \notag\\
+  \rho(f) &= \frac{f\,K_{\mathrm{bg}}}{K_{\mathrm{des}}\,(1-f)}.
+  \label{eq:rho-inverse-derived}
+\end{align}
+This is Eq.~\eqref{eq:rho-inverse} in the main text. The formula is exact
+under the equal-similarity assumption; in practice, we confirmed empirically
+that the mean attention weight on designated patterns tracked
+$f_{\mathrm{eff}}(\rho)$ with $< 0.3\%$ deviation across all $\rho$ values
+and all families (Table~\ref{fig:per-family-rho}), validating the
+approximation as operationally exact. The effective number of patterns under
+multiplicity weighting,
+$K_{\mathrm{eff}}(\mathbf{r}) = (\sum_k r_k)^2 / \sum_k r_k^2
+= (K_{\mathrm{des}}\,\rho + K_{\mathrm{bg}})^2 /
+(K_{\mathrm{des}}\,\rho^2 + K_{\mathrm{bg}})$, equals $K$ when $\rho = 1$
+and converges to $K_{\mathrm{des}}$ as $\rho \to \infty$; this quantity
+governs the shift in the phase transition temperature $\beta^{*}$.
 
-\paragraph{Unit-norm projection.}
-After PCA, we normalized each projected vector to unit $L_2$ norm:
-\begin{equation}
-  \mathbf{m}_k = \frac{\mathbf{z}_k}{\|\mathbf{z}_k\|_2} \in \mathbb{S}^{d-1},
-\end{equation}
-where $\mathbb{S}^{d-1} = \{\mathbf{v} \in \mathbb{R}^d : \|\mathbf{v}\|_2 = 1\}$
-is the $(d{-}1)$-dimensional unit sphere. This normalization ensures that
-similarity scores $e_k = \mathbf{m}_k^\top\boldsymbol{\xi}$ lie in $[-1, 1]$
-and that the concentration-of-measure result $\mathrm{Var}(e_k) = 1/d$ holds
-for random queries. It also prevents patterns with larger PCA norms (sequences
-that deviate more from the family mean) from dominating the softmax attention
-weights by virtue of their norm rather than their direction. The columns
-$\mathbf{m}_1, \ldots, \mathbf{m}_K$ form the memory matrix
-$\hat{\mathbf{X}} = [\mathbf{m}_1, \ldots, \mathbf{m}_K]
-\in \mathbb{R}^{d \times K}$ used throughout the paper.
+A key property of multiplicity-weighted conditioning is that $\mathbf{r}$
+does \emph{not} alter the PCA encoding. The memory matrix
+$\hat{\mathbf{X}}$ is constructed once from the full family alignment and
+remains fixed regardless of $\rho$; the multiplicity weights enter only
+through the softmax logits. This separation has three consequences.
+First, the PCA subspace is independent of $\rho$: the principal directions
+$\mathbf{W}_d$, the centering vector $\bar{\mathbf{x}}$, and the retained
+dimension $d$ are all determined by the alignment alone, so the calibration
+gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$ is identical for all
+$\rho$ values on a given family. Second, $\rho$ controls attention, not
+geometry: increasing $\rho$ adds $\log\rho$ to the designated logits, shifting
+attention weight toward designated patterns, but this shift must still pass
+through the PCA reconstruction and argmax decoding to produce discrete
+residues, which is where the calibration gap arises. Third, $\rho$ shifts the
+phase transition: the logit biases pre-concentrate the attention distribution
+at $\beta = 0$, reducing the weighted entropy to
+$H_{\mathbf{r}}(0) = \log K_{\mathrm{eff}}(\mathbf{r}) < \log K$, so
+reaching the retrieval-phase inflection requires a higher inverse temperature
+$\beta^{*}(\rho) \geq \beta^{*}(1)$. We observed this empirically:
+$\beta^{*}$ increased from 4.3 ($\rho=1$, $K_{\mathrm{eff}} = 99$) to 10.1
+($\rho=1{,}000$, $K_{\mathrm{eff}} = 32.1$) on the Kunitz domain
+(Fig.~\ref{fig:phase-transition}). By contrast, hard curation---where the
+memory matrix is built from the designated subset only---\emph{does} change
+the PCA: the centering vector, principal directions, and retained dimension
+are all computed from $K_{\mathrm{des}}$ sequences, capturing
+subset-specific variation that may be orthogonal to the leading components
+of the full-family PCA. This is why hard curation achieved 100\% phenotype
+transfer regardless of the Fisher separation index $S$, while multiplicity
+weighting was limited by the full-family PCA geometry.
 
-\paragraph{Decoding: from continuous samples to amino acid sequences.}
-The Langevin sampler (Eq.~\ref{eq:ula}) produces continuous state vectors
-$\boldsymbol{\xi} \in \mathbb{R}^d$ in the $d$-dimensional PCA space. To
-decode a sample back to an amino acid sequence, we applied two steps. First,
-inverse PCA reconstruction maps from PCA space back to the full one-hot space:
-\begin{equation}
-  \hat{\mathbf{x}} = \bar{\mathbf{x}} + \mathbf{W}_d\boldsymbol{\xi}
-  \in \mathbb{R}^{d_{\mathrm{full}}},
-\end{equation}
-where $\hat{\mathbf{x}}$ is a continuous vector that approximates a one-hot
-encoding but is not exactly binary. Second, per-position argmax decoding
-assigns the amino acid with the largest coordinate at each alignment position:
-\begin{equation}
-  a_\ell = \arg\max_{a \in \mathcal{A}}\; \hat{x}_{20(\ell-1) + a},
-  \qquad \ell = 1, \ldots, L.
-\end{equation}
-This decoding is deterministic and produces a valid amino acid at every
-position. In practice, 100\% of decoded positions yielded standard amino acids
-across all four families and all conditions tested.
+\section{Supplementary Tables and Figures}\label{app:tables-figures}
 
-\paragraph{Effect of the multiplicity vector $\mathbf{r}$ on the PCA
-representation.}
-A key property of multiplicity-weighted conditioning is that the multiplicity
-vector $\mathbf{r} = (r_1, \ldots, r_K)^\top$ (where $r_k > 0$ is the weight
-assigned to stored pattern $k$; see Section~\ref{sec:theory}) does \emph{not}
-alter the PCA encoding. The memory matrix $\hat{\mathbf{X}}$ is constructed
-once from the full family alignment and remains fixed regardless of the
-multiplicity ratio $\rho = r_{\mathrm{des}}/r_{\mathrm{bg}}$ (the ratio of
-weights assigned to designated versus background patterns). The multiplicity
-weights enter only through the softmax logits: the weighted score function is
-\begin{equation}
-  \nabla_{\boldsymbol{\xi}}\log p_{\mathbf{r}}(\boldsymbol{\xi})
-  = \hat{\mathbf{X}}\,\mathrm{softmax}(\beta\,\hat{\mathbf{X}}^\top
-  \boldsymbol{\xi} + \log\mathbf{r}) - \boldsymbol{\xi},
-\end{equation}
-where $\log\mathbf{r} = (\log r_1, \ldots, \log r_K)^\top$ is the
-elementwise log-multiplicity vector that is added to the pre-softmax logits
-(Proposition~\ref{prop:score}). This separation of PCA encoding from
-multiplicity weighting has three consequences:
-
-\begin{enumerate}
-  \item \textbf{The PCA subspace is independent of $\rho$.}
-  The principal directions $\mathbf{W}_d$, the centering vector
-  $\bar{\mathbf{x}}$, and the retained dimension $d$ are all determined by the
-  alignment alone. Changing $\rho$ does not add, remove, or reweight any
-  principal component. This means the decoding pipeline---and hence the
-  calibration gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$ (the
-  difference between the intended and observed phenotype fraction; see
-  Section~\ref{sec:gap})---is identical for all $\rho$ values on a given
-  family.
-
-  \item \textbf{$\rho$ controls attention, not geometry.}
-  Increasing $\rho$ shifts attention weight toward designated patterns by
-  adding $\log\rho$ to their pre-softmax logits. We confirmed empirically that
-  the mean attention weight on designated patterns
-  $\bar{a}_{\mathrm{des}}$ (the average fraction of the softmax probability
-  mass assigned to designated patterns during sampling) tracked the effective
-  designated fraction $f_{\mathrm{eff}}(\rho) = K_{\mathrm{des}}\rho /
-  (K_{\mathrm{des}}\rho + K_{\mathrm{bg}})$ with $< 0.3\%$ deviation across
-  all $\rho$ values and all families (Table~\ref{fig:per-family-rho}).
-  However, this attention shift must still pass through the PCA reconstruction
-  and argmax decoding to produce discrete residues, which is where the
-  calibration gap arises.
-
-  \item \textbf{$\rho$ shifts the phase transition.}
-  The logit biases $\log r_k$ pre-concentrate the attention distribution even
-  at $\beta = 0$: the weighted attention entropy at zero inverse temperature is
-  $H_{\mathbf{r}}(0) = \log K_{\mathrm{eff}}(\mathbf{r}) < \log K$, where
-  $K_{\mathrm{eff}}(\mathbf{r}) = (\sum_k r_k)^2 / \sum_k r_k^2$ is the
-  effective number of patterns (a measure of how many patterns carry
-  significant weight under $\mathbf{r}$; it equals $K$ when all weights are
-  equal and converges to $K_{\mathrm{des}}$ as $\rho \to \infty$). Because the
-  starting entropy is lower, reaching the retrieval-phase inflection requires a
-  higher inverse temperature, so $\beta^{*}(\rho) \geq \beta^{*}(1)$, where
-  $\beta^{*}$ is the critical inverse temperature at which SA transitions from
-  an exploration phase (attention spread across many patterns) to a retrieval
-  phase (attention concentrated on one or a few patterns). We observed this
-  empirically: $\beta^{*}$ increased from 4.3 ($\rho=1$,
-  $K_{\mathrm{eff}} = 99$) to 10.1 ($\rho=1{,}000$,
-  $K_{\mathrm{eff}} = 32.1$) on the Kunitz domain
-  (Fig.~\ref{fig:phase-transition}).
-\end{enumerate}
-
-By contrast, hard curation---where the memory matrix is built from the
-designated subset only---\emph{does} change the PCA. Under hard curation, the
-centering vector $\bar{\mathbf{x}}$, the principal directions
-$\mathbf{W}_d$, and the retained dimension $d$ are all computed from the
-$K_{\mathrm{des}}$ designated sequences rather than the full $K$-sequence
-alignment. The curated PCA therefore captures subset-specific variation that
-may be orthogonal to the leading components of the full-family PCA. This is
-why hard curation achieved 100\% phenotype transfer regardless of the Fisher
-separation index $S$ (a measure of how well the full-family PCA separates
-designated from background sequences; see Section~\ref{sec:gap}), while
-multiplicity weighting was limited by the full-family PCA geometry.
-
-\section{Supplementary Tables}
-
-\subsection*{Table S1: Full per-family $\rho$ sweep data}
-
-Selected values from the $\rho$ sweep on each of the three benchmark families.
-$f_{\mathrm{eff}}$ is the effective designated fraction computed from the multiplicity
-vector; $f_{\mathrm{obs}}$ is the hard-decoded P1/marker fraction averaged over 930
-generated sequences; $\bar{a}_{\mathrm{des}}$ is the mean softmax attention weight on
-designated patterns; $D$ is mean pairwise diversity.
+Tables~S\ref{tab:kunitz-rho}--S\ref{tab:ww-rho} report selected values from
+the $\rho$ sweep on each of the three benchmark families.
+$f_{\mathrm{eff}}$ is the effective designated fraction computed from the
+multiplicity vector; $f_{\mathrm{obs}}$ is the hard-decoded marker fraction
+averaged over 930 generated sequences; $\bar{a}_{\mathrm{des}}$ is the mean
+softmax attention weight on designated patterns; and $D$ is the mean pairwise
+diversity. Table~S\ref{tab:beta-sweep} reports phenotype fraction and
+diversity as a function of $\beta/\beta^{*}$ for three fixed $\rho$ values
+on the Kunitz domain. Figure~\ref{fig:plddt-tmscore-scatter} shows the joint
+distribution of ESMFold pLDDT and TM-score for all 250 predicted Kunitz
+structures: SA-generated sequences cluster tightly in the high-pLDDT,
+high-TM-score region while HMM-emitted sequences scatter broadly across
+lower values. The entropy curves for the full $\rho$ sweep
+($\rho \in \{1, 2, 5, 10, 20, 50, 100, 200, 500, 1000\}$) on the Kunitz
+family produce a monotonically rightward-shifting family of sigmoid curves
+with $\beta^{*}(\rho)$ increasing from 3.85 ($\rho=1$) to 10.22
+($\rho=1000$), consistent with $\beta^{*} \propto \log K_{\mathrm{eff}}$
+predicted by the mean-field argument in Section~\ref{sec:theory}
+(Fig.~\ref{fig:phase-transition}).
 
 \begin{table}[h]
   \centering
@@ -279,12 +233,6 @@ designated patterns; $D$ is mean pairwise diversity.
   \end{tabular}
 \end{table}
 
-\subsection*{Table S2: $\beta$ sweep at fixed $\rho$ on Kunitz}
-
-Phenotype fraction and diversity as a function of $\beta/\beta^{*}$ for three fixed $\rho$
-values on the Kunitz domain. $f_{\mathrm{obs}}$ and $D$ are averages over 930 generated
-sequences. All conditions produced 100\% valid residues.
-
 \begin{table}[h]
   \centering
   \caption{$\beta$ sweep on Kunitz domain ($K=99$, $K_{\mathrm{des}}=32$).}
@@ -314,32 +262,3 @@ sequences. All conditions produced 100\% valid residues.
     \bottomrule
   \end{tabular}
 \end{table}
-
-\section{Supplementary Figures}
-
-Binding-loop per-position amino acid frequency heatmaps for the $\omega$-conotoxin experiment
-are shown in Fig.~\ref{fig:conotoxin-loop} of the main text (positions 9--17 of the alignment).
-Additional SI figures for the cross-family PCA separation analysis and full entropy-curve
-families are described below.
-
-\paragraph{PCA separation histograms.}
-For each family, designated and background sequences were projected onto their top two principal
-components (from the full-family PCA). The separation index $S$ was computed as the ratio of
-the inter-class distance to the intra-class spread (see Methods). Kunitz
-($S=0.20$) shows partial overlap; SH3 ($S=0.34$) shows clear separation; WW ($S=0.11$) shows
-extensive overlap, consistent with the large calibration gap.
-
-\paragraph{pLDDT versus TM-score correlation.}
-Figure~\ref{fig:plddt-tmscore-scatter} shows the joint distribution of ESMFold pLDDT and
-TM-score for all 250 predicted structures. SA-generated sequences cluster tightly in the
-high-pLDDT, high-TM-score region (upper right), while HMM-emitted sequences scatter broadly
-across lower values. The two metrics are positively correlated, confirming
-that ESMFold confidence is a reliable proxy for structural accuracy on this family.
-
-\paragraph{Entropy-curve families across $\rho$.}
-Figure~\ref{fig:phase-transition} in the main text shows entropy curves for five representative
-$\rho$ values on the Kunitz family. The full sweep ($\rho \in \{1, 2, 5, 10, 20, 50, 100, 200,
-500, 1000\}$) produces a monotonically rightward-shifting family of sigmoid curves; the
-inflection point $\beta^{*}(\rho)$ increases from 3.85 ($\rho=1$) to 10.22 ($\rho=1000$),
-consistent with $\beta^{*} \propto \log K_{\mathrm{eff}}$ predicted by the
-mean-field argument in Section~\ref{sec:theory}.

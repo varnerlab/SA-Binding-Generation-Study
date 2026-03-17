@@ -151,10 +151,24 @@ pharmacophore position, while introducing $5$--$11$ substitutions at variable si
 per-position entropy correlation between stored and strong-seeded sequences was $r = 0.745$,
 lower than the near-perfect full-seeded correlation ($r = 0.997$), reflecting the collapse of
 diversity at co-varying loop positions that contribute to Cav2.2 binding specificity
-(Fig.~\ref{fig:conotoxin-sequence-analysis}). Together, these results confirm that curated
-memory conditioning transferred Cav2.2 pharmacophore statistics from a small set of 23
-characterized sequences to a diverse library of 1\,550 novel candidates, with no training and
-no target structure required.
+(Fig.~\ref{fig:conotoxin-sequence-analysis}). We further validated the generated sequences
+against published structure--activity relationship (SAR) data by measuring agreement with
+experimentally identified binding determinants at 12 positions
+(Table~\ref{tab:sar-agreement}): SA strong-seeded sequences preserved the primary
+pharmacophore (Tyr13: 98.3\%), all six disulfide-forming cysteines
+($\geq 97.4\%$), and enriched basic residues at loop~2 positions critical for channel
+interaction (Lys2: 97.5\% K/R; Arg10: 82.3\% K/R) relative to both the 23-sequence input
+and full-family generation, which demonstrates that curated memory conditioning not only
+transferred global pharmacophore statistics but also preserved the specific residue-level
+binding determinants identified by decades of mutagenesis
+work~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}.
+Structural validation confirmed that the generated conotoxin sequences adopted the
+expected inhibitor cystine knot fold, with the characteristic disulfide-constrained loop
+architecture visually preserved across all three top SA strong-seeded variants
+(Fig.~\ref{fig:fold-superposition}). Together,
+these results confirm that curated memory conditioning transferred Cav2.2 pharmacophore
+statistics from a small set of 23 characterized sequences to a diverse library of 1\,550
+novel candidates, with no training and no target structure required.
 
 We predicted folds for 50 sequences from each source (stored, SA full-family, SA
 strong-conditioned, SA weak-conditioned, and HMM baseline) using ESMFold and computed TM-scores
@@ -166,7 +180,7 @@ was $90.4 \pm 1.2$ (SA full) and $90.7 \pm 1.1$ (SA strong) versus $89.3 \pm 3.2
 sequences, with 100\% of SA sequences exceeding the pLDDT $>70$ confidence threshold; mean
 TM-scores were $0.84 \pm 0.01$ (SA full) and $0.83 \pm 0.01$ (SA strong) versus
 $0.83 \pm 0.03$ for stored sequences, all well above the $\mathrm{TM} > 0.5$ same-fold
-threshold; whereas HMM-emitted sequences achieved only $60.4 \pm 13.1$ mean pLDDT (20\% above
+threshold (Fig.~\ref{fig:fold-superposition}); whereas HMM-emitted sequences achieved only $60.4 \pm 13.1$ mean pLDDT (20\% above
 threshold) and $0.60 \pm 0.10$ mean TM-score, which suggests that profile HMM emission does not
 reliably produce foldable sequences (Table~\ref{fig:structure-validation}). We further assessed
 sequence plausibility using ESM2-650M pseudo-perplexity computed via masked marginal scoring

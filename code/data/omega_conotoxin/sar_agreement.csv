@@ -1,0 +1,13 @@
+Position,WT_Residue,Role,Effect_of_mutation,Input_strong,SA_strong,SA_full,Citation
+13,Y,Primary pharmacophore,Ala: abolishes activity; Phe: 100× loss,0.826,0.983,0.469,Kim et al. 1995; Schroeder et al. 1999
+2,K,Loop 2 stabilization,Ala: 40× potency loss (GVIA),0.957,0.975,0.459,Sato et al. 1993; Schroeder et al. 2012
+10,R,Loop 2 binding,Critical for channel interaction,0.696,0.823,0.348,Lewis et al. 2012
+11,L,Loop 2 binding,Critical for channel interaction,0.174,0.236,0.114,Lewis et al. 2012
+1,C,Disulfide framework,Required for fold,1.0,1.0,0.999,structural
+8,C,Disulfide framework,Required for fold,1.0,1.0,0.999,structural
+15,C,Disulfide framework,Required for fold,1.0,0.974,1.0,structural
+16,C,Disulfide framework,Required for fold,0.87,1.0,1.0,structural
+20,C,Disulfide framework,Required for fold,0.696,1.0,1.0,structural
+25,C,Disulfide framework,Required for fold,0.522,1.0,1.0,structural
+21,R,Electrostatic complementarity,Ala: reduced potency,0.435,0.662,0.143,Lewis et al. 2012
+4,K,P/Q selectivity,Ala: important for P/Q binding,0.522,0.614,0.277,Sato et al. 2000
