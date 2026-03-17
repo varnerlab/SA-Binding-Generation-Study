@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.4.15)  16 MAR 2026 18:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.4.15)  17 MAR 2026 06:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -673,8 +673,8 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [4]
-(./sections/discussion.tex [5]) (./sections/theory.tex [6])
-(./sections/methods.tex [7])
+(./sections/discussion.tex [5]) (./sections/theory.tex [6] [7])
+(./sections/methods.tex) [8]
 Underfull \hbox (badness 10000) in paragraph at lines 101--103
  []\T1/ptm/b/n/10 (+20) Data avail-abil-ity.[] \T1/ptm/m/n/10 (+20) All Pfam se
 ed align-ments are pub-licly avail-able from In-ter-Pro.
@@ -686,14 +686,14 @@ Underfull \hbox (badness 2573) in paragraph at lines 101--103
 []$\T1/cmtt/m/n/10 https : / / github . com / varnerlab /
  []
 
-(./Paper_v1.bbl [8]) [9]
-<sections/figs/study1_binder_scaling.pdf, id=171, 903.375pt x 401.5pt>
+(./Paper_v1.bbl) [9]
+<sections/figs/study1_binder_scaling.pdf, id=175, 903.375pt x 401.5pt>
 File: sections/figs/study1_binder_scaling.pdf Graphic file (type pdf)
 <use sections/figs/study1_binder_scaling.pdf>
 Package pdftex.def Info: sections/figs/study1_binder_scaling.pdf  used on input
  line 143.
 (pdftex.def)             Requested size: 397.48499pt x 176.66054pt.
-<sections/figs/fig5_entropy_curves.pdf, id=172, 702.625pt x 501.875pt>
+<sections/figs/fig5_entropy_curves.pdf, id=176, 702.625pt x 501.875pt>
 File: sections/figs/fig5_entropy_curves.pdf Graphic file (type pdf)
 <use sections/figs/fig5_entropy_curves.pdf>
 Package pdftex.def Info: sections/figs/fig5_entropy_curves.pdf  used on input l
@@ -704,16 +704,29 @@ Overfull \hbox (10.73293pt too wide) in paragraph at lines 250--262
  [][] 
  []
 
-<sections/figs/loop_heatmap_with_residuals.pdf, id=173, 1104.125pt x 903.375pt>
+<sections/figs/loop_heatmap_with_residuals.pdf, id=177, 1104.125pt x 903.375pt>
 
 File: sections/figs/loop_heatmap_with_residuals.pdf Graphic file (type pdf)
 <use sections/figs/loop_heatmap_with_residuals.pdf>
 Package pdftex.def Info: sections/figs/loop_heatmap_with_residuals.pdf  used on
  input line 295.
 (pdftex.def)             Requested size: 397.48499pt x 325.21475pt.
+<sections/figs/sequence_analysis_kunitz.pdf, id=178, 1204.5pt x 702.625pt>
+File: sections/figs/sequence_analysis_kunitz.pdf Graphic file (type pdf)
+<use sections/figs/sequence_analysis_kunitz.pdf>
+Package pdftex.def Info: sections/figs/sequence_analysis_kunitz.pdf  used on in
+put line 315.
+(pdftex.def)             Requested size: 397.48499pt x 231.86696pt.
+<sections/figs/sequence_analysis_conotoxin.pdf, id=179, 903.375pt x 702.625pt>
+File: sections/figs/sequence_analysis_conotoxin.pdf Graphic file (type pdf)
+<use sections/figs/sequence_analysis_conotoxin.pdf>
+Package pdftex.def Info: sections/figs/sequence_analysis_conotoxin.pdf  used on
+ input line 343.
+(pdftex.def)             Requested size: 397.48499pt x 309.15594pt.
 [10 <./sections/figs/study1_binder_scaling.pdf>] [11 <./sections/figs/fig5_entr
 opy_curves.pdf>] [12 <./sections/figs/loop_heatmap_with_residuals.pdf>]
-(./sections/appendix.tex
+[13 <./sections/figs/sequence_analysis_kunitz.pdf>] [14 <./sections/figs/sequen
+ce_analysis_conotoxin.pdf>] (./sections/appendix.tex
 pdfTeX warning (ext4): destination with the same identifier (name{section.1}) h
 as been already used, duplicate ignored
 <to be read again> 
@@ -726,10 +739,10 @@ CA from the one-hot en-coded align-ment. Let $\OT1/cmr/bx/n/10 X \OT1/cmr/m/n/1
 0 =
  []
 
-[13
+[15
 
 
-] [14]
+] [16]
 pdfTeX warning (ext4): destination with the same identifier (name{section.2}) h
 as been already used, duplicate ignored
 <to be read again> 
@@ -748,14 +761,14 @@ as been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.318 \section{Supplementary Figures}
-                                      [15])
-<sections/figs/plddt_vs_tmscore_scatter.pdf, id=254, 1806.75pt x 1505.625pt>
+                                      [17])
+<sections/figs/plddt_vs_tmscore_scatter.pdf, id=270, 1806.75pt x 1505.625pt>
 File: sections/figs/plddt_vs_tmscore_scatter.pdf Graphic file (type pdf)
 <use sections/figs/plddt_vs_tmscore_scatter.pdf>
 Package pdftex.def Info: sections/figs/plddt_vs_tmscore_scatter.pdf  used on in
-put line 327.
+put line 382.
 (pdftex.def)             Requested size: 286.18967pt x 238.49266pt.
- [16] [17 <./sections/figs/plddt_vs_tmscore_scatter.pdf>] (./Paper_v1.aux)
+ [18] [19 <./sections/figs/plddt_vs_tmscore_scatter.pdf>] (./Paper_v1.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
@@ -764,13 +777,13 @@ Package rerunfilecheck Info: File `Paper_v1.out' has not changed.
 (rerunfilecheck)             Checksum: 545D64A30E719E2A8F56EBF06450ECBB;1816.
  ) 
 Here is how much of TeX's memory you used:
- 15870 strings out of 474116
- 251390 string characters out of 5743682
- 1958187 words of memory out of 5000000
- 37608 multiletter control sequences out of 15000+600000
- 610005 words of font info for 265 fonts, out of 8000000 for 9000
+ 15896 strings out of 474116
+ 252295 string characters out of 5743682
+ 1962187 words of memory out of 5000000
+ 37624 multiletter control sequences out of 15000+600000
+ 610259 words of font info for 269 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,1033b,578s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,1561b,580s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb><
 /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></
@@ -794,10 +807,10 @@ exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/20
 /texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2024/texmf-dis
 t/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2024/texmf-dist/fonts/ty
 pe1/urw/times/utmri8a.pfb>
-Output written on Paper_v1.pdf (17 pages, 586010 bytes).
+Output written on Paper_v1.pdf (19 pages, 737454 bytes).
 PDF statistics:
- 394 PDF objects out of 1000 (max. 8388607)
- 312 compressed objects within 4 object streams
- 88 named destinations out of 1000 (max. 500000)
- 48741 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 412 PDF objects out of 1000 (max. 8388607)
+ 326 compressed objects within 4 object streams
+ 92 named destinations out of 1000 (max. 500000)
+ 48751 words of extra memory for PDF output out of 51595 (max. 10000000)
 

@@ -307,6 +307,61 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   \label{fig:conotoxin-loop}
 \end{figure}
 
+% -----------------------------------------------------------------------
+% Fig: Sequence-level analysis
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_kunitz.pdf}
+  \caption{\textbf{Sequence-level analysis of SA-generated Kunitz domain sequences
+  conditioned on strong trypsin binders.}
+  \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
+  SA strong-binder-conditioned sequences (ranked by ESMFold pLDDT). Positions are
+  colored by conservation in the stored MSA: highly conserved ($>90\%$, red),
+  conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
+  ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
+  gold; the P1 position is highlighted in purple. Dots indicate matches to the
+  consensus; letters indicate substitutions. All five sequences preserve every
+  highly conserved position ($11/11$), all six cysteines ($6/6$), and carry K or R
+  at P1, while introducing $19$--$26$ substitutions concentrated at variable sites.
+  \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-family
+  generation (blue), and SA strong-binder-conditioned generation (red). The
+  full-family entropy correlation is very high ($r = 0.988$), confirming that SA
+  recapitulates the position-specific conservation pattern of the natural family.
+  The strong-conditioned entropy correlation is slightly lower ($r = 0.932$), with
+  the largest deviation at the P1 position (column~25): conditioning collapses P1
+  diversity to K/R, reducing entropy at this site while preserving the entropy
+  profile elsewhere.}
+  \label{fig:sequence-analysis}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Fig: Conotoxin sequence-level analysis
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_conotoxin.pdf}
+  \caption{\textbf{Sequence-level analysis of SA-generated $\omega$-conotoxin sequences
+  conditioned on strong Cav2.2 binders.}
+  \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
+  SA strong-binder-conditioned sequences (ranked by ESMFold pLDDT). Positions are
+  colored by conservation in the stored MSA: highly conserved ($>90\%$, red),
+  conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
+  ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
+  gold; the Tyr13 pharmacophore position is highlighted in green. All five sequences
+  preserve every highly conserved position ($6/6$), all six cysteines ($6/6$), and
+  carry Tyr at the pharmacophore position, while introducing $5$--$11$ substitutions
+  concentrated at variable sites.
+  \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-seeded
+  generation (blue), and SA strong-seeded generation (red). The full-seeded entropy
+  correlation is near-perfect ($r = 0.997$), confirming faithful recapitulation of
+  position-specific conservation. The strong-seeded correlation is lower
+  ($r = 0.745$), reflecting the fact that conditioning on 23 strong Cav2.2 binders
+  collapses diversity not only at the Tyr13 pharmacophore but also at co-varying
+  loop residues that contribute to channel binding specificity.}
+  \label{fig:conotoxin-sequence-analysis}
+\end{figure}
+
 % --- SI Appendix ---
 \clearpage
 \setcounter{figure}{0}

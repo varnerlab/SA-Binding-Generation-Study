@@ -27,7 +27,14 @@ for each via entropy inflection, and generated 930 sequences per condition (30 c
 designated-subset-conditioned sequences had K/R at P1; 0\% of background-conditioned sequences
 did; and full-family generation produced 39\% K/R, matching the natural proportion
 ($32/99 = 32\%$) within sampling noise, which demonstrates that the designated phenotype was
-inherited perfectly while the fold-level composition was preserved. To determine the minimum input size required for reliable transfer,
+inherited perfectly while the fold-level composition was preserved.
+Sequence-level inspection confirmed that the top strong-binder-conditioned sequences
+preserved all highly conserved positions ($11/11$), all six cysteines, and carried K/R
+at P1, while introducing $19$--$26$ substitutions concentrated at variable sites;
+per-position Shannon entropy tracked the stored MSA closely ($r = 0.988$ for full-family,
+$r = 0.932$ for strong-conditioned), with the largest deviation at P1 where conditioning
+collapsed diversity to K/R (Fig.~\ref{fig:sequence-analysis}).
+To determine the minimum input size required for reliable transfer,
 we subsampled $K_{\mathrm{des}} \in \{3, 5, 8, 10, 15, 20, 25, 32\}$ from the Kunitz K/R
 subset (3~replicates each), built curated memory matrices, and generated sequences. We found
 that P1 phenotype fidelity was 100\% at \emph{every} sample size, including
@@ -137,10 +144,17 @@ nearly indistinguishable---deep-red Tyr at position~13, conserved Cys framework 
 positions~14--16, variable-loop diversity at positions~9--12---and the residual heatmaps
 (generated $-$ input) showed near-zero deviations across all positions, which suggests that SA
 faithfully reproduced the input frequency statistics rather than collapsing to a consensus
-sequence (Fig.~\ref{fig:conotoxin-loop}). Together, these results confirm that curated memory
-conditioning transferred Cav2.2 pharmacophore statistics from a small set of 23 characterized
-sequences to a diverse library of 1\,550 novel candidates, with no training and no target
-structure required.
+sequence (Fig.~\ref{fig:conotoxin-loop}). Sequence-level inspection of the five
+highest-confidence strong-seeded sequences (ranked by ESMFold pLDDT) confirmed that all five
+preserved every highly conserved position ($6/6$), all six cysteines, and carried Tyr at the
+pharmacophore position, while introducing $5$--$11$ substitutions at variable sites; the
+per-position entropy correlation between stored and strong-seeded sequences was $r = 0.745$,
+lower than the near-perfect full-seeded correlation ($r = 0.997$), reflecting the collapse of
+diversity at co-varying loop positions that contribute to Cav2.2 binding specificity
+(Fig.~\ref{fig:conotoxin-sequence-analysis}). Together, these results confirm that curated
+memory conditioning transferred Cav2.2 pharmacophore statistics from a small set of 23
+characterized sequences to a diverse library of 1\,550 novel candidates, with no training and
+no target structure required.
 
 We predicted folds for 50 sequences from each source (stored, SA full-family, SA
 strong-conditioned, SA weak-conditioned, and HMM baseline) using ESMFold and computed TM-scores
