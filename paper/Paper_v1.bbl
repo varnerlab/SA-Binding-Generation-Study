@@ -5,11 +5,12 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Varner et~al.(2026)]{varnerSAProtein2026}
-Jeffrey~D. Varner et~al.
+\bibitem[Varner(2026)]{varnerSAProtein2026}
+Jeffrey~D. Varner.
 \newblock Training-free generation of protein sequences from small family
   alignments via stochastic attention.
-\newblock \emph{In preparation}, 2026.
+\newblock \emph{arXiv preprint arXiv:2603.14717}, 2026.
+\newblock \doi{10.48550/arXiv.2603.14717}.
 
 \bibitem[Laskowski and Kato(1980)]{laskowskiProteinInhibitors1980}
 Michael Laskowski and Izydor Kato.

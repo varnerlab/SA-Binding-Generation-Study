@@ -50,8 +50,8 @@
   - Removed 24 superseded figures and .png duplicates
   - 8 figures remain (7 in sections/figs/, 1 in figs/) — all used in paper
 
-- [ ] **13. varnerSAProtein2026 says "In preparation"**
-  - Update when companion paper has a preprint
+- [x] **13. varnerSAProtein2026 says "In preparation"** ✅ FIXED
+  - Updated to arXiv:2603.14717 (published March 2026)
 
 - [x] **14. esm2science2023 bib entry** ✅ FIXED
   - Updated from bioRxiv preprint to published Science 2023 metadata
