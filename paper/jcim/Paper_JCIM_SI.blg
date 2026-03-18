@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (TeX Live 2024)
+This is BibTeX, Version 0.99d (TeX Live 2025)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: Paper_JCIM_SI.aux
 The style file: achemso.bst
@@ -6,7 +6,7 @@ I found no \bibdata command---while reading file Paper_JCIM_SI.aux
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Warning--I didn't find a database entry for "achemso-control"
 Warning--I didn't find a database entry for "ramsauerHopfieldNetworksAll2021"
-achemso 2024-01-30 v3.13g
+achemso 2025-01-29 v3.13h
 You've used 0 entries,
             2538 wiz_defined-function locations,
             746 strings with 6451 characters,

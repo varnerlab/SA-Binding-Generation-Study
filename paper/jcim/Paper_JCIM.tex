@@ -46,21 +46,21 @@ Cornell University, Ithaca, New York 14850, United States}
 \begin{document}
 
 \begin{abstract}
-\input{sections/abstract}
+\input{../sections/abstract}
 \end{abstract}
 
 \section{Introduction}
-\input{sections/introduction}
+\input{../sections/introduction}
 
 \section{Results}
-\input{sections/results}
+\input{../sections/results}
 
 \section{Discussion}
-\input{sections/discussion}
+\input{../sections/discussion}
 
 \section{Materials and Methods}
-\input{sections/theory}
-\input{sections/methods}
+\input{../sections/theory}
+\input{../sections/methods}
 
 \begin{acknowledgement}
 The author thanks the Cornell Center for Advanced Computing for computational resources.
@@ -68,7 +68,7 @@ All Pfam seed alignments are publicly available from InterPro. Source code and e
 scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{acknowledgement}
 
-\bibliography{References_v1}
+\bibliography{../References_v1}
 
 % -----------------------------------------------------------------------
 % Figures and Tables
@@ -107,7 +107,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{sections/figs/study1_binder_scaling.pdf}
+  \includegraphics[width=\textwidth]{../sections/figs/study1_binder_scaling.pdf}
   \caption{\textbf{Diversity and composition fidelity improve with more input
   binders; phenotype fidelity is perfect at every sample size.}
   Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
@@ -127,7 +127,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=0.82\textwidth]{sections/figs/fig5_entropy_curves.pdf}
+  \includegraphics[width=0.82\textwidth]{../sections/figs/fig5_entropy_curves.pdf}
   \caption{\textbf{Phase transition shifts rightward with increasing multiplicity
   ratio $\rho$.}
   Attention entropy $H(\beta)$ as a function of inverse temperature $\beta$
@@ -147,7 +147,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{sections/figs/fig2_separation_vs_gap.pdf}
+  \includegraphics[width=\textwidth]{../sections/figs/fig2_separation_vs_gap.pdf}
   \caption{\textbf{Calibration trajectories reveal family-dependent gaps predicted by
   PCA-space separation.}
   \textbf{(A)}~Observed phenotype fraction $f_{\mathrm{obs}}$ versus effective designated
@@ -357,7 +357,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{sections/figs/loop_heatmap_with_residuals.pdf}
+  \includegraphics[width=\textwidth]{../sections/figs/loop_heatmap_with_residuals.pdf}
   \caption{\textbf{Binding-loop amino acid frequencies and generation residuals for
   the $\omega$-conotoxin family (positions 9--17).}
   \textit{Left column:} Per-position amino acid frequency heatmaps for the input sequences
@@ -377,7 +377,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_kunitz.pdf}
+  \includegraphics[width=\textwidth]{../sections/figs/sequence_analysis_kunitz.pdf}
   \caption{\textbf{Sequence-level analysis of SA-generated Kunitz domain sequences
   conditioned on strong trypsin binders.}
   \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
@@ -405,7 +405,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_conotoxin.pdf}
+  \includegraphics[width=\textwidth]{../sections/figs/sequence_analysis_conotoxin.pdf}
   \caption{\textbf{Sequence-level analysis of SA-generated $\omega$-conotoxin sequences
   conditioned on strong Cav2.2 binders.}
   \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
@@ -432,7 +432,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{figs/fold_superposition_combined.pdf}
+  \includegraphics[width=\textwidth]{../figs/fold_superposition_combined.pdf}
   \caption{\textbf{SA-generated sequences fold into native-like structures for both
   protein families.}
   C$\alpha$ backbone superposition of the highest TM-score SA strong-conditioned

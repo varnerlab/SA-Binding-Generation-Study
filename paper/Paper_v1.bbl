@@ -1,4 +1,4 @@
-\begin{thebibliography}{19}
+\begin{thebibliography}{20}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -80,10 +80,17 @@ Milot Mirdita, Konstantin Sch{\"u}tze, Yoshitaka Moriwaki, Lim Heo, Sergey
 \newblock {ColabFold}: making protein folding accessible to all.
 \newblock \emph{Nature Methods}, 19:\penalty0 679--682, 2022.
 
-\bibitem[Heyne et~al.(2021)Heyne, Shirian, Cohen, Peleg, Radisky, Papo, Bhatt,
-  Bhatt, and Bhatt]{heyneBPTIDMS2021}
-M.~Heyne, J.~Shirian, I.~Cohen, Y.~Peleg, E.~S. Radisky, N.~Papo, D.~Bhatt,
-  S.~Bhatt, and A.~Bhatt.
+\bibitem[Potter et~al.(2018)Potter, Luciani, Eddy, Park, Lopez, and
+  Finn]{hmmer3}
+Simon~C Potter, Aur{\'e}lien Luciani, Sean~R Eddy, Youngmi Park, Rodrigo Lopez,
+  and Robert~D Finn.
+\newblock {HMMER} web server: 2018 update.
+\newblock \emph{Nucleic acids research}, 46:\penalty0 W200--W204, 2018.
+
+\bibitem[Heyne et~al.(2021)Heyne, Shirian, Cohen, Peleg, Radisky, Papo, and
+  Shifman]{heyneBPTIDMS2021}
+M.~Heyne, J.~Shirian, I.~Cohen, Y.~Peleg, E.~S. Radisky, N.~Papo, and J.~M.
+  Shifman.
 \newblock Climbing up and down binding landscapes through deep mutational
   scanning of three homologous protein--protein complexes.
 \newblock \emph{Journal of the American Chemical Society}, 143\penalty0
@@ -99,11 +106,11 @@ Hubert Ramsauer, Bernhard Sch{\"a}fl, Johannes Lehner, Philipp Seidl, Michael
 \newblock \emph{International Conference on Learning Representations}, 2021.
 
 \bibitem[Lin et~al.(2023)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin, Verkuil,
-  Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candber, and
+  Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candido, and
   Rives]{esmfold2022}
 Zeming Lin, Halil Akin, Roshan Rao, Brian Hie, Zhongkai Zhu, Wenting Lu, Nikita
   Smetanin, Robert Verkuil, Ori Kabeli, Yaniv Shmueli, Allan dos Santos~Costa,
-  Maryam Fazel-Zarandi, Tom Sercu, Sal Candber, and Alexander Rives.
+  Maryam Fazel-Zarandi, Tom Sercu, Sal Candido, and Alexander Rives.
 \newblock Evolutionary-scale prediction of atomic-level protein structure with
   a language model.
 \newblock \emph{Science}, 379\penalty0 (6637):\penalty0 1123--1130, 2023.
@@ -116,20 +123,20 @@ Yang Zhang and Jeffrey Skolnick.
   2005.
 
 \bibitem[Lin et~al.(2022)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin, Verkuil,
-  Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candber, and
+  Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candido, and
   Rives]{esm2science2023}
 Zeming Lin, Halil Akin, Roshan Rao, Brian Hie, Zhongkai Zhu, Wenting Lu, Nikita
   Smetanin, Robert Verkuil, Ori Kabeli, Yaniv Shmueli, Allan dos Santos~Costa,
-  Maryam Fazel-Zarandi, Tom Sercu, Sal Candber, and Alexander Rives.
+  Maryam Fazel-Zarandi, Tom Sercu, Sal Candido, and Alexander Rives.
 \newblock Language models of protein sequences at the scale of evolution enable
   accurate structure prediction.
 \newblock \emph{bioRxiv}, 2022.
 \newblock ESM-2 model.
 
 \bibitem[Sato et~al.(2000)Sato, Raymond, Martin-Moutot, Sasaki, Ohtake, Minami,
-  Van~Renterghem, de~Bhatt, Bhatt, and Bhatt]{satoAlaScanMVIIC2000}
+  Van~Renterghem, Kim, Takahashi, and Seagar]{satoAlaScanMVIIC2000}
 K.~Sato, C.~Raymond, N.~Martin-Moutot, T.~Sasaki, A.~Ohtake, K.~Minami,
-  C.~Van~Renterghem, T.~de~Bhatt, S.~Bhatt, and B.~Bhatt.
+  C.~Van~Renterghem, J.~I. Kim, M.~Takahashi, and M.~J. Seagar.
 \newblock Binding of {Ala}-scanning analogs of omega-conotoxin {MVIIC} to {N}-
   and {P/Q}-type calcium channels.
 \newblock \emph{FEBS Letters}, 469\penalty0 (2--3):\penalty0 147--150, 2000.

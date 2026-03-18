@@ -26,9 +26,9 @@ functional subset ($K_{\mathrm{des}} = 32$) and the remaining 67 as background
 for each via entropy inflection, and generated 930 sequences per condition (30 chains $\times$
 5{,}000 steps, thinned after burn-in). We observed that 100\% of
 designated-subset-conditioned sequences had K/R at P1; 0\% of background-conditioned sequences
-did; and full-family generation produced 39\% K/R, matching the natural proportion
-($32/99 = 32\%$) within sampling noise, which demonstrates that the designated phenotype was
-inherited perfectly while the fold-level composition was preserved.
+did; and full-family generation produced 41\% K/R, close to the natural proportion
+($32/99 = 32\%$), which demonstrates that the designated phenotype was
+inherited perfectly while the fold-level composition was approximately preserved.
 Sequence-level inspection confirmed that the top strong-binder-conditioned sequences
 preserved all highly conserved positions ($11/11$), all six cysteines, and carried K/R
 at P1, while introducing $19$--$26$ substitutions concentrated at variable sites;
@@ -58,7 +58,7 @@ weighted attention distribution, and generated 930 sequences (30 chains). We obs
 attention weight on designated patterns tracked $f_{\mathrm{eff}}$ with negligible deviation
 ($< 0.3\%$) at all $\rho$ values, which confirms Proposition~\ref{prop:score}: the multiplicity
 weights tilted the energy landscape exactly as intended. The observed P1~K/R fraction increased
-monotonically from 0.39 ($\rho=1$) to 0.63 ($\rho=500$), substantially exceeding the natural
+monotonically from 0.41 ($\rho=1$) to 0.63 ($\rho=500$), substantially exceeding the natural
 proportion but falling short of the $f_{\mathrm{eff}} = 0.996$ predicted by the energy-level
 conditioning; sequence diversity decreased modestly from 0.56 to 0.51 over this range and KL
 divergence increased from 0.007 to 0.017. The phase transition
@@ -199,7 +199,7 @@ $4.97 \pm 0.98$), while HMM-emitted sequences were approximately threefold worse
 ($16.1 \pm 4.2$)---the fact that conditioned SA sequences were slightly \emph{more} plausible
 than stored sequences is consistent with SA's tendency to generate near the center of the family
 distribution, avoiding outlier sequences present in natural alignments
-(Table~\ref{tab:structure-validation}). We also compared SA against HMMER3 profile HMM emission
+(Table~\ref{tab:structure-validation}). We also compared SA against HMMER3~\cite{hmmer3} profile HMM emission
 (150 sequences, \texttt{hmmemit --seed 42}) and bootstrap resampling from stored patterns and
 found that SA full-family generation preserved the natural P1~K/R proportion
 ($0.41 \pm 0.01$) and achieved the lowest KL divergence ($0.0069 \pm 0.0001$), while HMM
