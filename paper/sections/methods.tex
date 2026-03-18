@@ -38,7 +38,9 @@ and between functional groups as defined in Section~\ref{sec:gap}. Structural va
 ESMFold~\cite{esmfold2022} to predict structures for 50 sequences per source, with pLDDT
 extracted from the B-factor column and TM-scores computed against experimental reference
 structures (1BPI chain~A for Kunitz, 1OMG chain~A for $\omega$-conotoxin) using
-TM-align~\cite{tmAlign2005}; these results were independently cross-validated with AlphaFold2-ptm via ColabFold~\cite{jumperHighlyAccurate2021,mirdita2022colabfold}. Sequence plausibility was assessed using ESM2-650M
+TM-align~\cite{tmAlign2005}; these results were independently cross-validated with AlphaFold2-ptm via
+ColabFold~\cite{jumperHighlyAccurate2021,mirdita2022colabfold} (1 model, 3 recycles,
+MMseqs2 MSA, no relaxation) run on Google Colab with a T4 GPU. Sequence plausibility was assessed using ESM2-650M
 pseudo-perplexity computed via masked marginal scoring over all
 positions~\cite{esm2science2023}. All experiments were implemented in Julia~1.12 using NNlib.jl
 (softmax), MultivariateStats.jl (PCA), and Distributions.jl; source code and experiment scripts

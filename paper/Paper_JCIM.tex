@@ -1,19 +1,10 @@
-\documentclass{article}
-\PassOptionsToPackage{numbers, compress}{natbib}
-\usepackage[preprint]{neurips_2026}
+\documentclass[journal=jcisd8,manuscript=article]{achemso}
 
 % --- standard packages ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[colorlinks=true,linkcolor=blue!70!black,citecolor=blue!70!black,urlcolor=blue!70!black]{hyperref}
-\usepackage{url}
 \usepackage{booktabs}
 \usepackage{amsfonts}
-\usepackage{nicefrac}
-\usepackage{microtype}
-\usepackage{xcolor}
-\usepackage{graphicx}
-\usepackage{subcaption}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -21,11 +12,9 @@
 \usepackage{algorithmic}
 \usepackage{bm}
 \usepackage{multirow}
-
-% --- figure/table placement ---
-\setcounter{topnumber}{1}
-\setcounter{bottomnumber}{1}
-\renewcommand{\topfraction}{0.5}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
 
 % --- theorem environments ---
 \newtheorem{theorem}{Theorem}
@@ -46,34 +35,19 @@
 \newcommand{\R}{\mathbb{R}}
 \DeclareMathOperator{\softmax}{softmax}
 
+% --- metadata ---
 \title{Conditioning Protein Generation via Hopfield Pattern Multiplicity}
 
-\author{%
-  Jeffrey D.~Varner \\
-  R.F. Smith School of Chemical and Biomolecular Engineering\\
-  Cornell University, Ithaca, NY 14850 \\
-  \texttt{jdv27@cornell.edu} \\
-}
+\author{Jeffrey D.~Varner}
+\email{jdv27@cornell.edu}
+\affiliation{Robert Frederick Smith School of Chemical and Biomolecular Engineering,
+Cornell University, Ithaca, New York 14850, United States}
 
 \begin{document}
-
-\maketitle
 
 \begin{abstract}
 \input{sections/abstract}
 \end{abstract}
-
-\noindent\fbox{\parbox{\textwidth}{\small\textbf{Significance Statement.}
-Protein engineers routinely isolate a handful of functional binders---via phage display, yeast
-surface display, or functional selections---but lack a systematic way to expand these small sets
-into diverse candidate libraries without retraining a generative model. We show that a single
-scalar parameter added to the softmax logits of a Hopfield-energy sampler continuously conditions
-generation from ``any family member'' to ``only binders,'' with no training, no GPU, and no
-architectural changes. The effectiveness of this conditioning is predicted \emph{a priori} by a
-cheap geometric property of the alignment, giving practitioners a decision rule before any
-sequences are generated.}}
-
-\bigskip
 
 \section{Introduction}
 \input{sections/introduction}
@@ -88,27 +62,20 @@ sequences are generated.}}
 \input{sections/theory}
 \input{sections/methods}
 
-\section*{Acknowledgments}
+\begin{acknowledgement}
 The author thanks the Cornell Center for Advanced Computing for computational resources.
+All Pfam seed alignments are publicly available from InterPro. Source code and experiment
+scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
+\end{acknowledgement}
 
-\paragraph{Author contributions.}
-J.D.V.\ conceived the study, developed the theory, wrote the code, performed the experiments, and wrote the paper.
-
-\paragraph{Competing interests.}
-The author declares no competing interests.
-
-\paragraph{Data availability.}
-All Pfam seed alignments are publicly available from InterPro. Source code and experiment scripts
-are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
-
-\bibliographystyle{unsrtnat}
 \bibliography{References_v1}
 
-% --- Figures and Tables (placed after bibliography, PNAS-style) ---
-\clearpage
+% -----------------------------------------------------------------------
+% Figures and Tables
+% -----------------------------------------------------------------------
 
 % -----------------------------------------------------------------------
-% Table 1: Cross-family summary (first, to set the stage)
+% Table 1: Cross-family summary
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
@@ -136,7 +103,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{table}
 
 % -----------------------------------------------------------------------
-% Fig 1: Binder scaling (old Fig 2; old Fig 1 bar chart removed)
+% Fig 1: Binder scaling
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
@@ -156,7 +123,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{figure}
 
 % -----------------------------------------------------------------------
-% Fig 2: Phase transition entropy curves (old rho sweep figure removed)
+% Fig 2: Phase transition entropy curves
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
@@ -201,7 +168,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{figure}
 
 % -----------------------------------------------------------------------
-% Table: Per-family rho sweep (replaces old Fig 7)
+% Table 2: Per-family rho sweep
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
@@ -256,7 +223,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{table}
 
 % -----------------------------------------------------------------------
-% Table 2: Merged validation + baseline comparison
+% Table 3: Merged validation + baseline comparison
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
@@ -289,7 +256,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{table}
 
 % -----------------------------------------------------------------------
-% Table: AF2 cross-validation
+% Table 4: AF2 cross-validation
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
@@ -323,7 +290,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{table}
 
 % -----------------------------------------------------------------------
-% Table: ω-Conotoxin pharmacophore inheritance
+% Table 5: ω-Conotoxin pharmacophore inheritance
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
@@ -349,14 +316,14 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{table}
 
 % -----------------------------------------------------------------------
-% Table: SAR agreement
+% Table 6: SAR agreement
 % -----------------------------------------------------------------------
-\begin{table}[t]
+\begin{table}[p]
   \caption{\textbf{SA-generated $\omega$-conotoxin sequences preserve experimentally
   validated binding determinants.}
   Published structure--activity relationship (SAR) data for $\omega$-conotoxin
   binding to Cav2.2 identify critical residues whose mutation abolishes or
-  substantially reduces channel block~\cite{kimTyr13Essential1995,satoBasicResidues1993,satoAlaScanMVIIC2000,schroederLys2Effects2012,lewisConotoxinSAR2012,schroederChiralityTyr131999}.
+  substantially reduces channel block.\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}\textsuperscript{,}\cite{satoAlaScanMVIIC2000,schroederLys2Effects2012,schroederChiralityTyr131999}
   For each SAR-critical position, the table reports the fraction of sequences that
   retain the wild-type residue (or a conservative K/R substitution for basic positions).
   SA strong-seeded generation preserves the primary pharmacophore (Tyr13: 98.3\%)
@@ -386,7 +353,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{table}
 
 % -----------------------------------------------------------------------
-% Fig: Binding-loop heatmaps with residuals
+% Fig 4: Binding-loop heatmaps with residuals
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
@@ -406,7 +373,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{figure}
 
 % -----------------------------------------------------------------------
-% Fig: Sequence-level analysis
+% Fig 5: Sequence-level analysis (Kunitz)
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
@@ -434,7 +401,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{figure}
 
 % -----------------------------------------------------------------------
-% Fig: Conotoxin sequence-level analysis
+% Fig 6: Conotoxin sequence-level analysis
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
@@ -461,7 +428,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{figure}
 
 % -----------------------------------------------------------------------
-% Fig: Combined fold superposition (Kunitz + Conotoxin)
+% Fig 7: Combined fold superposition (Kunitz + Conotoxin)
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
@@ -486,32 +453,16 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   \label{fig:fold-superposition}
 \end{figure}
 
-% --- SI Appendix ---
-\clearpage
-\setcounter{figure}{0}
-\setcounter{table}{0}
-\renewcommand{\thefigure}{S\arabic{figure}}
-\renewcommand{\thetable}{S\arabic{table}}
-\setcounter{section}{0}
-\renewcommand{\thesection}{S\arabic{section}}
-
-\section*{SI Appendix}
-\input{sections/appendix}
-
 % -----------------------------------------------------------------------
-% Fig S1: pLDDT vs TM-score scatter
+% Supporting Information
 % -----------------------------------------------------------------------
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=0.72\textwidth]{sections/figs/plddt_vs_tmscore_scatter.pdf}
-  \caption{\textbf{pLDDT and TM-score are positively correlated; SA sequences cluster in
-  the high-quality region.}
-  Each point represents one predicted structure (50 per source). Stored (gray) and SA-generated
-  (blue, red, green) sequences cluster tightly above pLDDT $>85$ and TM-score $>0.8$ (upper
-  right quadrant). HMM sequences (orange) scatter broadly, with many falling below the
-  pLDDT $>70$ confidence threshold (vertical dashed line) and the TM-score $>0.5$ same-fold
-  threshold (horizontal dashed line).}
-  \label{fig:plddt-tmscore-scatter}
-\end{figure}
+\begin{suppinfo}
+
+Supporting Information includes: detailed sequence encoding and PCA projection
+pipeline (Section~S1); supplementary per-family $\rho$ sweep tables for
+Kunitz, SH3, and WW domains (Tables~S1--S3); $\beta/\beta^{*}$ temperature
+sweep analysis (Table~S4); and pLDDT vs.\ TM-score scatter plot (Figure~S1).
+
+\end{suppinfo}
 
 \end{document}

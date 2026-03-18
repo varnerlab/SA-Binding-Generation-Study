@@ -254,7 +254,7 @@ if __name__ == "__main__":
     ax1 = fig.add_subplot(gs[0, 0], projection='3d')
     render_panel(ax1, kunitz_ref, kunitz_aligned, kunitz_bf, kunitz_tm,
                  "BPTI (1BPI, exp.)", f"SA strong (TM = {kunitz_tm:.2f})",
-                 elev=15, azim=-65, panel_label='A', show_legend=True)
+                 elev=15, azim=-65, panel_label='A', show_legend=False)
 
     ax2 = fig.add_subplot(gs[0, 1], projection='3d')
     render_panel(ax2, kunitz_ref, kunitz_aligned, kunitz_bf, kunitz_tm,
@@ -265,7 +265,7 @@ if __name__ == "__main__":
     ax3 = fig.add_subplot(gs[1, 0], projection='3d')
     render_panel(ax3, conot_ref, conot_aligned, conot_bf, conot_tm,
                  "MVIIA (1OMG, NMR)", f"SA strong (TM = {conot_tm:.2f})",
-                 elev=15, azim=-65, panel_label='C', show_legend=True)
+                 elev=15, azim=-65, panel_label='C', show_legend=False)
 
     ax4 = fig.add_subplot(gs[1, 1], projection='3d')
     render_panel(ax4, conot_ref, conot_aligned, conot_bf, conot_tm,

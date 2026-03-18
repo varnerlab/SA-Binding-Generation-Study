@@ -1,0 +1,210 @@
+\providecommand{\latin}[1]{#1}
+\makeatletter
+\providecommand{\doi}
+  {\begingroup\let\do\@makeother\dospecials
+  \catcode`\{=1 \catcode`\}=2 \doi@aux}
+\providecommand{\doi@aux}[1]{\endgroup\texttt{#1}}
+\makeatother
+\providecommand*\mcitethebibliography{\thebibliography}
+\csname @ifundefined\endcsname{endmcitethebibliography}
+  {\let\endmcitethebibliography\endthebibliography}{}
+\begin{mcitethebibliography}{20}
+\providecommand*\natexlab[1]{#1}
+\providecommand*\mciteSetBstSublistMode[1]{}
+\providecommand*\mciteSetBstMaxWidthForm[2]{}
+\providecommand*\mciteBstWouldAddEndPuncttrue
+  {\def\EndOfBibitem{\unskip.}}
+\providecommand*\mciteBstWouldAddEndPunctfalse
+  {\let\EndOfBibitem\relax}
+\providecommand*\mciteSetBstMidEndSepPunct[3]{}
+\providecommand*\mciteSetBstSublistLabelBeginEnd[3]{}
+\providecommand*\EndOfBibitem{}
+\mciteSetBstSublistMode{f}
+\mciteSetBstMaxWidthForm{subitem}{(\alph{mcitesubitemcount})}
+\mciteSetBstSublistLabelBeginEnd
+  {\mcitemaxwidthsubitemform\space}
+  {\relax}
+  {\relax}
+
+\bibitem[Varner \latin{et~al.}(2026)Varner, \latin{et~al.}
+  others]{varnerSAProtein2026}
+Varner,~J.~D.; others Training-free generation of protein sequences from small
+  family alignments via stochastic attention. \emph{In preparation}
+  \textbf{2026}, \relax
+\mciteBstWouldAddEndPunctfalse
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Laskowski and Kato(1980)Laskowski, and
+  Kato]{laskowskiProteinInhibitors1980}
+Laskowski,~M.; Kato,~I. Protein inhibitors of proteinases. \emph{Annual Review
+  of Biochemistry} \textbf{1980}, \emph{49}, 593--626\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Adams \latin{et~al.}(2006)Adams, Smith, Schroeder, Yasuda, and
+  Lewis]{omegaConotoxinSAR2006}
+Adams,~D.~J.; Smith,~A.~B.; Schroeder,~C.~I.; Yasuda,~T.; Lewis,~R.~J.
+  $\omega$-Conotoxins {GVIA}, {MVIIA} and {CVID}: structure--activity
+  relationships and therapeutic potential. \emph{CNS \& Neurological Disorders
+  Drug Targets} \textbf{2006}, \emph{5}, 445--452\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Miljanich(2004)]{ziconotideReview2004}
+Miljanich,~G.~P. Ziconotide: a review of its pharmacology and use in the
+  treatment of pain. \emph{Current Medicinal Chemistry} \textbf{2004},
+  \emph{11}, 3029--3040\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Song and Varner(2009)Song, and Varner]{songModelingAnalysis2009}
+Song,~S.~O.; Varner,~J. Modeling and analysis of the molecular basis of pain in
+  sensory neurons. \emph{{PLOS ONE}} \textbf{2009}, \emph{4}, e6758\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Katoh and Standley(2013)Katoh, and Standley]{mafft2013}
+Katoh,~K.; Standley,~D.~M. {MAFFT} multiple sequence alignment software version
+  7: improvements in performance and usability. \emph{Molecular Biology and
+  Evolution} \textbf{2013}, \emph{30}, 772--780\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Kim \latin{et~al.}(1995)Kim, Takahashi, Ohtake, Wakamiya, and
+  Sato]{kimTyr13Essential1995}
+Kim,~J.~I.; Takahashi,~M.; Ohtake,~A.; Wakamiya,~A.; Sato,~K. Tyr13 is
+  essential for the activity of omega-conotoxin {MVIIA} and {GVIA}, specific
+  {N}-type calcium channel blockers. \emph{Biochemical and Biophysical Research
+  Communications} \textbf{1995}, \emph{206}, 449--454\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Sato \latin{et~al.}(1993)Sato, Park, Kohno, Maeda, Kim, Kato, and
+  Takahashi]{satoBasicResidues1993}
+Sato,~K.; Park,~N.~G.; Kohno,~T.; Maeda,~T.; Kim,~J.~I.; Kato,~R.;
+  Takahashi,~M. Role of basic residues for the binding of omega-conotoxin
+  {GVIA} to {N}-type calcium channels. \emph{Biochemical and Biophysical
+  Research Communications} \textbf{1993}, \emph{194}, 1292--1296\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Lewis \latin{et~al.}(2012)Lewis, Dutertre, Vetter, and
+  Christie]{lewisConotoxinSAR2012}
+Lewis,~R.~J.; Dutertre,~S.; Vetter,~I.; Christie,~M.~J. Conus venom peptide
+  pharmacology. \emph{Pharmacological Reviews} \textbf{2012}, \emph{64},
+  259--298\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Jumper \latin{et~al.}(2021)Jumper, \latin{et~al.}
+  others]{jumperHighlyAccurate2021}
+Jumper,~J.; others Highly accurate protein structure prediction with
+  {AlphaFold}. \emph{Nature} \textbf{2021}, \emph{596}, 583--589\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Mirdita \latin{et~al.}(2022)Mirdita, Sch{\"u}tze, Moriwaki, Heo,
+  Ovchinnikov, and Steinegger]{mirdita2022colabfold}
+Mirdita,~M.; Sch{\"u}tze,~K.; Moriwaki,~Y.; Heo,~L.; Ovchinnikov,~S.;
+  Steinegger,~M. {ColabFold}: making protein folding accessible to all.
+  \emph{Nature Methods} \textbf{2022}, \emph{19}, 679--682\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Heyne \latin{et~al.}(2021)Heyne, Shirian, Cohen, Peleg, Radisky, Papo,
+  Bhatt, Bhatt, and Bhatt]{heyneBPTIDMS2021}
+Heyne,~M.; Shirian,~J.; Cohen,~I.; Peleg,~Y.; Radisky,~E.~S.; Papo,~N.;
+  Bhatt,~D.; Bhatt,~S.; Bhatt,~A. Climbing up and down binding landscapes
+  through deep mutational scanning of three homologous protein--protein
+  complexes. \emph{Journal of the American Chemical Society} \textbf{2021},
+  \emph{143}, 17261--17275\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Ramsauer \latin{et~al.}(2021)Ramsauer, Sch{\"a}fl, Lehner, Seidl,
+  Widrich, Adler, Gruber, Holzleitner, Pavlovi{\'c}, Sandve, \latin{et~al.}
+  others]{ramsauerHopfieldNetworksAll2021}
+Ramsauer,~H.; Sch{\"a}fl,~B.; Lehner,~J.; Seidl,~P.; Widrich,~M.; Adler,~T.;
+  Gruber,~L.; Holzleitner,~M.; Pavlovi{\'c},~M.; Sandve,~G.~K.; others Hopfield
+  networks is all you need. \emph{International Conference on Learning
+  Representations} \textbf{2021}, \relax
+\mciteBstWouldAddEndPunctfalse
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Lin \latin{et~al.}(2023)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin,
+  Verkuil, Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candber,
+  and Rives]{esmfold2022}
+Lin,~Z.; Akin,~H.; Rao,~R.; Hie,~B.; Zhu,~Z.; Lu,~W.; Smetanin,~N.;
+  Verkuil,~R.; Kabeli,~O.; Shmueli,~Y.; dos Santos~Costa,~A.;
+  Fazel-Zarandi,~M.; Sercu,~T.; Candber,~S.; Rives,~A. Evolutionary-scale
+  prediction of atomic-level protein structure with a language model.
+  \emph{Science} \textbf{2023}, \emph{379}, 1123--1130\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Zhang and Skolnick(2005)Zhang, and Skolnick]{tmAlign2005}
+Zhang,~Y.; Skolnick,~J. {TM-align}: a protein structure alignment algorithm
+  based on the {TM}-score. \emph{Nucleic Acids Research} \textbf{2005},
+  \emph{33}, 2302--2309\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Lin \latin{et~al.}(2022)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin,
+  Verkuil, Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candber,
+  and Rives]{esm2science2023}
+Lin,~Z.; Akin,~H.; Rao,~R.; Hie,~B.; Zhu,~Z.; Lu,~W.; Smetanin,~N.;
+  Verkuil,~R.; Kabeli,~O.; Shmueli,~Y.; dos Santos~Costa,~A.;
+  Fazel-Zarandi,~M.; Sercu,~T.; Candber,~S.; Rives,~A. Language models of
+  protein sequences at the scale of evolution enable accurate structure
+  prediction. \emph{bioRxiv} \textbf{2022}, ESM-2 model\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Sato \latin{et~al.}(2000)Sato, Raymond, Martin-Moutot, Sasaki, Ohtake,
+  Minami, Van~Renterghem, de~Bhatt, Bhatt, and Bhatt]{satoAlaScanMVIIC2000}
+Sato,~K.; Raymond,~C.; Martin-Moutot,~N.; Sasaki,~T.; Ohtake,~A.; Minami,~K.;
+  Van~Renterghem,~C.; de~Bhatt,~T.; Bhatt,~S.; Bhatt,~B. Binding of
+  {Ala}-scanning analogs of omega-conotoxin {MVIIC} to {N}- and {P/Q}-type
+  calcium channels. \emph{FEBS Letters} \textbf{2000}, \emph{469},
+  147--150\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Schroeder \latin{et~al.}(2012)Schroeder, Nielsen, Adams, Loughnan,
+  Thomas, Alewood, Lewis, and Craik]{schroederLys2Effects2012}
+Schroeder,~C.~I.; Nielsen,~K.~J.; Adams,~D.~A.; Loughnan,~M.; Thomas,~L.;
+  Alewood,~P.~F.; Lewis,~R.~J.; Craik,~D.~J. Effects of {Lys2} to {Ala2}
+  substitutions on the structure and potency of omega-conotoxins {MVIIA} and
+  {CVID}. \emph{Biopolymers} \textbf{2012}, \emph{98}, 345--356\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Schroeder \latin{et~al.}(1999)Schroeder, Smythe, Lewis, and
+  Craik]{schroederChiralityTyr131999}
+Schroeder,~C.~I.; Smythe,~M.~L.; Lewis,~R.~J.; Craik,~D.~J. Effects of
+  chirality at {Tyr13} on the structure--activity relationships of
+  omega-conotoxins from {Conus magus}. \emph{Biochemistry} \textbf{1999},
+  \emph{38}, 1440--1446\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\end{mcitethebibliography}

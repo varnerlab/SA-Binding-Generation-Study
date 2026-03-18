@@ -1,4 +1,4 @@
-\begin{thebibliography}{17}
+\begin{thebibliography}{19}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -67,6 +67,18 @@ R.~J. Lewis, S.~Dutertre, I.~Vetter, and M.~J. Christie.
 \newblock Conus venom peptide pharmacology.
 \newblock \emph{Pharmacological Reviews}, 64\penalty0 (2):\penalty0 259--298,
   2012.
+
+\bibitem[Jumper et~al.(2021)]{jumperHighlyAccurate2021}
+John Jumper et~al.
+\newblock Highly accurate protein structure prediction with {AlphaFold}.
+\newblock \emph{Nature}, 596:\penalty0 583--589, 2021.
+
+\bibitem[Mirdita et~al.(2022)Mirdita, Sch{\"u}tze, Moriwaki, Heo, Ovchinnikov,
+  and Steinegger]{mirdita2022colabfold}
+Milot Mirdita, Konstantin Sch{\"u}tze, Yoshitaka Moriwaki, Lim Heo, Sergey
+  Ovchinnikov, and Martin Steinegger.
+\newblock {ColabFold}: making protein folding accessible to all.
+\newblock \emph{Nature Methods}, 19:\penalty0 679--682, 2022.
 
 \bibitem[Heyne et~al.(2021)Heyne, Shirian, Cohen, Peleg, Radisky, Papo, Bhatt,
   Bhatt, and Bhatt]{heyneBPTIDMS2021}

@@ -14,6 +14,7 @@ measure of how well PCA separates designated from background sequences---varied 
 (WW, heavily interleaved) to 0.34 (SH3, well-separated), providing a natural axis along which
 to test the limits of multiplicity-weighted conditioning.
 
+\paragraph{Hard curation and the small-set amplifier.}
 We restricted the memory matrix to a user-designated functional subset of Kunitz domains
 (PF00014; $K=99$ sequences, $L=53$ aligned positions) and tested whether subset-specific
 phenotype transfers to generated sequences (Fig.~\ref{fig:scaling}). Kunitz domains are serine protease inhibitors whose binding
@@ -48,9 +49,10 @@ instance, hits from a phage display screen---can generate hundreds of novel cand
 maintain the input phenotype while introducing substantial sequence diversity (pairwise diversity
 $\geq 0.45$ for $K_{\mathrm{des}} \geq 10$).
 
+\paragraph{Multiplicity-weighted conditioning and the calibration gap.}
 We swept $\rho$ from 1 (standard SA) to 1{,}000 on the full Kunitz family ($K = 99$) to test
 multiplicity-weighted generation (Fig.~\ref{fig:phase-transition},
-Table~\ref{fig:per-family-rho}). For each $\rho$, we
+Table~\ref{tab:per-family-rho}). For each $\rho$, we
 computed the multiplicity vector $\vr$, found $\beta^{*}(\vr)$ via entropy inflection on the
 weighted attention distribution, and generated 930 sequences (30 chains). We observed that the
 attention weight on designated patterns tracked $f_{\mathrm{eff}}$ with negligible deviation
@@ -84,19 +86,24 @@ the top $d=80$ principal components. The Fisher separation index for the Kunitz
 designated/background split was $S = 0.20$, confirming moderate but incomplete geometric
 separation.
 
+\paragraph{Cross-family validation and the separation index.}
 We repeated the multiplicity analysis on two additional families---SH3 domains (PF00018;
 $K=55$, split by conserved Trp at the binding groove) and WW domains (PF00397; $K=420$, split
 by specificity-loop residue)---yielding three families with distinct PCA-space geometries
-(Table~\ref{tab:cross-family}, Table~\ref{fig:per-family-rho}). We found that the calibration gap decreased monotonically with
+(Table~\ref{tab:cross-family}, Table~\ref{tab:per-family-rho}). We found that the calibration gap decreased monotonically with
 increasing separation index: WW domains ($S = 0.11$, functional subsets heavily interleaved in
 PCA space) exhibited the largest gap ($\Delta = 0.63$); Kunitz domains ($S = 0.20$) an
 intermediate gap ($\Delta = 0.37$); and SH3 domains ($S = 0.34$, well-separated functional
 subsets) a near-zero gap ($\Delta = 0.01$, $f_{\mathrm{obs}} = 0.989$ at
-$f_{\mathrm{eff}} = 0.999$); a linear fit yielded $\Delta \approx 0.84 - 2.5\,S$ with
-$R^{2} \approx 1.0$. We observed that the attention weights tracked $f_{\mathrm{eff}}$
-perfectly in all three families, which confirms that the multiplicity-weighted energy is exact
+$f_{\mathrm{eff}} = 0.999$); a linear fit yielded $\Delta \approx 0.92 - 2.7\,S$ with
+$R^{2} \approx 1.0$ (Fig.~\ref{fig:separation-vs-gap}). Extending the multiplicity sweep to
+$\omega$-conotoxin ($S = 0.78$, pharmacologically defined binder split) yielded
+$\Delta = 0.15$, following the monotonic trend but lying above the Pfam regression line---consistent
+with its imperfect single-residue marker (Tyr13 frequency $= 0.46$ in the full family) and
+non-Pfam provenance. We observed that the attention weights tracked $f_{\mathrm{eff}}$
+perfectly in all four families, which confirms that the multiplicity-weighted energy is exact
 regardless of the downstream calibration gap, while hard curation achieved 100\% phenotype
-transfer in all three families regardless of separation index---as expected, since curated
+transfer in all families regardless of separation index---as expected, since curated
 memory matrices are built from designated-subset-only PCA, which by construction captures
 subset-specific variation in its leading components. To test
 whether increasing $\beta$ beyond $\beta^{*}$ could push more phenotype signal through the PCA
@@ -107,11 +114,12 @@ reached 0.71 (versus 0.61 at $\beta^{*}$) while diversity dropped from 0.53 to 0
 suggests that the practitioner can tune $(\rho,\, \beta/\beta^{*})$ jointly to navigate the
 fidelity--diversity Pareto frontier.
 
+\paragraph{Application to $\omega$-conotoxin Cav2.2 binders.}
 We applied SA to the $\omega$-conotoxin O-superfamily---disulfide-rich peptides from predatory
 cone snails that block voltage-gated N-type calcium channels (Cav2.2) in sensory
 neurons~\cite{omegaConotoxinSAR2006}---to test whether curated memory conditioning generalizes
 beyond classical protein domains to therapeutically relevant peptide families
-(Table~\ref{fig:conotoxin-pharmacophore}, Fig.~\ref{fig:conotoxin-loop}). Cav2.2 is a primary
+(Table~\ref{tab:conotoxin-pharmacophore}, Fig.~\ref{fig:conotoxin-loop}). Cav2.2 is a primary
 gatekeeper of pain signaling in dorsal root ganglion (DRG) neurons: channel block attenuates
 synaptic transmission between peripheral nociceptors and the spinal cord. This family has direct
 therapeutic relevance---$\omega$-conotoxin MVIIA (ziconotide) is an FDA-approved non-opioid
@@ -135,7 +143,7 @@ input only 33.8\% of the 74 sequences carried Tyr at the pharmacophore position 
 full-family-seeded generation raised this modestly to 46.9\%, whereas 82.6\% of the 23 strong
 binders carried Tyr13 and strong-binder-seeded SA amplified this to 98.3\%---essentially
 locking the primary Cav2.2 pharmacophore across the generated library
-(Table~\ref{fig:conotoxin-pharmacophore}). The basic-residue (Lys + Arg) fraction was also
+(Table~\ref{tab:conotoxin-pharmacophore}). The basic-residue (Lys + Arg) fraction was also
 faithfully inherited: strong-binder generation produced 20.1\% basic residues versus 19.7\% in
 the input, while full-family generation produced only 12.0\%, matching the lower K/R content of
 the diverse full-family input. Per-position amino acid frequency heatmaps confirmed the
@@ -170,11 +178,12 @@ these results confirm that curated memory conditioning transferred Cav2.2 pharma
 statistics from a small set of 23 characterized sequences to a diverse library of 1\,550
 novel candidates, with no training and no target structure required.
 
+\paragraph{Structural and linguistic validation.}
 We predicted folds for 50 sequences from each source (stored, SA full-family, SA
 strong-conditioned, SA weak-conditioned, and HMM baseline) using ESMFold and computed TM-scores
 against the experimental Kunitz domain structure (1BPI, chain~A) to verify that SA-generated
 sequences encode plausible three-dimensional structures
-(Table~\ref{fig:structure-validation}, Table~\ref{fig:baseline-comparison}). We found that
+(Table~\ref{tab:structure-validation}). We found that
 SA-generated sequences were structurally indistinguishable from natural sequences: mean pLDDT
 was $90.4 \pm 1.2$ (SA full) and $90.7 \pm 1.1$ (SA strong) versus $89.3 \pm 3.2$ for stored
 sequences, with 100\% of SA sequences exceeding the pLDDT $>70$ confidence threshold; mean
@@ -182,7 +191,7 @@ TM-scores were $0.84 \pm 0.01$ (SA full) and $0.83 \pm 0.01$ (SA strong) versus
 $0.83 \pm 0.03$ for stored sequences, all well above the $\mathrm{TM} > 0.5$ same-fold
 threshold (Fig.~\ref{fig:fold-superposition}); whereas HMM-emitted sequences achieved only $60.4 \pm 13.1$ mean pLDDT (20\% above
 threshold) and $0.60 \pm 0.10$ mean TM-score, which suggests that profile HMM emission does not
-reliably produce foldable sequences (Table~\ref{fig:structure-validation}). AlphaFold2-ptm predictions via ColabFold~\cite{jumperHighlyAccurate2021,mirdita2022colabfold} independently confirmed these results: Kunitz TM-scores were $0.83$--$0.85$ (pLDDT $93$--$95$) and $\omega$-conotoxin TM-scores were $0.35$--$0.47$ (pLDDT $68$--$79$) across stored and SA-generated sequences, consistent with the ESMFold values and the shorter peptide length of conotoxins. We further assessed
+reliably produce foldable sequences (Table~\ref{tab:structure-validation}). AlphaFold2-ptm predictions via ColabFold~\cite{jumperHighlyAccurate2021,mirdita2022colabfold} independently confirmed these results (Table~\ref{tab:af2-validation}): Kunitz TM-scores were $0.83$--$0.85$ (pLDDT $93$--$95$) and $\omega$-conotoxin TM-scores were $0.35$--$0.47$ (pLDDT $68$--$79$) across stored and SA-generated sequences, consistent with the ESMFold values and the shorter peptide length of conotoxins. We further assessed
 sequence plausibility using ESM2-650M pseudo-perplexity computed via masked marginal scoring
 over all positions and found that SA-generated sequences achieved pseudo-perplexity comparable
 to natural sequences (SA full: $4.78 \pm 0.64$; SA strong: $4.72 \pm 0.60$; stored:
@@ -190,7 +199,7 @@ $4.97 \pm 0.98$), while HMM-emitted sequences were approximately threefold worse
 ($16.1 \pm 4.2$)---the fact that conditioned SA sequences were slightly \emph{more} plausible
 than stored sequences is consistent with SA's tendency to generate near the center of the family
 distribution, avoiding outlier sequences present in natural alignments
-(Table~\ref{fig:structure-validation}). We also compared SA against HMMER3 profile HMM emission
+(Table~\ref{tab:structure-validation}). We also compared SA against HMMER3 profile HMM emission
 (150 sequences, \texttt{hmmemit --seed 42}) and bootstrap resampling from stored patterns and
 found that SA full-family generation preserved the natural P1~K/R proportion
 ($0.41 \pm 0.01$) and achieved the lowest KL divergence ($0.0069 \pm 0.0001$), while HMM
@@ -198,6 +207,6 @@ emission produced sequences with substantially lower P1~K/R fraction ($0.15 \pm 
 higher compositional divergence ($0.030 \pm 0.011$); bootstrap resampling trivially preserved
 composition (KL $\approx 0.001$) but produced no novel sequences; and SA strong-binder
 conditioning achieved perfect P1~K/R fraction ($1.0 \pm 0.0$)---a capability fundamentally
-unavailable to unconditional baselines (Table~\ref{fig:baseline-comparison}). These results
+unavailable to unconditional baselines (Table~\ref{tab:structure-validation}). These results
 confirm that SA generated structurally valid, language-model-plausible sequences that
 outperformed classical baselines on both fidelity and functional conditioning.

@@ -109,7 +109,7 @@ This is Eq.~\eqref{eq:rho-inverse} in the main text. The formula is exact
 under the equal-similarity assumption; in practice, we confirmed empirically
 that the mean attention weight on designated patterns tracked
 $f_{\mathrm{eff}}(\rho)$ with $< 0.3\%$ deviation across all $\rho$ values
-and all families (Table~\ref{fig:per-family-rho}), validating the
+and all families (Table~\ref{tab:per-family-rho}), validating the
 approximation as operationally exact. The effective number of patterns under
 multiplicity weighting,
 $K_{\mathrm{eff}}(\mathbf{r}) = (\sum_k r_k)^2 / \sum_k r_k^2
@@ -150,13 +150,13 @@ weighting was limited by the full-family PCA geometry.
 
 \section{Supplementary Tables and Figures}\label{app:tables-figures}
 
-Tables~S\ref{tab:kunitz-rho}--S\ref{tab:ww-rho} report selected values from
+Tables~\ref{tab:kunitz-rho}--\ref{tab:ww-rho} report selected values from
 the $\rho$ sweep on each of the three benchmark families.
 $f_{\mathrm{eff}}$ is the effective designated fraction computed from the
 multiplicity vector; $f_{\mathrm{obs}}$ is the hard-decoded marker fraction
 averaged over 930 generated sequences; $\bar{a}_{\mathrm{des}}$ is the mean
 softmax attention weight on designated patterns; and $D$ is the mean pairwise
-diversity. Table~S\ref{tab:beta-sweep} reports phenotype fraction and
+diversity. Table~\ref{tab:beta-sweep} reports phenotype fraction and
 diversity as a function of $\beta/\beta^{*}$ for three fixed $\rho$ values
 on the Kunitz domain. Figure~\ref{fig:plddt-tmscore-scatter} shows the joint
 distribution of ESMFold pLDDT and TM-score for all 250 predicted Kunitz

@@ -1,0 +1,68 @@
+\documentclass[journal=jcisd8,manuscript=suppinfo]{achemso}
+
+% --- standard packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+% --- theorem environments ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% --- custom commands ---
+\newcommand{\vxi}{\bm{\xi}}
+\newcommand{\vX}{\mathbf{X}}
+\newcommand{\vm}{\mathbf{m}}
+\newcommand{\vr}{\mathbf{r}}
+\newcommand{\veps}{\bm{\epsilon}}
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator{\softmax}{softmax}
+
+\title{Supporting Information: Conditioning Protein Generation via Hopfield Pattern Multiplicity}
+
+\author{Jeffrey D.~Varner}
+\email{jdv27@cornell.edu}
+\affiliation{Robert Frederick Smith School of Chemical and Biomolecular Engineering,
+Cornell University, Ithaca, New York 14850, United States}
+
+\begin{document}
+
+% S-prefix numbering for SI
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\theequation}{S\arabic{equation}}
+
+\input{sections/appendix}
+
+% -----------------------------------------------------------------------
+% Fig S1: pLDDT vs TM-score scatter
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.72\textwidth]{sections/figs/plddt_vs_tmscore_scatter.pdf}
+  \caption{\textbf{pLDDT and TM-score are positively correlated; SA sequences cluster in
+  the high-quality region.}
+  Each point represents one predicted structure (50 per source). Stored (gray) and SA-generated
+  (blue, red, green) sequences cluster tightly above pLDDT $>85$ and TM-score $>0.8$ (upper
+  right quadrant). HMM sequences (orange) scatter broadly, with many falling below the
+  pLDDT $>70$ confidence threshold (vertical dashed line) and the TM-score $>0.5$ same-fold
+  threshold (horizontal dashed line).}
+  \label{fig:plddt-tmscore-scatter}
+\end{figure}
+
+\end{document}
