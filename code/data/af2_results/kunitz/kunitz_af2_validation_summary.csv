@@ -1,0 +1,4 @@
+source,n,plddt_mean,plddt_std,tmscore_mean,tmscore_std
+stored,50,93.5,4.0,0.1391,0.0847
+sa_strong,50,94.6,1.4,0.0983,0.0008
+sa_full,50,95.0,1.3,0.0978,0.0009
