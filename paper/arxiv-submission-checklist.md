@@ -44,13 +44,14 @@
 - [x] **11. Uncited bib entries** ✅ FIXED
   - Removed alamdariProteinGeneration2023, raoMSATransformer2021, linESMFold2023
 
-## YELLOW — Minor Issues (deferred)
+## YELLOW — Minor Issues
 
-- [ ] **12. ~20 unused figure files in sections/figs/ and figs/**
-  - Clean out before arxiv upload to keep tarball small
+- [x] **12. Unused figure files** ✅ FIXED
+  - Removed 24 superseded figures and .png duplicates
+  - 8 figures remain (7 in sections/figs/, 1 in figs/) — all used in paper
 
 - [ ] **13. varnerSAProtein2026 says "In preparation"**
   - Update when companion paper has a preprint
 
-- [ ] **14. esmfold2022 bib key says 2022 but year=2023**
-  - Cosmetic but confusing
+- [x] **14. esm2science2023 bib entry** ✅ FIXED
+  - Updated from bioRxiv preprint to published Science 2023 metadata

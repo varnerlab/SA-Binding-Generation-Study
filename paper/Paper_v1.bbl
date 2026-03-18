@@ -105,15 +105,16 @@ Hubert Ramsauer, Bernhard Sch{\"a}fl, Johannes Lehner, Philipp Seidl, Michael
 \newblock Hopfield networks is all you need.
 \newblock \emph{International Conference on Learning Representations}, 2021.
 
-\bibitem[Lin et~al.(2023)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin, Verkuil,
-  Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candido, and
-  Rives]{esmfold2022}
+\bibitem[Lin et~al.(2023{\natexlab{a}})Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin,
+  Verkuil, Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candido,
+  and Rives]{esmfold2022}
 Zeming Lin, Halil Akin, Roshan Rao, Brian Hie, Zhongkai Zhu, Wenting Lu, Nikita
   Smetanin, Robert Verkuil, Ori Kabeli, Yaniv Shmueli, Allan dos Santos~Costa,
   Maryam Fazel-Zarandi, Tom Sercu, Sal Candido, and Alexander Rives.
 \newblock Evolutionary-scale prediction of atomic-level protein structure with
   a language model.
-\newblock \emph{Science}, 379\penalty0 (6637):\penalty0 1123--1130, 2023.
+\newblock \emph{Science}, 379\penalty0 (6637):\penalty0 1123--1130,
+  2023{\natexlab{a}}.
 
 \bibitem[Zhang and Skolnick(2005)]{tmAlign2005}
 Yang Zhang and Jeffrey Skolnick.
@@ -122,15 +123,16 @@ Yang Zhang and Jeffrey Skolnick.
 \newblock \emph{Nucleic Acids Research}, 33\penalty0 (7):\penalty0 2302--2309,
   2005.
 
-\bibitem[Lin et~al.(2022)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin, Verkuil,
-  Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candido, and
-  Rives]{esm2science2023}
+\bibitem[Lin et~al.(2023{\natexlab{b}})Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin,
+  Verkuil, Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candido,
+  and Rives]{esm2science2023}
 Zeming Lin, Halil Akin, Roshan Rao, Brian Hie, Zhongkai Zhu, Wenting Lu, Nikita
   Smetanin, Robert Verkuil, Ori Kabeli, Yaniv Shmueli, Allan dos Santos~Costa,
   Maryam Fazel-Zarandi, Tom Sercu, Sal Candido, and Alexander Rives.
-\newblock Language models of protein sequences at the scale of evolution enable
-  accurate structure prediction.
-\newblock \emph{bioRxiv}, 2022.
+\newblock Evolutionary-scale prediction of atomic-level protein structure with
+  a language model.
+\newblock \emph{Science}, 379\penalty0 (6637):\penalty0 1123--1130,
+  2023{\natexlab{b}}.
 \newblock ESM-2 model.
 
 \bibitem[Sato et~al.(2000)Sato, Raymond, Martin-Moutot, Sasaki, Ohtake, Minami,
