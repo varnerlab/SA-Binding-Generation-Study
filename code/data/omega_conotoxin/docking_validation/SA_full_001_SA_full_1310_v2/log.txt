@@ -1,0 +1,23 @@
+2026-03-19 13:06:31,678 Running colabfold 1.6.1
+2026-03-19 13:06:31,696 WARNING: no GPU detected, will be using CPU
+2026-03-19 13:06:33,935 Found 8 citations for tools or databases
+2026-03-19 13:06:33,935 Query 1/2: SA_full_1310_Conotoxin_SA_full_1310 (length 26)
+2026-03-19 13:06:37,214 Sequence 0 found templates: ['1fu3_A']
+2026-03-19 13:07:28,257 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=79 pTM=0.337
+2026-03-19 13:08:17,056 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=80.4 pTM=0.34 tol=0.183
+2026-03-19 13:08:17,057 alphafold2_multimer_v3_model_1_seed_000 took 97.6s (1 recycles)
+2026-03-19 13:08:17,058 reranking models by 'plddt' metric
+2026-03-19 13:08:17,058 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=80.4 pTM=0.34
+2026-03-19 13:08:17,171 Query 2/2: Cav2.2_pore_Cav2.2_pore_domain (length 355)
+2026-03-19 13:08:17,834 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:08:25,489 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:08:34,146 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:08:42,530 Sequence 0 found no templates
+2026-03-19 13:25:44,830 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=50.4 pTM=0.284
+2026-03-19 13:45:20,664 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=52.7 pTM=0.264 tol=6.18
+2026-03-19 14:04:55,664 alphafold2_multimer_v3_model_1_seed_000 recycle=2 pLDDT=54.2 pTM=0.275 tol=3.88
+2026-03-19 14:23:20,006 alphafold2_multimer_v3_model_1_seed_000 recycle=3 pLDDT=55.2 pTM=0.286 tol=0.999
+2026-03-19 14:23:20,007 alphafold2_multimer_v3_model_1_seed_000 took 4477.4s (3 recycles)
+2026-03-19 14:23:20,019 reranking models by 'plddt' metric
+2026-03-19 14:23:20,019 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=55.2 pTM=0.286
+2026-03-19 14:23:20,185 Done

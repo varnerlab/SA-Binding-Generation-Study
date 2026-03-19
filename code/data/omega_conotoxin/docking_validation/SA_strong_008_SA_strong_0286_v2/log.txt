@@ -1,0 +1,69 @@
+2026-03-19 13:06:28,993 Running colabfold 1.6.1
+2026-03-19 13:06:29,020 WARNING: no GPU detected, will be using CPU
+2026-03-19 13:06:31,241 Found 8 citations for tools or databases
+2026-03-19 13:06:31,242 Query 1/2: SA_strong_0286_Conotoxin_SA_strong_0286 (length 26)
+2026-03-19 13:06:35,532 Sequence 0 found templates: ['1feo_A', '1dw4_A', '1dw5_A', '1mvi_A', '2km9_A']
+2026-03-19 13:07:26,587 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=83.8 pTM=0.378
+2026-03-19 13:08:16,004 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=85.5 pTM=0.385 tol=0.0894
+2026-03-19 13:08:16,004 alphafold2_multimer_v3_model_1_seed_000 took 98.0s (1 recycles)
+2026-03-19 13:08:16,007 reranking models by 'plddt' metric
+2026-03-19 13:08:16,007 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=85.5 pTM=0.385
+2026-03-19 13:08:16,124 Query 2/2: Cav2.2_pore_Cav2.2_pore_domain (length 355)
+2026-03-19 13:08:16,775 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:08:27,561 Sleeping for 5s. Reason: RATELIMIT
+2026-03-19 13:08:33,213 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:08:43,857 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:08:52,554 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:09:02,214 Sleeping for 5s. Reason: RATELIMIT
+2026-03-19 13:09:08,230 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:09:17,898 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:09:26,873 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:09:36,526 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:09:46,220 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:09:57,342 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:10:07,989 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:10:18,175 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:10:28,889 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:10:38,670 Sleeping for 5s. Reason: RATELIMIT
+2026-03-19 13:10:44,806 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:10:54,474 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:11:02,150 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:11:10,818 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:11:20,550 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:11:30,585 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:11:41,238 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:11:50,876 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:12:00,573 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:12:08,438 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:12:17,121 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:12:28,137 Sleeping for 6s. Reason: RATELIMIT
+2026-03-19 13:12:34,781 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:12:44,517 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:12:55,210 Sleeping for 5s. Reason: RATELIMIT
+2026-03-19 13:13:00,943 Sleeping for 5s. Reason: RATELIMIT
+2026-03-19 13:13:06,645 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:13:15,315 Sleeping for 5s. Reason: RATELIMIT
+2026-03-19 13:13:20,985 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:13:31,868 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:13:39,518 Sleeping for 6s. Reason: RATELIMIT
+2026-03-19 13:13:46,220 Sleeping for 5s. Reason: RATELIMIT
+2026-03-19 13:13:51,884 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:14:01,540 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:14:10,207 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:14:19,873 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:14:30,609 Sleeping for 6s. Reason: RATELIMIT
+2026-03-19 13:14:37,292 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:14:44,960 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:14:53,618 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:15:01,311 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:15:08,995 Sleeping for 5s. Reason: RATELIMIT
+2026-03-19 13:15:14,671 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:15:24,981 Sequence 0 found no templates
+2026-03-19 13:35:11,762 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=50.4 pTM=0.284
+2026-03-19 13:54:38,632 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=52.7 pTM=0.264 tol=6.18
+2026-03-19 14:14:04,357 alphafold2_multimer_v3_model_1_seed_000 recycle=2 pLDDT=54.2 pTM=0.275 tol=3.88
+2026-03-19 14:27:46,701 alphafold2_multimer_v3_model_1_seed_000 recycle=3 pLDDT=55.2 pTM=0.286 tol=0.999
+2026-03-19 14:27:46,703 alphafold2_multimer_v3_model_1_seed_000 took 4341.6s (3 recycles)
+2026-03-19 14:27:46,715 reranking models by 'plddt' metric
+2026-03-19 14:27:46,715 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=55.2 pTM=0.286
+2026-03-19 14:27:46,860 Done

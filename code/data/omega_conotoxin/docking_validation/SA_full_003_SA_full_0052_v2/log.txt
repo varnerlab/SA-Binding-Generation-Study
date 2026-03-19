@@ -1,0 +1,34 @@
+2026-03-19 13:07:34,669 Running colabfold 1.6.1
+2026-03-19 13:07:34,802 WARNING: no GPU detected, will be using CPU
+2026-03-19 13:07:44,901 Found 8 citations for tools or databases
+2026-03-19 13:07:44,902 Query 1/2: SA_full_0052_Conotoxin_SA_full_0052 (length 26)
+2026-03-19 13:07:45,640 Sleeping for 6s. Reason: RATELIMIT
+2026-03-19 13:07:52,313 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:07:59,972 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:08:07,629 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:08:17,314 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:08:27,064 Sleeping for 7s. Reason: RATELIMIT
+2026-03-19 13:08:34,724 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:08:44,385 Sleeping for 9s. Reason: RATELIMIT
+2026-03-19 13:08:54,323 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:09:02,979 Sleeping for 6s. Reason: RATELIMIT
+2026-03-19 13:09:09,656 Sleeping for 8s. Reason: RATELIMIT
+2026-03-19 13:09:18,907 Sleeping for 5s. Reason: RATELIMIT
+2026-03-19 13:09:24,593 Sleeping for 6s. Reason: RATELIMIT
+2026-03-19 13:09:34,213 Sequence 0 found templates: ['1v4q_A', '1cnn_A', '1omn_A']
+2026-03-19 13:10:16,356 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=83.8 pTM=0.364
+2026-03-19 13:11:01,528 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=84.5 pTM=0.377 tol=0.173
+2026-03-19 13:11:01,528 alphafold2_multimer_v3_model_1_seed_000 took 84.9s (1 recycles)
+2026-03-19 13:11:01,530 reranking models by 'plddt' metric
+2026-03-19 13:11:01,530 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=84.5 pTM=0.377
+2026-03-19 13:11:01,655 Query 2/2: Cav2.2_pore_Cav2.2_pore_domain (length 355)
+2026-03-19 13:11:02,624 Sleeping for 10s. Reason: RATELIMIT
+2026-03-19 13:11:13,975 Sequence 0 found no templates
+2026-03-19 13:29:48,091 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=50.4 pTM=0.284
+2026-03-19 13:49:09,774 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=52.7 pTM=0.264 tol=6.18
+2026-03-19 14:08:34,920 alphafold2_multimer_v3_model_1_seed_000 recycle=2 pLDDT=54.2 pTM=0.275 tol=3.88
+2026-03-19 14:25:18,117 alphafold2_multimer_v3_model_1_seed_000 recycle=3 pLDDT=55.2 pTM=0.286 tol=0.999
+2026-03-19 14:25:18,118 alphafold2_multimer_v3_model_1_seed_000 took 4444.0s (3 recycles)
+2026-03-19 14:25:18,130 reranking models by 'plddt' metric
+2026-03-19 14:25:18,130 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=55.2 pTM=0.286
+2026-03-19 14:25:18,322 Done

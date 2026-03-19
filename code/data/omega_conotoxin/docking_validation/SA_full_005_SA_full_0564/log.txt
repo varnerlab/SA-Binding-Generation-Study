@@ -1,23 +1,20 @@
-2026-03-19 00:35:12,171 Running colabfold 1.6.1
-2026-03-19 00:35:12,188 WARNING: no GPU detected, will be using CPU
-2026-03-19 00:35:13,637 Calculating extra pTM is not supported for single chain prediction, skipping it.
-2026-03-19 00:35:13,638 Found 8 citations for tools or databases
-2026-03-19 00:35:13,638 Query 1/2: SA_full_0564_Conotoxin_SA_full_0564 (length 26)
-2026-03-19 00:35:14,322 Sleeping for 10s. Reason: PENDING
-2026-03-19 00:35:27,413 Could not get MSA/templates for SA_full_0564_Conotoxin_SA_full_0564: [Errno 2] No such file or directory: 'hhsearch'
-Traceback (most recent call last):
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 1431, in run
-    = get_msa_and_templates(
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 707, in get_msa_and_templates
-    template_feature = mk_template(
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 152, in mk_template
-    hhsearch_result = hhsearch_pdb70_runner.query(a3m_lines)
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/alphafold/data/tools/hhsearch.py", line 86, in query
-    process = subprocess.Popen(
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/subprocess.py", line 971, in __init__
-    self._execute_child(args, executable, preexec_fn, close_fds,
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/subprocess.py", line 1863, in _execute_child
-    raise child_exception_type(errno_num, err_msg, err_filename)
-FileNotFoundError: [Errno 2] No such file or directory: 'hhsearch'
-2026-03-19 00:35:27,415 Query 2/2: Cav2.2_pore_Cav2.2_pore_domain (length 355)
-2026-03-19 00:35:28,787 Sequence 0 found no templates
+2026-03-19 11:51:50,330 Running colabfold 1.6.1
+2026-03-19 11:51:50,359 WARNING: no GPU detected, will be using CPU
+2026-03-19 11:51:53,009 Found 8 citations for tools or databases
+2026-03-19 11:51:53,009 Query 1/2: SA_full_0564_Conotoxin_SA_full_0564 (length 26)
+2026-03-19 11:51:54,226 Sequence 0 found templates: ['1feo_A', '2km9_A', '1cnn_A', '1omn_A', '1cnn_A', '1omn_A']
+2026-03-19 11:52:21,971 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=81.9 pTM=0.362
+2026-03-19 11:52:47,249 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=83.9 pTM=0.373 tol=0.116
+2026-03-19 11:52:47,250 alphafold2_multimer_v3_model_1_seed_000 took 50.7s (1 recycles)
+2026-03-19 11:52:47,251 reranking models by 'plddt' metric
+2026-03-19 11:52:47,251 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=83.9 pTM=0.373
+2026-03-19 11:52:47,357 Query 2/2: Cav2.2_pore_Cav2.2_pore_domain (length 355)
+2026-03-19 11:52:47,358 Sequence 0 found no templates
+2026-03-19 12:02:40,246 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=50.4 pTM=0.284
+2026-03-19 12:14:26,304 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=52.7 pTM=0.264 tol=6.18
+2026-03-19 12:26:05,704 alphafold2_multimer_v3_model_1_seed_000 recycle=2 pLDDT=54.2 pTM=0.275 tol=3.88
+2026-03-19 12:37:42,178 alphafold2_multimer_v3_model_1_seed_000 recycle=3 pLDDT=55.2 pTM=0.286 tol=0.999
+2026-03-19 12:37:42,179 alphafold2_multimer_v3_model_1_seed_000 took 2694.7s (3 recycles)
+2026-03-19 12:37:42,192 reranking models by 'plddt' metric
+2026-03-19 12:37:42,192 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=55.2 pTM=0.286
+2026-03-19 12:37:42,347 Done
