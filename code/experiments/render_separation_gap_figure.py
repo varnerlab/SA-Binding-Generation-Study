@@ -13,9 +13,18 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-ROOT = pathlib.Path(__file__).resolve().parents[2]
-DATA = ROOT / "code" / "data"
-OUT  = ROOT / "paper" / "sections" / "figs" / "fig2_separation_vs_gap.pdf"
+SCRIPT_PATH = pathlib.Path(__file__).resolve()
+REPO_ROOT = pathlib.Path(".")
+for parent in SCRIPT_PATH.parents:
+    if (parent / "code" / "data").is_dir() and (parent / "paper" / "sections").is_dir():
+        REPO_ROOT = parent
+        break
+
+if REPO_ROOT == pathlib.Path("."):
+    raise RuntimeError("Could not locate repository root from script path")
+
+DATA = REPO_ROOT / "code" / "data"
+OUT  = REPO_ROOT / "paper" / "sections" / "figs" / "fig2_separation_vs_gap.pdf"
 
 # --- load per-family sweep data ---
 families = {

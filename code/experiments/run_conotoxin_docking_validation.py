@@ -18,6 +18,7 @@ import numpy as np
 import json
 import pickle
 import time
+import zipfile
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
@@ -96,25 +97,36 @@ class ConotoxinDockingPipeline:
             logger.error(f"ColabFold timeout for {job_name}")
             return None
 
+    def _select_score_json(self, result_dir):
+        """Select the sequence-complex score file from a ColabFold run."""
+        result_dir = Path(result_dir)
+
+        for zip_file in sorted(result_dir.glob("*.result.zip")):
+            with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+                zip_ref.extractall(result_dir)
+
+        score_files = sorted(result_dir.glob("*_scores_rank_001_*.json"))
+        if not score_files:
+            return None
+
+        complex_scores = [f for f in score_files if "Cav2.2" not in f.name]
+        if complex_scores:
+            return complex_scores[0]
+
+        return score_files[0]
+
     def extract_scores(self, result_dir, job_name):
         """Extract ipTM, pDockQ2, and interface pLDDT from ColabFold outputs."""
         result_dir = Path(result_dir)
 
-        # Unzip results if they exist
-        zip_files = list(result_dir.glob("*.result.zip"))
-        if zip_files:
-            import zipfile
-            with zipfile.ZipFile(zip_files[0], 'r') as zip_ref:
-                zip_ref.extractall(result_dir)
-
         # Look for confidence JSON file
-        json_files = list(result_dir.glob("*_scores_rank_001_*.json"))
-        if not json_files:
+        score_json = self._select_score_json(result_dir)
+        if score_json is None:
             logger.warning(f"No confidence scores found for {job_name}")
             return None
 
         try:
-            with open(json_files[0], 'r') as f:
+            with open(score_json, 'r') as f:
                 scores = json.load(f)
 
             # Extract key metrics

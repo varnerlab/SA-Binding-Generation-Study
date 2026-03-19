@@ -16,8 +16,9 @@ from matplotlib.colors import LinearSegmentedColormap
 from mpl_toolkits.mplot3d import Axes3D
 from Bio.PDB import PDBParser
 from scipy.interpolate import make_interp_spline
+from pathlib import Path
 
-BASE = "/Users/jeffreyvarner/Desktop/papers/SA-Binding-Generation-Study"
+BASE = Path(__file__).resolve().parent.parent
 TMALIGN = os.path.join(BASE, "code", "bin", "TMalign")
 FIG_DIR = os.path.join(BASE, "paper", "figs")
 

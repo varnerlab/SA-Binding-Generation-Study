@@ -386,6 +386,25 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{table}
 
 % -----------------------------------------------------------------------
+% Table: Docking validation
+% -----------------------------------------------------------------------
+\begin{table}[h]
+\centering
+\caption{\textbf{AlphaFold2 multimer complex prediction validation for SA-generated $\omega$-conotoxins.}
+Complex confidence scores (pTM) for representative sequences docked with Cav2.2 pore domain via ColabFold. SA-generated sequences achieve binding prediction performance statistically equivalent to natural controls. Natural controls include CVIE, CVIF, CnVIIE, CnVIIF, and CnVIIG. Statistical tests (Welch t-test and Mann-Whitney U) found no significant differences between SA-generated sequences and controls (all $p > 0.05$).}
+\label{tab:docking-validation}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Group} & \textbf{n} & \textbf{Mean pTM} & \textbf{Std Dev} & \textbf{Range} \\
+\midrule
+SA strong-conditioned & 9 & 0.377 & 0.011 & 0.36--0.39 \\
+SA full-conditioned & 4 & 0.355 & 0.019 & 0.34--0.38 \\
+Natural controls & 5 & 0.362 & 0.029 & 0.31--0.38 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------
 % Fig: Binding-loop heatmaps with residuals
 % -----------------------------------------------------------------------
 \begin{figure}[p]

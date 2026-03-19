@@ -5,10 +5,13 @@ Takes first 50 sequences from each source, removes gaps, writes clean FASTA.
 """
 import os
 import re
+from pathlib import Path
 
-BASE = "/Users/jeffreyvarner/Desktop/papers/SA-Binding-Generation-Study/code/data"
-OUT = "/Users/jeffreyvarner/Desktop/papers/SA-Binding-Generation-Study/code/data/af2_input"
-os.makedirs(OUT, exist_ok=True)
+SCRIPT_DIR = Path(__file__).resolve().parent
+BASE_DIR = SCRIPT_DIR.parent
+BASE = str(BASE_DIR / "data")
+OUT = BASE_DIR / "data" / "af2_input"
+OUT.mkdir(parents=True, exist_ok=True)
 
 def read_fasta(path):
     """Read FASTA file, return list of (name, sequence) tuples."""
