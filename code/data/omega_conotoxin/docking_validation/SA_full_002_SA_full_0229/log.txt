@@ -1,0 +1,32 @@
+2026-03-18 23:16:36,684 Running colabfold 1.6.1
+2026-03-18 23:16:36,695 WARNING: no GPU detected, will be using CPU
+2026-03-18 23:16:38,145 Calculating extra pTM is not supported for single chain prediction, skipping it.
+2026-03-18 23:16:38,147 Found 8 citations for tools or databases
+2026-03-18 23:16:38,147 Query 1/2: SA_full_0229_Conotoxin_SA_full_0229 (length 26)
+2026-03-18 23:16:38,871 Sleeping for 5s. Reason: PENDING
+2026-03-18 23:16:44,569 Sleeping for 6s. Reason: RUNNING
+2026-03-18 23:16:53,677 Could not get MSA/templates for SA_full_0229_Conotoxin_SA_full_0229: [Errno 2] No such file or directory: 'hhsearch'
+Traceback (most recent call last):
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 1431, in run
+    = get_msa_and_templates(
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 707, in get_msa_and_templates
+    template_feature = mk_template(
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 152, in mk_template
+    hhsearch_result = hhsearch_pdb70_runner.query(a3m_lines)
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/alphafold/data/tools/hhsearch.py", line 86, in query
+    process = subprocess.Popen(
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/subprocess.py", line 971, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/subprocess.py", line 1863, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'hhsearch'
+2026-03-18 23:16:53,679 Query 2/2: Cav2.2_pore_Cav2.2_pore_domain (length 355)
+2026-03-18 23:16:55,027 Sequence 0 found no templates
+2026-03-18 23:23:25,631 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=50.4 pTM=0.284
+2026-03-18 23:29:56,026 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=52.7 pTM=0.264 tol=6.18
+2026-03-18 23:36:21,731 alphafold2_multimer_v3_model_1_seed_000 recycle=2 pLDDT=54.2 pTM=0.275 tol=3.88
+2026-03-18 23:42:47,087 alphafold2_multimer_v3_model_1_seed_000 recycle=3 pLDDT=55.2 pTM=0.286 tol=0.999
+2026-03-18 23:42:47,087 alphafold2_multimer_v3_model_1_seed_000 took 1550.5s (3 recycles)
+2026-03-18 23:42:47,099 reranking models by 'plddt' metric
+2026-03-18 23:42:47,099 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=55.2 pTM=0.286
+2026-03-18 23:42:47,225 Done

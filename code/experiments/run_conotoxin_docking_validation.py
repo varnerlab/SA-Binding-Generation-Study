@@ -54,10 +54,11 @@ class ConotoxinDockingPipeline:
 
     def extract_sequences(self, fasta_file, n_samples=20, seed=42):
         """Extract n random sequences from FASTA file."""
+        import random
         sequences = list(SeqIO.parse(fasta_file, "fasta"))
-        np.random.seed(seed)
+        random.seed(seed)
         if len(sequences) > n_samples:
-            sequences = np.random.choice(sequences, n_samples, replace=False)
+            sequences = random.sample(sequences, n_samples)
         return sequences
 
     def create_complex_fasta(self, conotoxin_seq, conotoxin_id, output_file):
@@ -77,6 +78,7 @@ class ConotoxinDockingPipeline:
             "--num-models", "1",  # Single best model
             "--num-recycle", "3",
             "--model-type", "alphafold2_multimer_v3",
+            "--calc-extra-ptm",  # Calculate ipTM scores for binding assessment
             "--zip",  # Compress outputs
             str(fasta_file),
             str(output_dir)
@@ -98,6 +100,13 @@ class ConotoxinDockingPipeline:
         """Extract ipTM, pDockQ2, and interface pLDDT from ColabFold outputs."""
         result_dir = Path(result_dir)
 
+        # Unzip results if they exist
+        zip_files = list(result_dir.glob("*.result.zip"))
+        if zip_files:
+            import zipfile
+            with zipfile.ZipFile(zip_files[0], 'r') as zip_ref:
+                zip_ref.extractall(result_dir)
+
         # Look for confidence JSON file
         json_files = list(result_dir.glob("*_scores_rank_001_*.json"))
         if not json_files:
@@ -111,10 +120,18 @@ class ConotoxinDockingPipeline:
             # Extract key metrics
             iptm_score = scores.get('iptm', None)
             ptm_score = scores.get('ptm', None)
-            confidence = scores.get('confidence', None)
 
-            # Calculate interface pLDDT from PDB file
+            # Calculate overall confidence (weighted average of ptm and iptm if available)
+            if iptm_score is not None and ptm_score is not None:
+                confidence = 0.8 * ptm_score + 0.2 * iptm_score
+            else:
+                confidence = ptm_score
+
+            # Calculate interface pLDDT from PDB file (check both relaxed and unrelaxed)
             pdb_files = list(result_dir.glob("*_relaxed_rank_001_*.pdb"))
+            if not pdb_files:
+                pdb_files = list(result_dir.glob("*_unrelaxed_rank_001_*.pdb"))
+
             interface_plddt = None
             if pdb_files:
                 interface_plddt = self.calculate_interface_plddt(pdb_files[0])

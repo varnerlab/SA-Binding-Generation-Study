@@ -1,0 +1,23 @@
+2026-03-19 00:35:12,171 Running colabfold 1.6.1
+2026-03-19 00:35:12,188 WARNING: no GPU detected, will be using CPU
+2026-03-19 00:35:13,637 Calculating extra pTM is not supported for single chain prediction, skipping it.
+2026-03-19 00:35:13,638 Found 8 citations for tools or databases
+2026-03-19 00:35:13,638 Query 1/2: SA_full_0564_Conotoxin_SA_full_0564 (length 26)
+2026-03-19 00:35:14,322 Sleeping for 10s. Reason: PENDING
+2026-03-19 00:35:27,413 Could not get MSA/templates for SA_full_0564_Conotoxin_SA_full_0564: [Errno 2] No such file or directory: 'hhsearch'
+Traceback (most recent call last):
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 1431, in run
+    = get_msa_and_templates(
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 707, in get_msa_and_templates
+    template_feature = mk_template(
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 152, in mk_template
+    hhsearch_result = hhsearch_pdb70_runner.query(a3m_lines)
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/alphafold/data/tools/hhsearch.py", line 86, in query
+    process = subprocess.Popen(
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/subprocess.py", line 971, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/anaconda3/envs/colabfold/lib/python3.10/subprocess.py", line 1863, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'hhsearch'
+2026-03-19 00:35:27,415 Query 2/2: Cav2.2_pore_Cav2.2_pore_domain (length 355)
+2026-03-19 00:35:28,787 Sequence 0 found no templates
