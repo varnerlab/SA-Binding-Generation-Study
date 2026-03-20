@@ -259,6 +259,32 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     200 & 1.50 & 0.648 & 0.503 \\
     200 & 2.00 & 0.677 & 0.488 \\
     200 & 3.00 & 0.706 & 0.463 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+\section*{Docking-statistics note}
+For the $\omega$-conotoxin docking validation (Table~\ref{tab:docking-validation}),
+group-level comparisons (SA strong-conditioned, SA full-conditioned, and
+natural $\omega$-conotoxin controls) were evaluated using exact two-sided
+permutation tests on mean complex-level scores (iPTM, pTM, confidence, and
+interface-pLDDT), with sample sizes $n_{\mathrm{SA,strong}}=10$,
+$n_{\mathrm{SA,full}}=10$, and $n_{\mathrm{control}}=5$. No pairwise
+contrast reached significance at $\alpha=0.05$ (all $p > 0.05$; smallest observed
+$p=0.0726$ for confidence, SA full vs controls).
+
+\begin{table}[h]
+  \centering
+  \caption{Pairwise exact permutation p-values for $\omega$-conotoxin docking comparisons (all $H_0$: equal means).}
+  \label{tab:docking-permutation-pvalues}
+  \begin{tabular}{lccc}
+    \toprule
+    \textbf{Metric} & \textbf{SA strong vs SA full} & \textbf{SA strong vs controls} & \textbf{SA full vs controls} \\
+    \midrule
+    iPTM & 1.0000 & 0.7502 & 0.4752 \\
+    pTM & 0.7873 & 0.1285 & 0.1092 \\
+    Confidence & 0.6560 & 0.1245 & 0.0726 \\
+    Interface pLDDT & 0.6556 & 0.2238 & 0.2934 \\
     \bottomrule
   \end{tabular}
 \end{table}

@@ -1,0 +1,14 @@
+2026-03-19 18:31:48,411 Running colabfold 1.6.1
+2026-03-19 18:31:48,427 WARNING: no GPU detected, will be using CPU
+2026-03-19 18:31:50,009 /Users/jdv27/.matplotlib is not a writable directory
+2026-03-19 18:31:50,009 Matplotlib created a temporary cache directory at /var/folders/82/m7j29m517p9c2201mdkk3m580000gp/T/matplotlib-bm9qxk_x because there was an issue with the default path (/Users/jdv27/.matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+2026-03-19 18:31:55,031 Matplotlib is building the font cache; this may take a moment.
+2026-03-19 18:32:01,611 Failed to extract font properties from /System/Library/Fonts/Apple Color Emoji.ttc: Could not set the fontsize (invalid pixel size; error code 0x17)
+2026-03-19 18:32:01,614 Failed to extract font properties from /System/Library/Fonts/SFIndia.ttc: Can not load face (SFNT font table missing; error code 0x8e)
+2026-03-19 18:32:01,626 Failed to extract font properties from /System/Library/Fonts/Supplemental/NISC18030.ttf: Could not set the fontsize (invalid pixel size; error code 0x17)
+2026-03-19 18:32:01,647 Failed to extract font properties from /System/Library/PrivateFrameworks/FontServices.framework/Resources/Reserved/PingFangUI.ttc: Can not load face (locations (loca) table missing; error code 0x90)
+2026-03-19 18:32:01,653 Failed to extract font properties from /System/Library/Fonts/LastResort.otf: tuple indices must be integers or slices, not str
+2026-03-19 18:32:01,663 generated new fontManager
+2026-03-19 18:32:01,891 Found 2 citations for tools or databases
+2026-03-19 18:32:01,891 Skipping Cav2.2_pore_SA_strong_1310_Cav2.2_pore_domain_and_conotoxin_complex (result.zip)
+2026-03-19 18:32:01,892 Done

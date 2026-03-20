@@ -4,6 +4,11 @@
 import json
 from pathlib import Path
 import zipfile
+from Bio.PDB import PDBParser, NeighborSearch
+import warnings
+from Bio.PDB.PDBExceptions import PDBConstructionWarning
+
+warnings.filterwarnings("ignore", category=PDBConstructionWarning)
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 CODE_DIR = SCRIPT_DIR.parent
@@ -12,6 +17,9 @@ DOCKING_DIR = CODE_DIR / "data" / "omega_conotoxin" / "docking_validation"
 
 def parse_run_metadata(run_name):
     """Return (group, sequence_id) from a docking run directory name."""
+    if run_name.startswith('test_'):
+        return 'skip', 'mviia'
+
     if run_name.startswith('SA_strong_'):
         parts = run_name.split('_')
         group = 'SA_strong'
@@ -24,9 +32,6 @@ def parse_run_metadata(run_name):
         parts = run_name.split('_', 2)
         group = 'controls'
         sequence_id = parts[2] if len(parts) > 2 else 'unknown'
-    elif run_name.startswith('test_'):
-        group = 'test'
-        sequence_id = 'mviia'
     else:
         group = 'unknown'
         sequence_id = 'unknown'
@@ -57,6 +62,57 @@ def select_score_json(run_dir, sequence_id):
 
     return score_files[0]
 
+
+def calculate_interface_plddt(run_dir):
+    """Estimate mean pLDDT on interface residues from multimer PDB output."""
+    pdb_files = sorted(run_dir.glob("*_relaxed_rank_001_*.pdb"))
+    if not pdb_files:
+        pdb_files = sorted(run_dir.glob("*_unrelaxed_rank_001_*.pdb"))
+    if not pdb_files:
+        return None
+
+    pdb_file = pdb_files[0]
+    parser = PDBParser(QUIET=True)
+    try:
+        structure = parser.get_structure("complex", pdb_file)
+    except Exception:
+        return None
+
+    model = structure[0]
+    chains = list(model.get_chains())
+    if len(chains) < 2:
+        return None
+
+    chain_a = model["A"] if "A" in model and chains[0].get_id() == "A" else chains[0]
+    chain_b = model["B"] if "B" in model else chains[1]
+
+    atoms_a = [atom for residue in chain_a for atom in residue.get_atoms()]
+    atoms_b = [atom for residue in chain_b for atom in residue.get_atoms()]
+    if not atoms_a or not atoms_b:
+        return None
+
+    ns = NeighborSearch(atoms_a)
+    interface_residues_b = set()
+    for atom_b in atoms_b:
+        neighbors = ns.search(atom_b.coord, 8.0, level="R")
+        for residue in neighbors:
+            interface_residues_b.add(residue)
+
+    if not interface_residues_b:
+        return None
+
+    plddt_values = []
+    for residue in interface_residues_b:
+        if "CA" in residue:
+            plddt_values.append(float(residue["CA"].get_bfactor()))
+        else:
+            plddt_values.extend(float(atom.get_bfactor()) for atom in residue.get_atoms())
+
+    if not plddt_values:
+        return None
+
+    return sum(plddt_values) / len(plddt_values)
+
 def extract_scores_from_run(run_dir):
     """Extract scores from a single ColabFold run directory."""
     run_dir = Path(run_dir)
@@ -74,6 +130,10 @@ def extract_scores_from_run(run_dir):
 
         # Extract key metrics
         iptm_score = scores.get('iptm', None)
+        if iptm_score is None:
+            print(f"Skipping {run_name}: no ipTM score (likely monomer-only prediction).")
+            return None
+
         ptm_score = scores.get('ptm', None)
 
         # Calculate overall confidence
@@ -88,7 +148,8 @@ def extract_scores_from_run(run_dir):
             'sequence_id': sequence_id,
             'iptm_score': iptm_score,
             'ptm_score': ptm_score,
-            'confidence': confidence
+            'confidence': confidence,
+            'interface_plddt': calculate_interface_plddt(run_dir)
         }
 
     except Exception as e:
@@ -102,6 +163,10 @@ def main():
     # Process all run directories
     for run_dir in docking_dir.iterdir():
         if run_dir.is_dir() and not run_dir.name.startswith('.'):
+            if run_dir.name.startswith('test_'):
+                print(f"Skipping {run_dir.name}: control experiment run.")
+                continue
+
             print(f"Processing {run_dir.name}...")
             scores = extract_scores_from_run(run_dir)
             if scores:
@@ -117,7 +182,7 @@ def main():
 
             # Write each row
             for result in results:
-                f.write(f"{result['job_name']},{result['group']},{result['sequence_id']},{result['iptm_score']},{result['ptm_score']},{result['confidence']},\n")
+                f.write(f"{result['job_name']},{result['group']},{result['sequence_id']},{result['iptm_score']},{result['ptm_score']},{result['confidence']},{result['interface_plddt']}\n")
 
         print(f"\nResults saved to {output_file}")
         print(f"Processed {len(results)} runs")

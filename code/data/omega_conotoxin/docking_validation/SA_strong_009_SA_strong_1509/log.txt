@@ -1,20 +1,21 @@
-2026-03-19 11:51:50,330 Running colabfold 1.6.1
-2026-03-19 11:51:50,359 WARNING: no GPU detected, will be using CPU
-2026-03-19 11:51:53,009 Found 8 citations for tools or databases
-2026-03-19 11:51:53,009 Query 1/2: SA_strong_1509_Conotoxin_SA_strong_1509 (length 26)
-2026-03-19 11:51:54,466 Sequence 0 found templates: ['1feo_A', '1dw4_A', '1dw5_A', '1mvi_A', '1omg_A']
-2026-03-19 11:52:21,980 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=83.3 pTM=0.367
-2026-03-19 11:52:47,261 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=85 pTM=0.376 tol=0.1
-2026-03-19 11:52:47,261 alphafold2_multimer_v3_model_1_seed_000 took 50.7s (1 recycles)
-2026-03-19 11:52:47,263 reranking models by 'plddt' metric
-2026-03-19 11:52:47,263 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=85 pTM=0.376
-2026-03-19 11:52:47,357 Query 2/2: Cav2.2_pore_Cav2.2_pore_domain (length 355)
-2026-03-19 11:52:47,358 Sequence 0 found no templates
-2026-03-19 12:02:36,729 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=50.4 pTM=0.284
-2026-03-19 12:14:19,810 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=52.7 pTM=0.264 tol=6.18
-2026-03-19 12:25:57,244 alphafold2_multimer_v3_model_1_seed_000 recycle=2 pLDDT=54.2 pTM=0.275 tol=3.88
-2026-03-19 12:37:38,226 alphafold2_multimer_v3_model_1_seed_000 recycle=3 pLDDT=55.2 pTM=0.286 tol=0.999
-2026-03-19 12:37:38,226 alphafold2_multimer_v3_model_1_seed_000 took 2690.8s (3 recycles)
-2026-03-19 12:37:38,239 reranking models by 'plddt' metric
-2026-03-19 12:37:38,239 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=55.2 pTM=0.286
-2026-03-19 12:37:38,397 Done
+2026-03-19 20:08:57,791 Running colabfold 1.6.1
+2026-03-19 20:08:57,805 WARNING: no GPU detected, will be using CPU
+2026-03-19 20:08:59,373 /Users/jdv27/.matplotlib is not a writable directory
+2026-03-19 20:08:59,374 Matplotlib created a temporary cache directory at /var/folders/82/m7j29m517p9c2201mdkk3m580000gp/T/matplotlib-it3c5c22 because there was an issue with the default path (/Users/jdv27/.matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+2026-03-19 20:09:04,393 Matplotlib is building the font cache; this may take a moment.
+2026-03-19 20:09:10,531 Failed to extract font properties from /System/Library/Fonts/LastResort.otf: tuple indices must be integers or slices, not str
+2026-03-19 20:09:10,534 Failed to extract font properties from /System/Library/Fonts/Supplemental/NISC18030.ttf: Could not set the fontsize (invalid pixel size; error code 0x17)
+2026-03-19 20:09:10,557 Failed to extract font properties from /System/Library/Fonts/SFIndia.ttc: Can not load face (SFNT font table missing; error code 0x8e)
+2026-03-19 20:09:10,563 Failed to extract font properties from /System/Library/Fonts/Apple Color Emoji.ttc: Could not set the fontsize (invalid pixel size; error code 0x17)
+2026-03-19 20:09:10,566 Failed to extract font properties from /System/Library/PrivateFrameworks/FontServices.framework/Resources/Reserved/PingFangUI.ttc: Can not load face (locations (loca) table missing; error code 0x90)
+2026-03-19 20:09:10,582 generated new fontManager
+2026-03-19 20:09:10,790 Found 2 citations for tools or databases
+2026-03-19 20:09:10,791 Query 1/1: Cav2.2_pore_SA_strong_1509_Cav2.2_pore_domain_and_conotoxin_complex (length 381)
+2026-03-19 20:12:25,276 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=34.9 pTM=0.224 ipTM=0.0966
+2026-03-19 20:15:39,092 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=36.7 pTM=0.212 ipTM=0.1 tol=6.65
+2026-03-19 20:18:49,033 alphafold2_multimer_v3_model_1_seed_000 recycle=2 pLDDT=37.8 pTM=0.211 ipTM=0.102 tol=4.23
+2026-03-19 20:21:58,648 alphafold2_multimer_v3_model_1_seed_000 recycle=3 pLDDT=39.7 pTM=0.228 ipTM=0.112 tol=7.54
+2026-03-19 20:22:00,017 alphafold2_multimer_v3_model_1_seed_000 took 767.2s (3 recycles)
+2026-03-19 20:22:00,032 reranking models by 'multimer' metric
+2026-03-19 20:22:00,032 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=39.7 pTM=0.228 ipTM=0.112 actifpTM=0.116
+2026-03-19 20:22:00,438 Done

@@ -64,6 +64,16 @@ exercise~\cite{songModelingAnalysis2009}---can generate thousands of novel candi
 inherit the Tyr13 pharmacophore and basic-residue electrostatics of the input set, providing a
 starting point for computational docking or experimental synthesis without retraining any model.
 
+The rerun also changes how we should position the docking validation: earlier multimer-based
+interpretation was constrained by pipeline artifacts, and we now report only complex-level
+multimer outputs with interface-aware parsing. In this constrained analysis, SA-strong, SA-full, and
+natural controls were evaluated as 10/10/5 sequences and showed no pairwise differences in complex-level
+confidence metrics (exact permutation $p>0.05$ for all pairwise contrasts). The absolute values remain
+modest and overlapping across groups (pTM $\sim 0.22$, iPTM $\sim 0.10$, interface pLDDT $\sim 38$--$41$),
+so this should be interpreted as conservative computational support for retained pharmacophore plausibility
+rather than definitive evidence of high-confidence binding superiority; larger control sets and downstream
+biochemical validation are required.
+
 Several limitations should be acknowledged. The cross-family Pfam regression rests on three points
 (with a fourth, $\omega$-conotoxin, following the monotonic trend but lying off the Pfam line);
 additional families are needed to confirm the linearity of the $S$--$\Delta$ relationship and to

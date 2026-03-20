@@ -19,6 +19,8 @@ import json
 import pickle
 import time
 import zipfile
+import shutil
+import argparse
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
@@ -64,26 +66,48 @@ class ConotoxinDockingPipeline:
 
     def create_complex_fasta(self, conotoxin_seq, conotoxin_id, output_file):
         """Create FASTA file with Cav2.2 + conotoxin for ColabFold multimer."""
-        records = [
-            SeqRecord(Seq(self.cav22_pore_domain), id="Cav2.2_pore", description="Cav2.2 pore domain"),
-            SeqRecord(Seq(conotoxin_seq), id=conotoxin_id, description=f"Conotoxin {conotoxin_id}")
-        ]
+        # ColabFold multimer mode expects a single FASTA entry with chains
+        # separated by ":" (this avoids treating receptor and toxin as two
+        # independent monomer predictions).
+        complex_seq = f"{self.cav22_pore_domain}:{conotoxin_seq}"
+        records = [SeqRecord(
+            Seq(complex_seq),
+            id=f"Cav2.2_pore|{conotoxin_id}",
+            description="Cav2.2 pore domain and conotoxin complex"
+        )]
         SeqIO.write(records, output_file, "fasta")
         return output_file
 
     def run_colabfold(self, fasta_file, output_dir, job_name):
         """Run ColabFold multimer prediction."""
+        use_single_sequence = os.environ.get("COLABFOLD_MSA_MODE", "").strip().lower() == "single_sequence"
+        pair_mode = os.environ.get("COLABFOLD_PAIR_MODE", "").strip().lower() or None
+        host_url = os.environ.get("COLABFOLD_HOST_URL", "").strip()
+        num_recycles = os.environ.get("COLABFOLD_NUM_RECYCLE", "3").strip()
+
         cmd = [
             "colabfold_batch",
-            "--templates",
             "--num-models", "1",  # Single best model
-            "--num-recycle", "3",
+            "--num-recycle", num_recycles,
             "--model-type", "alphafold2_multimer_v3",
             "--calc-extra-ptm",  # Calculate ipTM scores for binding assessment
             "--zip",  # Compress outputs
             str(fasta_file),
             str(output_dir)
         ]
+
+        if use_single_sequence:
+            cmd[1:1] = ["--msa-mode", "single_sequence"]
+            cmd[1:1] = ["--pair-mode", pair_mode] if pair_mode else []
+            # Templates are not used with single-sequence mode and can trigger
+            # unnecessary network lookups.
+        else:
+            cmd[1:1] = ["--templates"]
+            if pair_mode:
+                cmd[1:1] = ["--pair-mode", pair_mode]
+
+        if host_url:
+            cmd[1:1] = ["--host-url", host_url]
 
         logger.info(f"Running ColabFold for {job_name}: {' '.join(cmd)}")
 
@@ -115,6 +139,75 @@ class ConotoxinDockingPipeline:
 
         return score_files[0]
 
+    def _infer_prediction_mode(self, result_dir, scores):
+        """Infer whether a result is a true multimer prediction."""
+        # Prefer explicit multimer signal from ColabFold score JSON.
+        if scores.get("iptm") is not None:
+            return "multimer"
+
+        log_path = Path(result_dir) / "log.txt"
+        if log_path.exists():
+            try:
+                with open(log_path, "r") as f:
+                    log_text = f.read().lower()
+                if "single chain prediction" in log_text or "single chain" in log_text:
+                    return "monomer"
+            except OSError:
+                pass
+
+        # Fallback: check PDB chains (if available).
+        pdb_files = list(Path(result_dir).glob("*_relaxed_rank_001_*.pdb"))
+        if not pdb_files:
+            pdb_files = list(Path(result_dir).glob("*_unrelaxed_rank_001_*.pdb"))
+        if not pdb_files:
+            return "missing_pdb"
+
+        try:
+            from Bio.PDB import PDBParser
+            parser = PDBParser(QUIET=True)
+            structure = parser.get_structure("complex", pdb_files[0])
+            model = structure[0]
+            chain_count = len(list(model.get_chains()))
+            return "multimer" if chain_count >= 2 else "monomer"
+        except Exception:
+            return "parse_error"
+
+    def is_job_complete(self, job_dir, sequence_id):
+        """Return True when a job already has usable multimer outputs."""
+        job_dir = Path(job_dir)
+        score_json = self._select_score_json(job_dir)
+        if score_json is None:
+            return False
+
+        try:
+            with open(score_json, 'r') as f:
+                scores = json.load(f)
+        except Exception:
+            return False
+
+        if scores.get("iptm") is None:
+            return False
+
+        prediction_mode = self._infer_prediction_mode(job_dir, scores)
+        if prediction_mode != "multimer":
+            return False
+
+        pdb_files = list(job_dir.glob("*_relaxed_rank_001_*.pdb"))
+        if not pdb_files:
+            pdb_files = list(job_dir.glob("*_unrelaxed_rank_001_*.pdb"))
+        if not pdb_files:
+            return False
+
+        try:
+            from Bio.PDB import PDBParser
+            parser = PDBParser(QUIET=True)
+            structure = parser.get_structure("complex", pdb_files[0])
+            model = structure[0]
+            chain_count = len(list(model.get_chains()))
+            return chain_count >= 2
+        except Exception:
+            return False
+
     def extract_scores(self, result_dir, job_name):
         """Extract ipTM, pDockQ2, and interface pLDDT from ColabFold outputs."""
         result_dir = Path(result_dir)
@@ -128,6 +221,11 @@ class ConotoxinDockingPipeline:
         try:
             with open(score_json, 'r') as f:
                 scores = json.load(f)
+
+            prediction_mode = self._infer_prediction_mode(result_dir, scores)
+            if prediction_mode != "multimer":
+                logger.warning(f"Skipping {job_name}: ColabFold output is {prediction_mode}, not a multimer run.")
+                return None
 
             # Extract key metrics
             iptm_score = scores.get('iptm', None)
@@ -150,6 +248,7 @@ class ConotoxinDockingPipeline:
 
             return {
                 'job_name': job_name,
+                'prediction_mode': prediction_mode,
                 'iptm_score': iptm_score,
                 'ptm_score': ptm_score,
                 'confidence': confidence,
@@ -168,6 +267,9 @@ class ConotoxinDockingPipeline:
             parser = PDBParser(QUIET=True)
             structure = parser.get_structure("complex", pdb_file)
             model = structure[0]
+            chains = list(model.get_chains())
+            if len(chains) < 2:
+                return None
 
             # Get chains (assume chain A = Cav2.2, chain B = conotoxin)
             chain_a = model['A']  # Cav2.2 (first 400 residues of pore domain)
@@ -199,7 +301,7 @@ class ConotoxinDockingPipeline:
             logger.error(f"Error calculating interface pLDDT: {e}")
             return None
 
-    def run_pipeline(self, n_samples_per_group=15):
+    def run_pipeline(self, n_samples_per_group=15, resume=True, force=False):
         """Run complete docking validation pipeline."""
         logger.info("Starting conotoxin docking validation pipeline")
 
@@ -224,6 +326,19 @@ class ConotoxinDockingPipeline:
             for i, seq_record in enumerate(sequences):
                 job_name = f"{group_name}_{i+1:03d}_{seq_record.id}"
                 job_dir = self.docking_dir / job_name
+                job_exists = job_dir.exists()
+
+                if job_exists and force:
+                    logger.info(f"Force mode: removing existing directory for {job_name}")
+                    shutil.rmtree(job_dir, ignore_errors=True)
+                elif job_exists:
+                    if resume and self.is_job_complete(job_dir, seq_record.id):
+                        logger.info(f"Skipping {job_name}: complete multimer result already exists.")
+                        continue
+                    if resume:
+                        logger.info(f"Resuming {job_name}: incomplete output detected, clearing previous folder.")
+                        shutil.rmtree(job_dir, ignore_errors=True)
+
                 job_dir.mkdir(exist_ok=True)
 
                 # Create complex FASTA
@@ -263,17 +378,32 @@ class ConotoxinDockingPipeline:
 
 def main():
     """Main execution function."""
-    import sys
+    parser = argparse.ArgumentParser(description="Run conotoxin docking validation with ColabFold")
+    parser.add_argument("base_dir", nargs="?", default=".")
+    parser.add_argument("--n-samples-per-group", type=int, default=10, dest="n_samples_per_group")
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        default=True,
+        help="Skip completed jobs and continue from partial outputs (default).",
+    )
+    parser.add_argument("--no-resume", dest="resume", action="store_false", help="Do not skip completed runs.")
+    parser.add_argument("--force", action="store_true", help="Re-run all jobs and remove any existing outputs.")
+    args = parser.parse_args()
 
-    if len(sys.argv) != 2:
-        print("Usage: python run_conotoxin_docking_validation.py <base_code_directory>")
-        sys.exit(1)
+    if args.resume and args.force:
+        print("Error: --resume and --force are mutually exclusive. Resume cannot be used with force.")
+        return 1
 
-    base_dir = sys.argv[1]
+    base_dir = args.base_dir
     pipeline = ConotoxinDockingPipeline(base_dir)
 
     # Run pipeline
-    results = pipeline.run_pipeline(n_samples_per_group=10)  # Start with smaller test
+    results = pipeline.run_pipeline(
+        n_samples_per_group=args.n_samples_per_group,
+        resume=args.resume,
+        force=args.force,
+    )
 
     if results is not None:
         print(f"\nPipeline completed. Results saved to {pipeline.results_file}")

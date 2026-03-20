@@ -1,0 +1,21 @@
+2026-03-19 21:01:11,592 Running colabfold 1.6.1
+2026-03-19 21:01:11,606 WARNING: no GPU detected, will be using CPU
+2026-03-19 21:01:13,125 /Users/jdv27/.matplotlib is not a writable directory
+2026-03-19 21:01:13,126 Matplotlib created a temporary cache directory at /var/folders/82/m7j29m517p9c2201mdkk3m580000gp/T/matplotlib-bf4zocc3 because there was an issue with the default path (/Users/jdv27/.matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+2026-03-19 21:01:18,150 Matplotlib is building the font cache; this may take a moment.
+2026-03-19 21:01:24,217 Failed to extract font properties from /System/Library/Fonts/LastResort.otf: tuple indices must be integers or slices, not str
+2026-03-19 21:01:24,236 Failed to extract font properties from /System/Library/PrivateFrameworks/FontServices.framework/Resources/Reserved/PingFangUI.ttc: Can not load face (locations (loca) table missing; error code 0x90)
+2026-03-19 21:01:24,242 Failed to extract font properties from /System/Library/Fonts/SFIndia.ttc: Can not load face (SFNT font table missing; error code 0x8e)
+2026-03-19 21:01:24,244 Failed to extract font properties from /System/Library/Fonts/Apple Color Emoji.ttc: Could not set the fontsize (invalid pixel size; error code 0x17)
+2026-03-19 21:01:24,255 Failed to extract font properties from /System/Library/Fonts/Supplemental/NISC18030.ttf: Could not set the fontsize (invalid pixel size; error code 0x17)
+2026-03-19 21:01:24,268 generated new fontManager
+2026-03-19 21:01:24,468 Found 2 citations for tools or databases
+2026-03-19 21:01:24,469 Query 1/1: Cav2.2_pore_SA_full_0458_Cav2.2_pore_domain_and_conotoxin_complex (length 381)
+2026-03-19 21:04:39,137 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=35.7 pTM=0.229 ipTM=0.117
+2026-03-19 21:07:52,405 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=40 pTM=0.214 ipTM=0.104 tol=7.02
+2026-03-19 21:11:04,121 alphafold2_multimer_v3_model_1_seed_000 recycle=2 pLDDT=40.4 pTM=0.212 ipTM=0.1 tol=5.44
+2026-03-19 21:14:13,939 alphafold2_multimer_v3_model_1_seed_000 recycle=3 pLDDT=39.7 pTM=0.22 ipTM=0.107 tol=3.38
+2026-03-19 21:14:15,387 alphafold2_multimer_v3_model_1_seed_000 took 769.0s (3 recycles)
+2026-03-19 21:14:15,400 reranking models by 'multimer' metric
+2026-03-19 21:14:15,401 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=39.7 pTM=0.22 ipTM=0.107 actifpTM=0.119
+2026-03-19 21:14:15,820 Done

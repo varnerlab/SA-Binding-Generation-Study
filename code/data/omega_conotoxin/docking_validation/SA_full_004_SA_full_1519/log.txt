@@ -1,31 +1,19 @@
-2026-03-19 00:09:00,261 Running colabfold 1.6.1
-2026-03-19 00:09:00,273 WARNING: no GPU detected, will be using CPU
-2026-03-19 00:09:01,736 Calculating extra pTM is not supported for single chain prediction, skipping it.
-2026-03-19 00:09:01,737 Found 8 citations for tools or databases
-2026-03-19 00:09:01,737 Query 1/2: SA_full_1519_Conotoxin_SA_full_1519 (length 26)
-2026-03-19 00:09:02,448 Sleeping for 6s. Reason: PENDING
-2026-03-19 00:09:11,591 Could not get MSA/templates for SA_full_1519_Conotoxin_SA_full_1519: [Errno 2] No such file or directory: 'hhsearch'
-Traceback (most recent call last):
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 1431, in run
-    = get_msa_and_templates(
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 707, in get_msa_and_templates
-    template_feature = mk_template(
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/colabfold/batch.py", line 152, in mk_template
-    hhsearch_result = hhsearch_pdb70_runner.query(a3m_lines)
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/site-packages/alphafold/data/tools/hhsearch.py", line 86, in query
-    process = subprocess.Popen(
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/subprocess.py", line 971, in __init__
-    self._execute_child(args, executable, preexec_fn, close_fds,
-  File "/opt/anaconda3/envs/colabfold/lib/python3.10/subprocess.py", line 1863, in _execute_child
-    raise child_exception_type(errno_num, err_msg, err_filename)
-FileNotFoundError: [Errno 2] No such file or directory: 'hhsearch'
-2026-03-19 00:09:11,593 Query 2/2: Cav2.2_pore_Cav2.2_pore_domain (length 355)
-2026-03-19 00:09:12,980 Sequence 0 found no templates
-2026-03-19 00:15:43,760 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=50.4 pTM=0.284
-2026-03-19 00:22:15,033 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=52.7 pTM=0.264 tol=6.18
-2026-03-19 00:28:41,524 alphafold2_multimer_v3_model_1_seed_000 recycle=2 pLDDT=54.2 pTM=0.275 tol=3.88
-2026-03-19 00:35:08,986 alphafold2_multimer_v3_model_1_seed_000 recycle=3 pLDDT=55.2 pTM=0.286 tol=0.999
-2026-03-19 00:35:08,987 alphafold2_multimer_v3_model_1_seed_000 took 1554.4s (3 recycles)
-2026-03-19 00:35:08,998 reranking models by 'plddt' metric
-2026-03-19 00:35:08,998 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=55.2 pTM=0.286
-2026-03-19 00:35:09,126 Done
+2026-03-19 20:37:40,754 Running colabfold 1.6.1
+2026-03-19 20:37:40,773 WARNING: no GPU detected, will be using CPU
+2026-03-19 20:37:42,295 /Users/jdv27/.matplotlib is not a writable directory
+2026-03-19 20:37:42,296 Matplotlib created a temporary cache directory at /var/folders/82/m7j29m517p9c2201mdkk3m580000gp/T/matplotlib-3m9imx2m because there was an issue with the default path (/Users/jdv27/.matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+2026-03-19 20:37:47,311 Matplotlib is building the font cache; this may take a moment.
+2026-03-19 20:37:53,310 Failed to extract font properties from /System/Library/PrivateFrameworks/FontServices.framework/Resources/Reserved/PingFangUI.ttc: Can not load face (locations (loca) table missing; error code 0x90)
+2026-03-19 20:37:53,318 Failed to extract font properties from /System/Library/Fonts/Apple Color Emoji.ttc: Could not set the fontsize (invalid pixel size; error code 0x17)
+2026-03-19 20:37:53,320 Failed to extract font properties from /System/Library/Fonts/Supplemental/NISC18030.ttf: Could not set the fontsize (invalid pixel size; error code 0x17)
+2026-03-19 20:37:53,338 Failed to extract font properties from /System/Library/Fonts/SFIndia.ttc: Can not load face (SFNT font table missing; error code 0x8e)
+2026-03-19 20:37:53,354 Failed to extract font properties from /System/Library/Fonts/LastResort.otf: tuple indices must be integers or slices, not str
+2026-03-19 20:37:53,368 generated new fontManager
+2026-03-19 20:37:53,609 Found 2 citations for tools or databases
+2026-03-19 20:37:53,609 Query 1/1: Cav2.2_pore_SA_full_1519_Cav2.2_pore_domain_and_conotoxin_complex (length 381)
+2026-03-19 20:41:07,618 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=35 pTM=0.225 ipTM=0.097
+2026-03-19 20:44:20,023 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=38.3 pTM=0.212 ipTM=0.11 tol=7.86
+2026-03-19 20:44:21,455 alphafold2_multimer_v3_model_1_seed_000 took 385.9s (1 recycles)
+2026-03-19 20:44:21,470 reranking models by 'multimer' metric
+2026-03-19 20:44:21,470 rank_001_alphafold2_multimer_v3_model_1_seed_000 pLDDT=38.3 pTM=0.212 ipTM=0.11 actifpTM=0.114
+2026-03-19 20:44:21,901 Done
