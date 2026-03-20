@@ -20,8 +20,8 @@ the generative process on a functional subset without retraining?}
 A seemingly simple answer is to \emph{curate} the memory matrix, restricting it to sequences that
 a practitioner has identified---through experimental screens, literature annotation, or functional
 assays---as belonging to the functional subset of interest. SA then generates new sequences in their
-image. We show that this strategy works remarkably well: even three designated input sequences
-suffice for perfect phenotype transfer in the Kunitz domain. But hard curation discards all
+image. We show that this strategy works: even three designated input sequences
+suffice for complete phenotype transfer in the Kunitz domain. But hard curation discards all
 remaining family members, losing the fold-level constraints they provide. A more principled
 approach would retain the full family in the memory while continuously upweighting the designated
 subset. The key observation we exploit is that pattern multiplicity in the Hopfield energy provides
@@ -43,7 +43,7 @@ main contributions are: (i)~the multiplicity-weighted Hopfield energy and its La
 with a characterization of the phase transition $\beta^{*}(\rho)$ as a function of the effective
 pattern count $K_{\mathrm{eff}}(\vr)$; (ii)~a decomposition of the calibration gap between
 energy-level conditioning and decoded phenotype into three independently measurable layers
-(attention, PCA reconstruction, argmax decoding), revealing that the gap arises entirely from the
+(attention, PCA reconstruction, argmax decoding), showing that the gap arises from the
 PCA encoding; and (iii)~a cross-family validation showing that the Fisher separation index $S$ of
 functional subsets in PCA space quantitatively predicts the calibration gap magnitude
 ($R^{2} \approx 1.0$ across three families spanning a threefold range of $S$). These results

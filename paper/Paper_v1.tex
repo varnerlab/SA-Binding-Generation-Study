@@ -63,17 +63,6 @@
 \input{sections/abstract}
 \end{abstract}
 
-\noindent\fbox{\parbox{\textwidth}{\small\textbf{Significance Statement.}
-Protein engineers routinely isolate a handful of functional binders---via phage display, yeast
-surface display, or functional selections---but lack a systematic way to expand these small sets
-into diverse candidate libraries without retraining a generative model. We show that a single
-scalar parameter added to the softmax logits of a Hopfield-energy sampler continuously conditions
-generation from ``any family member'' to ``only binders,'' with no training, no GPU, and no
-architectural changes. The effectiveness of this conditioning is predicted \emph{a priori} by a
-cheap geometric property of the alignment, giving practitioners a decision rule before any
-sequences are generated.}}
-
-\bigskip
 
 \section{Introduction}
 \input{sections/introduction}
@@ -351,7 +340,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 % -----------------------------------------------------------------------
 % Table: SAR agreement
 % -----------------------------------------------------------------------
-\begin{table}[t]
+\begin{table}[ht]
   \caption{\textbf{SA-generated $\omega$-conotoxin sequences preserve experimentally
   validated binding determinants.}
   Published structure--activity relationship (SAR) data for $\omega$-conotoxin
@@ -388,7 +377,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 % -----------------------------------------------------------------------
 % Table: Docking validation
 % -----------------------------------------------------------------------
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{\textbf{AlphaFold2 multimer complex prediction validation for SA-generated $\omega$-conotoxins.}
 Complex-level scores for sequences docked with Cav2.2 pore domain via ColabFold in multimer mode. 

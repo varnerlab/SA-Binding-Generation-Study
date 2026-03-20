@@ -10,10 +10,10 @@ the Kunitz domain, curated memory achieved 100\% phenotype transfer with as few 
 designated input sequences; multiplicity-weighted generation on the full family increased
 phenotype fidelity from the natural proportion (32\%) to 63\% at $\rho = 500$; and the
 cross-family validation on
-Kunitz, SH3, and WW domains revealed a quantitative relationship between PCA-space geometry and
+Kunitz, SH3, and WW domains showed a quantitative relationship between PCA-space geometry and
 conditioning effectiveness.
 
-The most informative finding is the calibration gap and its decomposition. The gap is not a
+The central finding is the calibration gap and its decomposition. The gap is not a
 failure of the multiplicity-weighted energy---the attention weights track $f_{\mathrm{eff}}$ with
 $< 0.3\%$ deviation across all families and $\rho$ values tested---but a well-characterized
 property of the PCA encoding that compresses $20L$-dimensional sequence space into $d$ principal
@@ -24,13 +24,13 @@ $\Delta$ with $R^{2} \approx 1.0$, suggesting that the separation index is a rel
 priori} predictor of conditioning effectiveness. This yields a practitioner's decision rule:
 compute $S$ (a cheap operation requiring only PCA and pairwise cosine similarities, no
 generation); if $S > 0.3$, multiplicity weighting preserves fold-level constraints from the full
-family while achieving near-perfect phenotype transfer (SH3 domains); if $S < 0.15$, hard
+family while achieving high phenotype transfer (SH3 domains); if $S < 0.15$, hard
 curation is necessary because the PCA bottleneck attenuates the signal too severely (WW domains);
 the intermediate regime ($0.15 < S < 0.3$, Kunitz domains) admits a tradeoff controlled by
 $(\rho,\, \beta/\beta^{*})$.
 
-The fact that hard curation achieves perfect phenotype transfer with as few as three designated
-input sequences is practically significant. Many experimental campaigns---phage display, yeast
+Hard curation achieves complete phenotype transfer with as few as three designated
+input sequences. Many experimental campaigns---phage display, yeast
 surface display, functional selections, or even literature curation---produce exactly this kind of
 small, functionally characterized set. The practitioner brings external knowledge (``these
 sequences bind my target,'' ``these variants are thermostable,'' ``these hits came from my
@@ -40,7 +40,7 @@ the screen identifies a few hits, SA expands them computationally, and the expan
 fed back into a second round of selection or directly into functional assays. The method itself is
 agnostic to the meaning of the designation---it biases the sampler toward the designated patterns
 regardless of whether the underlying phenotype is binding, stability, expression, or any other
-property. The scaling study confirms that even $K_{\mathrm{des}} = 3$ suffices for phenotype
+property. The scaling study shows that even $K_{\mathrm{des}} = 3$ suffices for phenotype
 transfer; diversity improves with more input sequences but saturates near
 $K_{\mathrm{des}} = 20$.
 
@@ -55,29 +55,23 @@ with varying selectivity). Full-family seeding dilutes the Cav2.2-specific Tyr p
 because the PCA encoding reflects the full structural diversity; curated seeding from the 23
 N-type blockers concentrates the PCA subspace on Cav2.2-relevant variation, allowing SA to
 regenerate it with 98\% fidelity. This generalizes the separation-index interpretation: even
-when $S$ is moderate, hard curation can achieve near-perfect pharmacophore transfer by
+when $S$ is moderate, hard curation can achieve high pharmacophore transfer by
 restricting the memory to the functional subset of interest. The cost---lower sequence diversity
 and reduced novelty (0.46 vs.\ 0.60)---reflects the narrower PCA basis, consistent with the
-Kunitz scaling study. Importantly, a practitioner holding 23 experimentally validated Cav2.2
-blockers---a realistic output from a phage display screen or a literature curation
-exercise~\cite{songModelingAnalysis2009}---can generate thousands of novel candidates that
-inherit the Tyr13 pharmacophore and basic-residue electrostatics of the input set, providing a
-starting point for computational docking or experimental synthesis without retraining any model.
+Kunitz scaling study.
 
-The rerun also changes how we should position the docking validation: earlier multimer-based
-interpretation was constrained by pipeline artifacts, and we now report only complex-level
-multimer outputs with interface-aware parsing. In this constrained analysis, SA-strong, SA-full, and
-natural controls were evaluated as 10/10/5 sequences and showed no pairwise differences in complex-level
-confidence metrics (exact permutation $p>0.05$ for all pairwise contrasts). The absolute values remain
-modest and overlapping across groups (pTM $\sim 0.22$, iPTM $\sim 0.10$, interface pLDDT $\sim 38$--$41$),
-so this should be interpreted as conservative computational support for retained pharmacophore plausibility
-rather than definitive evidence of high-confidence binding superiority; larger control sets and downstream
-biochemical validation are required.
+The AlphaFold2-multimer docking analysis provides a limited computational check on binding
+plausibility. Complex-level confidence scores (pTM $\sim 0.22$, iPTM $\sim 0.10$, interface
+pLDDT $\sim 38$--$41$) were modest and overlapping across SA-generated and natural control
+sequences, with no pairwise differences reaching significance. These values are consistent with
+retained pharmacophore plausibility but do not constitute evidence of binding; larger control
+sets and biochemical validation are needed to assess whether pharmacophore inheritance translates
+to functional activity.
 
 Several limitations should be acknowledged. The cross-family Pfam regression rests on three points
 (with a fourth, $\omega$-conotoxin, following the monotonic trend but lying off the Pfam line);
-additional families are needed to confirm the linearity of the $S$--$\Delta$ relationship and to
-establish its generality beyond single-position phenotypic markers. Our functional splits are
+additional families are needed to test the linearity of the $S$--$\Delta$ relationship and to
+assess its generality beyond single-position phenotypic markers. Our functional splits are
 defined by single marker positions (P1 in Kunitz, Trp in SH3, a specificity-loop residue in WW);
 multi-position phenotypes---where binding specificity depends on coordinated residue identities at
 several positions---may exhibit different calibration behavior. We have not experimentally

@@ -1,23 +1,23 @@
 % abstract.tex -- Abstract
-Training-free protein sequence generation via stochastic attention produces plausible family members from
-small alignments, but treats all stored patterns equally and cannot direct generation toward a
-user-specified functional subset---for example, sequences known from experimental screens to bind a
-particular target. We show that assigning multiplicity weights $r_k$ to stored patterns defines a
-tilted Hopfield energy whose Langevin dynamics sample from a known Boltzmann distribution---requiring
-only a log-multiplicity bias on the softmax logits and no retraining. A single scalar, the multiplicity
-ratio $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, continuously interpolates between
-unconditioned generation ($\rho=1$) and hard subset curation ($\rho\to\infty$). We characterize the phase transition $\beta^{*}(\rho)$ as a function of the
-effective pattern count $K_{\mathrm{eff}}(\vr)$ and identify a family-dependent calibration gap
-between energy-level conditioning and decoded sequence phenotype. The gap is predicted quantitatively
-by the Fisher separation of functional subsets in PCA space: families with separation index
-$S>0.3$ achieve near-perfect phenotype transfer via multiplicity weighting alone, while families
-with $S<0.15$ require hard curation. Experiments on Kunitz, SH3, and WW domains validate the
-theory across separation indices $S=0.11$--$0.34$ and calibration gaps
-$\Delta=0.01$--$0.63$, with $R^{2}\approx 1.0$ on the predicted linear relationship;
-extending the analysis to $\omega$-conotoxin ($S=0.78$, $\Delta=0.15$) confirms the
-monotonic trend across a sevenfold range of separation indices.
-Applied to $\omega$-conotoxin peptides targeting the Cav2.2 calcium channel---a validated
-pain target---curated memory seeding from just 23 characterized binders produces 1{,}550
-novel candidates that preserve the Tyr13 pharmacophore (98.3\%) and all experimentally
-identified binding determinants, demonstrating SA as a practical ``small-set amplifier'' for
-hit expansion from functional screens.
+Training-free protein sequence generation via stochastic attention produces plausible family
+members from small alignments, but treats all stored patterns equally and cannot direct generation
+toward a user-specified functional subset---for example, sequences known from experimental screens
+to bind a particular target. We show that assigning multiplicity weights to stored patterns
+defines a tilted Hopfield energy whose Langevin dynamics sample from a known distribution,
+requiring only a log-multiplicity bias on the softmax logits and no retraining. A single scalar
+multiplicity ratio continuously interpolates between unconditioned generation and hard subset
+curation. We characterize the phase transition as a function of the effective pattern count and
+identify a family-dependent calibration gap between energy-level conditioning and decoded sequence
+phenotype. This gap is predicted quantitatively by the geometric separation of functional subsets
+in the principal component space of the alignment: well-separated families achieve high
+phenotype transfer via multiplicity weighting alone, while overlapping families require hard
+curation. Experiments on Kunitz, SH3, and WW domains validate the theory across a range of
+separation indices and calibration gaps, and extending the analysis to omega-conotoxin peptides
+confirms the monotonic trend across a sevenfold range of geometric separations. Applied to
+omega-conotoxin peptides targeting a voltage-gated calcium channel implicated in pain
+signaling, curated memory seeding from a small set of characterized binders produces over a
+thousand novel candidates that preserve the primary pharmacophore and all experimentally
+identified binding determinants. These results establish stochastic attention as a practical
+small-set amplifier for hit expansion from functional screens, enabling practitioners to convert
+a handful of experimentally characterized sequences into diverse candidate libraries without
+retraining a generative model.
