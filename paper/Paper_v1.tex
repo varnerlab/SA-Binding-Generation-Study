@@ -106,7 +106,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   dimensionality ($d$, capturing 95\% variance), designated subset size ($K_{\mathrm{des}}$),
   phenotype marker, natural designated fraction ($f_{\mathrm{nat}}$), Fisher separation index
   ($S$), observed phenotype fraction under hard curation ($f_{\mathrm{obs}}^{\mathrm{hard}}$),
-  and calibration gap ($\Delta$ at $\rho=500$). All four families were tested with both
+  and calibration gap ($\Delta$ at $\rho=500$). All six families were tested with both
   multiplicity weighting and hard curation.}
   \label{tab:cross-family}
   \small
@@ -116,9 +116,12 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
            & $f_{\mathrm{nat}}$ & $S$
            & $f_{\mathrm{obs}}^{\mathrm{hard}}$ & $\Delta$ \\
     \midrule
-    Kunitz & PF00014 & 99  & 53 & 80  & 32 & P1 K/R  & 0.32 & 0.20 & 1.00 & 0.37 \\
+    WW     & PF00397 & 420 & 31 & 186 & 69 & Spec.\ loop & 0.16 & 0.11 & 1.00 & 0.64 \\
+    Forkhead & PF00250 & 246 & 87 & 172 & 122 & H/N at H3 & 0.50 & 0.17 & 1.00 & 0.27 \\
+    Kunitz & PF00014 & 99  & 53 & 80  & 32 & P1 K/R  & 0.32 & 0.20 & 1.00 & 0.39 \\
     SH3    & PF00018 & 55  & 48 & 46  & 33 & Trp     & 0.60 & 0.34 & 1.00 & 0.01 \\
-    WW     & PF00397 & 420 & 31 & 186 & 69 & Spec.\ loop & 0.16 & 0.11 & 1.00 & 0.63 \\
+    Homeobox & PF00046 & 136 & 57 & 101 & 102 & Gln at pos.\ 50 & 0.75 & 0.42 & 1.00 & 0.04 \\
+    \midrule
     $\omega$-Conotoxin & SwissProt & 74 & 26 & 34 & 23 & Tyr13 & 0.31 & 0.78 & 0.98 & 0.15 \\
     \bottomrule
   \end{tabular}
@@ -152,15 +155,19 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   \includegraphics[width=0.82\textwidth]{sections/figs/fig5_entropy_curves.pdf}
   \caption{\textbf{Phase transition shifts rightward with increasing multiplicity
   ratio $\rho$.}
-  Attention entropy $H(\beta)$ as a function of inverse temperature $\beta$
-  (log scale) for $\rho \in \{1, 5, 20, 100, 1000\}$ on the Kunitz family.
-  Each curve shows a sigmoidal drop from high entropy (exploration phase) to
-  near-zero entropy (retrieval phase); dashed vertical lines mark the inflection
-  point $\beta^{*}(\rho)$ for each curve.
-  As $\rho$ increases, $K_{\mathrm{eff}}$ decreases and $\beta^{*}$ shifts
-  rightward (from 4.3 at $\rho=1$ to 10.1 at $\rho=1000$), consistent with
-  fewer effective competing attractors requiring higher inverse temperature to
-  produce an ordered phase.}
+  Attention entropy $H(\beta)$ normalized by $\log K$ (the uniform limit) as a
+  function of inverse temperature $\beta$ (log scale) for
+  $\rho \in \{1, 5, 20, 100, 1000\}$ on the Kunitz family ($K=99$,
+  $K_{\mathrm{des}}=32$). At $\rho=1$ (standard SA), the entropy starts at
+  $H/\log K = 1$ (uniform attention over all patterns); as $\rho$ increases,
+  the multiplicity bias pre-concentrates the attention distribution, lowering the
+  starting entropy toward $\log K_{\mathrm{des}} / \log K \approx 0.75$ (dotted
+  line). Each curve shows a sigmoidal drop to near-zero entropy (retrieval phase);
+  dots and dashed vertical lines mark the inflection point $\beta^{*}(\rho)$.
+  As $\rho$ increases from 1 to 1000, $K_{\mathrm{eff}}$ decreases from 99 to
+  32.1 and $\beta^{*}$ shifts rightward from 4.4 to 9.3, consistent with fewer
+  effective attractors requiring higher inverse temperature to produce an ordered
+  phase.}
   \label{fig:phase-transition}
 \end{figure}
 
@@ -174,18 +181,18 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   PCA-space separation.}
   \textbf{(A)}~Observed phenotype fraction $f_{\mathrm{obs}}$ versus effective designated
   fraction $f_{\mathrm{eff}}$ as the multiplicity ratio $\rho$ increases from 1 to 500
-  for four protein families. The dashed diagonal marks perfect calibration
-  ($f_{\mathrm{obs}} = f_{\mathrm{eff}}$). SH3 domains ($S = 0.34$, green) track the
-  diagonal closely; Kunitz domains ($S = 0.20$, blue) curve below with $\Delta = 0.37$;
-  WW domains ($S = 0.11$, red) show the largest departure with $\Delta = 0.63$;
-  $\omega$-conotoxin ($S = 0.78$, purple) shows a moderate gap ($\Delta = 0.15$) despite
-  high PCA separation. Double-headed arrows indicate the calibration gap at $\rho = 500$.
+  for six protein families. The dashed diagonal marks perfect calibration
+  ($f_{\mathrm{obs}} = f_{\mathrm{eff}}$). Homeobox ($S = 0.42$) and SH3 ($S = 0.34$)
+  domains track the diagonal closely; Kunitz ($S = 0.20$) and Forkhead ($S = 0.17$) curve
+  below; WW domains ($S = 0.11$) show the largest departure; $\omega$-conotoxin
+  ($S = 0.78$) shows a moderate gap despite high PCA separation. Double-headed arrows
+  indicate the calibration gap at $\rho = 500$.
   \textbf{(B)}~Fisher separation index $S$ versus calibration gap $\Delta$ at $\rho = 500$.
-  A linear fit to the three Pfam families (filled markers; $\Delta \approx 0.92 - 2.7\,S$,
-  $R^{2} = 1.00$) confirms that the gap is quantitatively predicted by the geometric
-  separation of functional subsets in PCA space. The $\omega$-conotoxin point (open diamond)
-  follows the monotonic trend but lies above the Pfam regression, consistent with its
-  pharmacologically defined binder split and imperfect single-residue marker.}
+  A linear fit to the five Pfam families (filled markers; $\Delta \approx 0.72 - 1.8\,S$,
+  $R^{2} = 0.80$) shows that the gap is predicted by the geometric separation of functional
+  subsets in PCA space: families with $S > 0.3$ have gaps near zero, while families with
+  $S < 0.2$ have gaps of $0.27$--$0.64$. The $\omega$-conotoxin point (open diamond)
+  follows the monotonic trend.}
   \label{fig:separation-vs-gap}
 \end{figure}
 
@@ -203,7 +210,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   $D$: mean pairwise diversity.
   In all families $\bar{a}_{\mathrm{des}} \approx f_{\mathrm{eff}}$
   (energy conditioning is exact), but $f_{\mathrm{obs}}$ converges fastest
-  for SH3 ($S=0.34$) and slowest for WW ($S=0.11$), reflecting the
+  for Homeobox ($S=0.42$) and slowest for WW ($S=0.11$), reflecting the
   PCA-space calibration gap.}
   \label{tab:per-family-rho}
   \small
@@ -213,26 +220,40 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
       & $\rho$ & $f_{\mathrm{eff}}$ & $\bar{a}_{\mathrm{des}}$
       & $f_{\mathrm{obs}}$ & $\Delta$ & $D$ \\
     \midrule
+    \multirow{4}{*}{WW (PF00397)}
+      & \multirow{4}{*}{(420, 69, 0.11)}
+      &    1 & 0.164 & 0.156 & 0.126 & 0.04 & 0.682 \\
+    & &   10 & 0.663 & 0.653 & 0.224 & 0.44 & 0.667 \\
+    & &  100 & 0.952 & 0.951 & 0.302 & 0.65 & 0.653 \\
+    & & 1000 & 0.995 & 0.996 & 0.371 & 0.62 & 0.618 \\
+    \midrule
+    \multirow{4}{*}{Forkhead (PF00250)}
+      & \multirow{4}{*}{(246, 122, 0.17)}
+      &    1 & 0.496 & 0.490 & 0.556 & $-$0.06 & 0.480 \\
+    & &   10 & 0.908 & 0.904 & 0.638 & 0.27 & 0.447 \\
+    & &  100 & 0.990 & 0.988 & 0.710 & 0.28 & 0.417 \\
+    & & 1000 & 0.999 & 0.999 & 0.730 & 0.27 & 0.398 \\
+    \midrule
     \multirow{4}{*}{Kunitz (PF00014)}
       & \multirow{4}{*}{(99, 32, 0.20)}
-      &    1 & 0.323 & 0.324 & 0.406 & $-$0.08 & 0.563 \\
-    & &   10 & 0.827 & 0.832 & 0.539 & 0.29 & 0.547 \\
-    & &  100 & 0.980 & 0.981 & 0.615 & 0.37 & 0.520 \\
-    & & 1000 & 0.998 & 0.998 & 0.634 & 0.36 & 0.514 \\
+      &    1 & 0.323 & 0.319 & 0.389 & $-$0.07 & 0.563 \\
+    & &   10 & 0.827 & 0.827 & 0.513 & 0.31 & 0.543 \\
+    & &  100 & 0.979 & 0.981 & 0.587 & 0.39 & 0.523 \\
+    & & 1000 & 0.998 & 0.998 & 0.609 & 0.39 & 0.512 \\
     \midrule
     \multirow{4}{*}{SH3 (PF00018)}
       & \multirow{4}{*}{(55, 33, 0.34)}
-      &    1 & 0.600 & 0.614 & 0.852 & $-$0.25 & 0.580 \\
-    & &   10 & 0.938 & 0.941 & 0.906 & 0.03 & 0.575 \\
-    & &  100 & 0.991 & 0.991 & 0.977 & 0.01 & 0.559 \\
-    & & 1000 & 0.999 & 0.999 & 0.992 & 0.01 & 0.510 \\
+      &    1 & 0.600 & 0.621 & 0.863 & $-$0.26 & 0.587 \\
+    & &   10 & 0.938 & 0.944 & 0.915 & 0.02 & 0.583 \\
+    & &  100 & 0.993 & 0.994 & 0.980 & 0.01 & 0.532 \\
+    & & 1000 & 0.999 & 0.999 & 0.991 & 0.01 & 0.519 \\
     \midrule
-    \multirow{4}{*}{WW (PF00397)}
-      & \multirow{4}{*}{(420, 69, 0.11)}
-      &    1 & 0.164 & 0.152 & 0.131 & 0.03 & 0.690 \\
-    & &   10 & 0.663 & 0.661 & 0.226 & 0.44 & 0.676 \\
-    & &  100 & 0.947 & 0.947 & 0.303 & 0.64 & 0.649 \\
-    & & 1000 & 0.995 & 0.995 & 0.371 & 0.62 & 0.642 \\
+    \multirow{4}{*}{Homeobox (PF00046)}
+      & \multirow{4}{*}{(136, 102, 0.42)}
+      &    1 & 0.750 & 0.758 & 0.935 & $-$0.19 & 0.525 \\
+    & &   10 & 0.968 & 0.969 & 0.955 & 0.01 & 0.522 \\
+    & &  100 & 0.997 & 0.997 & 0.957 & 0.04 & 0.521 \\
+    & & 1000 & 1.000 & 1.000 & 0.957 & 0.04 & 0.521 \\
     \midrule
     \multirow{4}{*}{$\omega$-Cntx (SwissProt)}
       & \multirow{4}{*}{(74, 23, 0.78)}

@@ -36,16 +36,16 @@ changes are needed. The method is agnostic to what the designated subset represe
 thermostability, organism of origin---it simply biases the sampler to spend more time near the
 patterns the user points to.
 
-We develop the theory of multiplicity-weighted SA and test it on three protein families---Kunitz
-domains (PF00014), SH3 domains (PF00018), and WW domains (PF00397)---spanning a range of family
-sizes ($K = 55$--$420$), PCA dimensions ($d = 46$--$186$), and functional-subset geometries. Our
-main contributions are: (i)~the multiplicity-weighted Hopfield energy and its Langevin dynamics,
-with a characterization of the phase transition $\beta^{*}(\rho)$ as a function of the effective
-pattern count $K_{\mathrm{eff}}(\vr)$; (ii)~a decomposition of the calibration gap between
-energy-level conditioning and decoded phenotype into three independently measurable layers
-(attention, PCA reconstruction, argmax decoding), showing that the gap arises from the
-PCA encoding; and (iii)~a cross-family validation showing that the Fisher separation index $S$ of
-functional subsets in PCA space quantitatively predicts the calibration gap magnitude
-($R^{2} \approx 1.0$ across three families spanning a threefold range of $S$). These results
-provide a practitioner's decision rule: compute $S$, choose between multiplicity weighting and hard
-curation, and generate.
+We develop the theory of multiplicity-weighted SA and test it on five protein families---Kunitz
+domains (PF00014), SH3 domains (PF00018), WW domains (PF00397), Homeobox domains (PF00046),
+and Forkhead domains (PF00250)---spanning a range of family sizes ($K = 55$--$420$), PCA
+dimensions ($d = 46$--$186$), and functional-subset geometries. Our main contributions are:
+(i)~the multiplicity-weighted Hopfield energy and its Langevin dynamics, with a characterization
+of the phase transition $\beta^{*}(\rho)$ as a function of the effective pattern count
+$K_{\mathrm{eff}}(\vr)$; (ii)~a decomposition of the calibration gap between energy-level
+conditioning and decoded phenotype into three independently measurable layers (attention, PCA
+reconstruction, argmax decoding), showing that the gap arises from the PCA encoding; and
+(iii)~a cross-family validation showing that the Fisher separation index $S$ of functional subsets
+in PCA space predicts the calibration gap magnitude ($R^{2} = 0.80$ across five families
+spanning a fourfold range of $S$). These results provide a practitioner's decision rule: compute
+$S$, choose between multiplicity weighting and hard curation, and generate.

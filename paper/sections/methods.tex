@@ -9,9 +9,10 @@ position, gaps mapped to zero vectors) yielding a $20L \times K$ matrix, reduced
 (retaining $95\%$ of variance) to a $d \times K$ matrix, and column-normalized to unit norm.
 ULA chains were run with step size $\alpha = 0.01$ for $T = 5{,}000$ steps, initialized near
 random stored patterns with small Gaussian perturbation; samples were collected after a
-burn-in of 2{,}000 steps with thinning every 100 steps. We tested three Pfam families---Kunitz
-domains (PF00014, $K=99$, $L=53$), SH3 domains (PF00018, $K=55$, $L=48$), and WW domains
-(PF00397, $K=420$, $L=31$)---and the $\omega$-conotoxin O-superfamily ($K=74$, $L=26$, curated
+burn-in of 2{,}000 steps with thinning every 100 steps. We tested five Pfam families---Kunitz
+domains (PF00014, $K=99$, $L=53$), SH3 domains (PF00018, $K=55$, $L=48$), WW domains
+(PF00397, $K=420$, $L=31$), Homeobox domains (PF00046, $K=136$, $L=57$), and Forkhead domains
+(PF00250, $K=246$, $L=87$)---and the $\omega$-conotoxin O-superfamily ($K=74$, $L=26$, curated
 from SwissProt). For each family, we defined a binary functional split based on a single marker
 position reflecting external biological knowledge, not a property discovered by the method: for
 Kunitz, the P1 position (primary contact residue with serine proteases) was identified as the
@@ -19,7 +20,11 @@ column with the highest Lys frequency and sequences with K or R at P1 were desig
 functional subset ($K_{\mathrm{des}} = 32$); for SH3, the conserved Trp in the hydrophobic
 binding groove was the marker ($K_{\mathrm{des}} = 33$); for WW, the specificity-determining
 position was the highest-entropy column in the middle third of the alignment
-($K_{\mathrm{des}} = 69$); and for $\omega$-conotoxin, 23 confirmed or predicted N-type Cav2.2
+($K_{\mathrm{des}} = 69$); for Homeobox, Gln at position~50 in the recognition helix---the
+primary determinant of TAAT-core DNA-binding specificity---was the marker
+($K_{\mathrm{des}} = 102$); for Forkhead, His or Asn at the H3 recognition helix
+position---residues that make base-specific contacts in the major groove---was the marker
+($K_{\mathrm{des}} = 122$); and for $\omega$-conotoxin, 23 confirmed or predicted N-type Cav2.2
 blockers were designated as strong binders based on pharmacological
 characterization~\cite{omegaConotoxinSAR2006}.
 

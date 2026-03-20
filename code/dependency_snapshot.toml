@@ -1,0 +1,27 @@
+# Dependency snapshot for SA-Binding-Generation-Study
+# Records the exact package versions used to generate all paper results.
+# Julia 1.12.5 | 2026-03-20
+#
+# To reproduce: install Julia 1.12.x, then:
+#   cd code && julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'
+# If versions have drifted, use this file to pin specific versions:
+#   Pkg.add(name="NNlib", version="0.9.33")
+
+[versions]
+CSV = "0.10.16"
+CategoricalArrays = "1.0.2"
+Colors = "0.13.1"
+DataFrames = "1.8.1"
+Distributions = "0.25.123"
+Downloads = "1.7.0"
+FileIO = "1.18.0"
+JLD2 = "0.6.3"
+LinearAlgebra = "1.12.0"
+MultivariateStats = "0.10.4"
+NNlib = "0.9.33"
+Plots = "1.41.6"
+PrettyTables = "3.2.3"
+Random = "1.11.0"
+Statistics = "1.11.1"
+StatsBase = "0.34.10"
+StatsPlots = "0.15.8"

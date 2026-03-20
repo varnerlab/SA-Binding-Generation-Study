@@ -137,7 +137,7 @@ at $\beta = 0$, reducing the weighted entropy to
 $H_{\mathbf{r}}(0) = \log K_{\mathrm{eff}}(\mathbf{r}) < \log K$, so
 reaching the retrieval-phase inflection requires a higher inverse temperature
 $\beta^{*}(\rho) \geq \beta^{*}(1)$. We observed this empirically:
-$\beta^{*}$ increased from 4.3 ($\rho=1$, $K_{\mathrm{eff}} = 99$) to 10.1
+$\beta^{*}$ increased from 4.4 ($\rho=1$, $K_{\mathrm{eff}} = 99$) to 9.3
 ($\rho=1{,}000$, $K_{\mathrm{eff}} = 32.1$) on the Kunitz domain
 (Fig.~\ref{fig:phase-transition}). By contrast, hard curation---where the
 memory matrix is built from the designated subset only---\emph{does} change
@@ -150,8 +150,8 @@ weighting was limited by the full-family PCA geometry.
 
 \section{Supplementary Tables and Figures}\label{app:tables-figures}
 
-Tables~\ref{tab:kunitz-rho}--\ref{tab:ww-rho} report selected values from
-the $\rho$ sweep on each of the three benchmark families.
+Tables~\ref{tab:kunitz-rho}--\ref{tab:forkhead-rho} report selected values from
+the $\rho$ sweep on each of the five Pfam benchmark families.
 $f_{\mathrm{eff}}$ is the effective designated fraction computed from the
 multiplicity vector; $f_{\mathrm{obs}}$ is the hard-decoded marker fraction
 averaged over 930 generated sequences; $\bar{a}_{\mathrm{des}}$ is the mean
@@ -165,7 +165,7 @@ high-TM-score region while HMM-emitted sequences scatter broadly across
 lower values. The entropy curves for the full $\rho$ sweep
 ($\rho \in \{1, 2, 5, 10, 20, 50, 100, 200, 500, 1000\}$) on the Kunitz
 family produce a monotonically rightward-shifting family of sigmoid curves
-with $\beta^{*}(\rho)$ increasing from 4.27 ($\rho=1$) to 10.14
+with $\beta^{*}(\rho)$ increasing from 4.35 ($\rho=1$) to 9.26
 ($\rho=1000$), consistent with $\beta^{*} \propto \log K_{\mathrm{eff}}$
 predicted by the mean-field argument in Section~\ref{sec:theory}
 (Fig.~\ref{fig:phase-transition}).
@@ -229,6 +229,48 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     200  & 0.973 & 0.327 & 0.974 & 0.643 \\
     500  & 0.990 & 0.360 & 0.991 & 0.642 \\
     1000 & 0.995 & 0.371 & 0.995 & 0.642 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \caption{Homeobox domain (PF00046) $\rho$ sweep. $K=136$, $K_{\mathrm{des}}=102$.}
+  \label{tab:homeobox-rho}
+  \small
+  \begin{tabular}{ccccc}
+    \toprule
+    $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
+    \midrule
+    1    & 0.750 & 0.935 & 0.758 & 0.525 \\
+    5    & 0.938 & 0.954 & 0.939 & 0.521 \\
+    10   & 0.968 & 0.955 & 0.969 & 0.522 \\
+    50   & 0.993 & 0.957 & 0.994 & 0.521 \\
+    100  & 0.997 & 0.957 & 0.997 & 0.521 \\
+    200  & 0.998 & 0.957 & 0.998 & 0.521 \\
+    500  & 0.999 & 0.957 & 0.999 & 0.521 \\
+    1000 & 1.000 & 0.957 & 1.000 & 0.521 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \caption{Forkhead domain (PF00250) $\rho$ sweep. $K=246$, $K_{\mathrm{des}}=122$.}
+  \label{tab:forkhead-rho}
+  \small
+  \begin{tabular}{ccccc}
+    \toprule
+    $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
+    \midrule
+    1    & 0.496 & 0.556 & 0.490 & 0.480 \\
+    5    & 0.831 & 0.610 & 0.826 & 0.464 \\
+    10   & 0.908 & 0.638 & 0.904 & 0.447 \\
+    50   & 0.980 & 0.670 & 0.979 & 0.431 \\
+    100  & 0.990 & 0.710 & 0.988 & 0.417 \\
+    200  & 0.995 & 0.711 & 0.994 & 0.416 \\
+    500  & 0.998 & 0.730 & 0.998 & 0.399 \\
+    1000 & 0.999 & 0.730 & 0.999 & 0.398 \\
     \bottomrule
   \end{tabular}
 \end{table}

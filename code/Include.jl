@@ -9,11 +9,14 @@ const _PATH_TO_SRC = joinpath(_ROOT, "src")
 const _PATH_TO_DATA = joinpath(_ROOT, "data")
 const _PATH_TO_FIG = joinpath(_ROOT, "figs")
 
-# activate and check environment
+# activate environment (Manifest.toml pins exact dependency versions)
 using Pkg
 Pkg.activate(_ROOT)
 if !isfile(joinpath(_ROOT, "Manifest.toml"))
-    Pkg.resolve(); Pkg.instantiate(); Pkg.update();
+    @warn "Manifest.toml not found — resolving and instantiating dependencies. " *
+          "Pin versions by committing the generated Manifest.toml."
+    Pkg.resolve()
+    Pkg.instantiate()
 end
 
 # load required packages
@@ -36,8 +39,10 @@ using StatsBase
 using MultivariateStats
 using Downloads
 
-# set the random seed for reproducibility
-Random.seed!(1234)
+# NOTE: No global Random.seed!() here. Each experiment script and sampling
+# function manages its own RNG seed explicitly via seed= arguments.
+# A global seed in a shared include file creates implicit state coupling
+# between scripts and makes results depend on import/execution order.
 
 # include the source modules (upstream SA core)
 include(joinpath(_PATH_TO_SRC, "Data.jl"))

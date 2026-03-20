@@ -299,12 +299,23 @@ save_fasta(gen_strong_seqs, joinpath(DATA_DIR, "generated_strong_seeded.fasta"),
 const PAPER_FIG_DIR = joinpath(_CODE_DIR, "..", "paper", "sections", "figs")
 mkpath(PAPER_FIG_DIR)
 
-for f in readdir(FIG_DIR; join=true)
-    endswith(f, ".pdf") || endswith(f, ".png") || continue
-    dest = joinpath(PAPER_FIG_DIR, basename(f))
-    cp(f, dest; force=true)
+if isdir(FIG_DIR) && !isempty(readdir(FIG_DIR))
+    n_copied = 0
+    for f in readdir(FIG_DIR; join=true)
+        endswith(f, ".pdf") || endswith(f, ".png") || continue
+        if !isfile(f)
+            @warn "  Expected figure not found: $f"
+            continue
+        end
+        dest = joinpath(PAPER_FIG_DIR, basename(f))
+        cp(f, dest; force=true)
+        n_copied += 1
+    end
+    @info "  Copied $n_copied figures → $PAPER_FIG_DIR"
+else
+    @warn "  No figures found in $FIG_DIR — skipping copy step. " *
+          "Check that upstream generation completed successfully."
 end
-@info "  Copied figures → $PAPER_FIG_DIR"
 
 @info "\n" * "="^70
 @info "ω-Conotoxin experiment complete!"
