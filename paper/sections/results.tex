@@ -51,17 +51,20 @@ maintain the input phenotype while introducing sequence diversity (pairwise dive
 $\geq 0.45$ for $K_{\mathrm{des}} \geq 10$).
 
 \paragraph{Multiplicity-weighted conditioning and the calibration gap.}
-We swept $\rho$ from 1 (standard SA) to 1{,}000 on the full Kunitz family ($K = 99$) to test
-multiplicity-weighted generation (Fig.~\ref{fig:phase-transition}, Table~\ref{tab:per-family-rho}). For each $\rho$, we
+We tested multiplicity-weighted generation on the Kunitz family ($K = 99$,
+$K_{\mathrm{des}} = 32$ strong trypsin binders, $K_{\mathrm{bg}} = 67$ background),
+sweeping $\rho$ from 1 (standard SA, no bias) to 1{,}000 (Fig.~\ref{fig:phase-transition}, Table~\ref{tab:per-family-rho}). For each $\rho$, we
 computed the multiplicity vector $\vr$, found $\beta^{*}(\vr)$ via entropy inflection on the
-weighted attention distribution, and generated 930 sequences (30 chains). We observed that the
-attention weight on designated patterns tracked $f_{\mathrm{eff}}$ with negligible deviation
-($< 0.3\%$) at all $\rho$ values, consistent with Proposition~\ref{prop:score}: the multiplicity
-weights tilted the energy landscape as intended. The observed P1~K/R fraction increased
-monotonically from 0.41 ($\rho=1$) to 0.63 ($\rho=500$), exceeding the natural
-proportion but falling short of the $f_{\mathrm{eff}} = 0.996$ predicted by the energy-level
-conditioning; sequence diversity decreased modestly from 0.56 to 0.51 over this range and KL
-divergence increased from 0.007 to 0.017. The phase transition
+weighted attention distribution, and generated 930 sequences (30 chains). Two quantities were tracked at each $\rho$: the mean softmax attention weight on designated
+patterns ($\bar{a}_{\mathrm{des}}$, measured in continuous PCA space during sampling) and the
+fraction of decoded sequences with K/R at P1 ($f_{\mathrm{obs}}$, measured after inverse PCA
+and argmax decoding). The attention weight tracked $f_{\mathrm{eff}}$ with $< 0.3\%$ deviation
+at all $\rho$ values, consistent with Proposition~\ref{prop:score}: the energy-level
+conditioning worked as intended. However, the decoded phenotype fraction told a different story. P1~K/R fraction increased
+from 0.41 ($\rho=1$) to only 0.63 ($\rho=500$), far short of the $f_{\mathrm{eff}} = 0.996$
+that the attention weights achieved. This discrepancy between what the energy delivers in PCA
+space and what the decoder recovers in sequence space is the calibration gap. Sequence diversity decreased modestly from 0.56 to 0.51 over this range and
+KL divergence increased from 0.007 to 0.017. The phase transition
 $\beta^{*}$ shifted from 4.4 at $\rho=1$ ($K_{\mathrm{eff}} = 99$) to 9.3 at
 $\rho=1{,}000$ ($K_{\mathrm{eff}} = 32.1$), and the entropy curves at different $\rho$ values
 formed a family of sigmoidal profiles with systematically rightward-shifted inflection points,
@@ -106,14 +109,14 @@ sweep to $\omega$-conotoxin ($S = 0.78$, pharmacologically defined binder split)
 $\Delta = 0.15$, consistent with the monotonic trend. The attention weights tracked
 $f_{\mathrm{eff}}$ closely in all six families, indicating that the multiplicity-weighted energy
 operates as expected regardless of the downstream calibration gap, while hard curation achieved
-100\% phenotype transfer in all families regardless of separation index---as expected, since
+100\% phenotype transfer in all families regardless of separation index, as expected since
 curated memory matrices are built from designated-subset-only PCA, which by construction captures
 subset-specific variation in its leading components. To test whether increasing $\beta$ beyond
 $\beta^{*}$ could push more phenotype signal through the PCA bottleneck, we swept
 $\beta/\beta^{*}$ from 0.5 to 3.0 at three fixed $\rho$ values ($\rho = 10, 50, 200$) on the
 Kunitz domain and observed a consistent tradeoff: higher $\beta$ increased P1~K/R fraction at the
-cost of reduced diversity---at $\rho = 200$ and $\beta = 3\beta^{*}$, P1~K/R reached 0.71
-(versus 0.61 at $\beta^{*}$) while diversity dropped from 0.53 to 0.46---suggesting that the
+cost of reduced diversity. At $\rho = 200$ and $\beta = 3\beta^{*}$, P1~K/R reached 0.71
+(versus 0.61 at $\beta^{*}$) while diversity dropped from 0.53 to 0.46, suggesting that the
 practitioner can tune $(\rho,\, \beta/\beta^{*})$ jointly to navigate the fidelity--diversity
 tradeoff.
 

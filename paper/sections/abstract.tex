@@ -1,23 +1,20 @@
 % abstract.tex -- Abstract
-Training-free protein sequence generation via stochastic attention produces plausible family
-members from small alignments, but treats all stored patterns equally and cannot direct generation
-toward a user-specified functional subset---for example, sequences known from experimental screens
-to bind a particular target. We show that assigning multiplicity weights to stored patterns
-defines a tilted Hopfield energy whose Langevin dynamics sample from a known distribution,
-requiring only a log-multiplicity bias on the softmax logits and no retraining. A single scalar
-multiplicity ratio continuously interpolates between unconditioned generation and hard subset
-curation. We characterize the phase transition as a function of the effective pattern count and
-identify a family-dependent calibration gap between energy-level conditioning and decoded sequence
-phenotype. This gap is predicted quantitatively by the geometric separation of functional subsets
-in the principal component space of the alignment: well-separated families achieve high
-phenotype transfer via multiplicity weighting alone, while overlapping families require hard
-curation. Experiments on five Pfam families---Kunitz, SH3, WW, Homeobox, and Forkhead
-domains---validate the theory across a fourfold range of separation indices, and extending
-the analysis to omega-conotoxin peptides confirms the monotonic trend. Applied to
-omega-conotoxin peptides targeting a voltage-gated calcium channel implicated in pain
-signaling, curated memory seeding from a small set of characterized binders produces over a
-thousand novel candidates that preserve the primary pharmacophore and all experimentally
-identified binding determinants. These results establish stochastic attention as a practical
-small-set amplifier for hit expansion from functional screens, enabling practitioners to convert
-a handful of experimentally characterized sequences into diverse candidate libraries without
-retraining a generative model.
+Protein sequence generation via stochastic attention produces plausible family members from
+small alignments without training, but treats all stored sequences equally and cannot direct
+generation toward a functional subset of interest. We show that a single scalar parameter,
+added as a bias to the sampler's attention logits, continuously shifts generation from
+the full family toward a user-specified subset, with no retraining and no change to the model architecture. A practitioner supplies a small set of sequences (for example, hits
+from a binding screen) and a multiplicity ratio that controls how strongly generation favors
+them. The method is agnostic to what the subset represents: binding, stability, specificity,
+or any other property. We find that the conditioning is exact at the level of the sampler's internal
+representation, but that the decoded sequence phenotype can fall short because the dimensionality reduction used to encode sequences
+does not always preserve the residue-level variation that defines the functional split. We term
+this discrepancy the calibration gap and show that it is predicted by a simple geometric measure
+of how well the encoding separates the functional subset from the rest of the family.
+Experiments on five Pfam families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) confirm
+the monotonic relationship between separation and gap across a fourfold range of geometries.
+Applied to omega-conotoxin peptides targeting a calcium channel involved in pain signaling,
+curated seeding from 23 characterized binders produces over a thousand candidates that preserve
+the primary pharmacophore and all experimentally identified binding determinants. These results show that stochastic attention enables practitioners to expand a handful of
+experimentally characterized sequences into diverse candidate libraries without retraining
+a generative model.

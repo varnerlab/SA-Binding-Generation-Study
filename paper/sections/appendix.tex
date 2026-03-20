@@ -4,8 +4,8 @@
 
 Stochastic attention (SA) operates on continuous vectors on the unit sphere,
 while protein sequences are discrete objects over a 20-letter amino acid
-alphabet. Bridging the two requires three transformations---one-hot encoding,
-PCA dimensionality reduction, and unit-norm projection---and the reverse path
+alphabet. Bridging the two requires three transformations (one-hot encoding,
+PCA dimensionality reduction, and unit-norm projection), and the reverse path
 (inverse PCA followed by argmax decoding) recovers discrete sequences from
 continuous samples. Here we describe the full encoding--decoding pipeline,
 derive the multiplicity-weighted conditioning formulas used in the main text,
@@ -139,8 +139,8 @@ reaching the retrieval-phase inflection requires a higher inverse temperature
 $\beta^{*}(\rho) \geq \beta^{*}(1)$. We observed this empirically:
 $\beta^{*}$ increased from 4.4 ($\rho=1$, $K_{\mathrm{eff}} = 99$) to 9.3
 ($\rho=1{,}000$, $K_{\mathrm{eff}} = 32.1$) on the Kunitz domain
-(Fig.~\ref{fig:phase-transition}). By contrast, hard curation---where the
-memory matrix is built from the designated subset only---\emph{does} change
+(Fig.~\ref{fig:phase-transition}). By contrast, hard curation (where the
+memory matrix is built from the designated subset only) \emph{does} change
 the PCA: the centering vector, principal directions, and retained dimension
 are all computed from $K_{\mathrm{des}}$ sequences, capturing
 subset-specific variation that may be orthogonal to the leading components

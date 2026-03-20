@@ -498,18 +498,21 @@ Natural controls & 5 & $0.228\pm0.004$ & $0.108\pm0.007$ & $40.7\pm3.5$ \\
   \includegraphics[width=\textwidth]{figs/fold_superposition_combined.pdf}
   \caption{\textbf{SA-generated sequences fold into native-like structures for both
   protein families.}
-  C$\alpha$ backbone superposition of the highest TM-score SA strong-conditioned
-  sequence (colored by per-residue pLDDT confidence) onto the experimental reference
-  structure (gray, semi-transparent), shown in two orthogonal views.
-  \textbf{(A,\,B)}~Kunitz domain: the SA-generated variant aligns to the BPTI crystal
-  structure (1BPI chain~A) with TM $= 0.94$, reproducing the characteristic double-loop
-  architecture, three-stranded antiparallel $\beta$-sheet, and $\alpha$-helical turn;
+  For each family, the single highest TM-score SA strong-conditioned sequence
+  (colored by per-residue pLDDT confidence) is superimposed onto the experimental
+  reference structure (gray, semi-transparent) and shown in two orthogonal views
+  (front and $90^{\circ}$ rotation) to reveal the full three-dimensional architecture.
+  \textbf{(A)}~Kunitz domain, front view. \textbf{(B)}~Kunitz domain, $90^{\circ}$
+  rotation. The SA-generated variant aligns to the BPTI crystal structure
+  (1BPI chain~A) with TM $= 0.94$, reproducing the double-loop architecture,
+  three-stranded antiparallel $\beta$-sheet, and $\alpha$-helical turn;
   pLDDT $> 90$ throughout (deep blue) indicates high-confidence prediction.
-  \textbf{(C,\,D)}~$\omega$-Conotoxin: the SA-generated variant aligns to the MVIIA
-  NMR structure (1OMG chain~A) with TM $= 0.53$, consistent with the small peptide
-  length (26 residues) where TM-score normalization is noisy; the cystine-knot
-  topology and loop architecture are visually preserved, with pLDDT $\sim 80$
-  (cyan/green) reflecting the intrinsic flexibility of the inter-cysteine loops.
+  \textbf{(C)}~$\omega$-Conotoxin, front view. \textbf{(D)}~$\omega$-Conotoxin,
+  $90^{\circ}$ rotation. The SA-generated variant aligns to the MVIIA NMR structure
+  (1OMG chain~A) with TM $= 0.53$, consistent with the small peptide length
+  (26 residues) where TM-score normalization is noisy; the cystine-knot topology
+  and loop architecture are preserved, with pLDDT $\sim 80$ (cyan/green) reflecting
+  the intrinsic flexibility of the inter-cysteine loops.
   Colorbar: pLDDT confidence scale (red $= 50$, blue $= 100$).
   Structures predicted by ESMFold~\cite{esmfold2022}; alignment by
   TM-align~\cite{tmAlign2005}.}

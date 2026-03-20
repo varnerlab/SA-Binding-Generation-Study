@@ -54,8 +54,8 @@ the sampler retains its $\mathcal{O}(dK)$ per-step cost.
 For a binary functional split (designated subset vs.\ background), we parameterize the multiplicity
 vector by a single scalar $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, setting
 $r_k = \rho$ for patterns in the user-designated subset and $r_k = 1$ otherwise. The effective
-designated fraction---the share of the softmax probability mass attributable to designated
-patterns when all patterns have equal similarity to $\vxi$---is
+designated fraction (the share of the softmax probability mass attributable to designated
+patterns when all patterns have equal similarity to $\vxi$) is
 $f_{\mathrm{eff}}(\rho) = K_{\mathrm{des}}\rho/(K_{\mathrm{des}}\rho + K_{\mathrm{bg}})$, where
 $K_{\mathrm{des}}$ and $K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ are the number of designated and
 background patterns. At $\rho=1$,

@@ -6,46 +6,51 @@ samples from the corresponding Boltzmann distribution without training, producin
 preserve family-level amino acid composition, per-position conservation, and predicted
 three-dimensional fold. The method requires only two matrix-vector products per iteration
 ($\mathcal{O}(dK)$ cost), runs on a laptop in seconds, and is designed for the scarce-data
-regime---families with tens to hundreds of members---where learned generative models lack
+regime (families with tens to hundreds of members) where learned generative models lack
 sufficient training signal. A key limitation of the current framework, however, is that it
 treats all stored patterns equally. Every family member contributes the same weight to the
 energy landscape, so the Langevin chain explores the full family distribution without preference
 for any functional subset. In practice, experimentalists often want something more specific: not
 just ``a plausible Kunitz domain,'' but a Kunitz domain that \emph{inhibits trypsin}; not just
-``a plausible SH3 domain,'' but one that binds a particular proline-rich motif. Binding is
-relational---it depends on both the generated protein and the target---and family alignments
-encode fold constraints but not target specificity. The question is: \emph{how can we condition
+``a plausible SH3 domain,'' but one that binds a particular proline-rich motif. Family
+alignments define a shared fold (all 99 Kunitz sequences share the same disulfide framework
+and double-loop architecture), but the members differ in which target they bind, and that
+specificity is encoded in a small number of positions (e.g., the P1 contact residue) rather
+than in the global fold. The alignment captures structure; the practitioner wants to condition
+on function. The question is: \emph{how can we condition
 the generative process on a functional subset without retraining?}
 
 A seemingly simple answer is to \emph{curate} the memory matrix, restricting it to sequences that
-a practitioner has identified---through experimental screens, literature annotation, or functional
-assays---as belonging to the functional subset of interest. SA then generates new sequences in their
+a practitioner has identified (through experimental screens, literature annotation, or functional
+assays) as belonging to the functional subset of interest. SA then generates new sequences in their
 image. We show that this strategy works: even three designated input sequences
 suffice for complete phenotype transfer in the Kunitz domain. But hard curation discards all
 remaining family members, losing the fold-level constraints they provide. A more principled
 approach would retain the full family in the memory while continuously upweighting the designated
 subset. The key observation we exploit is that pattern multiplicity in the Hopfield energy provides
 exactly this capability. Assigning a multiplicity weight $r_k > 0$ to each stored pattern $\vm_k$
-defines a tilted energy landscape whose score function remains analytic---the only modification to
+defines a tilted energy landscape whose score function remains analytic. The only modification to
 the SA update is adding $\log r_k$ to each logit before the softmax. A single parameter, the
 multiplicity ratio $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, parameterizes a
 continuous family of Boltzmann distributions that interpolate between unconditioned generation
 ($\rho=1$, standard SA) and hard subset curation ($\rho \to \infty$). The memory matrix stays
 compact at $d \times K$; no columns are duplicated, no parameters are trained, no architectural
-changes are needed. The method is agnostic to what the designated subset represents---binding,
-thermostability, organism of origin---it simply biases the sampler to spend more time near the
+changes are needed. The method is agnostic to what the designated subset represents (binding,
+thermostability, organism of origin); it simply biases the sampler to spend more time near the
 patterns the user points to.
 
-We develop the theory of multiplicity-weighted SA and test it on five protein families---Kunitz
-domains (PF00014), SH3 domains (PF00018), WW domains (PF00397), Homeobox domains (PF00046),
-and Forkhead domains (PF00250)---spanning a range of family sizes ($K = 55$--$420$), PCA
-dimensions ($d = 46$--$186$), and functional-subset geometries. Our main contributions are:
-(i)~the multiplicity-weighted Hopfield energy and its Langevin dynamics, with a characterization
-of the phase transition $\beta^{*}(\rho)$ as a function of the effective pattern count
-$K_{\mathrm{eff}}(\vr)$; (ii)~a decomposition of the calibration gap between energy-level
-conditioning and decoded phenotype into three independently measurable layers (attention, PCA
-reconstruction, argmax decoding), showing that the gap arises from the PCA encoding; and
-(iii)~a cross-family validation showing that the Fisher separation index $S$ of functional subsets
-in PCA space predicts the calibration gap magnitude ($R^{2} = 0.80$ across five families
-spanning a fourfold range of $S$). These results provide a practitioner's decision rule: compute
-$S$, choose between multiplicity weighting and hard curation, and generate.
+In this study, we developed the theory of multiplicity-weighted SA and tested it on five Pfam
+protein families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) spanning a range of family
+sizes ($K = 55$--$420$) and functional-subset geometries. We showed that the multiplicity
+weights enter the sampler as a simple logit bias, preserving the analytic score function and
+$\mathcal{O}(dK)$ cost of the original method. The energy-level conditioning is exact: the
+softmax attention on designated patterns matches the target fraction to within $0.3\%$ at all
+multiplicity ratios tested. However, we found that the decoded sequence phenotype can fall short
+of this target, because the PCA encoding that compresses sequences into the sampler's state space
+does not always preserve the residue-level variation that defines the functional split. We termed
+this discrepancy the calibration gap and showed that it is predicted by a simple geometric
+quantity, the Fisher separation index $S$, which measures how well PCA separates designated from
+background sequences. Across five families spanning a fourfold range of $S$, the gap decreased
+monotonically with increasing separation ($R^{2} = 0.80$). This provides a practitioner's
+decision rule: compute $S$ before generating any sequences; if $S$ is high, multiplicity
+weighting transfers the phenotype directly; if $S$ is low, use hard curation instead.

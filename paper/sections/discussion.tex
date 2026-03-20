@@ -13,8 +13,8 @@ cross-family validation on five Pfam families showed a quantitative relationship
 PCA-space geometry and conditioning effectiveness.
 
 The central finding is the calibration gap and its decomposition. The gap is not a
-failure of the multiplicity-weighted energy---the attention weights track $f_{\mathrm{eff}}$ with
-$< 0.3\%$ deviation across all families and $\rho$ values tested---but a well-characterized
+failure of the multiplicity-weighted energy (the attention weights track $f_{\mathrm{eff}}$ with
+$< 0.3\%$ deviation across all families and $\rho$ values tested) but a well-characterized
 property of the PCA encoding that compresses $20L$-dimensional sequence space into $d$ principal
 components. When the designated and background subsets overlap in PCA space (low $S$), the
 energy-level tilt does not propagate to the decoded residue identity; when they separate
@@ -30,15 +30,15 @@ intermediate regime ($0.2 < S < 0.3$, Kunitz domains) admits a tradeoff controll
 $(\rho,\, \beta/\beta^{*})$.
 
 Hard curation achieves complete phenotype transfer with as few as three designated
-input sequences. Many experimental campaigns---phage display, yeast
-surface display, functional selections, or even literature curation---produce exactly this kind of
+input sequences. Many experimental campaigns (phage display, yeast
+surface display, functional selections, or even literature curation) produce exactly this kind of
 small, functionally characterized set. The practitioner brings external knowledge (``these
 sequences bind my target,'' ``these variants are thermostable,'' ``these hits came from my
 screen'') and SA converts this small set into a large, diverse candidate library while preserving
 the input phenotype. This ``small-set amplifier'' capability complements high-throughput screening:
 the screen identifies a few hits, SA expands them computationally, and the expanded library can be
 fed back into a second round of selection or directly into functional assays. The method itself is
-agnostic to the meaning of the designation---it biases the sampler toward the designated patterns
+agnostic to the meaning of the designation; it biases the sampler toward the designated patterns
 regardless of whether the underlying phenotype is binding, stability, expression, or any other
 property. The scaling study shows that even $K_{\mathrm{des}} = 3$ suffices for phenotype
 transfer; diversity improves with more input sequences but saturates near
@@ -56,14 +56,14 @@ because the PCA encoding reflects the full structural diversity; curated seeding
 N-type blockers concentrates the PCA subspace on Cav2.2-relevant variation, allowing SA to
 regenerate it with 98\% fidelity. This generalizes the separation-index interpretation: even
 when $S$ is moderate, hard curation can achieve high pharmacophore transfer by
-restricting the memory to the functional subset of interest. The cost---lower sequence diversity
-and reduced novelty (0.46 vs.\ 0.60)---reflects the narrower PCA basis, consistent with the
+restricting the memory to the functional subset of interest. The cost (lower sequence diversity
+and reduced novelty, 0.46 vs.\ 0.60) reflects the narrower PCA basis, consistent with the
 Kunitz scaling study.
 
 The AlphaFold2-multimer analysis shows that SA-generated $\omega$-conotoxins are
 indistinguishable from natural sequences under complex prediction: all four metrics (pTM, iPTM,
 confidence, interface pLDDT) overlap between generated and control groups with no significant
-differences. This is consistent with the structural and pharmacophore validation---generation
+differences. This is consistent with the structural and pharmacophore validation: generation
 preserves the properties that determine predicted binding geometry. The absolute scores are
 modest across all groups, a known limitation of multimer prediction for small-peptide--channel
 complexes; experimental binding assays are needed to determine whether the preserved
@@ -75,8 +75,8 @@ clear, additional families would help characterize the functional form of the $S
 relationship, which may be nonlinear (the gap appears to decay steeply below $S \approx 0.3$
 and flatten near zero above it). Our functional splits are defined by single marker positions
 (P1 in Kunitz, Trp in SH3, specificity-loop residue in WW, Gln at position~50 in Homeobox,
-H/N at the recognition helix in Forkhead); multi-position phenotypes---where specificity depends
-on coordinated residue identities at several positions---may exhibit different calibration
+H/N at the recognition helix in Forkhead); multi-position phenotypes, where specificity depends
+on coordinated residue identities at several positions, may exhibit different calibration
 behavior. We have not experimentally
 validated the binding activity of generated sequences; the phenotype fidelity reported here is a
 necessary but not sufficient condition for functional binding. For the $\omega$-conotoxin family,
@@ -96,7 +96,7 @@ and structural variation in the family, not the absence of interface-position co
 Looking forward, the multiplicity framework opens several directions. The binary split
 (designated/background) generalizes naturally to multi-class conditioning by assigning different
 multiplicities to different functional categories. The PCA bottleneck that limits conditioning
-effectiveness might be reduced by alternative sequence encodings---learned representations from
+effectiveness might be reduced by alternative sequence encodings. Learned representations from
 protein language models, for instance, may better separate functional subsets than linear PCA.
 The $\beta$ lever suggests that adaptive temperature schedules, increasing $\beta$ during sampling
 to sharpen the multiplicity bias, could improve phenotype transfer without permanently sacrificing
