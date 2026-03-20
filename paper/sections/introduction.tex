@@ -17,7 +17,7 @@ most learned models lack sufficient training signal.
 Stochastic attention (SA) was developed for this regime~\cite{varnerSAProtein2026}. SA treats the
 energy function of a modern Hopfield network, constructed directly from a small family alignment,
 as a Boltzmann density and samples from it using Langevin dynamics. The method requires no
-training, runs on a laptop in seconds, and produces sequences that preserve family-level amino
+training, runs on a laptop, and produces sequences that preserve family-level amino
 acid composition, per-position conservation, and predicted three-dimensional fold. A key
 limitation, however, is that SA treats all sequences in the alignment equally. Every family
 member contributes the same weight to the energy landscape, so the sampler explores the full
@@ -37,9 +37,7 @@ or functional assays) as belonging to the functional subset of interest. SA then
 sequences in their image. We show that this strategy works: even three designated input sequences
 suffice for complete phenotype transfer in the Kunitz domain. But hard curation discards all
 remaining family members, losing the fold-level constraints they provide. A more principled
-approach would retain the full family while continuously upweighting the designated subset.
-
-SA works by encoding each sequence in the alignment as a column in a matrix (the memory matrix),
+approach would retain the full family while continuously upweighting the designated subset. SA works by encoding each sequence in the alignment as a column in a matrix (the memory matrix),
 then running a physics-inspired sampler that generates new sequences by taking noisy steps through
 the landscape defined by these stored sequences. At each step, the sampler computes an attention
 distribution over the stored sequences and moves toward a weighted average of them. The key
