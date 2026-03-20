@@ -1,43 +1,58 @@
 % introduction.tex
-Stochastic attention (SA) generates protein sequences from small family alignments by treating
-the modern Hopfield energy as an exact score function for Langevin
-dynamics~\cite{varnerSAProtein2026}. Given a memory matrix of $K$ PCA-encoded family members, SA
-samples from the corresponding Boltzmann distribution without training, producing sequences that
-preserve family-level amino acid composition, per-position conservation, and predicted
-three-dimensional fold. The method requires only two matrix-vector products per iteration
-($\mathcal{O}(dK)$ cost), runs on a laptop in seconds, and is designed for the scarce-data
-regime (families with tens to hundreds of members) where learned generative models lack
-sufficient training signal. A key limitation of the current framework, however, is that it
-treats all stored patterns equally. Every family member contributes the same weight to the
-energy landscape, so the Langevin chain explores the full family distribution without preference
-for any functional subset. In practice, experimentalists often want something more specific: not
-just ``a plausible Kunitz domain,'' but a Kunitz domain that \emph{inhibits trypsin}; not just
-``a plausible SH3 domain,'' but one that binds a particular proline-rich motif. Family
-alignments define a shared fold (all 99 Kunitz sequences share the same disulfide framework
-and double-loop architecture), but the members differ in which target they bind, and that
-specificity is encoded in a small number of positions (e.g., the P1 contact residue) rather
-than in the global fold. The alignment captures structure; the practitioner wants to condition
-on function. The question is: \emph{how can we condition
-the generative process on a functional subset without retraining?}
+Generating novel protein sequences that fold correctly and perform a desired function is a
+central goal of computational protein engineering. Several classes of methods now address this
+problem. Deep generative models, including variational autoencoders~\cite{sinaiAdaptiveMLDE2020},
+autoregressive language models~\cite{madaniProGen2023}, and diffusion
+models~\cite{alamdariProteinGeneration2023}, learn sequence distributions from large databases
+and can produce diverse candidates, but require substantial training data and GPU resources.
+Structure-conditioned inverse folding methods~\cite{dauparasProteinMPNN2022} design sequences for
+a given backbone but require a target structure as input. Protein language
+models~\cite{esmfold2022} trained on evolutionary databases can score or sample sequences, but
+conditioning them on a specific functional property typically requires fine-tuning on labeled
+data. Profile HMMs~\cite{hmmer3} capture family-level statistics from alignments but, as we show
+below, produce sequences with low structural confidence and poor compositional fidelity. For the
+scarce-data regime (families with tens to hundreds of members, typical of Pfam seed alignments),
+most learned models lack sufficient training signal.
 
-A seemingly simple answer is to \emph{curate} the memory matrix, restricting it to sequences that
-a practitioner has identified (through experimental screens, literature annotation, or functional
-assays) as belonging to the functional subset of interest. SA then generates new sequences in their
-image. We show that this strategy works: even three designated input sequences
+Stochastic attention (SA) was developed for this regime~\cite{varnerSAProtein2026}. SA treats the
+energy function of a modern Hopfield network, constructed directly from a small family alignment,
+as a Boltzmann density and samples from it using Langevin dynamics. The method requires no
+training, runs on a laptop in seconds, and produces sequences that preserve family-level amino
+acid composition, per-position conservation, and predicted three-dimensional fold. A key
+limitation, however, is that SA treats all sequences in the alignment equally. Every family
+member contributes the same weight to the energy landscape, so the sampler explores the full
+family distribution without preference for any functional subset. In practice, experimentalists
+often want something more specific: not just ``a plausible Kunitz domain,'' but a Kunitz domain
+that \emph{inhibits trypsin}; not just ``a plausible SH3 domain,'' but one that binds a
+particular proline-rich motif. Family alignments define a shared fold (all 99 Kunitz sequences
+share the same disulfide framework and double-loop architecture), but the members differ in
+which target they bind, and that specificity is encoded in a small number of positions (e.g.,
+the P1 contact residue) rather than in the global fold. The alignment captures structure; the
+practitioner wants to condition on function. The question is: \emph{how can we condition the
+generative process on a functional subset without retraining?}
+
+A seemingly simple answer is to \emph{curate} the input, restricting the alignment to only those
+sequences that a practitioner has identified (through experimental screens, literature annotation,
+or functional assays) as belonging to the functional subset of interest. SA then generates new
+sequences in their image. We show that this strategy works: even three designated input sequences
 suffice for complete phenotype transfer in the Kunitz domain. But hard curation discards all
 remaining family members, losing the fold-level constraints they provide. A more principled
-approach would retain the full family in the memory while continuously upweighting the designated
-subset. The key observation we exploit is that pattern multiplicity in the Hopfield energy provides
-exactly this capability. Assigning a multiplicity weight $r_k > 0$ to each stored pattern $\vm_k$
-defines a tilted energy landscape whose score function remains analytic. The only modification to
-the SA update is adding $\log r_k$ to each logit before the softmax. A single parameter, the
-multiplicity ratio $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, parameterizes a
-continuous family of Boltzmann distributions that interpolate between unconditioned generation
-($\rho=1$, standard SA) and hard subset curation ($\rho \to \infty$). The memory matrix stays
-compact at $d \times K$; no columns are duplicated, no parameters are trained, no architectural
-changes are needed. The method is agnostic to what the designated subset represents (binding,
-thermostability, organism of origin); it simply biases the sampler to spend more time near the
-patterns the user points to.
+approach would retain the full family while continuously upweighting the designated subset.
+
+SA works by encoding each sequence in the alignment as a column in a matrix (the memory matrix),
+then running a physics-inspired sampler that generates new sequences by taking noisy steps through
+the landscape defined by these stored sequences. At each step, the sampler computes an attention
+distribution over the stored sequences and moves toward a weighted average of them. The key
+observation we exploit is that adding a bias term to these attention scores deepens the energy
+wells around specific sequences, causing the sampler to spend more time near them. Concretely,
+we assign a multiplicity weight $r_k > 0$ to each stored sequence and add $\log r_k$ to its
+attention score before the softmax normalization. A single parameter, the multiplicity ratio
+$\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, controls the strength of this bias:
+$\rho = 1$ recovers standard SA (no preference), while increasing $\rho$ shifts generation
+toward the designated subset. No sequences are duplicated, no parameters are trained, and no
+architectural changes are needed. The method is agnostic to what the designated subset
+represents (binding, thermostability, organism of origin); it simply biases the sampler toward
+the sequences the user points to.
 
 In this study, we developed the theory of multiplicity-weighted SA and tested it on five Pfam
 protein families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) spanning a range of family

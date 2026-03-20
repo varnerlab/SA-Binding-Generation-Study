@@ -1,9 +1,62 @@
-\begin{thebibliography}{19}
+\begin{thebibliography}{23}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Yang et~al.(2019)Yang, Wu, and Arnold]{sinaiAdaptiveMLDE2020}
+Kevin~K. Yang, Zachary Wu, and Frances~H. Arnold.
+\newblock Machine-learning-guided directed evolution for protein engineering.
+\newblock \emph{Nature Methods}, 16:\penalty0 687--694, 2019.
+
+\bibitem[Madani et~al.(2023)Madani, Krause, Greene, Subramanian, Mohr, Holton,
+  Olmos, Xiong, Sun, Socher, Fraser, and Naik]{madaniProGen2023}
+Ali Madani, Ben Krause, Eric~R. Greene, Subu Subramanian, Benjamin~P. Mohr,
+  James~M. Holton, Jose~Luis Olmos, Caiming Xiong, Zhi~Zhong Sun, Richard
+  Socher, James~S. Fraser, and Nikhil Naik.
+\newblock Large language models generate functional protein sequences across
+  diverse families.
+\newblock \emph{Nature Biotechnology}, 41:\penalty0 1099--1106, 2023.
+
+\bibitem[Alamdari et~al.(2023)Alamdari, Thakkar, van~den Berg, Lu, Fusi, Amini,
+  and Yang]{alamdariProteinGeneration2023}
+Sarah Alamdari, Nitya Thakkar, Rianne van~den Berg, Alex~X. Lu, Nicolo Fusi,
+  Ava~P. Amini, and Kevin~K. Yang.
+\newblock Protein generation with evolutionary diffusion: sequence is all you
+  need.
+\newblock \emph{bioRxiv}, 2023.
+\newblock \doi{10.1101/2023.09.11.556673}.
+
+\bibitem[Dauparas et~al.(2022)Dauparas, Anishchenko, Bennett, Bai, Ragotte,
+  Milles, Wicky, Courbet, de~Haas, Bethel, Leung, Huddy, Pellock, Tischer,
+  Chan, Koepnick, Nguyen, Kang, Sankaran, Bera, King, and
+  Baker]{dauparasProteinMPNN2022}
+Justas Dauparas, Ivan Anishchenko, Nathaniel Bennett, Hua Bai, Robert~J.
+  Ragotte, Lukas~F. Milles, Basile I.~M. Wicky, Alexis Courbet, Rob~J. de~Haas,
+  Neville Bethel, Philip J.~L. Leung, Timothy~F. Huddy, Sam Pellock, Doug
+  Tischer, Frederick Chan, Brian Koepnick, Hannah Nguyen, Alex Kang, Banumathi
+  Sankaran, Asim~K. Bera, Neil~P. King, and David Baker.
+\newblock Robust deep learning-based protein sequence design using
+  {ProteinMPNN}.
+\newblock \emph{Science}, 378:\penalty0 49--56, 2022.
+
+\bibitem[Lin et~al.(2023)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin, Verkuil,
+  Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candido, and
+  Rives]{esmfold2022}
+Zeming Lin, Halil Akin, Roshan Rao, Brian Hie, Zhongkai Zhu, Wenting Lu, Nikita
+  Smetanin, Robert Verkuil, Ori Kabeli, Yaniv Shmueli, Allan dos Santos~Costa,
+  Maryam Fazel-Zarandi, Tom Sercu, Sal Candido, and Alexander Rives.
+\newblock Evolutionary-scale prediction of atomic-level protein structure with
+  a language model.
+\newblock \emph{Science}, 379\penalty0 (6637):\penalty0 1123--1130, 2023.
+
+\bibitem[Potter et~al.(2018)Potter, Luciani, Eddy, Park, Lopez, and
+  Finn]{hmmer3}
+Simon~C Potter, Aur{\'e}lien Luciani, Sean~R Eddy, Youngmi Park, Rodrigo Lopez,
+  and Robert~D Finn.
+\newblock {HMMER} web server: 2018 update.
+\newblock \emph{Nucleic acids research}, 46:\penalty0 W200--W204, 2018.
 
 \bibitem[Varner(2026)]{varnerSAProtein2026}
 Jeffrey~D. Varner.
@@ -17,19 +70,16 @@ Michael Laskowski and Izydor Kato.
 \newblock Protein inhibitors of proteinases.
 \newblock \emph{Annual Review of Biochemistry}, 49:\penalty0 593--626, 1980.
 
-\bibitem[Adams et~al.(2006)Adams, Smith, Schroeder, Yasuda, and
-  Lewis]{omegaConotoxinSAR2006}
-David~J. Adams, Aaron~B. Smith, Christina~I. Schroeder, Toshihide Yasuda, and
-  Richard~J. Lewis.
-\newblock $\omega$-conotoxins {GVIA}, {MVIIA} and {CVID}: structure--activity
-  relationships and therapeutic potential.
-\newblock \emph{CNS \& Neurological Disorders Drug Targets}, 5\penalty0
-  (4):\penalty0 445--452, 2006.
+\bibitem[Schroeder and Lewis(2006)]{omegaConotoxinSAR2006}
+Christina~I. Schroeder and Richard~J. Lewis.
+\newblock $\omega$-conotoxins {GVIA}, {MVIIA} and {CVID}: {SAR} and clinical
+  potential.
+\newblock \emph{Marine Drugs}, 4\penalty0 (3):\penalty0 193--214, 2006.
 
 \bibitem[Miljanich(2004)]{ziconotideReview2004}
 George~P. Miljanich.
-\newblock Ziconotide: a review of its pharmacology and use in the treatment of
-  pain.
+\newblock Ziconotide: neuronal calcium channel blocker for treating severe
+  chronic pain.
 \newblock \emph{Current Medicinal Chemistry}, 11\penalty0 (23):\penalty0
   3029--3040, 2004.
 
@@ -81,13 +131,6 @@ Milot Mirdita, Konstantin Sch{\"u}tze, Yoshitaka Moriwaki, Lim Heo, Sergey
 \newblock {ColabFold}: making protein folding accessible to all.
 \newblock \emph{Nature Methods}, 19:\penalty0 679--682, 2022.
 
-\bibitem[Potter et~al.(2018)Potter, Luciani, Eddy, Park, Lopez, and
-  Finn]{hmmer3}
-Simon~C Potter, Aur{\'e}lien Luciani, Sean~R Eddy, Youngmi Park, Rodrigo Lopez,
-  and Robert~D Finn.
-\newblock {HMMER} web server: 2018 update.
-\newblock \emph{Nucleic acids research}, 46:\penalty0 W200--W204, 2018.
-
 \bibitem[Heyne et~al.(2021)Heyne, Shirian, Cohen, Peleg, Radisky, Papo, and
   Shifman]{heyneBPTIDMS2021}
 M.~Heyne, J.~Shirian, I.~Cohen, Y.~Peleg, E.~S. Radisky, N.~Papo, and J.~M.
@@ -105,16 +148,6 @@ Hubert Ramsauer, Bernhard Sch{\"a}fl, Johannes Lehner, Philipp Seidl, Michael
   Geir~Kjetil Sandve, et~al.
 \newblock Hopfield networks is all you need.
 \newblock \emph{International Conference on Learning Representations}, 2021.
-
-\bibitem[Lin et~al.(2023)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin, Verkuil,
-  Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candido, and
-  Rives]{esmfold2022}
-Zeming Lin, Halil Akin, Roshan Rao, Brian Hie, Zhongkai Zhu, Wenting Lu, Nikita
-  Smetanin, Robert Verkuil, Ori Kabeli, Yaniv Shmueli, Allan dos Santos~Costa,
-  Maryam Fazel-Zarandi, Tom Sercu, Sal Candido, and Alexander Rives.
-\newblock Evolutionary-scale prediction of atomic-level protein structure with
-  a language model.
-\newblock \emph{Science}, 379\penalty0 (6637):\penalty0 1123--1130, 2023.
 
 \bibitem[Zhang and Skolnick(2005)]{tmAlign2005}
 Yang Zhang and Jeffrey Skolnick.
