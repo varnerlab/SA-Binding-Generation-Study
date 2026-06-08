@@ -142,3 +142,19 @@ gap_mask   = 1.0 - mask_row.p1_kr[1]                 # remaining under the mask 
 @info "  Residual background mass closed by the mask ~= $(round(gap_finite - gap_mask, digits=3))"
 @info "  Scaffold/quality: mask novelty=$(round(mask_row.novelty[1],digits=3)) vs curation novelty=$(round(cur_row.novelty[1],digits=3)); " *
       "mask KL=$(round(mask_row.kl[1],digits=3)) vs curation KL=$(round(cur_row.kl[1],digits=3))"
+
+# --- Fixed-mask β-sweep (DIAGNOSTIC): P1 K/R + novelty vs β inside the masked regime ---
+# Tests whether the mask's recovery is β-limited: does P1 K/R climb toward 1.0 as β
+# increases (β confound), or plateau (decode/geometry floor)?
+@info "Fixed-mask β-sweep (diagnostic)"
+betasweep = DataFrame(β=Float64[], p1_kr=Float64[], novelty=Float64[])
+for βb in [2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 512.0]
+    seqs, _ = generate_masked_sequences(X̂_all, pca_all, L, designated_idx;
+        β=βb, n_chains=20, T=5000, seed=42)
+    p1_kr = count(s -> length(s) >= p1_pos && s[p1_pos] in ('K', 'R'), seqs) / length(seqs)
+    nov = 1.0 - mean(nearest_sequence_identity(s, stored_seqs) for s in seqs)
+    push!(betasweep, (βb, p1_kr, nov))
+    @info "  β=$βb: P1 K/R=$(round(p1_kr,digits=3)), novelty=$(round(nov,digits=3))"
+end
+CSV.write(joinpath(CACHE_DIR, "mask_betasweep.csv"), betasweep)
+@info "Wrote mask_betasweep.csv"
