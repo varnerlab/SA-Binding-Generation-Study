@@ -197,6 +197,51 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{figure}
 
 % -----------------------------------------------------------------------
+% Fig: Hard-mask beta sweep (rho -> infinity endpoint)
+% -----------------------------------------------------------------------
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.72\textwidth]{sections/figs/fig_mask_betasweep.pdf}
+  \caption{\textbf{Recovery of the designated phenotype is governed by retrieval
+  sharpness, not by the conditioning bias.}
+  P1~K/R fraction for the Kunitz designated subset as a function of inverse
+  temperature $\beta$ (log scale) under the hard attention mask ($b = -\infty$ on
+  background patterns; red curve, 20 chains per point). Recovery climbs
+  monotonically from 0.47 at $\beta = 2$ to 1.00 at $\beta = 512$ with no plateau.
+  The finite-$\rho$ multiplicity conditions (blue diamonds, each at its own
+  $\beta^{*}(\vr)$) fall on the same curve, with the strongest within 0.003 of the
+  mask at matched $\beta$. Hard curation (green triangle) reaches complete transfer
+  at low $\beta$ on its subset-only basis; unconditional generation (gray square) is
+  shown for reference.}
+  \label{fig:mask-betasweep}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Table: Hard-mask recovery across the conditioning axis
+% -----------------------------------------------------------------------
+\begin{table}[t]
+  \centering
+  \caption{\textbf{Kunitz P1~K/R recovery across the conditioning axis.} Designated
+  subset is K/R at the P1 position ($K_{\mathrm{des}} = 32$). All conditions use the
+  full-family PCA basis except hard curation, which rebuilds the basis from the
+  designated subset. The hard mask ($b = -\infty$ on background) is the
+  $\rho \to \infty$ endpoint of the multiplicity axis at fixed $\beta$. Novelty is one
+  minus the mean nearest-neighbor identity to the training alignment.}
+  \label{tab:mask-recovery}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    Condition & $\beta$ & P1~K/R $\uparrow$ & Novelty \\
+    \midrule
+    Unconditional ($b = 0$)                      & 3.8 & 0.39 & 0.42 \\
+    Multiplicity (strongest finite $\rho$)       & 7.7 & 0.61 & 0.39 \\
+    Hard mask ($b = -\infty$), at $\beta^{*}$    & 3.2 & 0.50 & 0.42 \\
+    Hard mask ($b = -\infty$), $\beta = 512$     & 512 & 1.00 & 0.17 \\
+    Hard curation (subset basis)                 & 3.2 & 1.00 & 0.33 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------
 % Table: Per-family rho sweep (replaces old Fig 7)
 % -----------------------------------------------------------------------
 \begin{table}[p]

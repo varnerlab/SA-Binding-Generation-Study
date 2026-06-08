@@ -39,7 +39,7 @@ during sampling; sequence diversity was computed as one minus the mean pairwise 
 (estimated from 300--500 random pairs); and amino acid composition fidelity was measured by KL
 divergence between generated and reference amino acid frequencies. The Fisher separation
 index $S$ was computed from pairwise cosine similarities between unit-norm PCA vectors within
-and between functional groups as defined in Section~\ref{sec:gap}. Structural validation used
+and between functional groups. Structural validation used
 ESMFold~\cite{esmfold2022} to predict structures for 50 sequences per source, with pLDDT
 extracted from the B-factor column and TM-scores computed against experimental reference
 structures (1BPI chain~A for Kunitz, 1OMG chain~A for $\omega$-conotoxin) using
@@ -47,6 +47,24 @@ TM-align~\cite{tmAlign2005}; these results were independently cross-validated wi
 ColabFold~\cite{jumperHighlyAccurate2021,mirdita2022colabfold} (1 model, 3 recycles,
 MMseqs2 MSA, no relaxation) run on Google Colab with a T4 GPU. Sequence plausibility was assessed using ESM2-650M
 pseudo-perplexity computed via masked marginal scoring over all
-positions~\cite{esmfold2022}. All experiments were implemented in Julia~1.12 using NNlib.jl
+positions~\cite{esmfold2022}.
+
+Conditioning enters the sampler as an additive bias $\mathbf{b}$ on the attention logits,
+$\mathrm{softmax}(\beta\,X^{\top}\xi + \mathbf{b})$, with entries in $\mathbb{R} \cup \{-\infty\}$.
+The unweighted sampler corresponds to $\mathbf{b} = \mathbf{0}$, multiplicity weighting to
+$\mathbf{b} = \log\vr$, and hard attention masking to $b_k = -\infty$ on background patterns,
+which assigns those memories softmax weight exactly zero. Because the softmax is invariant to a
+constant shift of all logits, multiplicity weighting with ratio $\rho$ is, up to such a shift, a
+soft background mask with bias $-\log\rho$, and the hard mask is its $\rho \to \infty$ limit at
+fixed $\beta$~\cite{varnerSAProtein2026}. We evaluated the hard mask on the Kunitz family using
+the designated K/R-at-P1 split ($K_{\mathrm{des}} = 32$), retaining the full-family PCA basis so
+that background patterns receive zero attention while the $d = 80$ coordinate system is unchanged.
+This isolates the effect of restricting attention from the basis rebuilding performed by hard
+curation. To separate retrieval sharpness from the conditioning bias, we additionally held the
+mask fixed and swept $\beta$ over eight logarithmically spaced values in $[2, 512]$ with 20 chains
+each, recording the decoded P1~K/R fraction and the sequence novelty, defined as one minus the
+mean identity of each generated sequence to its nearest neighbor in the training alignment.
+
+All experiments were implemented in Julia~1.12 using NNlib.jl
 (softmax), MultivariateStats.jl (PCA), and Distributions.jl; source code and experiment scripts
 are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
