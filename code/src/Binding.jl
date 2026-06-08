@@ -542,9 +542,9 @@ function logit_bias_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
     length(b) == K || throw(DimensionMismatch(
         "b has length $(length(b)) but X has $K columns"))
     any(isfinite, b) || throw(ArgumentError("b must have at least one finite entry"))
-    T > 0   || throw(ArgumentError("T must be positive"))
-    β > 0   || throw(ArgumentError("β must be positive"))
-    0 < α < 1 || throw(ArgumentError("α must be in (0,1)"))
+    T > 0   || throw(ArgumentError("T must be positive, got T = $T"))
+    β > 0   || throw(ArgumentError("β must be positive, got β = $β"))
+    0 < α < 1 || throw(ArgumentError("α must be in (0,1), got α = $α"))
 
     if seed !== nothing
         Random.seed!(seed)
@@ -575,18 +575,21 @@ log-weight bias to each pattern's logit before softmax:
 
     a_t = softmax(β X^T ξ_t + log(w))
 
-where w is a K-vector of positive weights. Patterns with higher weight
-attract the chain more strongly. This is equivalent to the Boltzmann
-distribution over a "weighted" Hopfield energy, and it is the exact
-score function for p(ξ) ∝ exp(-β E_w(ξ)) where:
+where w is a K-vector of nonnegative weights (at least one must be positive).
+Patterns with higher weight attract the chain more strongly. Zero-weight patterns
+are excluded from the softmax (they receive attention weight exactly 0). This is
+equivalent to the Boltzmann distribution over a "weighted" Hopfield energy, and
+it is the exact score function for p(ξ) ∝ exp(-β E_w(ξ)) where:
 
     E_w(ξ) = ½‖ξ‖² - (1/β) log Σ_k  w_k exp(β m_k^T ξ)
+
+Delegates to `logit_bias_sample` with `b = log(w)`.
 
 # Arguments
 - `X::Matrix{Float64}`: Memory matrix (d × K)
 - `ξ₀::Vector{Float64}`: Initial state
 - `T::Int`: Number of iterations
-- `pattern_weights::Vector{Float64}`: Per-pattern weights (length K, positive)
+- `pattern_weights::Vector{Float64}`: Per-pattern weights (length K, nonnegative, at least one positive)
 
 # Keyword Arguments
 - `β`, `α`, `seed`: Same as `sample()`
@@ -595,39 +598,14 @@ function weighted_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
                           pattern_weights::Vector{Float64};
                           β::Float64=1.0, α::Float64=0.1,
                           seed::Union{Int, Nothing}=nothing)
-
-    d, K = size(X)
-    length(ξ₀) == d || throw(DimensionMismatch(
-        "Initial state has length $(length(ξ₀)) but X has $d rows"))
+    K = size(X, 2)
     length(pattern_weights) == K || throw(DimensionMismatch(
         "pattern_weights has length $(length(pattern_weights)) but X has $K columns"))
-    T > 0   || throw(ArgumentError("T must be positive"))
-    β > 0   || throw(ArgumentError("β must be positive"))
-    0 < α < 1 || throw(ArgumentError("α must be in (0,1)"))
-    all(w -> w > 0, pattern_weights) || throw(ArgumentError("All weights must be positive"))
+    all(w -> w >= 0, pattern_weights) || throw(ArgumentError("All weights must be nonnegative"))
+    any(w -> w > 0, pattern_weights) || throw(ArgumentError("At least one weight must be positive"))
 
-    if seed !== nothing
-        Random.seed!(seed)
-    end
-
-    Ξ = Matrix{Float64}(undef, T + 1, d)
-    Ξ[1, :] .= ξ₀
-
-    noise_scale = sqrt(2.0 * α / β)
-    log_weights = log.(pattern_weights)  # pre-compute once
-
-    ξ = copy(ξ₀)
-    for t in 1:T
-        # weighted attention: softmax(β X^T ξ + log w)
-        logits = β .* (X' * ξ) .+ log_weights
-        w = softmax(logits)
-
-        ε = randn(d)
-        ξ .= (1.0 - α) .* ξ .+ α .* (X * w) .+ noise_scale .* ε
-        Ξ[t + 1, :] .= ξ
-    end
-
-    return (t = collect(0:T), Ξ = Ξ)
+    # b = log(w); log(0) = -Inf is handled by the core (softmax weight 0).
+    return logit_bias_sample(X, ξ₀, T, log.(pattern_weights); β=β, α=α, seed=seed)
 end
 
 """
