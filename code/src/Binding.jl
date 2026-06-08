@@ -992,6 +992,42 @@ function generate_weighted_sequences(X̂::Matrix{Float64}, pca_model, L::Int,
     return gen_seqs, gen_pca
 end
 
+"""
+    generate_masked_sequences(X̂, pca_model, L, keep_indices; β, n_chains=30,
+                              T=5000, α=0.01, burnin=2000, thin=100, seed=42)
+
+Hard-masked generation pipeline. Same interface as `generate_weighted_sequences`
+but restricts attention to `keep_indices` via `masked_sample`. Chains warm-start
+from kept (in-set) patterns so they begin inside the designated subset, matching
+the masked-conditional protocol. Decoding uses the supplied (full-family) PCA basis.
+"""
+function generate_masked_sequences(X̂::Matrix{Float64}, pca_model, L::Int,
+                                    keep_indices::Vector{Int};
+                                    β::Float64, n_chains::Int=30, T::Int=5000,
+                                    α::Float64=0.01, burnin::Int=2000, thin::Int=100,
+                                    seed::Int=42)
+    d, K = size(X̂)
+    keep = falses(K)
+    keep[keep_indices] .= true
+    gen_seqs = String[]
+    gen_pca = Vector{Float64}[]
+
+    @info "Generating masked sequences: $n_chains chains × $T steps (β=$β, kept=$(length(keep_indices))/$K)"
+    for chain in 1:n_chains
+        k = keep_indices[mod1(chain, length(keep_indices))]   # warm-start in-set
+        ξ₀ = X̂[:, k] .+ 0.01 .* randn(d)
+        result = masked_sample(X̂, ξ₀, T, keep; β=β, α=α, seed=seed + chain)
+        for t in burnin:thin:T
+            ξ = result.Ξ[t + 1, :]
+            push!(gen_seqs, decode_sample(ξ, pca_model, L))
+            push!(gen_pca, ξ)
+        end
+    end
+
+    @info "  Generated $(length(gen_seqs)) masked sequences from $n_chains chains"
+    return gen_seqs, gen_pca
+end
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Generation pipeline (wraps all approaches)
 # ══════════════════════════════════════════════════════════════════════════════

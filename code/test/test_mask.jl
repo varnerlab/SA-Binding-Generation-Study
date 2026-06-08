@@ -48,3 +48,16 @@ end
     # mask_vector builds 0/1 weights
     @test mask_vector(5, [1, 3]) == [1.0, 0.0, 1.0, 0.0, 0.0]
 end
+
+@testset "generate_masked_sequences shape + validity (small synthetic family)" begin
+    Random.seed!(123)
+    aas = collect("ACDEFGHIKLMNPQRSTVWY")
+    char_mat = [rand(aas) for _ in 1:12, _ in 1:16]   # 12 sequences × 16 positions
+    X̂, pca, Lout, _ = build_memory_matrix(char_mat; pratio=0.95)
+    keep_idx = [1, 2, 3, 4, 5, 6]
+    seqs, pcas = generate_masked_sequences(X̂, pca, Lout, keep_idx;
+        β=5.0, n_chains=2, T=50, burnin=10, thin=10, seed=1)
+    @test length(seqs) == 2 * length(10:10:50)   # n_chains × samples-per-chain
+    @test all(s -> length(s) == Lout, seqs)
+    @test length(pcas) == length(seqs)
+end
