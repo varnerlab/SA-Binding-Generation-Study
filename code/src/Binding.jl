@@ -609,6 +609,50 @@ function weighted_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
 end
 
 """
+    masked_sample(X, ξ₀, T, keep; β=1.0, α=0.1, seed=nothing)
+
+Hard attention masking. `keep` is either a length-K Boolean vector or a vector
+of kept column indices. Memories outside the keep-set get logit bias `-∞`
+(softmax weight 0), so the chain only attends to the kept subset. Equivalent to
+running unmasked SA on the reduced memory matrix `X[:, keep]` while retaining the
+full-family coordinate basis. This is the `ρ → ∞` endpoint of multiplicity
+conditioning.
+"""
+function masked_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
+                        keep::AbstractVector{Bool};
+                        β::Float64=1.0, α::Float64=0.1,
+                        seed::Union{Int, Nothing}=nothing)
+    K = size(X, 2)
+    length(keep) == K || throw(DimensionMismatch(
+        "keep has length $(length(keep)) but X has $K columns"))
+    b = [keep[k] ? 0.0 : -Inf for k in 1:K]
+    return logit_bias_sample(X, ξ₀, T, b; β=β, α=α, seed=seed)
+end
+
+function masked_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
+                        keep_indices::Vector{Int};
+                        β::Float64=1.0, α::Float64=0.1,
+                        seed::Union{Int, Nothing}=nothing)
+    K = size(X, 2)
+    keep = falses(K)
+    keep[keep_indices] .= true
+    return masked_sample(X, ξ₀, T, keep; β=β, α=α, seed=seed)
+end
+
+"""
+    mask_vector(K, keep_indices) -> Vector{Float64}
+
+Length-K weight vector with 1.0 on kept indices and 0.0 elsewhere. Symmetric
+with `multiplicity_vector`; passing it to `weighted_sample`/`generate_weighted_sequences`
+reproduces the hard mask via the `log(0) = -∞` route.
+"""
+function mask_vector(K::Int, keep_indices::Vector{Int})
+    v = zeros(K)
+    v[keep_indices] .= 1.0
+    return v
+end
+
+"""
     build_weighted_memory(char_mat, binder_indices; pratio=0.95, binder_weight=5.0)
 
 Build a full-family memory matrix with per-pattern weights that upweight binders.
