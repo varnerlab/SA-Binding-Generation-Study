@@ -518,6 +518,54 @@ end
 # ══════════════════════════════════════════════════════════════════════════════
 
 """
+    logit_bias_sample(X, ξ₀, T, b; β=1.0, α=0.1, seed=nothing)
+
+Unified Langevin sampler with an additive bias `b` on the attention logits:
+
+    a_t = softmax(β Xᵀ ξ_t + b)
+
+`b` is a length-K vector and may contain `-Inf` entries (those memories get
+softmax weight exactly 0). This is the one primitive behind all conditioning
+regimes: `b = 0` is unconditional SA, `b = log r` is multiplicity conditioning
+(`weighted_sample`), and `b = -∞` on a subset is hard masking (`masked_sample`).
+
+Not to be confused with `biased_sample` (Approach 2), which adds an energy
+gradient to the update rather than a bias to the softmax logits.
+"""
+function logit_bias_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
+                            b::Vector{Float64};
+                            β::Float64=1.0, α::Float64=0.1,
+                            seed::Union{Int,Nothing}=nothing)
+    d, K = size(X)
+    length(ξ₀) == d || throw(DimensionMismatch(
+        "Initial state has length $(length(ξ₀)) but X has $d rows"))
+    length(b) == K || throw(DimensionMismatch(
+        "b has length $(length(b)) but X has $K columns"))
+    any(isfinite, b) || throw(ArgumentError("b must have at least one finite entry"))
+    T > 0   || throw(ArgumentError("T must be positive"))
+    β > 0   || throw(ArgumentError("β must be positive"))
+    0 < α < 1 || throw(ArgumentError("α must be in (0,1)"))
+
+    if seed !== nothing
+        Random.seed!(seed)
+    end
+
+    Ξ = Matrix{Float64}(undef, T + 1, d)
+    Ξ[1, :] .= ξ₀
+    noise_scale = sqrt(2.0 * α / β)
+
+    ξ = copy(ξ₀)
+    for t in 1:T
+        logits = β .* (X' * ξ) .+ b
+        w = softmax(logits)
+        ε = randn(d)
+        ξ .= (1.0 - α) .* ξ .+ α .* (X * w) .+ noise_scale .* ε
+        Ξ[t + 1, :] .= ξ
+    end
+    return (t = collect(0:T), Ξ = Ξ)
+end
+
+"""
     weighted_sample(X, ξ₀, T, pattern_weights; β=1.0, α=0.1, seed=nothing)
 
 Langevin sampler with per-pattern weights in the softmax.
