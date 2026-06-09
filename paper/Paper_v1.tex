@@ -202,17 +202,21 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.72\textwidth]{sections/figs/fig_mask_betasweep.pdf}
-  \caption{\textbf{Recovery of the designated phenotype is governed by retrieval
-  sharpness, not by the conditioning bias.}
-  P1~K/R fraction for the Kunitz designated subset as a function of inverse
-  temperature $\beta$ (log scale) under the hard attention mask ($b = -\infty$ on
-  background patterns; red curve, 20 chains per point). Recovery climbs
-  monotonically from 0.47 at $\beta = 2$ to 1.00 at $\beta = 512$ with no plateau.
+  \caption{\textbf{The hard mask isolates the gap decomposition: recovery depends on
+  both retrieval sharpness and residual background mass.}
+  P1~K/R fraction for the Kunitz designated subset versus inverse temperature
+  $\beta$ (log scale) under the hard attention mask ($b = -\infty$ on background
+  patterns; red curve, 30 chains per point, error bars are standard error across
+  chains). The mask is the $\Delta_{\mathrm{attn}} = 0$ envelope: recovery climbs
+  monotonically from 0.46 at $\beta = 2$ to 1.00 at $\beta = 512$ with no plateau.
   The finite-$\rho$ multiplicity conditions (blue diamonds, each at its own
-  $\beta^{*}(\vr)$) fall on the same curve, with the strongest within 0.003 of the
-  mask at matched $\beta$. Hard curation (green triangle) reaches complete transfer
-  at low $\beta$ on its subset-only basis; unconditional generation (gray square) is
-  shown for reference.}
+  $\beta^{*}(\vr)$) sit below this envelope by the empirical $\Delta_{\mathrm{attn}}$,
+  significant at weak conditioning (0.111, SE 0.027, at $f_{\mathrm{eff}} = 0.5$) and
+  contracting into the noise as $\rho \to \infty$ (0.002, SE 0.030, at
+  $f_{\mathrm{eff}} = 0.99$); faint red points show the mask run at each matched
+  $\beta$. Hard curation (green triangle) reaches complete transfer at low $\beta$ on
+  its subset-only basis; unconditional generation (gray square) is shown for
+  reference.}
   \label{fig:mask-betasweep}
 \end{figure}
 
@@ -226,17 +230,18 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   full-family PCA basis except hard curation, which rebuilds the basis from the
   designated subset. The hard mask ($b = -\infty$ on background) is the
   $\rho \to \infty$ endpoint of the multiplicity axis at fixed $\beta$. Novelty is one
-  minus the mean nearest-neighbor identity to the training alignment.}
+  minus the mean nearest-neighbor identity to the training alignment. P1~K/R is the chain-level
+  mean $\pm$ standard error over 30 chains; novelty standard errors are below 0.01.}
   \label{tab:mask-recovery}
   \begin{tabular}{@{}lccc@{}}
     \toprule
     Condition & $\beta$ & P1~K/R $\uparrow$ & Novelty \\
     \midrule
-    Unconditional ($b = 0$)                      & 3.8 & 0.39 & 0.42 \\
-    Multiplicity (strongest finite $\rho$)       & 7.7 & 0.61 & 0.39 \\
-    Hard mask ($b = -\infty$), at $\beta^{*}$    & 3.2 & 0.50 & 0.42 \\
-    Hard mask ($b = -\infty$), $\beta = 512$     & 512 & 1.00 & 0.17 \\
-    Hard curation (subset basis)                 & 3.2 & 1.00 & 0.33 \\
+    Unconditional ($b = 0$)                      & 3.8 & $0.39 \pm 0.02$ & 0.42 \\
+    Multiplicity (strongest finite $\rho$)       & 7.7 & $0.59 \pm 0.02$ & 0.39 \\
+    Hard mask ($b = -\infty$), at $\beta^{*}$    & 3.2 & $0.50 \pm 0.02$ & 0.42 \\
+    Hard mask ($b = -\infty$), $\beta = 512$     & 512 & $1.00 \pm 0.00$ & 0.16 \\
+    Hard curation (subset basis)                 & 3.2 & $1.00 \pm 0.00$ & 0.33 \\
     \bottomrule
   \end{tabular}
 \end{table}

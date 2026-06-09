@@ -60,4 +60,6 @@ end
     @test length(seqs) == 2 * length(10:10:50)   # n_chains × samples-per-chain
     @test all(s -> length(s) == Lout, seqs)
     @test length(pcas) == length(seqs)
+    # neutral warm-start (mod1 over all columns) still yields finite PCA vectors
+    @test all(v -> all(isfinite, v), pcas)
 end

@@ -997,9 +997,11 @@ end
                               T=5000, α=0.01, burnin=2000, thin=100, seed=42)
 
 Hard-masked generation pipeline. Same interface as `generate_weighted_sequences`
-but restricts attention to `keep_indices` via `masked_sample`. Chains warm-start
-from kept (in-set) patterns so they begin inside the designated subset, matching
-the masked-conditional protocol. Decoding uses the supplied (full-family) PCA basis.
+but restricts attention to `keep_indices` via `masked_sample`. Chains use the same
+neutral warm-start as the baseline pipelines (`mod1(chain, K)` over all columns), so
+the mask, multiplicity, and unconditional conditions start identically and the
+comparison is unconfounded; masking still confines the chain to the designated
+subset after burn-in. Decoding uses the supplied (full-family) PCA basis.
 """
 function generate_masked_sequences(X̂::Matrix{Float64}, pca_model, L::Int,
                                     keep_indices::Vector{Int};
@@ -1014,7 +1016,7 @@ function generate_masked_sequences(X̂::Matrix{Float64}, pca_model, L::Int,
 
     @info "Generating masked sequences: $n_chains chains × $T steps (β=$β, kept=$(length(keep_indices))/$K)"
     for chain in 1:n_chains
-        k = keep_indices[mod1(chain, length(keep_indices))]   # warm-start in-set
+        k = mod1(chain, K)   # neutral warm-start over all columns (matches baselines)
         ξ₀ = X̂[:, k] .+ 0.01 .* randn(d)
         result = masked_sample(X̂, ξ₀, T, keep; β=β, α=α, seed=seed + chain)
         for t in burnin:thin:T

@@ -122,27 +122,26 @@ diversity.
 
 \paragraph{The hard mask as the $\rho \to \infty$ endpoint.}
 Hard attention masking sets the background attention mass to exactly zero, realizing the
-$\rho \to \infty$ endpoint of the multiplicity axis on the full-family basis
-(Table~\ref{tab:mask-recovery}). At an inverse temperature near the strongest finite-$\rho$
-operating point ($\beta \approx 8$), the mask produced a P1~K/R fraction of 0.62, indistinguishable
-from the 0.61 of the strongest finite-$\rho$ condition. Removing the residual background attention
-mass entirely did not improve the decoded phenotype, confirming that the attention term
-$\Delta_{\mathrm{attn}}$ of Eq.~\ref{eq:gap-decomp} is not the bottleneck even at the endpoint.
-Holding the mask fixed and increasing $\beta$ beyond the range of the earlier $\beta/\beta^{*}$
-sweep drove the P1~K/R fraction monotonically from 0.47 at $\beta = 2$ to 1.00 at $\beta = 512$,
-with no plateau (Fig.~\ref{fig:mask-betasweep}). The residual decode gap
-$\Delta_{\mathrm{PCA}} + \Delta_{\mathrm{argmax}}$ is therefore not a fixed floor but contracts as
-retrieval sharpens, and the finite-$\rho$ conditions fall on the same recovery-versus-$\beta$ curve
-traced by the mask, so multiplicity strength acts on the decoded phenotype chiefly through the
-$\beta^{*}$ it induces. This recovery came at a cost: novelty fell from 0.42 at the mask's $\beta^{*}$ to 0.17
-at $\beta = 512$ as the chains concentrated on individual designated patterns
-(Table~\ref{tab:mask-recovery}). Hard curation
-reached complete phenotype transfer at low $\beta$ while retaining higher novelty (0.33), more
-efficiently than the high-$\beta$ mask, because its subset-only basis concentrates the designated
-variation that the full-family leading components blur. Masking thus confirms the geometric account
-of the calibration gap from its endpoint and shows that closing the gap on an
-intermediate-separation family is governed by retrieval sharpness rather than by the conditioning
-bias.
+$\rho \to \infty$ endpoint of the multiplicity axis on the full-family basis and the literal
+$\Delta_{\mathrm{attn}} = 0$ slice of Eq.~\ref{eq:gap-decomp} (Table~\ref{tab:mask-recovery}).
+Holding the mask fixed and sweeping $\beta$ therefore traces the decode-limited ceiling of
+recovery: the P1~K/R fraction climbs monotonically from 0.46 at $\beta = 2$ to 1.00 at
+$\beta = 512$ with no plateau (Fig.~\ref{fig:mask-betasweep}), showing that the residual decode gap
+$\Delta_{\mathrm{PCA}} + \Delta_{\mathrm{argmax}}$ is not a fixed floor but contracts as retrieval
+sharpens. Each finite-$\rho$ multiplicity condition sits below this ceiling at its own matched
+$\beta$ by the empirical $\Delta_{\mathrm{attn}}$, the recovery lost to residual background
+attention. That gap is resolved at weak conditioning, 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$
+and 0.075 (SE 0.029) at $f_{\mathrm{eff}} = 0.7$, and contracts monotonically into the sampling
+noise as $\rho$ grows, reaching 0.002 (SE 0.030) at $f_{\mathrm{eff}} = 0.99$, where the mask and
+the strongest finite-$\rho$ condition coincide. Recovery on this intermediate-separation family is
+thus governed by two factors that the mask separates: residual background mass $\rho$ sets the
+attention ceiling a condition operates against, and retrieval sharpness $\beta$ determines how much
+of the decode gap to that ceiling is closed. The high-$\beta$ recovery carried a cost, with novelty
+falling from 0.42 at the mask's $\beta^{*}$ to 0.16 at $\beta = 512$ as the chains concentrated on
+individual designated patterns (Table~\ref{tab:mask-recovery}). Hard curation reached complete
+phenotype transfer at low $\beta$ while retaining higher novelty (0.33), more efficiently than the
+high-$\beta$ mask, because its subset-only basis concentrates the designated variation that the
+full-family leading components blur.
 
 \paragraph{Application to $\omega$-conotoxin Cav2.2 binders.}
 We applied SA to the $\omega$-conotoxin O-superfamily (disulfide-rich peptides from predatory

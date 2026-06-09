@@ -60,10 +60,15 @@ fixed $\beta$~\cite{varnerSAProtein2026}. We evaluated the hard mask on the Kuni
 the designated K/R-at-P1 split ($K_{\mathrm{des}} = 32$), retaining the full-family PCA basis so
 that background patterns receive zero attention while the $d = 80$ coordinate system is unchanged.
 This isolates the effect of restricting attention from the basis rebuilding performed by hard
-curation. To separate retrieval sharpness from the conditioning bias, we additionally held the
-mask fixed and swept $\beta$ over eight logarithmically spaced values in $[2, 512]$ with 20 chains
-each, recording the decoded P1~K/R fraction and the sequence novelty, defined as one minus the
-mean identity of each generated sequence to its nearest neighbor in the training alignment.
+curation. Every condition used 30 independent Langevin chains initialized identically from patterns
+cycled across the full memory, so the mask, multiplicity, and unconditional comparisons are
+unconfounded by the warm start; the decoded P1~K/R fraction and the sequence novelty (one minus the
+mean identity of each generated sequence to its nearest neighbor in the training alignment) are
+reported as the mean and standard error across chains. To separate retrieval sharpness from the
+conditioning bias we held the mask fixed and swept $\beta$ over eight logarithmically spaced values
+in $[2, 512]$, and to measure the attention term $\Delta_{\mathrm{attn}}$ of Eq.~\ref{eq:gap-decomp}
+directly we additionally ran the mask at each multiplicity condition's own $\beta^{*}(\vr)$, giving
+the matched-$\beta$ recovery difference.
 
 All experiments were implemented in Julia~1.12 using NNlib.jl
 (softmax), MultivariateStats.jl (PCA), and Distributions.jl; source code and experiment scripts
