@@ -129,14 +129,17 @@ recovery: the P1~K/R fraction climbs monotonically from 0.46 at $\beta = 2$ to 1
 $\beta = 512$ with no plateau (Fig.~\ref{fig:mask-betasweep}), showing that the residual decode gap
 $\Delta_{\mathrm{PCA}} + \Delta_{\mathrm{argmax}}$ is not a fixed floor but contracts as retrieval
 sharpens. Each finite-$\rho$ multiplicity condition sits below this ceiling at its own matched
-$\beta$ by the empirical $\Delta_{\mathrm{attn}}$, the recovery lost to residual background
-attention. That gap is resolved at weak conditioning, 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$
-and 0.075 (SE 0.029) at $f_{\mathrm{eff}} = 0.7$, and contracts monotonically into the sampling
-noise as $\rho$ grows, reaching 0.002 (SE 0.030) at $f_{\mathrm{eff}} = 0.99$, where the mask and
-the strongest finite-$\rho$ condition coincide. Recovery on this intermediate-separation family is
-thus governed by two factors that the mask separates: residual background mass $\rho$ sets the
-attention ceiling a condition operates against, and retrieval sharpness $\beta$ determines how much
-of the decode gap to that ceiling is closed. The high-$\beta$ recovery carried a cost, with novelty
+$\beta$: at equal retrieval sharpness, hard masking recovers more phenotype than soft weighting,
+by 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$ and 0.075 (SE 0.029) at $f_{\mathrm{eff}} = 0.7$, a
+margin that contracts monotonically into the sampling noise as $\rho$ grows, reaching 0.002
+(SE 0.030) at $f_{\mathrm{eff}} = 0.99$ where the mask and the strongest finite-$\rho$ condition
+coincide. Because the attention weights track $f_{\mathrm{eff}}$ to within a fraction of a percent
+($\Delta_{\mathrm{attn}} \approx 0$, Eq.~\ref{eq:gap-decomp}), this masking advantage is not an
+attention effect but a decode effect: eliminating background attention concentrates the weighted
+superposition on designated patterns alone, placing the state where the leading PCA components
+resolve the designated residue most reliably. Recovery on this intermediate-separation family is
+thus governed by two factors, retrieval sharpness $\beta$ and conditioning strength $\rho$, both
+acting through the decode gap rather than through the attention term. The high-$\beta$ recovery carried a cost, with novelty
 falling from 0.42 at the mask's $\beta^{*}$ to 0.16 at $\beta = 512$ as the chains concentrated on
 individual designated patterns (Table~\ref{tab:mask-recovery}). Hard curation reached complete
 phenotype transfer at low $\beta$ while retaining higher novelty (0.33), more efficiently than the

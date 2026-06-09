@@ -202,19 +202,20 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.72\textwidth]{sections/figs/fig_mask_betasweep.pdf}
-  \caption{\textbf{The hard mask isolates the gap decomposition: recovery depends on
-  both retrieval sharpness and residual background mass.}
+  \caption{\textbf{Recovery is set by retrieval sharpness and conditioning strength, both
+  acting through the decode gap.}
   P1~K/R fraction for the Kunitz designated subset versus inverse temperature
   $\beta$ (log scale) under the hard attention mask ($b = -\infty$ on background
   patterns; red curve, 30 chains per point, error bars are standard error across
   chains). The mask is the $\Delta_{\mathrm{attn}} = 0$ envelope: recovery climbs
   monotonically from 0.46 at $\beta = 2$ to 1.00 at $\beta = 512$ with no plateau.
   The finite-$\rho$ multiplicity conditions (blue diamonds, each at its own
-  $\beta^{*}(\vr)$) sit below this envelope by the empirical $\Delta_{\mathrm{attn}}$,
-  significant at weak conditioning (0.111, SE 0.027, at $f_{\mathrm{eff}} = 0.5$) and
+  $\beta^{*}(\vr)$) sit below this envelope at matched $\beta$: hard masking recovers more
+  phenotype than soft weighting by 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$,
   contracting into the noise as $\rho \to \infty$ (0.002, SE 0.030, at
   $f_{\mathrm{eff}} = 0.99$); faint red points show the mask run at each matched
-  $\beta$. Hard curation (green triangle) reaches complete transfer at low $\beta$ on
+  $\beta$. Since $\Delta_{\mathrm{attn}} \approx 0$ (attention tracks $f_{\mathrm{eff}}$), this
+  is a decode effect, not an attention effect. Hard curation (green triangle) reaches complete transfer at low $\beta$ on
   its subset-only basis; unconditional generation (gray square) is shown for
   reference.}
   \label{fig:mask-betasweep}

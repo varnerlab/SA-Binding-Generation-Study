@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  9 JUN 2026 14:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  9 JUN 2026 15:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -672,9 +672,6 @@ Underfull \vbox (badness 1237) has occurred while \output is active []
 [3]
 
 [4])
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 [5] (./sections/discussion.tex
 
@@ -731,7 +728,7 @@ Package pdftex.def Info: sections/figs/fig_mask_betasweep.pdf  used on input li
 ne 204.
 (pdftex.def)             Requested size: 286.18967pt x 214.63925pt.
 
-Overfull \hbox (10.73293pt too wide) in paragraph at lines 337--349
+Overfull \hbox (10.73293pt too wide) in paragraph at lines 338--350
  [][] 
  []
 
@@ -740,25 +737,25 @@ Overfull \hbox (10.73293pt too wide) in paragraph at lines 337--349
 File: sections/figs/loop_heatmap_with_residuals.pdf Graphic file (type pdf)
 <use sections/figs/loop_heatmap_with_residuals.pdf>
 Package pdftex.def Info: sections/figs/loop_heatmap_with_residuals.pdf  used on
- input line 473.
+ input line 474.
 (pdftex.def)             Requested size: 397.48499pt x 325.21475pt.
 <sections/figs/sequence_analysis_kunitz.pdf, id=257, 1204.5pt x 702.625pt>
 File: sections/figs/sequence_analysis_kunitz.pdf Graphic file (type pdf)
 <use sections/figs/sequence_analysis_kunitz.pdf>
 Package pdftex.def Info: sections/figs/sequence_analysis_kunitz.pdf  used on in
-put line 493.
+put line 494.
 (pdftex.def)             Requested size: 397.48499pt x 231.86696pt.
 <sections/figs/sequence_analysis_conotoxin.pdf, id=258, 903.375pt x 702.625pt>
 File: sections/figs/sequence_analysis_conotoxin.pdf Graphic file (type pdf)
 <use sections/figs/sequence_analysis_conotoxin.pdf>
 Package pdftex.def Info: sections/figs/sequence_analysis_conotoxin.pdf  used on
- input line 521.
+ input line 522.
 (pdftex.def)             Requested size: 397.48499pt x 309.15594pt.
 <figs/fold_superposition_combined.pdf, id=259, 722.7pt x 578.16pt>
 File: figs/fold_superposition_combined.pdf Graphic file (type pdf)
 <use figs/fold_superposition_combined.pdf>
 Package pdftex.def Info: figs/fold_superposition_combined.pdf  used on input li
-ne 548.
+ne 549.
 (pdftex.def)             Requested size: 397.48499pt x 317.98898pt.
 
 
@@ -803,7 +800,7 @@ l.151 \section{Supplementary Tables and Figures}
 File: sections/figs/plddt_vs_tmscore_scatter.pdf Graphic file (type pdf)
 <use sections/figs/plddt_vs_tmscore_scatter.pdf>
 Package pdftex.def Info: sections/figs/plddt_vs_tmscore_scatter.pdf  used on in
-put line 589.
+put line 590.
 (pdftex.def)             Requested size: 286.18967pt x 238.49266pt.
 
 
@@ -820,11 +817,11 @@ Package rerunfilecheck Info: File `Paper_v1.out' has not changed.
 (rerunfilecheck)             Checksum: 84D6D9A513DE5F75030BEFB16863E44C;1818.
  ) 
 Here is how much of TeX's memory you used:
- 16114 strings out of 473190
- 257019 string characters out of 5715801
- 791552 words of memory out of 5000000
+ 16120 strings out of 473190
+ 257070 string characters out of 5715801
+ 791912 words of memory out of 5000000
  38739 multiletter control sequences out of 15000+600000
- 607575 words of font info for 257 fonts, out of 8000000 for 9000
+ 607829 words of font info for 261 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,11n,79p,1566b,604s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
@@ -850,7 +847,7 @@ exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/20
 /texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dis
 t/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/ty
 pe1/urw/times/utmri8a.pfb>
-Output written on Paper_v1.pdf (26 pages, 876516 bytes).
+Output written on Paper_v1.pdf (26 pages, 876927 bytes).
 PDF statistics:
  736 PDF objects out of 1000 (max. 8388607)
  433 compressed objects within 5 object streams

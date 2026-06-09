@@ -9,10 +9,11 @@
 #   designated patterns). The fixed-mask beta-sweep traces the decode-limited
 #   ceiling: the recovery reachable when attention is perfect and only the
 #   Delta_PCA + Delta_argmax terms remain, which contract as beta rises.
-#   Finite-rho multiplicity conditions sit BELOW this envelope at matched beta by
-#   the empirical Delta_attn (residual), which shrinks to 0 as rho -> Inf. So
-#   recovery depends on both retrieval sharpness (beta) and residual background
-#   attention mass (rho); the mask isolates the two.
+#   Finite-rho multiplicity conditions sit BELOW this envelope at matched beta: at equal
+#   beta, hard masking recovers more phenotype than soft weighting, a margin that shrinks to
+#   0 as rho -> Inf. Since attention tracks f_eff (Delta_attn ~ 0), this advantage is a DECODE
+#   effect, not Delta_attn: recovery depends on both retrieval sharpness (beta) and
+#   conditioning strength (rho), both acting through the decode gap.
 #
 # All conditions use an identical neutral warm-start (mod1(chain,K)) and 30 chains,
 # so the mask vs multiplicity vs unconditional comparison is unconfounded. Recovery
@@ -23,7 +24,7 @@
 #   2. Multiplicity calibration sweep  (finite rho via build_multiplicity_conditioned_memory)
 #   3. Hard mask  (b = -Inf on background, full basis) at its own beta*
 #   4. Hard curation  (subset basis)
-#   + exact matched-beta mask runs at each multiplicity beta_w (empirical Delta_attn)
+#   + exact matched-beta mask runs at each multiplicity beta_w (matched-beta masking advantage)
 #   + fixed-mask beta-sweep (the Delta_attn = 0 envelope)
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -161,9 +162,10 @@ CSV.write(csv_path, results)
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Exact matched-β residuals: run the mask at each multiplicity β_w (no interpolation,
-# no grid quantization). residual = mult P1 K/R − mask P1 K/R at the same β = Δ_attn.
+# no grid quantization). residual = mult P1 K/R − mask P1 K/R at the same β = the matched-β
+# masking advantage (NOT Δ_attn, which ≈ 0; the advantage is a decode effect, see note below).
 # ──────────────────────────────────────────────────────────────────────────────
-@info "Exact matched-β mask runs (empirical Δ_attn per condition)"
+@info "Exact matched-β mask runs (matched-β masking advantage per condition)"
 residuals = DataFrame(f_target=Float64[], f_eff=Float64[], beta_w=Float64[],
                       mult_p1kr=Float64[], mult_se=Float64[],
                       mask_p1kr=Float64[], mask_se=Float64[],
@@ -204,9 +206,9 @@ uncond_row = results[results.condition .== "unconditional", :]
 mask_row = results[results.condition .== "mask", :]
 cur_row  = results[results.condition .== "curation", :]
 
-@info "=== Corrected analysis: gap decomposition (mask isolates Δ_attn) ==="
+@info "=== Corrected analysis: gap decomposition (mask = Δ_attn=0 envelope; ρ acts via decode) ==="
 @info ""
-@info "1. Matched-β residuals (mult P1 K/R − mask P1 K/R at the SAME β_w) = empirical Δ_attn:"
+@info "1. Matched-β masking advantage (mult P1 K/R − mask P1 K/R at the SAME β_w):"
 for r in eachrow(residuals)
     flag = abs(r.residual) <= r.residual_se ? "within 1 SE of 0" : "> 1 SE from 0"
     @info "   f=$(r.f_target) (β_w=$(round(r.beta_w,digits=2))): " *
@@ -221,9 +223,10 @@ monotone = all(diff(residuals.residual) .>= 0)   # residuals should rise toward 
 @info "   $(round(betasweep.p1_kr[end],digits=3))±$(round(betasweep.p1_kr_se[end],digits=3)) at β=$(Int(betasweep.β[end]))."
 @info ""
 @info "3. Interpretation:"
-@info "   - Nonzero residuals at finite ρ ⇒ residual background attention mass suppresses"
-@info "     recovery at matched β (two-factor: recovery depends on β AND ρ)."
-@info "   - Residuals → 0 as ρ→∞ ⇒ at the endpoint only β governs recovery."
+@info "   - Nonzero advantage at finite ρ ⇒ recovery depends on ρ as well as β (two-factor)."
+@info "   - Since attention tracks f_eff (Δ_attn≈0), this is a DECODE effect: concentrating the"
+@info "     weighted superposition on designated patterns decodes more reliably, not an attention gap."
+@info "   - Advantage → 0 as ρ→∞, where mask and strongest multiplicity coincide."
 @info "   - Novelty cost: mask β* novelty=$(round(mask_row.novelty[1],digits=3)), "
 @info "     high-β (β=$(Int(betasweep.β[end]))) novelty=$(round(betasweep.novelty[end],digits=3)), "
 @info "     curation novelty=$(round(cur_row.novelty[1],digits=3)) at P1 K/R=$(round(cur_row.p1_kr[1],digits=3))."

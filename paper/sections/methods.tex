@@ -66,9 +66,9 @@ unconfounded by the warm start; the decoded P1~K/R fraction and the sequence nov
 mean identity of each generated sequence to its nearest neighbor in the training alignment) are
 reported as the mean and standard error across chains. To separate retrieval sharpness from the
 conditioning bias we held the mask fixed and swept $\beta$ over eight logarithmically spaced values
-in $[2, 512]$, and to measure the attention term $\Delta_{\mathrm{attn}}$ of Eq.~\ref{eq:gap-decomp}
-directly we additionally ran the mask at each multiplicity condition's own $\beta^{*}(\vr)$, giving
-the matched-$\beta$ recovery difference.
+in $[2, 512]$, and to quantify the recovery advantage of hard masking over soft weighting at equal
+$\beta$ we additionally ran the mask at each multiplicity condition's own $\beta^{*}(\vr)$, giving the
+matched-$\beta$ recovery difference.
 
 All experiments were implemented in Julia~1.12 using NNlib.jl
 (softmax), MultivariateStats.jl (PCA), and Distributions.jl; source code and experiment scripts
