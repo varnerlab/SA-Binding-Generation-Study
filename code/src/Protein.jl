@@ -437,7 +437,7 @@ function transition_statistics(log_βs::AbstractVector, Hs::AbstractVector)
 end
 
 """
-    find_entropy_transition(X̂, r=ones(size(X̂,2)); α=0.01, n_betas=60,
+    find_entropy_transition(X̂, r=ones(size(X̂,2)); n_betas=60,
                             β_range=(0.1,500.0), n_probes=20, seed=0)
 
 Descriptive transition analysis for the (optionally multiplicity-weighted) attention
@@ -451,7 +451,7 @@ descriptive crossover statistic, not a finite-size phase-transition estimate.
 """
 function find_entropy_transition(X̂::Matrix{Float64},
                                  r::Vector{Float64}=ones(size(X̂, 2));
-                                 α::Float64=0.01, n_betas::Int=60,
+                                 n_betas::Int=60,
                                  β_range::Tuple{Float64,Float64}=(0.1, 500.0),
                                  n_probes::Int=20, seed::Int=0)
     d, K = size(X̂)
