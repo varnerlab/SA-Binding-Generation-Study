@@ -813,6 +813,31 @@ function exact_gmm_sample(X::Matrix{Float64}, r::Vector{Float64}, β::Float64, n
 end
 
 """
+    weighted_hopfield_gradient(ξ, X, β, r) -> Vector{Float64}
+
+Gradient of the multiplicity-weighted Hopfield energy `E_r`
+(see `weighted_hopfield_energy`):
+
+    ∇E_r(ξ) = ξ - X softmax(β Xᵀξ + log r).
+"""
+function weighted_hopfield_gradient(ξ::Vector{Float64}, X::Matrix{Float64},
+                                     β::Float64, r::Vector{Float64})::Vector{Float64}
+    a = NNlib.softmax(β .* (X' * ξ) .+ log.(r))
+    return ξ .- X * a
+end
+
+"""
+    weighted_score(ξ, X, β, r) -> Vector{Float64}
+
+Score of the multiplicity-weighted stationary target. Carries the factor β that
+the v1 proposition dropped:
+
+    ∇_ξ log p_β(ξ) = -β ∇E_r(ξ) = β[X softmax(β Xᵀξ + log r) - ξ].
+"""
+weighted_score(ξ::Vector{Float64}, X::Matrix{Float64}, β::Float64, r::Vector{Float64}) =
+    -β .* weighted_hopfield_gradient(ξ, X, β, r)
+
+"""
     find_weighted_entropy_inflection(X̂, r; α=0.01, n_betas=50, β_range=(0.1, 500.0))
 
 Find the phase transition β*(r) for the multiplicity-weighted Hopfield energy.
