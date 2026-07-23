@@ -1,0 +1,70 @@
+\subsection{The stationary distribution is an exact Gaussian mixture}\label{app:gmm}
+
+The stochastic attention sampler evolves an unconstrained state
+$\boldsymbol{\xi}\in\mathbb{R}^{d}$ (the update in Algorithm~1 applies no
+projection back to the sphere; only the stored memories are unit norm). Its
+stationary law is the Gibbs distribution
+$p_\beta(\boldsymbol{\xi})\propto e^{-\beta E_r(\boldsymbol{\xi})}$ of the
+multiplicity-weighted Hopfield energy
+\begin{equation}
+  E_r(\boldsymbol{\xi})
+  = \tfrac12\lVert\boldsymbol{\xi}\rVert^2
+    - \tfrac1\beta\log\sum_{k=1}^{K} r_k\, e^{\beta\, \mathbf{m}_k^\top\boldsymbol{\xi}},
+  \qquad \lVert\mathbf{m}_k\rVert = 1 .
+\end{equation}
+We show this law is exactly a Gaussian mixture.
+
+\paragraph{Exponentiation.}
+Multiplying by $-\beta$, the $-\tfrac1\beta$ inside the energy cancels the
+$-\beta$ outside, and $e^{\log S}=S$ removes the logarithm:
+\begin{equation}
+  e^{-\beta E_r(\boldsymbol{\xi})}
+  = e^{-\frac\beta2\lVert\boldsymbol{\xi}\rVert^2}
+    \sum_{k=1}^{K} r_k\, e^{\beta\, \mathbf{m}_k^\top\boldsymbol{\xi}} .
+\end{equation}
+
+\paragraph{Completing the square.}
+For each term,
+$-\tfrac\beta2\lVert\boldsymbol{\xi}\rVert^2 + \beta\,\mathbf{m}_k^\top\boldsymbol{\xi}
+ = -\tfrac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^2
+   + \tfrac\beta2\lVert\mathbf{m}_k\rVert^2$, hence
+\begin{equation}
+  e^{-\beta E_r(\boldsymbol{\xi})}
+  = \sum_{k=1}^{K} r_k\, e^{\frac\beta2\lVert\mathbf{m}_k\rVert^2}\,
+    e^{-\frac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^2} .
+\end{equation}
+
+\paragraph{Unit norm and normalization.}
+Because $\lVert\mathbf{m}_k\rVert = 1$ for all $k$, the factor
+$e^{\beta/2}$ is common to every term and cancels against the partition function.
+Recognizing each summand as an unnormalized isotropic Gaussian
+$\mathcal{N}(\boldsymbol{\xi};\mathbf{m}_k,\beta^{-1}\mathbf{I})$ and integrating
+over $\mathbb{R}^d$ gives
+\begin{equation}
+  \boxed{\;
+  p_\beta(\boldsymbol{\xi})
+  = \sum_{k=1}^{K} w_k\, \mathcal{N}(\boldsymbol{\xi};\,\mathbf{m}_k,\,\beta^{-1}\mathbf{I}),
+  \qquad w_k = \frac{r_k}{\sum_j r_j} \; }
+\end{equation}
+an exact Gaussian mixture whose components are centered on the stored memories,
+share the isotropic covariance $\beta^{-1}\mathbf{I}$, and carry mixture weights
+equal to the normalized multiplicities. Had the memories not been unit norm, the
+weights would instead be $r_k\,e^{\frac\beta2\lVert\mathbf{m}_k\rVert^2}$; the
+result would still be a Gaussian mixture, but the weights would no longer reduce
+to $w_k$.
+
+\paragraph{Corollaries.}
+\emph{(i) Exact sampling.} Draw $k\sim\mathrm{Categorical}(w)$ and
+$\boldsymbol{\xi}=\mathbf{m}_k+\beta^{-1/2}\mathbf{z}$, $\mathbf{z}\sim\mathcal{N}(\mathbf{0},\mathbf{I})$;
+no Markov chain is required. Unadjusted Langevin dynamics target the same
+$p_\beta$ subject to finite-step discretization and mixing error.
+\emph{(ii) Exact designated control.} For a designated subset $B$, the latent
+probability mass on $B$ is $\sum_{k\in B} w_k = \sum_{k\in B} r_k / \sum_j r_j
+\equiv f_{\mathrm{eff}}$; with $r_k=\rho$ on $B$ and $1$ otherwise,
+$f_{\mathrm{eff}} = \rho K_B / (\rho K_B + K_{NB})$, with no equal-similarity
+assumption.
+\emph{(iii) Score.} $\nabla_{\boldsymbol{\xi}}\log p_\beta
+= -\beta\nabla E_r
+= \beta\bigl[\mathbf{X}\,\mathrm{softmax}(\beta\mathbf{X}^\top\boldsymbol{\xi}+\log\mathbf{r})
+  - \boldsymbol{\xi}\bigr]$, whose Euler-Maruyama discretization is the Algorithm~1
+update.
