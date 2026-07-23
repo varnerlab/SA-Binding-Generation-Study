@@ -410,6 +410,59 @@ function find_entropy_inflection(X̂::Matrix{Float64};
             βs=βs, Hs=Hs)
 end
 
+"""
+    transition_statistics(log_βs, Hs) -> NamedTuple
+
+Descriptive transition statistics for an entropy curve `Hs` sampled at increasing
+log-inverse-temperatures `log_βs`:
+
+- `i_steepest`: index of the steepest entropy DROP (most negative dH/d(logβ)). For a
+  sigmoid-like decay this is the transition midpoint.
+- `i_onset`: index of maximum downward curvature (most negative d²H/d(logβ)²). This is
+  the transition ONSET. It is NOT an inflection point: a true inflection is a zero
+  crossing of the second derivative. The v1 `find_entropy_inflection` reported this
+  onset while calling it an inflection.
+
+Indices refer to positions in `log_βs`. Also returns the first/second derivative arrays.
+"""
+function transition_statistics(log_βs::AbstractVector, Hs::AbstractVector)
+    length(log_βs) == length(Hs) || throw(DimensionMismatch(
+        "log_βs and Hs must have equal length"))
+    length(Hs) >= 3 || throw(ArgumentError("need at least 3 points"))
+    dH  = diff(Hs) ./ diff(log_βs)
+    d2H = diff(dH) ./ diff(log_βs[1:end-1])
+    return (i_steepest = argmin(dH) + 1,
+            i_onset    = argmin(d2H) + 1,
+            dH = dH, d2H = d2H)
+end
+
+"""
+    find_entropy_transition(X̂, r=ones(size(X̂,2)); α=0.01, n_betas=60,
+                            β_range=(0.1,500.0), n_probes=20, seed=0)
+
+Descriptive transition analysis for the (optionally multiplicity-weighted) attention
+entropy. Probes `n_probes` RANDOMLY chosen memory columns (seeded), so unlike the v1
+`find_entropy_inflection` (which used the first columns) the result is order
+independent. Returns `β_steepest` (steepest entropy drop, the transition midpoint),
+`β_onset` (maximum downward curvature), `K_eff`, and the β/H curves.
+
+Entropy is evaluated at stored memories, so this probes the retrieval basins and is a
+descriptive crossover statistic, not a finite-size phase-transition estimate.
+"""
+function find_entropy_transition(X̂::Matrix{Float64},
+                                 r::Vector{Float64}=ones(size(X̂, 2));
+                                 α::Float64=0.01, n_betas::Int=60,
+                                 β_range::Tuple{Float64,Float64}=(0.1, 500.0),
+                                 n_probes::Int=20, seed::Int=0)
+    d, K = size(X̂)
+    βs = 10 .^ range(log10(β_range[1]), log10(β_range[2]), length=n_betas)
+    probes = randperm(MersenneTwister(seed), K)[1:min(n_probes, K)]
+    Hs = [mean(weighted_attention_entropy(X̂[:, k], X̂, β, r) for k in probes) for β in βs]
+    st = transition_statistics(log.(βs), Hs)
+    return (β_steepest = βs[st.i_steepest], β_onset = βs[st.i_onset],
+            K_eff = effective_num_patterns(r), βs = βs, Hs = Hs)
+end
+
 # ══════════════════════════════════════════════════════════════════════════════
 # MSA statistics (for β* prediction — Section 2b of paper)
 # ══════════════════════════════════════════════════════════════════════════════
