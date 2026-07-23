@@ -777,6 +777,42 @@ function weighted_attention_entropy(ξ::Vector{Float64}, X::Matrix{Float64},
 end
 
 """
+    exact_gmm_sample(X, r, β, n; rng=Random.default_rng()) -> (Ξ, components)
+
+Draw `n` INDEPENDENT samples from the exact stationary distribution of the
+multiplicity-weighted Hopfield energy. For unit-norm memories the target is the
+Gaussian mixture (see SI):
+
+    p_β(ξ) = Σ_k w_k N(ξ; m_k, β⁻¹ I),   w_k = r_k / Σ_j r_j.
+
+Procedure: draw component k ~ Categorical(w), then ξ = m_k + β^{-1/2} z with
+z ~ N(0, I). No MCMC. Returns latents `Ξ` (d × n) and each draw's component index.
+This is the exact-sampler baseline for the ULA generator `weighted_sample`.
+"""
+function exact_gmm_sample(X::Matrix{Float64}, r::Vector{Float64}, β::Float64, n::Int;
+                          rng::AbstractRNG=Random.default_rng())
+    d, K = size(X)
+    length(r) == K || throw(DimensionMismatch(
+        "r has length $(length(r)) but X has $K columns"))
+    all(≥(0.0), r) || throw(ArgumentError("All multiplicities must be nonnegative"))
+    any(>(0.0), r) || throw(ArgumentError("At least one multiplicity must be positive"))
+    β > 0 || throw(ArgumentError("β must be positive, got β = $β"))
+    n > 0 || throw(ArgumentError("n must be positive, got n = $n"))
+
+    w  = r ./ sum(r)
+    cw = cumsum(w); cw[end] = 1.0            # guard roundoff so u∈[0,1) always lands
+    s  = 1.0 / sqrt(β)                       # per-coordinate std dev of each component
+    Ξ  = Matrix{Float64}(undef, d, n)
+    components = Vector{Int}(undef, n)
+    for i in 1:n
+        k = min(searchsortedfirst(cw, rand(rng)), K)
+        components[i] = k
+        @views Ξ[:, i] .= X[:, k] .+ s .* randn(rng, d)
+    end
+    return (Ξ = Ξ, components = components)
+end
+
+"""
     find_weighted_entropy_inflection(X̂, r; α=0.01, n_betas=50, β_range=(0.1, 500.0))
 
 Find the phase transition β*(r) for the multiplicity-weighted Hopfield energy.
