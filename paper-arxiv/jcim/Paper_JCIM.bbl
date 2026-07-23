@@ -8,7 +8,7 @@
 \providecommand*\mcitethebibliography{\thebibliography}
 \csname @ifundefined\endcsname{endmcitethebibliography}
   {\let\endmcitethebibliography\endthebibliography}{}
-\begin{mcitethebibliography}{20}
+\begin{mcitethebibliography}{24}
 \providecommand*\natexlab[1]{#1}
 \providecommand*\mciteSetBstSublistMode[1]{}
 \providecommand*\mciteSetBstMaxWidthForm[2]{}
@@ -26,10 +26,68 @@
   {\relax}
   {\relax}
 
-\bibitem[Varner \latin{et~al.}(2026)Varner, \latin{et~al.}
-  others]{varnerSAProtein2026}
-Varner,~J.~D.; others Training-free generation of protein sequences from small
-  family alignments via stochastic attention. \emph{In preparation}
+\bibitem[Yang \latin{et~al.}(2019)Yang, Wu, and Arnold]{sinaiAdaptiveMLDE2020}
+Yang,~K.~K.; Wu,~Z.; Arnold,~F.~H. Machine-learning-guided directed evolution
+  for protein engineering. \emph{Nature Methods} \textbf{2019}, \emph{16},
+  687--694\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Madani \latin{et~al.}(2023)Madani, Krause, Greene, Subramanian, Mohr,
+  Holton, Olmos, Xiong, Sun, Socher, Fraser, and Naik]{madaniProGen2023}
+Madani,~A.; Krause,~B.; Greene,~E.~R.; Subramanian,~S.; Mohr,~B.~P.;
+  Holton,~J.~M.; Olmos,~J.~L.; Xiong,~C.; Sun,~Z.~Z.; Socher,~R.;
+  Fraser,~J.~S.; Naik,~N. Large language models generate functional protein
+  sequences across diverse families. \emph{Nature Biotechnology} \textbf{2023},
+  \emph{41}, 1099--1106\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Alamdari \latin{et~al.}(2023)Alamdari, Thakkar, van~den Berg, Lu,
+  Fusi, Amini, and Yang]{alamdariProteinGeneration2023}
+Alamdari,~S.; Thakkar,~N.; van~den Berg,~R.; Lu,~A.~X.; Fusi,~N.; Amini,~A.~P.;
+  Yang,~K.~K. Protein generation with evolutionary diffusion: sequence is all
+  you need. \emph{bioRxiv} \textbf{2023}, \relax
+\mciteBstWouldAddEndPunctfalse
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Dauparas \latin{et~al.}(2022)Dauparas, Anishchenko, Bennett, Bai,
+  Ragotte, Milles, Wicky, Courbet, de~Haas, Bethel, Leung, Huddy, Pellock,
+  Tischer, Chan, Koepnick, Nguyen, Kang, Sankaran, Bera, King, and
+  Baker]{dauparasProteinMPNN2022}
+Dauparas,~J. \latin{et~al.}  Robust deep learning-based protein sequence design
+  using {ProteinMPNN}. \emph{Science} \textbf{2022}, \emph{378}, 49--56\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Lin \latin{et~al.}(2023)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin,
+  Verkuil, Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candido,
+  and Rives]{esmfold2022}
+Lin,~Z.; Akin,~H.; Rao,~R.; Hie,~B.; Zhu,~Z.; Lu,~W.; Smetanin,~N.;
+  Verkuil,~R.; Kabeli,~O.; Shmueli,~Y.; dos Santos~Costa,~A.;
+  Fazel-Zarandi,~M.; Sercu,~T.; Candido,~S.; Rives,~A. Evolutionary-scale
+  prediction of atomic-level protein structure with a language model.
+  \emph{Science} \textbf{2023}, \emph{379}, 1123--1130\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Potter \latin{et~al.}(2018)Potter, Luciani, Eddy, Park, Lopez, and
+  Finn]{hmmer3}
+Potter,~S.~C.; Luciani,~A.; Eddy,~S.~R.; Park,~Y.; Lopez,~R.; Finn,~R.~D.
+  {HMMER} web server: 2018 update. \emph{Nucleic acids research} \textbf{2018},
+  \emph{46}, W200--W204\relax
+\mciteBstWouldAddEndPuncttrue
+\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
+{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
+\EndOfBibitem
+\bibitem[Varner(2026)]{varnerSAProtein2026}
+Varner,~J.~D. Training-free generation of protein sequences from small family
+  alignments via stochastic attention. \emph{arXiv preprint arXiv:2603.14717}
   \textbf{2026}, \relax
 \mciteBstWouldAddEndPunctfalse
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
@@ -43,19 +101,17 @@ Laskowski,~M.; Kato,~I. Protein inhibitors of proteinases. \emph{Annual Review
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Adams \latin{et~al.}(2006)Adams, Smith, Schroeder, Yasuda, and
-  Lewis]{omegaConotoxinSAR2006}
-Adams,~D.~J.; Smith,~A.~B.; Schroeder,~C.~I.; Yasuda,~T.; Lewis,~R.~J.
-  $\omega$-Conotoxins {GVIA}, {MVIIA} and {CVID}: structure--activity
-  relationships and therapeutic potential. \emph{CNS \& Neurological Disorders
-  Drug Targets} \textbf{2006}, \emph{5}, 445--452\relax
+\bibitem[Schroeder and Lewis(2006)Schroeder, and Lewis]{omegaConotoxinSAR2006}
+Schroeder,~C.~I.; Lewis,~R.~J. $\omega$-Conotoxins {GVIA}, {MVIIA} and {CVID}:
+  {SAR} and clinical potential. \emph{Marine Drugs} \textbf{2006}, \emph{4},
+  193--214\relax
 \mciteBstWouldAddEndPuncttrue
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
 \bibitem[Miljanich(2004)]{ziconotideReview2004}
-Miljanich,~G.~P. Ziconotide: a review of its pharmacology and use in the
-  treatment of pain. \emph{Current Medicinal Chemistry} \textbf{2004},
+Miljanich,~G.~P. Ziconotide: neuronal calcium channel blocker for treating
+  severe chronic pain. \emph{Current Medicinal Chemistry} \textbf{2004},
   \emph{11}, 3029--3040\relax
 \mciteBstWouldAddEndPuncttrue
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
@@ -123,12 +179,12 @@ Mirdita,~M.; Sch{\"u}tze,~K.; Moriwaki,~Y.; Heo,~L.; Ovchinnikov,~S.;
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
 \bibitem[Heyne \latin{et~al.}(2021)Heyne, Shirian, Cohen, Peleg, Radisky, Papo,
-  Bhatt, Bhatt, and Bhatt]{heyneBPTIDMS2021}
+  and Shifman]{heyneBPTIDMS2021}
 Heyne,~M.; Shirian,~J.; Cohen,~I.; Peleg,~Y.; Radisky,~E.~S.; Papo,~N.;
-  Bhatt,~D.; Bhatt,~S.; Bhatt,~A. Climbing up and down binding landscapes
-  through deep mutational scanning of three homologous protein--protein
-  complexes. \emph{Journal of the American Chemical Society} \textbf{2021},
-  \emph{143}, 17261--17275\relax
+  Shifman,~J.~M. Climbing up and down binding landscapes through deep
+  mutational scanning of three homologous protein--protein complexes.
+  \emph{Journal of the American Chemical Society} \textbf{2021}, \emph{143},
+  17261--17275\relax
 \mciteBstWouldAddEndPuncttrue
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
@@ -144,18 +200,6 @@ Ramsauer,~H.; Sch{\"a}fl,~B.; Lehner,~J.; Seidl,~P.; Widrich,~M.; Adler,~T.;
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Lin \latin{et~al.}(2023)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin,
-  Verkuil, Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candber,
-  and Rives]{esmfold2022}
-Lin,~Z.; Akin,~H.; Rao,~R.; Hie,~B.; Zhu,~Z.; Lu,~W.; Smetanin,~N.;
-  Verkuil,~R.; Kabeli,~O.; Shmueli,~Y.; dos Santos~Costa,~A.;
-  Fazel-Zarandi,~M.; Sercu,~T.; Candber,~S.; Rives,~A. Evolutionary-scale
-  prediction of atomic-level protein structure with a language model.
-  \emph{Science} \textbf{2023}, \emph{379}, 1123--1130\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
 \bibitem[Zhang and Skolnick(2005)Zhang, and Skolnick]{tmAlign2005}
 Zhang,~Y.; Skolnick,~J. {TM-align}: a protein structure alignment algorithm
   based on the {TM}-score. \emph{Nucleic Acids Research} \textbf{2005},
@@ -164,22 +208,10 @@ Zhang,~Y.; Skolnick,~J. {TM-align}: a protein structure alignment algorithm
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Lin \latin{et~al.}(2022)Lin, Akin, Rao, Hie, Zhu, Lu, Smetanin,
-  Verkuil, Kabeli, Shmueli, dos Santos~Costa, Fazel-Zarandi, Sercu, Candber,
-  and Rives]{esm2science2023}
-Lin,~Z.; Akin,~H.; Rao,~R.; Hie,~B.; Zhu,~Z.; Lu,~W.; Smetanin,~N.;
-  Verkuil,~R.; Kabeli,~O.; Shmueli,~Y.; dos Santos~Costa,~A.;
-  Fazel-Zarandi,~M.; Sercu,~T.; Candber,~S.; Rives,~A. Language models of
-  protein sequences at the scale of evolution enable accurate structure
-  prediction. \emph{bioRxiv} \textbf{2022}, ESM-2 model\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
 \bibitem[Sato \latin{et~al.}(2000)Sato, Raymond, Martin-Moutot, Sasaki, Ohtake,
-  Minami, Van~Renterghem, de~Bhatt, Bhatt, and Bhatt]{satoAlaScanMVIIC2000}
+  Minami, Van~Renterghem, Kim, Takahashi, and Seagar]{satoAlaScanMVIIC2000}
 Sato,~K.; Raymond,~C.; Martin-Moutot,~N.; Sasaki,~T.; Ohtake,~A.; Minami,~K.;
-  Van~Renterghem,~C.; de~Bhatt,~T.; Bhatt,~S.; Bhatt,~B. Binding of
+  Van~Renterghem,~C.; Kim,~J.~I.; Takahashi,~M.; Seagar,~M.~J. Binding of
   {Ala}-scanning analogs of omega-conotoxin {MVIIC} to {N}- and {P/Q}-type
   calcium channels. \emph{FEBS Letters} \textbf{2000}, \emph{469},
   147--150\relax

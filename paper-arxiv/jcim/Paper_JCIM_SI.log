@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  18 MAR 2026 14:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  22 JUL 2026 17:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -476,16 +476,18 @@ line 171.
 
 [4]
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+LaTeX Warning: Reference `tab:docking-validation' on page S-5 undefined on inpu
+t line 309.
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-LaTeX Warning: `h' float specifier changed to `ht'.
+[5]
+Overfull \hbox (25.54927pt too wide) in paragraph at lines 322--332
+ [][] 
+ []
 
 )
-<../sections/figs/plddt_vs_tmscore_scatter.pdf, id=36, 1806.75pt x 1505.625pt>
+<../sections/figs/plddt_vs_tmscore_scatter.pdf, id=42, 1806.75pt x 1505.625pt>
 File: ../sections/figs/plddt_vs_tmscore_scatter.pdf Graphic file (type pdf)
 <use ../sections/figs/plddt_vs_tmscore_scatter.pdf>
 Package pdftex.def Info: ../sections/figs/plddt_vs_tmscore_scatter.pdf  used on
@@ -497,11 +499,13 @@ Package natbib Warning: There were undefined citations.
 
 
 
-[5]
+[6]
 
-[6 <../sections/figs/plddt_vs_tmscore_scatter.pdf>]
+[7 <../sections/figs/plddt_vs_tmscore_scatter.pdf>]
 
-[7] (./Paper_JCIM_SI.aux)
+[8]
+
+[9] (./Paper_JCIM_SI.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -512,10 +516,10 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 7098 strings out of 473190
- 110750 string characters out of 5715801
- 522346 words of memory out of 5000000
- 30229 multiletter control sequences out of 15000+600000
+ 7102 strings out of 473190
+ 110843 string characters out of 5715801
+ 528418 words of memory out of 5000000
+ 30233 multiletter control sequences out of 15000+600000
  587098 words of font info for 113 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,11n,131p,647b,535s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -543,10 +547,10 @@ xmf-dist/fonts/type1/public/cm-super/sfss1200.pfb></usr/local/texlive/2025/texm
 f-dist/fonts/type1/public/cm-super/sfss1440.pfb></usr/local/texlive/2025/texmf-
 dist/fonts/type1/public/cm-super/sfsx2074.pfb></usr/local/texlive/2025/texmf-di
 st/fonts/type1/public/cm-super/sfti1200.pfb>
-Output written on Paper_JCIM_SI.pdf (7 pages, 446064 bytes).
+Output written on Paper_JCIM_SI.pdf (9 pages, 450767 bytes).
 PDF statistics:
- 154 PDF objects out of 1000 (max. 8388607)
- 94 compressed objects within 1 object stream
+ 160 PDF objects out of 1000 (max. 8388607)
+ 98 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
