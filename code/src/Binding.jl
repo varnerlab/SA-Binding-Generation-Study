@@ -838,6 +838,33 @@ weighted_score(ξ::Vector{Float64}, X::Matrix{Float64}, β::Float64, r::Vector{F
     -β .* weighted_hopfield_gradient(ξ, X, β, r)
 
 """
+    shannon_entropy(p) -> Float64
+
+Shannon entropy (nats) of a nonnegative weight vector normalized to sum 1:
+`H = -Σ_k w_k log w_k`, `w = p / Σ p`. This is the β→0 limit of the weighted
+attention entropy and is NOT equal to `log K_eff` (the Renyi-2 entropy) except
+when all weights are equal. See `log_effective_num_patterns`.
+"""
+function shannon_entropy(p::Vector{Float64})::Float64
+    s = sum(p)
+    s > 0 || throw(ArgumentError("weights must sum to a positive value"))
+    H = 0.0
+    for pk in p
+        w = pk / s
+        w > 0 && (H -= w * log(w))
+    end
+    return H
+end
+
+"""
+    log_effective_num_patterns(r) -> Float64
+
+`log K_eff(r) = log((Σ r_k)² / Σ r_k²) = -log Σ w_k²`, the Renyi-2 entropy of the
+normalized weights. Equals `shannon_entropy(r)` only when all weights are equal.
+"""
+log_effective_num_patterns(r::Vector{Float64}) = log(effective_num_patterns(r))
+
+"""
     find_weighted_entropy_inflection(X̂, r; α=0.01, n_betas=50, β_range=(0.1, 500.0))
 
 Find the phase transition β*(r) for the multiplicity-weighted Hopfield energy.
