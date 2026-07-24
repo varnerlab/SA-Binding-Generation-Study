@@ -106,11 +106,11 @@ and solving for $\rho$:
   \label{eq:rho-inverse-derived}
 \end{align}
 This is Eq.~\eqref{eq:rho-inverse} in the main text. The formula is exact
-under the equal-similarity assumption; in practice, we confirmed empirically
-that the mean attention weight on designated patterns tracked
-$f_{\mathrm{eff}}(\rho)$ with $< 0.3\%$ deviation across all $\rho$ values
-and all families (Table~\ref{tab:per-family-rho}), validating the
-approximation as operationally exact. The effective number of patterns under
+under the equal-similarity assumption; in the canonical replicated sweeps, the
+largest absolute deviation of mean attention from $f_{\mathrm{eff}}(\rho)$ was
+\AttnMaxDevPts{} percentage points (\AttnMaxDevFamily{},
+$\rho=\AttnMaxDevRho$; Table~\ref{tab:per-family-rho}). Thus the finite-sample
+agreement is close but not exact. The effective number of patterns under
 multiplicity weighting,
 $K_{\mathrm{eff}}(\mathbf{r}) = (\sum_k r_k)^2 / \sum_k r_k^2
 = (K_{\mathrm{des}}\,\rho + K_{\mathrm{bg}})^2 /
@@ -125,9 +125,11 @@ remains fixed regardless of $\rho$; the multiplicity weights enter only
 through the softmax logits. This separation has three consequences.
 First, the PCA subspace is independent of $\rho$: the principal directions
 $\mathbf{W}_d$, the centering vector $\bar{\mathbf{x}}$, and the retained
-dimension $d$ are all determined by the alignment alone, so the calibration
-gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$ is identical for all
-$\rho$ values on a given family. Second, $\rho$ controls attention, not
+dimension $d$ are all determined by the alignment alone. This fixes the
+representation through which the conditioning signal must pass, but it does
+not make the calibration gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$
+constant: both terms vary with $\rho$ in the replicated sweeps. Second,
+$\rho$ controls attention, not
 geometry: increasing $\rho$ adds $\log\rho$ to the designated logits, shifting
 attention weight toward designated patterns, but this shift must still pass
 through the PCA reconstruction and argmax decoding to produce discrete
@@ -150,13 +152,15 @@ weighting was limited by the full-family PCA geometry.
 
 \section{Supplementary Tables and Figures}\label{app:tables-figures}
 
-Tables~\ref{tab:kunitz-rho}--\ref{tab:forkhead-rho} report selected values from
-the $\rho$ sweep on each of the five Pfam benchmark families.
+Tables~\ref{tab:kunitz-rho}--\ref{tab:conotoxin-rho} report the canonical
+replicated $\rho$ sweep on the five Pfam benchmark families and
+$\omega$-conotoxin.
 $f_{\mathrm{eff}}$ is the effective designated fraction computed from the
 multiplicity vector; $f_{\mathrm{obs}}$ is the hard-decoded marker fraction
-averaged over 930 generated sequences; $\bar{a}_{\mathrm{des}}$ is the mean
-softmax attention weight on designated patterns; and $D$ is the mean pairwise
-diversity. Table~\ref{tab:beta-sweep} reports phenotype fraction and
+averaged across five independent replicates (620 retained samples per replicate);
+$\bar{a}_{\mathrm{des}}$ is the mean softmax attention weight on designated
+patterns; and $D$ is the mean pairwise diversity. Uncertainties are replicate
+standard deviations. Table~\ref{tab:beta-sweep} reports phenotype fraction and
 diversity as a function of $\beta/\beta^{*}$ for three fixed $\rho$ values
 on the Kunitz domain. Figure~\ref{fig:plddt-tmscore-scatter} shows the joint
 distribution of ESMFold pLDDT and TM-score for all 250 predicted Kunitz
@@ -179,15 +183,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    1    & 0.323 & 0.406 & 0.324 & 0.563 \\
-    5    & 0.705 & 0.481 & 0.712 & 0.556 \\
-    10   & 0.827 & 0.539 & 0.832 & 0.547 \\
-    50   & 0.962 & 0.598 & 0.963 & 0.526 \\
-    100  & 0.980 & 0.615 & 0.981 & 0.520 \\
-    200  & 0.990 & 0.623 & 0.991 & 0.519 \\
-    500  & 0.996 & 0.631 & 0.997 & 0.515 \\
-    1000 & 0.998 & 0.634 & 0.998 & 0.514 \\
-    \bottomrule
+    \input{sections/generated/tab_kunitz_rho}
   \end{tabular}
 \end{table}
 
@@ -200,15 +196,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    1    & 0.600 & 0.852 & 0.614 & 0.580 \\
-    5    & 0.882 & 0.897 & 0.890 & 0.575 \\
-    10   & 0.938 & 0.906 & 0.941 & 0.575 \\
-    50   & 0.983 & 0.965 & 0.983 & 0.567 \\
-    100  & 0.991 & 0.977 & 0.991 & 0.559 \\
-    200  & 0.996 & 0.984 & 0.996 & 0.554 \\
-    500  & 0.999 & 0.989 & 0.999 & 0.513 \\
-    1000 & 0.999 & 0.992 & 0.999 & 0.510 \\
-    \bottomrule
+    \input{sections/generated/tab_sh3_rho}
   \end{tabular}
 \end{table}
 
@@ -221,15 +209,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    1    & 0.164 & 0.131 & 0.152 & 0.690 \\
-    5    & 0.496 & 0.184 & 0.487 & 0.689 \\
-    10   & 0.663 & 0.226 & 0.661 & 0.676 \\
-    50   & 0.901 & 0.277 & 0.901 & 0.657 \\
-    100  & 0.947 & 0.303 & 0.947 & 0.649 \\
-    200  & 0.973 & 0.327 & 0.974 & 0.643 \\
-    500  & 0.990 & 0.360 & 0.991 & 0.642 \\
-    1000 & 0.995 & 0.371 & 0.995 & 0.642 \\
-    \bottomrule
+    \input{sections/generated/tab_ww_rho}
   \end{tabular}
 \end{table}
 
@@ -242,15 +222,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    1    & 0.750 & 0.935 & 0.758 & 0.525 \\
-    5    & 0.938 & 0.954 & 0.939 & 0.521 \\
-    10   & 0.968 & 0.955 & 0.969 & 0.522 \\
-    50   & 0.993 & 0.957 & 0.994 & 0.521 \\
-    100  & 0.997 & 0.957 & 0.997 & 0.521 \\
-    200  & 0.998 & 0.957 & 0.998 & 0.521 \\
-    500  & 0.999 & 0.957 & 0.999 & 0.521 \\
-    1000 & 1.000 & 0.957 & 1.000 & 0.521 \\
-    \bottomrule
+    \input{sections/generated/tab_homeobox_rho}
   \end{tabular}
 \end{table}
 
@@ -263,15 +235,21 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    1    & 0.496 & 0.556 & 0.490 & 0.480 \\
-    5    & 0.831 & 0.610 & 0.826 & 0.464 \\
-    10   & 0.908 & 0.638 & 0.904 & 0.447 \\
-    50   & 0.980 & 0.670 & 0.979 & 0.431 \\
-    100  & 0.990 & 0.710 & 0.988 & 0.417 \\
-    200  & 0.995 & 0.711 & 0.994 & 0.416 \\
-    500  & 0.998 & 0.730 & 0.998 & 0.399 \\
-    1000 & 0.999 & 0.730 & 0.999 & 0.398 \\
-    \bottomrule
+    \input{sections/generated/tab_forkhead_rho}
+  \end{tabular}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \caption{$\omega$-conotoxin O-superfamily $\rho$ sweep. $K=74$,
+  $K_{\mathrm{des}}=23$.}
+  \label{tab:conotoxin-rho}
+  \small
+  \begin{tabular}{ccccc}
+    \toprule
+    $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
+    \midrule
+    \input{sections/generated/tab_omega_conotoxin_rho}
   \end{tabular}
 \end{table}
 

@@ -45,6 +45,7 @@
 \newcommand{\veps}{\bm{\epsilon}}
 \newcommand{\R}{\mathbb{R}}
 \DeclareMathOperator{\softmax}{softmax}
+\input{sections/generated/numbers}
 
 \title{Conditioning Protein Generation via Hopfield Pattern Multiplicity}
 
@@ -110,21 +111,16 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   multiplicity weighting and hard curation.}
   \label{tab:cross-family}
   \small
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{lcccccccccc}
     \toprule
     Family & Source & $K$ & $L$ & $d$ & $K_{\mathrm{des}}$ & Marker
            & $f_{\mathrm{nat}}$ & $S$
            & $f_{\mathrm{obs}}^{\mathrm{hard}}$ & $\Delta$ \\
     \midrule
-    WW     & PF00397 & 420 & 31 & 186 & 69 & Spec.\ loop & 0.16 & 0.11 & 1.00 & 0.64 \\
-    Forkhead & PF00250 & 246 & 87 & 172 & 122 & H/N at H3 & 0.50 & 0.17 & 1.00 & 0.27 \\
-    Kunitz & PF00014 & 99  & 53 & 80  & 32 & P1 K/R  & 0.32 & 0.20 & 1.00 & 0.39 \\
-    SH3    & PF00018 & 55  & 48 & 46  & 33 & Trp     & 0.60 & 0.34 & 1.00 & 0.01 \\
-    Homeobox & PF00046 & 136 & 57 & 101 & 102 & Gln at pos.\ 50 & 0.75 & 0.42 & 1.00 & 0.04 \\
-    \midrule
-    $\omega$-Conotoxin & SwissProt & 74 & 26 & 34 & 23 & Tyr13 & 0.31 & 0.78 & 0.98 & 0.15 \\
-    \bottomrule
+    \input{sections/generated/tab_cross_family}
   \end{tabular}
+  }
 \end{table}
 
 % -----------------------------------------------------------------------
@@ -177,22 +173,24 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth]{sections/figs/fig2_separation_vs_gap.pdf}
-  \caption{\textbf{Calibration trajectories reveal family-dependent gaps predicted by
+  \caption{\textbf{Calibration trajectories reveal family-dependent gaps associated with
   PCA-space separation.}
   \textbf{(A)}~Observed phenotype fraction $f_{\mathrm{obs}}$ versus effective designated
   fraction $f_{\mathrm{eff}}$ as the multiplicity ratio $\rho$ increases from 1 to 500
   for six protein families. The dashed diagonal marks perfect calibration
-  ($f_{\mathrm{obs}} = f_{\mathrm{eff}}$). Homeobox ($S = 0.42$) and SH3 ($S = 0.34$)
-  domains track the diagonal closely; Kunitz ($S = 0.20$) and Forkhead ($S = 0.17$) curve
-  below; WW domains ($S = 0.11$) show the largest departure; $\omega$-conotoxin
-  ($S = 0.78$) shows a moderate gap despite high PCA separation. Double-headed arrows
+  ($f_{\mathrm{obs}} = f_{\mathrm{eff}}$). Homeobox
+  ($S = \HomeoboxSeparation$) and SH3 ($S = \SHThreeSeparation$)
+  domains track the diagonal closely; Kunitz ($S = \KunitzSeparation$) and Forkhead
+  ($S = \ForkheadSeparation$) curve below; WW domains ($S = \WWSeparation$) show the
+  largest departure; $\omega$-conotoxin ($S = \ConotoxinSeparation$) shows a moderate gap
+  despite high PCA separation. Double-headed arrows
   indicate the calibration gap at $\rho = 500$.
   \textbf{(B)}~Fisher separation index $S$ versus calibration gap $\Delta$ at $\rho = 500$.
-  A linear fit to the five Pfam families (filled markers; $\Delta \approx 0.72 - 1.8\,S$,
-  $R^{2} = 0.80$) shows that the gap is predicted by the geometric separation of functional
-  subsets in PCA space: families with $S > 0.3$ have gaps near zero, while families with
-  $S < 0.2$ have gaps of $0.27$--$0.64$. The $\omega$-conotoxin point (open diamond)
-  follows the monotonic trend.}
+  Error bars show replicate s.d. An exploratory linear fit to the five Pfam families
+  (filled markers; $\Delta \approx \RelationIntercept{} \RelationSlope\,S$,
+  $R^{2}=\RelationRsq$) summarizes the association without defining a prospective
+  threshold. The $\omega$-conotoxin point (open diamond) is displayed as an external
+  comparison and is not included in the fit.}
   \label{fig:separation-vs-gap}
 \end{figure}
 
@@ -252,68 +250,31 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
-  \caption{\textbf{Per-family $\rho$ sweep: attention weights track
-  $f_{\mathrm{eff}}$ exactly; decoded phenotype fidelity depends on PCA
+  \caption{\textbf{Per-family $\rho$ sweep: mean attention weights track
+  $f_{\mathrm{eff}}$ closely; decoded marker fidelity depends on PCA
   separation.} Selected $\rho$ values for each family.
   $f_{\mathrm{eff}}$: effective designated fraction from multiplicity weights;
   $\bar{a}_{\mathrm{des}}$: mean softmax attention on designated patterns;
-  $f_{\mathrm{obs}}$: hard-decoded phenotype fraction (930 sequences);
+  $f_{\mathrm{obs}}$: mean hard-decoded marker fraction across five independent
+  replicates (620 retained samples per replicate); error bars are replicate s.d.;
   $D$: mean pairwise diversity.
   In all families $\bar{a}_{\mathrm{des}} \approx f_{\mathrm{eff}}$
-  (energy conditioning is exact), but $f_{\mathrm{obs}}$ converges fastest
-  for Homeobox ($S=0.42$) and slowest for WW ($S=0.11$), reflecting the
+  within finite-sample uncertainty, but $f_{\mathrm{obs}}$ converges fastest
+  for Homeobox ($S=\HomeoboxSeparation$) and slowest for WW
+  ($S=\WWSeparation$), reflecting the
   PCA-space calibration gap.}
   \label{tab:per-family-rho}
   \small
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{llcccccc}
     \toprule
     Family & ($K$, $K_{\mathrm{des}}$, $S$)
       & $\rho$ & $f_{\mathrm{eff}}$ & $\bar{a}_{\mathrm{des}}$
       & $f_{\mathrm{obs}}$ & $\Delta$ & $D$ \\
     \midrule
-    \multirow{4}{*}{WW (PF00397)}
-      & \multirow{4}{*}{(420, 69, 0.11)}
-      &    1 & 0.164 & 0.156 & 0.126 & 0.04 & 0.682 \\
-    & &   10 & 0.663 & 0.653 & 0.224 & 0.44 & 0.667 \\
-    & &  100 & 0.952 & 0.951 & 0.302 & 0.65 & 0.653 \\
-    & & 1000 & 0.995 & 0.996 & 0.371 & 0.62 & 0.618 \\
-    \midrule
-    \multirow{4}{*}{Forkhead (PF00250)}
-      & \multirow{4}{*}{(246, 122, 0.17)}
-      &    1 & 0.496 & 0.490 & 0.556 & $-$0.06 & 0.480 \\
-    & &   10 & 0.908 & 0.904 & 0.638 & 0.27 & 0.447 \\
-    & &  100 & 0.990 & 0.988 & 0.710 & 0.28 & 0.417 \\
-    & & 1000 & 0.999 & 0.999 & 0.730 & 0.27 & 0.398 \\
-    \midrule
-    \multirow{4}{*}{Kunitz (PF00014)}
-      & \multirow{4}{*}{(99, 32, 0.20)}
-      &    1 & 0.323 & 0.319 & 0.389 & $-$0.07 & 0.563 \\
-    & &   10 & 0.827 & 0.827 & 0.513 & 0.31 & 0.543 \\
-    & &  100 & 0.979 & 0.981 & 0.587 & 0.39 & 0.523 \\
-    & & 1000 & 0.998 & 0.998 & 0.609 & 0.39 & 0.512 \\
-    \midrule
-    \multirow{4}{*}{SH3 (PF00018)}
-      & \multirow{4}{*}{(55, 33, 0.34)}
-      &    1 & 0.600 & 0.621 & 0.863 & $-$0.26 & 0.587 \\
-    & &   10 & 0.938 & 0.944 & 0.915 & 0.02 & 0.583 \\
-    & &  100 & 0.993 & 0.994 & 0.980 & 0.01 & 0.532 \\
-    & & 1000 & 0.999 & 0.999 & 0.991 & 0.01 & 0.519 \\
-    \midrule
-    \multirow{4}{*}{Homeobox (PF00046)}
-      & \multirow{4}{*}{(136, 102, 0.42)}
-      &    1 & 0.750 & 0.758 & 0.935 & $-$0.19 & 0.525 \\
-    & &   10 & 0.968 & 0.969 & 0.955 & 0.01 & 0.522 \\
-    & &  100 & 0.997 & 0.997 & 0.957 & 0.04 & 0.521 \\
-    & & 1000 & 1.000 & 1.000 & 0.957 & 0.04 & 0.521 \\
-    \midrule
-    \multirow{4}{*}{$\omega$-Cntx (SwissProt)}
-      & \multirow{4}{*}{(74, 23, 0.78)}
-      &    1 & 0.311 & 0.299 & 0.456 & $-$0.15 & 0.557 \\
-    & &   10 & 0.819 & 0.809 & 0.650 & 0.17 & 0.516 \\
-    & &  100 & 0.978 & 0.972 & 0.769 & 0.21 & 0.470 \\
-    & &  500 & 0.996 & 0.994 & 0.847 & 0.15 & 0.435 \\
-    \bottomrule
+    \input{sections/generated/tab_per_family_rho}
   \end{tabular}
+  }
 \end{table}
 
 % -----------------------------------------------------------------------

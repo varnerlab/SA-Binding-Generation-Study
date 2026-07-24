@@ -9,10 +9,11 @@ them. The method is agnostic to what the subset represents: binding, stability, 
 or any other property. We find that the conditioning is exact at the level of the sampler's internal
 representation, but that the decoded sequence phenotype can fall short because the dimensionality reduction used to encode sequences
 does not always preserve the residue-level variation that defines the functional split. We term
-this discrepancy the calibration gap and show that it is predicted by a simple geometric measure
+this discrepancy the calibration gap and examine its association with a geometric measure
 of how well the encoding separates the functional subset from the rest of the family.
-Experiments on five Pfam families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) confirm
-the monotonic relationship between separation and gap across a fourfold range of geometries.
+Experiments on five Pfam families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) show an
+exploratory inverse association between separation and gap, with substantial sensitivity to
+which family is included.
 Applied to omega-conotoxin peptides targeting a calcium channel involved in pain signaling,
 curated seeding from 23 characterized binders produces over a thousand candidates that preserve
 the primary pharmacophore and all experimentally identified binding determinants. These results show that stochastic attention enables practitioners to expand a handful of

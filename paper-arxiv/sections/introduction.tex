@@ -57,13 +57,14 @@ protein families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) spanning a ra
 sizes ($K = 55$--$420$) and functional-subset geometries. We showed that the multiplicity
 weights enter the sampler as a simple logit bias, preserving the analytic score function and
 $\mathcal{O}(dK)$ cost of the original method. The energy-level conditioning is exact: the
-softmax attention on designated patterns matches the target fraction to within $0.3\%$ at all
-multiplicity ratios tested. However, we found that the decoded sequence phenotype can fall short
+largest absolute deviation between mean softmax attention and the target fraction is
+\AttnMaxDevPts{} percentage points (\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$) across the
+canonical replicated sweeps. However, we found that the decoded sequence marker can fall short
 of this target, because the PCA encoding that compresses sequences into the sampler's state space
 does not always preserve the residue-level variation that defines the functional split. We termed
-this discrepancy the calibration gap and showed that it is predicted by a simple geometric
+this discrepancy the calibration gap and examined its association with a simple geometric
 quantity, the Fisher separation index $S$, which measures how well PCA separates designated from
-background sequences. Across five families spanning a fourfold range of $S$, the gap decreased
-monotonically with increasing separation ($R^{2} = 0.80$). This provides a practitioner's
-decision rule: compute $S$ before generating any sequences; if $S$ is high, multiplicity
-weighting transfers the phenotype directly; if $S$ is low, use hard curation instead.
+background sequences. Across five Pfam families, an exploratory linear fit gave
+$R^{2}=\RelationRsq$, but leave-one-family-out fits varied substantially
+($R^{2}=\RelationLooRsqMin$--$\RelationLooRsqMax$). We therefore treat $S$ as a diagnostic
+descriptor to investigate, rather than a validated decision rule.

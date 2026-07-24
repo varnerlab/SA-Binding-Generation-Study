@@ -11,7 +11,8 @@ targeting the Cav2.2 calcium channel. For each family, we split sequences into d
 background subsets based on an experimentally validated phenotype marker, built conditioned
 memory matrices, and generated sequences via Langevin dynamics at the entropy-inflection inverse
 temperature $\beta^{*}$. The Fisher separation index $S$, a measure of how well PCA separates
-designated from background sequences, varied from 0.11 (WW, heavily interleaved) to 0.42
+designated from background sequences, varied from \WWSeparation{} (WW, heavily interleaved)
+to \HomeoboxSeparation{}
 (Homeobox, well-separated), providing a natural axis along which to test the limits of
 multiplicity-weighted conditioning.
 
@@ -53,15 +54,20 @@ $\geq 0.45$ for $K_{\mathrm{des}} \geq 10$).
 \paragraph{Multiplicity-weighted conditioning and the calibration gap.}
 We tested multiplicity-weighted generation on the Kunitz family ($K = 99$,
 $K_{\mathrm{des}} = 32$ strong trypsin binders, $K_{\mathrm{bg}} = 67$ background),
-sweeping $\rho$ from 1 (standard SA, no bias) to 1{,}000 (Fig.~\ref{fig:phase-transition}, Table~\ref{tab:per-family-rho}). For each $\rho$, we
+sweeping $\rho$ from 1 (standard SA, no bias) to 500 in the canonical replicated
+analysis (Fig.~\ref{fig:phase-transition}, Table~\ref{tab:per-family-rho}). For each $\rho$, we
 computed the multiplicity vector $\vr$, found $\beta^{*}(\vr)$ via entropy inflection on the
-weighted attention distribution, and generated 930 sequences (30 chains). Two quantities were tracked at each $\rho$: the mean softmax attention weight on designated
+weighted attention distribution, and ran five independent replicates of 20 chains
+(620 retained samples per replicate). Two quantities were tracked at each $\rho$: the mean softmax attention weight on designated
 patterns ($\bar{a}_{\mathrm{des}}$, measured in continuous PCA space during sampling) and the
 fraction of decoded sequences with K/R at P1 ($f_{\mathrm{obs}}$, measured after inverse PCA
-and argmax decoding). The attention weight tracked $f_{\mathrm{eff}}$ with $< 0.3\%$ deviation
-at all $\rho$ values, consistent with Proposition~\ref{prop:score}: the energy-level
-conditioning worked as intended. However, the decoded phenotype fraction told a different story. P1~K/R fraction increased
-from 0.41 ($\rho=1$) to only 0.63 ($\rho=500$), far short of the $f_{\mathrm{eff}} = 0.996$
+and argmax decoding). Across all six canonical replicated sweeps, the largest absolute
+attention deviation was \AttnMaxDevPts{} percentage points
+(\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$), showing close but not exact finite-sample
+agreement with the target mixture fraction. However, the decoded marker fraction told a
+different story. For Kunitz, P1~K/R reached
+\KunitzFobsFiveHundred{} $\pm$ \KunitzFobsFiveHundredSD{} at $\rho=500$, far short of the
+$f_{\mathrm{eff}} = 0.996$
 that the attention weights achieved. This discrepancy between what the energy delivers in PCA
 space and what the decoder recovers in sequence space is the calibration gap. Sequence diversity decreased modestly from 0.56 to 0.51 over this range and
 KL divergence increased from 0.007 to 0.017. The phase transition
@@ -75,9 +81,9 @@ lagged $f_{\mathrm{eff}}$, we measured all three layers of the signal chain
 17~values, 5~replicates each), recording at each step: (i)~the total softmax attention weight
 on designated patterns ($\bar{a}_{\mathrm{des}}$), (ii)~the continuous K/R probability at P1 in
 the PCA-reconstructed one-hot vector ($f_{\mathrm{soft}}$), and (iii)~the hard-decoded residue
-identity ($f_{\mathrm{obs}}$). We found that the attention gap was
-$\Delta_{\mathrm{attn}} \approx 0$ across all $\rho$ values ($< 0.3\%$), indicating that the
-energy-level conditioning was exact; the PCA gap was the dominant component, with
+identity ($f_{\mathrm{obs}}$). We found that the attention gap remained small across this fine
+sweep, while the canonical replicated six-family maximum was \AttnMaxDevPts{} percentage
+points; the PCA gap was the dominant component, with
 $f_{\mathrm{soft}}$ effectively flat at $\sim\!0.27$ regardless of $\rho$, varying by less than
 0.04 across a thousandfold range of multiplicity ratios; and the argmax gap was negative
 ($\approx -0.25$), indicating that discrete decoding partially recovered signal lost in the PCA
@@ -86,7 +92,7 @@ encoding mapped designated and background sequences to overlapping regions at th
 even when 99.8\% of attention weight was on the designated patterns, the continuous one-hot
 reconstruction could not resolve K~vs.~G at P1 because this variation was not well-captured by
 the top $d=80$ principal components. The Fisher separation index for the Kunitz
-designated/background split was $S = 0.20$, consistent with moderate but incomplete geometric
+designated/background split was $S = \KunitzSeparation$, consistent with moderate but incomplete geometric
 separation.
 
 \paragraph{Cross-family validation and the separation index.}
@@ -95,18 +101,16 @@ $K=55$, split by conserved Trp at the binding groove), WW domains (PF00397; $K=4
 by specificity-loop residue), Homeobox domains (PF00046; $K=136$, split by Gln at position~50
 in the recognition helix), and Forkhead domains (PF00250; $K=246$, split by His/Asn at the
 H3 recognition helix)), yielding five families with distinct PCA-space geometries
-(Table~\ref{tab:cross-family}, Table~\ref{tab:per-family-rho}). The calibration gap decreased
-monotonically with increasing separation index: WW domains ($S = 0.11$, functional subsets
-heavily interleaved in PCA space) exhibited the largest gap ($\Delta = 0.64$); Forkhead domains
-($S = 0.17$) a moderate gap ($\Delta = 0.27$); Kunitz domains ($S = 0.20$) a similar gap
-($\Delta = 0.39$); and both SH3 ($S = 0.34$, $\Delta = 0.01$) and Homeobox ($S = 0.42$,
-$\Delta = 0.04$) domains showed gaps near zero
-(Fig.~\ref{fig:separation-vs-gap}). A linear fit across all five Pfam families yielded
-$\Delta \approx 0.72 - 1.8\,S$ with $R^{2} = 0.80$; the relationship is monotonic, with
-families above $S > 0.3$ achieving near-complete phenotype transfer via multiplicity weighting
-alone and families below $S < 0.2$ showing gaps of $0.27$--$0.64$. Extending the multiplicity
-sweep to $\omega$-conotoxin ($S = 0.78$, pharmacologically defined binder split) yielded
-$\Delta = 0.15$, consistent with the monotonic trend. The attention weights tracked
+(Table~\ref{tab:cross-family}, Table~\ref{tab:per-family-rho}). The calibration gaps varied
+inversely with separation overall, but not monotonically
+(Fig.~\ref{fig:separation-vs-gap}). An exploratory unweighted fit across the five Pfam
+families yielded
+$\Delta \approx \RelationIntercept{} \RelationSlope\,S$ with $R^{2}=\RelationRsq$.
+Leave-one-family-out sensitivity was substantial: slopes ranged from
+\RelationLooSlopeMin{} to \RelationLooSlopeMax{} and $R^{2}$ from
+\RelationLooRsqMin{} to \RelationLooRsqMax{}. The $\omega$-conotoxin point was displayed as
+an external comparison and was not included in the Pfam fit. These data establish a
+preliminary association, not a prospective threshold or decision rule. The attention weights tracked
 $f_{\mathrm{eff}}$ closely in all six families, indicating that the multiplicity-weighted energy
 operates as expected regardless of the downstream calibration gap, while hard curation achieved
 100\% phenotype transfer in all families regardless of separation index, as expected since

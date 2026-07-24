@@ -8,26 +8,25 @@ and hard subset curation, and the practitioner can compute the required $\rho$ f
 effective designated fraction directly from the family composition (Eq.~\ref{eq:rho-inverse}). On
 the Kunitz domain, curated memory achieved 100\% phenotype transfer with as few as three
 designated input sequences; multiplicity-weighted generation on the full family increased
-phenotype fidelity from the natural proportion (32\%) to 63\% at $\rho = 500$; and the
+marker fidelity from the natural proportion (32\%) to
+\KunitzFobsFiveHundred{} $\pm$ \KunitzFobsFiveHundredSD{} at $\rho = 500$; and the
 cross-family validation on five Pfam families showed a quantitative relationship between
 PCA-space geometry and conditioning effectiveness.
 
 The central finding is the calibration gap and its decomposition. The gap is not a
-failure of the multiplicity-weighted energy (the attention weights track $f_{\mathrm{eff}}$ with
-$< 0.3\%$ deviation across all families and $\rho$ values tested) but a well-characterized
+failure of the multiplicity-weighted energy (the largest absolute deviation of mean attention
+from $f_{\mathrm{eff}}$ was \AttnMaxDevPts{} percentage points across the canonical replicated
+sweeps) but a property
 property of the PCA encoding that compresses $20L$-dimensional sequence space into $d$ principal
 components. When the designated and background subsets overlap in PCA space (low $S$), the
 energy-level tilt does not propagate to the decoded residue identity; when they separate
-(high $S$), it does. The cross-family validation across five Pfam families produced a monotonic
-negative relationship between $S$ and $\Delta$ ($R^{2} = 0.80$ for a linear fit), indicating
-that the separation index is a useful \emph{a priori} predictor of conditioning effectiveness.
-This yields a practitioner's decision rule: compute $S$ (a cheap operation requiring only PCA and
-pairwise cosine similarities, no generation); if $S > 0.3$, multiplicity weighting preserves
-fold-level constraints from the full family while achieving high phenotype transfer (SH3 and
-Homeobox domains, $\Delta < 0.05$); if $S < 0.2$, hard curation is necessary because the PCA
-bottleneck attenuates the signal (WW and Forkhead domains, $\Delta = 0.27$--$0.64$); the
-intermediate regime ($0.2 < S < 0.3$, Kunitz domains) admits a tradeoff controlled by
-$(\rho,\, \beta/\beta^{*})$.
+(high $S$), it may. Across five Pfam families, the exploratory linear fit had
+$R^{2}=\RelationRsq$, but it was sensitive to individual families: leave-one-family-out slopes
+ranged from \RelationLooSlopeMin{} to \RelationLooSlopeMax{} and $R^{2}$ from
+\RelationLooRsqMin{} to \RelationLooRsqMax{}. The separation index should therefore be treated
+as a descriptive diagnostic rather than an \emph{a priori} predictor or decision threshold.
+Broader prospective validation is required before it can guide the choice between multiplicity
+weighting and hard curation.
 
 Hard curation achieves complete phenotype transfer with as few as three designated
 input sequences. Many experimental campaigns (phage display, yeast
@@ -69,11 +68,11 @@ modest across all groups, a known limitation of multimer prediction for small-pe
 complexes; experimental binding assays are needed to determine whether the preserved
 pharmacophore translates to functional Cav2.2 block.
 
-Several limitations should be acknowledged. The cross-family regression spans five Pfam families
-(plus $\omega$-conotoxin) with $R^{2} = 0.80$ for a linear fit; while the monotonic trend is
-clear, additional families would help characterize the functional form of the $S$--$\Delta$
-relationship, which may be nonlinear (the gap appears to decay steeply below $S \approx 0.3$
-and flatten near zero above it). Our functional splits are defined by single marker positions
+Several limitations should be acknowledged. The cross-family regression spans only five Pfam
+families, with $\omega$-conotoxin displayed externally rather than included in the fit. Its
+leave-one-family-out sensitivity and nonmonotonic points preclude a validated predictive rule;
+additional prospectively selected families are needed to characterize the $S$--$\Delta$
+relationship. Our functional splits are defined by single marker positions
 (P1 in Kunitz, Trp in SH3, specificity-loop residue in WW, Gln at position~50 in Homeobox,
 H/N at the recognition helix in Forkhead); multi-position phenotypes, where specificity depends
 on coordinated residue identities at several positions, may exhibit different calibration

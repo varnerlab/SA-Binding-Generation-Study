@@ -16,7 +16,7 @@ from matplotlib.lines import Line2D
 SCRIPT_PATH = pathlib.Path(__file__).resolve()
 REPO_ROOT = pathlib.Path(".")
 for parent in SCRIPT_PATH.parents:
-    if (parent / "code" / "data").is_dir() and (parent / "paper" / "sections").is_dir():
+    if (parent / "code" / "data").is_dir() and (parent / "paper-arxiv" / "sections").is_dir():
         REPO_ROOT = parent
         break
 
@@ -24,7 +24,7 @@ if REPO_ROOT == pathlib.Path("."):
     raise RuntimeError("Could not locate repository root from script path")
 
 DATA = REPO_ROOT / "code" / "data"
-OUT  = REPO_ROOT / "paper" / "sections" / "figs" / "fig2_separation_vs_gap.pdf"
+OUT  = REPO_ROOT / "paper-arxiv" / "sections" / "figs" / "fig2_separation_vs_gap.pdf"
 
 # --- family definitions ---
 families = {
@@ -36,37 +36,28 @@ families = {
     "Conotoxin":  {"color": "#8e44ad", "marker": "D",  "dir": "omega_conotoxin", "label": "$\\omega$-Conotoxin ($S={S:.2f}$)"},
 }
 
-# load S from the 5-family comparison table (Pfam families)
-comp_path = DATA / "multi_family_comparison_5fam.csv"
+# Load every manuscript-facing value from the canonical replicated source.
+comp_path = DATA / "multi_family_comparison_6fam_aggregated.csv"
 with open(comp_path) as f:
     comp_rows = {r["family"]: r for r in csv.DictReader(f)}
 
-# also load conotoxin from the original comparison
-comp_old_path = DATA / "multi_family_comparison.csv"
-if comp_old_path.exists():
-    with open(comp_old_path) as f:
-        for r in csv.DictReader(f):
-            if r["family"] == "Conotoxin":
-                comp_rows["Conotoxin"] = r
-
 for fam in families:
-    if fam in comp_rows:
-        families[fam]["S"] = float(comp_rows[fam]["separation_index"])
+    if fam not in comp_rows:
+        raise ValueError(f"Missing {fam} from {comp_path}")
+    families[fam]["S"] = float(comp_rows[fam]["separation_index"])
+    families[fam]["Delta"] = float(comp_rows[fam]["cal_gap_mean"])
+    families[fam]["Delta_std"] = float(comp_rows[fam]["cal_gap_std"])
+    families[fam]["fit_included"] = comp_rows[fam]["fit_included"].lower() == "true"
     families[fam]["label"] = families[fam]["label"].format(S=families[fam]["S"])
 
-    # load sweep
-    path = DATA / families[fam]["dir"] / "multiplicity_sweep.csv"
+    path = DATA / families[fam]["dir"] / "multiplicity_sweep_aggregated.csv"
     with open(path) as f:
         reader = csv.DictReader(f)
         rows = list(reader)
-    families[fam]["rho"]   = np.array([float(r["ρ"]) for r in rows])
+    families[fam]["rho"]   = np.array([float(r["rho"]) for r in rows])
     families[fam]["f_eff"] = np.array([float(r["f_eff"]) for r in rows])
-    families[fam]["f_obs"] = np.array([float(r["f_obs"]) for r in rows])
-
-# compute gap at max ρ
-for fam in families:
-    d = families[fam]
-    d["Delta"] = d["f_eff"][-1] - d["f_obs"][-1]
+    families[fam]["f_obs"] = np.array([float(r["f_obs_mean"]) for r in rows])
+    families[fam]["f_obs_std"] = np.array([float(r["f_obs_std"]) for r in rows])
 
 # --- order by S ascending ---
 fam_order = sorted(families.keys(), key=lambda f: families[f]["S"])
@@ -90,8 +81,9 @@ rho_labels = {
 for fam_name in fam_order:
     d = families[fam_name]
     ax1.plot(d["f_eff"], d["f_obs"], color=d["color"], lw=2.2, zorder=2, alpha=0.85)
-    ax1.scatter(d["f_eff"], d["f_obs"], color=d["color"], marker=d["marker"],
-                s=50, zorder=3, edgecolors="white", linewidths=0.5)
+    ax1.errorbar(d["f_eff"], d["f_obs"], yerr=d["f_obs_std"], color=d["color"],
+                 marker=d["marker"], markersize=6, linestyle="none", capsize=2,
+                 zorder=3, markeredgecolor="white", markeredgewidth=0.5)
 
     # annotate select ρ values
     for i, rho in enumerate(d["rho"]):
@@ -130,15 +122,17 @@ ax1.legend(handles=handles, loc="lower right", fontsize=7.5, framealpha=0.9)
 ax1.text(-0.12, 1.05, "A", transform=ax1.transAxes, fontsize=14, fontweight="bold")
 
 # ── Panel B: S vs Δ (Pfam families for linear fit; conotoxin as open point) ──
-pfam_order = [f for f in fam_order if f != "Conotoxin"]
+pfam_order = [f for f in fam_order if families[f]["fit_included"]]
 S_pfam   = np.array([families[f]["S"] for f in pfam_order])
 gap_pfam = np.array([families[f]["Delta"] for f in pfam_order])
+gap_sd_pfam = np.array([families[f]["Delta_std"] for f in pfam_order])
 
 # plot Pfam points (filled)
 for i, fam_name in enumerate(pfam_order):
-    ax2.scatter(S_pfam[i], gap_pfam[i], color=families[fam_name]["color"],
-                marker=families[fam_name]["marker"], s=120, zorder=3,
-                edgecolors="white", linewidths=1)
+    ax2.errorbar(S_pfam[i], gap_pfam[i], yerr=gap_sd_pfam[i],
+                 color=families[fam_name]["color"], marker=families[fam_name]["marker"],
+                 markersize=10, capsize=3, linestyle="none", zorder=3,
+                 markeredgecolor="white", markeredgewidth=1)
 
 # linear fit on Pfam families only
 slope = np.sum((S_pfam - S_pfam.mean()) * (gap_pfam - gap_pfam.mean())) / \
@@ -151,13 +145,14 @@ r_sq = 1 - ss_res / ss_tot
 x_fit = np.linspace(0.05, 0.90, 100)
 y_fit = intercept + slope * x_fit
 ax2.plot(x_fit, np.clip(y_fit, 0, None), ls="--", color="#e67e22", lw=2, alpha=0.8)
-ax2.fill_between(x_fit, np.clip(y_fit, 0, None), alpha=0.06, color="#e67e22")
 
 # conotoxin as open marker (not in fit)
 d_ctx = families["Conotoxin"]
 ax2.scatter(d_ctx["S"], d_ctx["Delta"], color=d_ctx["color"],
             marker=d_ctx["marker"], s=120, zorder=3,
             facecolors="none", edgecolors=d_ctx["color"], linewidths=2)
+ax2.errorbar(d_ctx["S"], d_ctx["Delta"], yerr=d_ctx["Delta_std"],
+             color=d_ctx["color"], capsize=3, linestyle="none", zorder=2)
 
 # label all points
 label_offsets = {
