@@ -1,0 +1,9 @@
+parameter,value
+family,Kunitz
+rho_grid,1;2;5;10;20;50;100;500
+n_replicates,5
+n_chains,20
+n_steps,5000
+burn_in,2000
+thin,100
+driver,run_canonical_family_sweeps.jl

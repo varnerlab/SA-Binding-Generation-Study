@@ -1,0 +1,2 @@
+family,source,pfam_id,K,L,d_pca,K_A,K_B,marker,natural_frac,separation_index,hard_curation_mean,hard_curation_std,fit_included
+Kunitz,Pfam,PF00014,99,53,80,32,67,P1 K/R,0.32323232323232326,0.19708968073153887,1.0,0.0,true

@@ -1,0 +1,2 @@
+family,source,pfam_id,K,L,d_pca,K_A,K_B,marker,natural_frac,separation_index,hard_curation_mean,hard_curation_std,fit_included
+SH3,Pfam,PF00018,55,48,46,33,22,Trp,0.6,0.3385949631822444,1.0,0.0,true

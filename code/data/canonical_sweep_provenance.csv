@@ -1,0 +1,9 @@
+parameter,value
+rho_grid,1;2;5;10;20;50;100;500
+n_replicates,5
+n_chains,20
+n_steps,5000
+burn_in,2000
+thin,100
+replicate_seed_formula,20000 + (rho_index-1)*n_replicates + replicate; chain adds chain_index
+kunitz_origin,canonical driver; see data/kunitz/canonical_sweep_execution.csv

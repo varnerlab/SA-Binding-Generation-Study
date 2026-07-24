@@ -1,0 +1,2 @@
+family,source,pfam_id,K,L,d_pca,K_A,K_B,marker,natural_frac,separation_index,hard_curation_mean,hard_curation_std,fit_included
+Homeobox,Pfam,PF00046,136,57,101,102,34,Gln at pos. 50,0.75,0.4171956095135915,1.0,0.0,true

@@ -1,0 +1,2 @@
+family,source,pfam_id,K,L,d_pca,K_A,K_B,marker,natural_frac,separation_index,hard_curation_mean,hard_curation_std,fit_included
+Forkhead,Pfam,PF00250,246,87,172,122,124,H/N at H3,0.4959349593495935,0.16516502266769423,1.0,0.0,true

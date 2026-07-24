@@ -1,0 +1,2 @@
+family,source,pfam_id,K,L,d_pca,K_A,K_B,marker,natural_frac,separation_index,hard_curation_mean,hard_curation_std,fit_included
+WW,Pfam,PF00397,420,31,186,69,351,Spec. loop,0.16428571428571428,0.11145116988611777,1.0,0.0,true
