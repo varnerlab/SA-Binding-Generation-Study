@@ -50,15 +50,20 @@ end
 end
 
 @testset "gap-aware sequence metrics" begin
+    @test all(is_alignment_gap, collect(".-~"))
+    @test !is_alignment_gap('B')
     @test sequence_identity("ACDE", "ACDE") == 1.0
     @test sequence_identity("ACDE", "AWDE") == 0.75
     @test sequence_identity("A.C~D-", "ATCXDQ") == 1.0
     @test sequence_identity(".-~", "ACD") == 0.0
     @test sequence_identity("A.C~D-", "ATCXDQ") ==
           sequence_identity("ATCXDQ", "A.C~D-")
+    @test sequence_identity("ABCD", "ABCD") == 1.0
+    @test sequence_identity("ABCD", "AXCD") == 0.75
 
     stored = ["AWDE", "ACDF", "YYYY"]
     @test nearest_sequence_identity("ACDE", stored) == 0.75
+    @test valid_residue_fraction("ABCD") == 0.75
     @test valid_residue_fraction("A.-~CX") ≈ 2 / 3
     @test valid_residue_fraction(".-~") == 0.0
 end

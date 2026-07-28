@@ -165,6 +165,9 @@ end
 
 One-hot encode a character matrix (K × L) into a matrix (20L × K).
 Gap positions and non-standard amino acids map to all-zeros (20-dim zero vector).
+This is a representation choice for the fixed 20-letter channel alphabet; it
+does not classify non-standard residue symbols as alignment gaps in evaluation
+metrics.
 """
 function onehot_encode(char_mat::Matrix{Char})
     K, L = size(char_mat)
@@ -270,7 +273,9 @@ end
     sequence_identity(seq1, seq2) -> Float64
 
 Fraction of positions where two sequences have the same amino acid.
-Gaps are excluded from the comparison.
+Alignment gaps (`.`, `-`, and `~`) are excluded from the comparison.
+Other non-standard or ambiguous symbols are compared literally rather than
+discarded, so an exact ambiguity-code match counts and a mismatch does not.
 """
 function sequence_identity(seq1::String, seq2::String)
     L = min(length(seq1), length(seq2))
@@ -297,6 +302,8 @@ end
     valid_residue_fraction(seq) -> Float64
 
 Fraction of non-gap positions that are standard amino acids.
+Non-standard or ambiguous symbols are intentionally retained in the denominator
+and therefore reduce this validity score.
 """
 function valid_residue_fraction(seq::String)
     non_gap = count(c -> !is_alignment_gap(c), seq)
