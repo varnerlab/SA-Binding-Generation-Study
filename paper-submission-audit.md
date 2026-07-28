@@ -1,5 +1,13 @@
 # Pre-Submission Audit: SA Binding Generation Study
 
+> **Status: historical record, July 2026.** Preserved as written. Individual items were
+> subsequently resolved or corrected by later work (Plan 1 math foundations at `9c974fd`,
+> Plan 2 canonical-CSV reconciliation at `1b04df4`/`0dd17e9`, the manuscript decoder and
+> sampler corrections at `72fccb7`, and the gap-handling repair at `094a66e`/`29c3f78`).
+> The body below is deliberately not rewritten to reflect those outcomes, so it remains a
+> faithful snapshot of what the audit found at the time. Do not read individual items here
+> as open.
+
 ## Overall assessment
 
 The paper is not yet ready for arXiv or journal resubmission. The arXiv version builds and is visually readable, and the existing 14 unit tests pass, but there are substantive mathematical, empirical, statistical, and reproducibility issues. The journal and supporting-information builds also contain unresolved references and compilation errors.

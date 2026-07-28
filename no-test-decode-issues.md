@@ -1,5 +1,13 @@
 # Test coverage gap: the encode/decode pipeline is entirely unasserted
 
+> **Status: RESOLVED.** Closed by commits `094a66e` (decoder pipeline tests plus the
+> `sequence_identity` gap-handling fix) and `29c3f78` (contract documentation and
+> additional guard assertions). The suite went from 52 to 126 tests. The final corrected
+> account of the review that followed is in `remaining-issues-list.md`; the per-file
+> provenance of affected legacy artifacts is in `code/data/kunitz/README.md`.
+> Retained as the historical record that opened the work. Its proposed test code was not
+> adopted verbatim, and its pre-correction fidelity values are superseded.
+
 Written 2026-07-28 by Claude (Opus 5), for independent review.
 
 Original report state: `SA-Binding-Generation-Study`, `main` at `4fe9ad9`.
