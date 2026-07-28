@@ -9,5 +9,7 @@ using Test
     include("test_entropy_identities.jl")
     include("test_transition_statistic.jl")
     include("test_mask.jl")
+    include("test_encode_decode.jl")
+    include("test_decoder_characterization.jl")
     include("test_generated_paper_tables.jl")
 end

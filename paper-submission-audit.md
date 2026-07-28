@@ -211,9 +211,13 @@ The appendix describes reconstruction as inverse PCA, but [`code/src/Protein.jl`
 A diagnostic audit found:
 
 - original PCA-coordinate norms of approximately 5.0–6.5;
-- mean reconstruction identity of approximately 0.833 after unit normalization;
-- mean reconstruction identity of approximately 0.996 from unnormalized PCA scores; and
+- gap-aware mean reconstruction identity of approximately 0.836 after unit normalization;
+- gap-aware mean reconstruction identity of approximately 1.000 from unnormalized PCA scores; and
 - retained P1-marker accuracy in the tested Kunitz diagnostic.
+
+These two identity values were corrected on 2026-07-28 after direct metric tests
+showed that the earlier implementation excluded `-` gaps but counted Pfam `.`
+gaps as residue mismatches.
 
 The decoder is therefore not an inverse of the encoder. Loss of radial information may contribute materially to the resulting sequence behavior. This should be disclosed and tested with an ablation comparing:
 

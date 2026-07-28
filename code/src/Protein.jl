@@ -12,6 +12,9 @@
 const AA_ALPHABET = collect("ACDEFGHIKLMNPQRSTVWY")  # 20 standard amino acids
 const AA_TO_IDX = Dict(aa => i for (i, aa) in enumerate(AA_ALPHABET))
 const N_AA = length(AA_ALPHABET)  # 20
+const ALIGNMENT_GAP_CHARACTERS = ('.', '-', '~')
+
+is_alignment_gap(c::Char) = c in ALIGNMENT_GAP_CHARACTERS
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Data I/O: download, parse, clean
@@ -136,16 +139,14 @@ function clean_alignment(raw_seqs::Vector{Tuple{String,String}};
         end
     end
 
-    is_gap(c) = c in ('.', '-', '~')
-
     # remove columns with >max_gap_frac_col gaps
-    col_gap_frac = [count(is_gap, char_mat[:, j]) / K_raw for j in 1:L_raw]
+    col_gap_frac = [count(is_alignment_gap, char_mat[:, j]) / K_raw for j in 1:L_raw]
     keep_cols = findall(f -> f <= max_gap_frac_col, col_gap_frac)
     char_mat = char_mat[:, keep_cols]
     L = length(keep_cols)
 
     # remove sequences with >max_gap_frac_seq gaps (in remaining columns)
-    seq_gap_frac = [count(is_gap, char_mat[i, :]) / L for i in 1:K_raw]
+    seq_gap_frac = [count(is_alignment_gap, char_mat[i, :]) / L for i in 1:K_raw]
     keep_seqs = findall(f -> f <= max_gap_frac_seq, seq_gap_frac)
     char_mat = char_mat[keep_seqs, :]
     names = names[keep_seqs]
@@ -252,7 +253,9 @@ end
     decode_sample(ξ_pca, pca_model, L) -> String
 
 Decode a PCA-space vector back to an amino acid sequence.
-Maps through inverse PCA, then argmax decoding at each position.
+Applies the PCA model's affine reconstruction, then argmax decoding at each
+position. This is the model-defined latent-to-sequence map; it is not generally
+an inverse of `build_memory_matrix`, which normalizes PCA score vectors.
 """
 function decode_sample(ξ_pca::Vector{Float64}, pca_model, L::Int)
     x_onehot = vec(MultivariateStats.reconstruct(pca_model, ξ_pca))
@@ -274,7 +277,7 @@ function sequence_identity(seq1::String, seq2::String)
     matches = 0
     compared = 0
     for i in 1:L
-        (seq1[i] == '-' || seq2[i] == '-') && continue
+        (is_alignment_gap(seq1[i]) || is_alignment_gap(seq2[i])) && continue
         compared += 1
         seq1[i] == seq2[i] && (matches += 1)
     end
@@ -296,7 +299,7 @@ end
 Fraction of non-gap positions that are standard amino acids.
 """
 function valid_residue_fraction(seq::String)
-    non_gap = count(c -> c != '-', seq)
+    non_gap = count(c -> !is_alignment_gap(c), seq)
     non_gap == 0 && return 0.0
     valid = count(c -> c in AA_ALPHABET, seq)
     return valid / non_gap

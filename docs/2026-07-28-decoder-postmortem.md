@@ -71,12 +71,17 @@ reviewed by a separate subagent):
 **Findings that are correct and were later confirmed by the independent audit:**
 
 - The stored PCA radius is discarded by `build_memory_matrix`.
-- Stored-memory round-trip identity is 0.720 to 0.943 under the current decoder, and
-  0.976 to 0.999 if the memory's own radius is restored first. (Kunitz: 0.833 vs 0.996,
-  reproducing the July audit independently.)
+- Stored-memory round-trip identity is 0.730 to 0.943 under the current decoder, and
+  0.996 to 1.000 if the memory's own radius is restored first. (Kunitz: 0.836 vs 1.000.)
 - The gate's two arms genuinely used the same generated samples, and its baseline arm
   reproduced the committed canonical numbers exactly.
 - Rescaling generated samples changes decoded marker fractions far beyond replicate noise.
+
+**Correction, 2026-07-28:** the first audit used a `sequence_identity` implementation
+that excluded `-` gaps but incorrectly counted the `.` and `~` gap symbols as residue
+mismatches. The corrected gap-aware values above replace the earlier 0.720--0.943,
+0.976--0.999, and Kunitz 0.833 vs 0.996 figures. This correction changes the
+measurement, not the encoder or decoder behavior.
 
 **Then I made the error.** I proposed a fix: decode at a global constant per family, the
 mean memory radius r̄. Jeffrey approved it on my recommendation, and also approved making

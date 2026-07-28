@@ -143,7 +143,8 @@ equivalence check into one baseline table. This is the reviewer-insurance the re
 Opt-in add-ons (only if the author wants them):
 - Characterize `f_eff -> f_observed` as the decoder pushforward versus beta and component overlap.
 - Run the PCA normalization ablation: normalized vs unnormalized vs restored-radius decoding
-  (diagnostic showed reconstruction identity about 0.833 normalized versus 0.996 unnormalized).
+  (the corrected gap-aware diagnostic showed reconstruction identity about 0.836 normalized
+  versus 1.000 unnormalized).
   This is a gating experiment: if restoring radius changes generation, some results shift.
 - Weighted MALA (the shipped `mala_sample` uses the unweighted energy, so it is not a
   multiplicity baseline as-is).

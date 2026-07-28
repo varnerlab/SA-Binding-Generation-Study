@@ -20,8 +20,8 @@ normalizes each column to unit norm to form the memory matrix `X_hat`. The sampl
 `MultivariateStats.reconstruct(pca_model, xi)`, which is affine (`P xi + mu`), then argmax-decodes
 each position. Because a generated `xi` sits near a unit-norm memory, the data-dependent term
 `P xi` is roughly six times too small relative to the mean `mu`, so argmax leans on the mean
-composition. A diagnostic measured reconstruction identity of about 0.833 for unit-norm decoding
-versus about 0.996 when decoding from the original-radius scores.
+composition. A gap-aware diagnostic measured reconstruction identity of about 0.836 for unit-norm
+decoding versus about 1.000 when decoding from the original-radius scores.
 
 The clean Gaussian-mixture identity that anchors the arXiv-v2 reframe (Plan 1) requires unit-norm
 memories. Therefore the encoder and sampler stay unchanged; the ablation varies only the decoder.

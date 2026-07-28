@@ -357,7 +357,7 @@ end
 - [ ] **Step 4: Run the test to verify it passes**
 
 Run: `cd code && julia test/runtests.jl`
-Expected: PASS, including `Decoder fidelity CSV`. If `kunitz.identity_normalized_mean` is not below 0.9, record the actual value and report it (the audit measured ≈0.833); do not loosen the bound without surfacing the number.
+Expected: PASS, including `Decoder fidelity CSV`. If `kunitz.identity_normalized_mean` is not below 0.9, record the actual value and report it (the corrected gap-aware audit measured ≈0.836); do not loosen the bound without surfacing the number.
 
 - [ ] **Step 5: Commit**
 
