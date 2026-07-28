@@ -5,7 +5,7 @@ Status: **SUPERSEDED 2026-07-28. Do not implement.** This design calls nearest-m
 rescaling a "restoration" of a discarded radius and gates on `f_obs` matching `f_eff` at
 `rho = 1`. Both are invalid for generated samples; see the banner on the corresponding
 plan in `docs/superpowers/plans/2026-07-24-plan3-pca-decoder-ablation.md` and the full
-record in `what-the-fuck-claude.md`. The stored-memory fidelity diagnostic remains valid.
+record in `docs/2026-07-28-decoder-postmortem.md`. The stored-memory fidelity diagnostic remains valid.
 Parent spec: `docs/superpowers/specs/2026-07-22-arxiv-revision-design.md` (workstream W3, opt-in add-ons)
 Predecessors: Plan 1 (math foundations) merged at 9c974fd; Plan 2 (canonical CSV reconcile)
 committed at 1b04df4 / 0dd17e9 / 92c9095.

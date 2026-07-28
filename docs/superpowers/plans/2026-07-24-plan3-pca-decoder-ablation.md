@@ -18,7 +18,7 @@
 > use component-conditioned TPR and FPR.
 >
 > What remains valid: the stored-memory reconstruction fidelity diagnostic (Task 3).
-> Full record in `what-the-fuck-claude.md` and the manuscript corrections in `72fccb7`.
+> Full record in `docs/2026-07-28-decoder-postmortem.md` and the manuscript corrections in `72fccb7`.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
