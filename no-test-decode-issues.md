@@ -2,11 +2,89 @@
 
 Written 2026-07-28 by Claude (Opus 5), for independent review.
 
-Repo: `SA-Binding-Generation-Study`, `main` at `4fe9ad9`.
+Original report state: `SA-Binding-Generation-Study`, `main` at `4fe9ad9`.
+Repair under review: commit `094a66e` (`fix: test decoder pipeline and correct
+gap metrics`) on `main`.
 Related: `docs/2026-07-28-decoder-postmortem.md` (why this matters, and a reasoning
 error of mine that this gap contributed to).
 
-## Resolution and independent findings (2026-07-28)
+## Handoff to Claude for second review
+
+Please review commit `094a66e0f9bc360d869588e342df764bf8292ed6`, not just the
+original proposal preserved below. The purpose of this review is to look for a
+specific technical mistake in the repair, not to generate another plan or branch.
+The implementation is already on `main`.
+
+Please verify these claims independently:
+
+1. The original coverage-gap diagnosis was correct, but the proposed test code was
+   not implemented verbatim.
+2. Treating `.`, `-`, and `~` consistently as alignment gaps is correct for the
+   tracked Pfam and conotoxin alignments.
+3. The expected characterization values in
+   `code/test/test_decoder_characterization.jl` are independently reproducible from
+   the tracked fixtures and are not circularly derived from constants in production
+   code.
+4. The `atol=0.002` characterization tolerance is tight enough to detect a material
+   encoder/decoder change without being fragile to harmless numerical variation.
+5. The seeded Kunitz rerun changes only gap-sensitive identity/novelty metrics:
+   phenotype fractions, diversity, beta values, and generated sequences are
+   unchanged.
+6. No other manuscript number computed with nearest stored-sequence identity needs
+   regeneration or correction.
+7. The paper now consistently reports hard-curation novelty as 0.32 and
+   stored-memory fidelity ranges as 0.730--0.943 and 0.996--1.000.
+
+Reproduction commands:
+
+```bash
+cd /Users/jdv27/Desktop/julia_work/SA-Binding-Generation-Study
+git diff 4fe9ad9..094a66e
+
+cd code
+julia --project=. test/runtests.jl
+# Expected: 121/121 tests pass.
+
+cd ..
+git diff --check
+```
+
+An optional independent Kunitz rerun is:
+
+```bash
+cd /Users/jdv27/Desktop/julia_work/SA-Binding-Generation-Study/code
+julia --project=. experiments/run_kunitz_mask_experiment.jl
+```
+
+That command overwrites tracked result artifacts. The CSVs and PNGs should reproduce
+the current commit byte-for-byte. Plot PDFs embed build timestamps and can therefore
+show metadata-only diffs even when the plotted data are unchanged; do not interpret
+such a binary PDF diff as a scientific result change.
+
+Files that deserve direct inspection:
+
+- `code/src/Protein.jl`
+- `code/test/test_encode_decode.jl`
+- `code/test/test_decoder_characterization.jl`
+- `code/data/kunitz/mask_experiment.csv`
+- `code/data/kunitz/mask_betasweep.csv`
+- `paper-arxiv/Paper_v1.tex`
+- `paper-arxiv/sections/results.tex`
+- `paper-arxiv/sections/appendix.tex`
+- `docs/2026-07-28-decoder-postmortem.md`
+
+If you find a problem, please report the exact file and line, the failing
+assumption, and a minimal reproduction. In particular, distinguish:
+
+- a defect in the implementation;
+- a test-design concern;
+- a stale derived artifact; and
+- a disagreement about the scientific interpretation.
+
+Do not silently rewrite results, regenerate unrelated experiments, create a new
+branch, or propose a decoder change unless a concrete failing check supports it.
+
+## Resolution and independent findings (Codex, 2026-07-28)
 
 The central coverage diagnosis was true: the original 52-test suite did not directly
 assert the encoder, decoder, or sequence-identity behavior. The proposed patch below
