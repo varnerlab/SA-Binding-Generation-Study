@@ -60,7 +60,7 @@ computed the multiplicity vector $\vr$, found $\beta^{*}(\vr)$ via entropy infle
 weighted attention distribution, and ran five independent replicates of 20 chains
 (620 retained samples per replicate). Two quantities were tracked at each $\rho$: the mean softmax attention weight on designated
 patterns ($\bar{a}_{\mathrm{des}}$, measured in continuous PCA space during sampling) and the
-fraction of decoded sequences with K/R at P1 ($f_{\mathrm{obs}}$, measured after inverse PCA
+fraction of decoded sequences with K/R at P1 ($f_{\mathrm{obs}}$, measured after PCA reconstruction
 and argmax decoding). Across all six canonical replicated sweeps, the largest absolute
 attention deviation was \AttnMaxDevPts{} percentage points
 (\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$), showing close but not exact finite-sample
@@ -68,8 +68,10 @@ agreement with the target mixture fraction. However, the decoded marker fraction
 different story. For Kunitz, P1~K/R reached
 \KunitzFobsFiveHundred{} $\pm$ \KunitzFobsFiveHundredSD{} at $\rho=500$, far short of the
 $f_{\mathrm{eff}} = 0.996$
-that the attention weights achieved. This discrepancy between what the energy delivers in PCA
-space and what the decoder recovers in sequence space is the calibration gap. Sequence diversity decreased modestly from 0.56 to 0.51 over this range and
+that the attention weights achieved. This discrepancy between latent designated mass and the
+decoded marker marginal is the calibration gap. As
+Eq.~\ref{eq:decoder-pushforward} shows, it reflects both false negatives and
+false positives under the complete latent-to-sequence map. Sequence diversity decreased modestly from 0.56 to 0.51 over this range and
 KL divergence increased from 0.007 to 0.017. The phase transition
 $\beta^{*}$ shifted from 4.4 at $\rho=1$ ($K_{\mathrm{eff}} = 99$) to 9.3 at
 $\rho=1{,}000$ ($K_{\mathrm{eff}} = 32.1$), and the entropy curves at different $\rho$ values

@@ -5,9 +5,10 @@ Let $\vX = [\vm_1, \ldots, \vm_K] \in \R^{d \times K}$ be a memory matrix whose 
 unit-norm, PCA-encoded protein sequences from a family alignment of $K$ members, each represented
 in $d$ dimensions. The modern Hopfield energy~\cite{ramsauerHopfieldNetworksAll2021} at state
 $\vxi \in \R^d$ is $E(\vxi) = \tfrac{1}{2}\|\vxi\|^{2} - \tfrac{1}{\beta}\log\sum_{k}\exp(\beta\,\vm_{k}^{\!\top}\vxi)$, where $\beta > 0$ is an inverse temperature. The score function
-$\nabla_{\vxi}\log p_{\beta}(\vxi) = \vX\,\softmax(\beta\,\vX^{\!\top}\vxi) - \vxi$ is
+$\nabla_{\vxi}\log p_{\beta}(\vxi) =
+\beta[\vX\,\softmax(\beta\,\vX^{\!\top}\vxi) - \vxi]$ is
 \emph{exact} and computed by a single attention operation; applying the unadjusted Langevin
-algorithm (ULA) with step size $\alpha \in (0,1)$ yields the stochastic attention
+algorithm (ULA) with score step size $\alpha/\beta$, for $\alpha \in (0,1)$, yields the stochastic attention
 update~\cite{varnerSAProtein2026}:
 \begin{equation}\label{eq:ula}
   \vxi_{t+1}
@@ -32,7 +33,8 @@ memory cost.
 
 \begin{proposition}[Score function]\label{prop:score}
 The score function of $p_{\vr}(\vxi) \propto \exp(-\beta\,E_{\vr}(\vxi))$ is
-$\nabla_{\vxi}\log p_{\vr}(\vxi) = \vX\,\softmax(\beta\,\vX^{\!\top}\vxi + \log\vr) - \vxi$,
+$\nabla_{\vxi}\log p_{\vr}(\vxi) =
+\beta[\vX\,\softmax(\beta\,\vX^{\!\top}\vxi + \log\vr) - \vxi]$,
 where $\log\vr = (\log r_1, \ldots, \log r_K)^{\!\top}$ is the elementwise log-multiplicity.
 \end{proposition}
 
@@ -54,8 +56,8 @@ the sampler retains its $\mathcal{O}(dK)$ per-step cost.
 For a binary functional split (designated subset vs.\ background), we parameterize the multiplicity
 vector by a single scalar $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, setting
 $r_k = \rho$ for patterns in the user-designated subset and $r_k = 1$ otherwise. The effective
-designated fraction (the share of the softmax probability mass attributable to designated
-patterns when all patterns have equal similarity to $\vxi$) is
+designated fraction, which is the exact latent designated-component probability under the
+Gaussian-mixture target, is
 $f_{\mathrm{eff}}(\rho) = K_{\mathrm{des}}\rho/(K_{\mathrm{des}}\rho + K_{\mathrm{bg}})$, where
 $K_{\mathrm{des}}$ and $K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ are the number of designated and
 background patterns. At $\rho=1$,
@@ -120,6 +122,26 @@ and decompose it into three independently measurable components:
   + \underbrace{(\bar{a}_{\mathrm{des}} - f_{\mathrm{soft}})}_{\Delta_{\mathrm{PCA}}}
   + \underbrace{(f_{\mathrm{soft}} - f_{\mathrm{obs}})}_{\Delta_{\mathrm{argmax}}}.
 \end{equation}
+The exact mixture representation also gives a direct component-conditioned
+description of the final step. Let $C$ be the generating mixture component,
+let $q_{\mathrm{des}} =
+\Pr(\text{decoded marker positive}\mid C\in\mathcal{D})$, and let
+$q_{\mathrm{bg}} =
+\Pr(\text{decoded marker positive}\mid C\notin\mathcal{D})$. Then
+\begin{equation}\label{eq:decoder-pushforward}
+  f_{\mathrm{obs}}
+  = f_{\mathrm{eff}}q_{\mathrm{des}}
+  + (1-f_{\mathrm{eff}})q_{\mathrm{bg}},
+  \qquad
+  \Delta
+  = f_{\mathrm{eff}}(1-q_{\mathrm{des}})
+  - (1-f_{\mathrm{eff}})q_{\mathrm{bg}}.
+\end{equation}
+Thus $f_{\mathrm{obs}}=f_{\mathrm{eff}}$ is not an analytic requirement at
+$\rho=1$; it would require a particular balance of false negatives and false
+positives under the decoder. Equation~\ref{eq:decoder-pushforward} makes the
+calibration gap an empirical property of the complete latent-to-sequence
+pushforward, not a test that selects a unique PCA scaling.
 To describe the PCA geometry across families, we define the Fisher separation index
 $S = (\bar{c}_{\mathrm{within}} - \bar{c}_{\mathrm{between}}) /
 [\tfrac{1}{2}(\sigma_{\mathrm{within}} + \sigma_{\mathrm{between}})]$, where $\bar{c}$ and

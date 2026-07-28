@@ -2,8 +2,9 @@
 We have shown that pattern multiplicity in the modern Hopfield energy provides a principled,
 training-free mechanism for conditioning protein sequence generation on functional subsets. The
 theoretical framework is exact: multiplicity weights tilt the Boltzmann distribution through a
-simple logit bias, and the resulting Langevin dynamics sample from a known distribution with no
-approximation. A single scalar $\rho$ continuously interpolates between unconditioned generation
+simple logit bias, and their equilibrium target is a known Gaussian mixture. The finite-step ULA
+implementation retains discretization and mixing error, which we assess against exact samples.
+A single scalar $\rho$ continuously interpolates between unconditioned generation
 and hard subset curation, and the practitioner can compute the required $\rho$ for any target
 effective designated fraction directly from the family composition (Eq.~\ref{eq:rho-inverse}). On
 the Kunitz domain, curated memory achieved 100\% phenotype transfer with as few as three
@@ -16,9 +17,10 @@ PCA-space geometry and conditioning effectiveness.
 The central finding is the calibration gap and its decomposition. The gap is not a
 failure of the multiplicity-weighted energy (the largest absolute deviation of mean attention
 from $f_{\mathrm{eff}}$ was \AttnMaxDevPts{} percentage points across the canonical replicated
-sweeps) but a property
-property of the PCA encoding that compresses $20L$-dimensional sequence space into $d$ principal
-components. When the designated and background subsets overlap in PCA space (low $S$), the
+sweeps), but neither does it diagnose PCA compression alone. It is the pushforward
+of latent component mass through finite-temperature noise, unit-normalized PCA
+coordinates, affine reconstruction, and argmax decoding
+(Eq.~\ref{eq:decoder-pushforward}). When the designated and background subsets overlap in PCA space (low $S$), the
 energy-level tilt does not propagate to the decoded residue identity; when they separate
 (high $S$), it may. Across five Pfam families, the exploratory linear fit had
 $R^{2}=\RelationRsq$, but it was sensitive to individual families: leave-one-family-out slopes

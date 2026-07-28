@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  24 JUL 2026 12:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  28 JUL 2026 11:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -678,7 +678,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [5] (./sections/discussion.tex
-Underfull \vbox (badness 1237) has occurred while \output is active []
+Underfull \vbox (badness 5652) has occurred while \output is active []
 
 
 
@@ -704,31 +704,34 @@ Underfull \hbox (badness 2573) in paragraph at lines 91--93
  []
 
 (./Paper_v1.bbl
+Underfull \vbox (badness 6792) has occurred while \output is active []
+
+
 
 [10]
 
 [11])
 
 [12] (./sections/generated/tab_cross_family.tex)
-<sections/figs/study1_binder_scaling.pdf, id=242, 903.375pt x 401.5pt>
+<sections/figs/study1_binder_scaling.pdf, id=246, 903.375pt x 401.5pt>
 File: sections/figs/study1_binder_scaling.pdf Graphic file (type pdf)
 <use sections/figs/study1_binder_scaling.pdf>
 Package pdftex.def Info: sections/figs/study1_binder_scaling.pdf  used on input
  line 131.
 (pdftex.def)             Requested size: 397.48499pt x 176.66054pt.
-<sections/figs/fig5_entropy_curves.pdf, id=243, 505.89pt x 325.215pt>
+<sections/figs/fig5_entropy_curves.pdf, id=247, 505.89pt x 325.215pt>
 File: sections/figs/fig5_entropy_curves.pdf Graphic file (type pdf)
 <use sections/figs/fig5_entropy_curves.pdf>
 Package pdftex.def Info: sections/figs/fig5_entropy_curves.pdf  used on input l
 ine 151.
 (pdftex.def)             Requested size: 325.9406pt x 209.53627pt.
-<sections/figs/fig2_separation_vs_gap.pdf, id=244, 831.105pt x 346.89601pt>
+<sections/figs/fig2_separation_vs_gap.pdf, id=248, 831.105pt x 346.89601pt>
 File: sections/figs/fig2_separation_vs_gap.pdf Graphic file (type pdf)
 <use sections/figs/fig2_separation_vs_gap.pdf>
 Package pdftex.def Info: sections/figs/fig2_separation_vs_gap.pdf  used on inpu
 t line 175.
 (pdftex.def)             Requested size: 397.48499pt x 165.90475pt.
-<sections/figs/fig_mask_betasweep.pdf, id=245, 722.7pt x 542.025pt>
+<sections/figs/fig_mask_betasweep.pdf, id=249, 722.7pt x 542.025pt>
 File: sections/figs/fig_mask_betasweep.pdf Graphic file (type pdf)
 <use sections/figs/fig_mask_betasweep.pdf>
 Package pdftex.def Info: sections/figs/fig_mask_betasweep.pdf  used on input li
@@ -740,26 +743,26 @@ Overfull \hbox (10.73293pt too wide) in paragraph at lines 299--311
  [][] 
  []
 
-<sections/figs/loop_heatmap_with_residuals.pdf, id=258, 1104.125pt x 903.375pt>
+<sections/figs/loop_heatmap_with_residuals.pdf, id=262, 1104.125pt x 903.375pt>
 
 File: sections/figs/loop_heatmap_with_residuals.pdf Graphic file (type pdf)
 <use sections/figs/loop_heatmap_with_residuals.pdf>
 Package pdftex.def Info: sections/figs/loop_heatmap_with_residuals.pdf  used on
  input line 435.
 (pdftex.def)             Requested size: 397.48499pt x 325.21475pt.
-<sections/figs/sequence_analysis_kunitz.pdf, id=259, 1204.5pt x 702.625pt>
+<sections/figs/sequence_analysis_kunitz.pdf, id=263, 1204.5pt x 702.625pt>
 File: sections/figs/sequence_analysis_kunitz.pdf Graphic file (type pdf)
 <use sections/figs/sequence_analysis_kunitz.pdf>
 Package pdftex.def Info: sections/figs/sequence_analysis_kunitz.pdf  used on in
 put line 455.
 (pdftex.def)             Requested size: 397.48499pt x 231.86696pt.
-<sections/figs/sequence_analysis_conotoxin.pdf, id=260, 903.375pt x 702.625pt>
+<sections/figs/sequence_analysis_conotoxin.pdf, id=264, 903.375pt x 702.625pt>
 File: sections/figs/sequence_analysis_conotoxin.pdf Graphic file (type pdf)
 <use sections/figs/sequence_analysis_conotoxin.pdf>
 Package pdftex.def Info: sections/figs/sequence_analysis_conotoxin.pdf  used on
  input line 483.
 (pdftex.def)             Requested size: 397.48499pt x 309.15594pt.
-<figs/fold_superposition_combined.pdf, id=261, 722.7pt x 578.16pt>
+<figs/fold_superposition_combined.pdf, id=265, 722.7pt x 578.16pt>
 File: figs/fold_superposition_combined.pdf Graphic file (type pdf)
 <use figs/fold_superposition_combined.pdf>
 Package pdftex.def Info: figs/fold_superposition_combined.pdf  used on input li
@@ -800,31 +803,30 @@ pdfTeX warning (ext4): destination with the same identifier (name{section.2}) h
 as been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.153 \section{Supplementary Tables and Figures}
+l.167 \section{Supplementary Tables and Figures}
                                                 \label{app:tables-figures}
 (./sections/generated/tab_kunitz_rho.tex) (./sections/generated/tab_sh3_rho.tex
 ) (./sections/generated/tab_ww_rho.tex)
 (./sections/generated/tab_homeobox_rho.tex)
 (./sections/generated/tab_forkhead_rho.tex)
 (./sections/generated/tab_omega_conotoxin_rho.tex)
-(./sections/si_gmm_derivation.tex
+
+[23] (./sections/si_gmm_derivation.tex
 pdfTeX warning (ext4): destination with the same identifier (name{section.3}) h
 as been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.1 ... distribution is an exact Gaussian mixture}
-                                                  \label{app:gmm}
+                                                  \label{app:gmm}))
 
-[23]))
-<sections/figs/plddt_vs_tmscore_scatter.pdf, id=603, 1806.75pt x 1505.625pt>
+[24]
+<sections/figs/plddt_vs_tmscore_scatter.pdf, id=621, 1806.75pt x 1505.625pt>
 File: sections/figs/plddt_vs_tmscore_scatter.pdf Graphic file (type pdf)
 <use sections/figs/plddt_vs_tmscore_scatter.pdf>
 Package pdftex.def Info: sections/figs/plddt_vs_tmscore_scatter.pdf  used on in
 put line 551.
 (pdftex.def)             Requested size: 286.18967pt x 238.49266pt.
 
-
-[24]
 
 [25]
 
@@ -839,13 +841,13 @@ Package rerunfilecheck Info: File `Paper_v1.out' has not changed.
 (rerunfilecheck)             Checksum: 526440EE290F535BBC05EB6F819E5A4D;2163.
  ) 
 Here is how much of TeX's memory you used:
- 16237 strings out of 473190
- 260821 string characters out of 5715801
- 794820 words of memory out of 5000000
- 38815 multiletter control sequences out of 15000+600000
- 607829 words of font info for 261 fonts, out of 8000000 for 9000
+ 16242 strings out of 473190
+ 260883 string characters out of 5715801
+ 795950 words of memory out of 5000000
+ 38816 multiletter control sequences out of 15000+600000
+ 607956 words of font info for 263 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,12n,79p,1566b,606s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,12n,79p,1566b,598s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb><
 /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></
@@ -870,10 +872,10 @@ mf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025
 exmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/
 fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type
 1/urw/times/utmri8a.pfb>
-Output written on Paper_v1.pdf (27 pages, 896421 bytes).
+Output written on Paper_v1.pdf (27 pages, 899267 bytes).
 PDF statistics:
- 769 PDF objects out of 1000 (max. 8388607)
- 453 compressed objects within 5 object streams
- 118 named destinations out of 1000 (max. 500000)
+ 775 PDF objects out of 1000 (max. 8388607)
+ 459 compressed objects within 5 object streams
+ 119 named destinations out of 1000 (max. 500000)
  44670 words of extra memory for PDF output out of 51595 (max. 10000000)
 

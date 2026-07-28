@@ -2,12 +2,12 @@
 
 \section{Sequence Encoding, PCA Projection, and Multiplicity Conditioning}\label{app:pca}
 
-Stochastic attention (SA) operates on continuous vectors on the unit sphere,
-while protein sequences are discrete objects over a 20-letter amino acid
-alphabet. Bridging the two requires three transformations (one-hot encoding,
-PCA dimensionality reduction, and unit-norm projection), and the reverse path
-(inverse PCA followed by argmax decoding) recovers discrete sequences from
-continuous samples. Here we describe the full encoding--decoding pipeline,
+Stochastic attention (SA) stores unit-norm memory vectors and evolves continuous
+states in $\mathbb{R}^d$, while protein sequences are discrete objects over a
+20-letter amino acid alphabet. Bridging the two requires three transformations
+(one-hot encoding, PCA dimensionality reduction, and unit-norm projection), and the reverse path
+(affine PCA reconstruction followed by argmax decoding) maps continuous samples
+to discrete sequences. Here we describe the full encoding--decoding pipeline,
 derive the multiplicity-weighted conditioning formulas used in the main text,
 and discuss how the multiplicity vector $\mathbf{r}$ interacts with the PCA
 representation.
@@ -27,9 +27,9 @@ where $\mathbf{e}_a \in \{0,1\}^{20}$ is the standard basis vector for amino
 acid $a$ (i.e., a one-hot indicator with a 1 in the position corresponding to
 $a$ and 0 elsewhere). The full one-hot dimensionality is
 $d_{\mathrm{full}} = 20L$, which ranged from 520 ($\omega$-conotoxin,
-$L{=}26$) to 1{,}060 (Kunitz, $L{=}53$) across the four families. This space
+$L{=}26$) to 1{,}740 (Forkhead, $L{=}87$) across the six families. This space
 is over-dimensioned relative to the number of stored patterns $K$
-($d_{\mathrm{full}}/K$ ranged from 7.0 to 10.7), which creates a problem for
+($d_{\mathrm{full}}/K$ ranged from 1.48 to 17.45), which creates a problem for
 the modern Hopfield energy~\cite{ramsauerHopfieldNetworksAll2021}: the
 similarity score $e_k = \mathbf{m}_k^\top\boldsymbol{\xi}$ between a stored
 pattern $\mathbf{m}_k$ and a query state $\boldsymbol{\xi}$ has variance
@@ -52,7 +52,7 @@ singular values in decreasing order, and
 $r = \mathrm{rank}(\tilde{\mathbf{X}}) \leq \min(d_{\mathrm{full}}, K) - 1$.
 We retained the smallest dimension $d$ such that
 $\sum_{j=1}^d \sigma_j^2 / \sum_{j=1}^r \sigma_j^2 \geq 0.95$ (at least
-95\% of total variance). Across the four families, $d$ ranged from 34
+95\% of total variance). Across the six families, $d$ ranged from 34
 ($\omega$-conotoxin) to 186 (WW), yielding compression ratios of
 $3.3\times$ to $21\times$ (Table~\ref{tab:cross-family}). Each sequence was
 then projected as
@@ -67,12 +67,21 @@ The columns $\mathbf{m}_1, \ldots, \mathbf{m}_K$ form the memory matrix
 $\hat{\mathbf{X}} \in \mathbb{R}^{d \times K}$ used throughout the paper.
 The Langevin sampler (Eq.~\ref{eq:ula}) produces continuous states
 $\boldsymbol{\xi} \in \mathbb{R}^d$, which are decoded back to amino acid
-sequences by inverse PCA reconstruction
+sequences by affine PCA reconstruction
 $\hat{\mathbf{x}} = \bar{\mathbf{x}} + \mathbf{W}_d\boldsymbol{\xi}
 \in \mathbb{R}^{d_{\mathrm{full}}}$ followed by per-position argmax:
 $a_\ell = \arg\max_{a \in \mathcal{A}}\; \hat{x}_{20(\ell-1) + a}$ for
 $\ell = 1, \ldots, L$. This decoding is deterministic and produced valid
-amino acids at 100\% of positions across all families and conditions.
+amino acids at 100\% of positions across all families and conditions. It is
+not an inverse of the complete encoder: unit normalization discards each
+stored score radius $\|\mathbf{z}_k\|_2$, and the decoder does not restore it.
+For stored memories, reconstructing from
+$\|\mathbf{z}_k\|_2\mathbf{m}_k$ increases mean sequence identity from
+0.720--0.943 to 0.976--0.999 across families. A generated sample, however, is
+not a normalized encoding of a source sequence and has no known discarded
+radius. Multiplying it by a stored-memory radius scales both its component
+signal and its finite-temperature noise, so we treat such rescaling as a
+decoder-sensitivity intervention rather than an inverse operation.
 
 The multiplicity-weighted Hopfield energy (Eq.~\ref{eq:weighted-energy})
 assigns a weight $r_k > 0$ to each stored pattern $\mathbf{m}_k$. For the
@@ -105,12 +114,16 @@ and solving for $\rho$:
   \rho(f) &= \frac{f\,K_{\mathrm{bg}}}{K_{\mathrm{des}}\,(1-f)}.
   \label{eq:rho-inverse-derived}
 \end{align}
-This is Eq.~\eqref{eq:rho-inverse} in the main text. The formula is exact
-under the equal-similarity assumption; in the canonical replicated sweeps, the
-largest absolute deviation of mean attention from $f_{\mathrm{eff}}(\rho)$ was
-\AttnMaxDevPts{} percentage points (\AttnMaxDevFamily{},
-$\rho=\AttnMaxDevRho$; Table~\ref{tab:per-family-rho}). Thus the finite-sample
-agreement is close but not exact. The effective number of patterns under
+This is Eq.~\eqref{eq:rho-inverse} in the main text. Equal similarity gives
+Eq.~\eqref{eq:feff-def} pointwise. More generally, the exact Gaussian-mixture
+identity (Section~\ref{app:gmm}) makes $f_{\mathrm{eff}}$ the exact latent
+designated-component probability, and the expected posterior designated
+attention equals the same quantity by the law of total expectation. In the
+finite-step canonical ULA sweeps, the largest absolute deviation of empirical
+mean attention from $f_{\mathrm{eff}}(\rho)$ was \AttnMaxDevPts{} percentage
+points (\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$;
+Table~\ref{tab:per-family-rho}). This residual includes finite sampling, mixing,
+and ULA discretization error. The effective number of patterns under
 multiplicity weighting,
 $K_{\mathrm{eff}}(\mathbf{r}) = (\sum_k r_k)^2 / \sum_k r_k^2
 = (K_{\mathrm{des}}\,\rho + K_{\mathrm{bg}})^2 /
@@ -132,8 +145,9 @@ constant: both terms vary with $\rho$ in the replicated sweeps. Second,
 $\rho$ controls attention, not
 geometry: increasing $\rho$ adds $\log\rho$ to the designated logits, shifting
 attention weight toward designated patterns, but this shift must still pass
-through the PCA reconstruction and argmax decoding to produce discrete
-residues, which is where the calibration gap arises. Third, $\rho$ shifts the
+through finite-temperature latent noise, the normalized-coordinate PCA
+reconstruction, and argmax decoding to produce discrete residues. These
+operations jointly determine the observed calibration gap. Third, $\rho$ shifts the
 phase transition: the logit biases pre-concentrate the attention distribution
 at $\beta = 0$, reducing the weighted entropy to
 $H_{\mathbf{r}}(0) = \log K_{\mathrm{eff}}(\mathbf{r}) < \log K$, so

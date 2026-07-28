@@ -60,8 +60,8 @@ $\mathcal{O}(dK)$ cost of the original method. The energy-level conditioning is 
 largest absolute deviation between mean softmax attention and the target fraction is
 \AttnMaxDevPts{} percentage points (\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$) across the
 canonical replicated sweeps. However, we found that the decoded sequence marker can fall short
-of this target, because the PCA encoding that compresses sequences into the sampler's state space
-does not always preserve the residue-level variation that defines the functional split. We termed
+of this target after finite-temperature sampling, reconstruction from unit-normalized PCA
+coordinates, and argmax decoding. We termed
 this discrepancy the calibration gap and examined its association with a simple geometric
 quantity, the Fisher separation index $S$, which measures how well PCA separates designated from
 background sequences. Across five Pfam families, an exploratory linear fit gave
