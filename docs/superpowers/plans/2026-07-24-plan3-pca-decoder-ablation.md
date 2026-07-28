@@ -1,5 +1,25 @@
 # PCA Decoder-Fidelity Ablation Implementation Plan
 
+> **SUPERSEDED 2026-07-28. DO NOT EXECUTE THIS PLAN.**
+>
+> Tasks 1 to 4 were executed on branch `arxiv-rev-plan3-decoder` and the branch was
+> deleted; `main` never contained its artifacts. The plan's premise is invalid.
+>
+> Its "radius restoration" treats a generated latent as though it had a discarded source
+> radius recoverable from its nearest memory. It does not: only stored memories have a
+> known discarded radius, and the nearest memory is the generating component only 21 to
+> 38 percent of the time. Rescaling a generated sample scales its signal and its noise
+> alike, so it is a decoder intervention, not an inverse.
+>
+> The related acceptance test, that `f_obs` should equal `f_eff` at `rho = 1`, is also
+> invalid. The correct relation is the pushforward
+> `f_obs = f_eff * TPR + (1 - f_eff) * FPR`, so a decoder carrying no information can
+> match that marginal exactly. Never select or calibrate a decoder by marginal matching;
+> use component-conditioned TPR and FPR.
+>
+> What remains valid: the stored-memory reconstruction fidelity diagnostic (Task 3).
+> Full record in `what-the-fuck-claude.md` and the manuscript corrections in `72fccb7`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Quantify how lossy the unit-norm PCA decoder is and decide, against replicate noise, whether a radius-restoring decoder changes generated marker-positive fractions enough to force regenerating the canonical sweeps.
