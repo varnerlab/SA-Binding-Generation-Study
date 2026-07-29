@@ -12,6 +12,7 @@ using Test
     include("test_encode_decode.jl")
     include("test_decoder_characterization.jl")
     include("test_generated_paper_tables.jl")
+    include("test_manuscript_consistency.jl")
     include("test_rng_reproducibility.jl")
     include("test_conotoxin_labels.jl")
 end
