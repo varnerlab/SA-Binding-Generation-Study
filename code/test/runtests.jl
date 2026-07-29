@@ -15,4 +15,5 @@ using Test
     include("test_manuscript_consistency.jl")
     include("test_rng_reproducibility.jl")
     include("test_conotoxin_labels.jl")
+    include("test_conotoxin_sar_frame.jl")
 end

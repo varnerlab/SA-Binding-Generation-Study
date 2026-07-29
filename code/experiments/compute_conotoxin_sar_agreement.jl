@@ -24,6 +24,7 @@ _SCRIPT_DIR = @__DIR__
 _CODE_DIR = dirname(_SCRIPT_DIR)
 cd(_CODE_DIR)
 include(joinpath(_CODE_DIR, "Include.jl"))
+include(joinpath(_CODE_DIR, "experiments", "canonical_family_registry.jl"))
 
 using StatsBase
 
@@ -75,9 +76,14 @@ full_seqs = parse_fasta(joinpath(DATA_DIR, "generated_full_seeded.fasta"))
 @info "Strong-seeded: $(length(strong_seqs)) sequences"
 @info "Full-seeded: $(length(full_seqs)) sequences"
 
-# Also load strong binder input
-raw_strong = parse_fasta(joinpath(DATA_DIR, "strong_cav22_binders.fasta"))
-@info "Strong binder input: $(length(raw_strong)) sequences"
+# Designated input, read in the canonical cleaned alignment frame. Reading the raw
+# FASTA here would index variable-length sequences (24 to 31 residues) as if their
+# character positions were MVIIA-numbered alignment columns.
+_spec = only(filter(s -> s.family == "Conotoxin", CANONICAL_FAMILIES))
+_char_mat, _names, _auxiliary = canonical_load_alignment(_spec, joinpath(_CODE_DIR, "data"))
+_designated, _, _, _ = canonical_split(_spec, _char_mat, _names, _auxiliary)
+raw_strong = [(_names[i], String(_char_mat[i, :])) for i in _designated]
+@info "Designated input (canonical frame): $(length(raw_strong)) sequences"
 
 # ── Compute agreement ───────────────────────────────────────────────────────
 function compute_sar_agreement(seqs, sar_residues, label)
