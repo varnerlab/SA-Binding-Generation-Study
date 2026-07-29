@@ -87,7 +87,7 @@ The \emph{only} change from Eq.~\eqref{eq:ula} is the addition of $\log r_k$ to 
 before the softmax. The memory matrix $\vX$ is unchanged, the noise schedule is unchanged, and
 the sampler retains its $\mathcal{O}(dK)$ per-step cost.
 
-\subsection{Multiplicity Ratio and Phase Transition}\label{sec:phase}
+\subsection{Multiplicity Ratio and the Entropy Crossover}\label{sec:phase}
 
 For a binary functional split (designated subset vs.\ background), we parameterize the multiplicity
 vector by a single scalar $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, setting
@@ -105,16 +105,16 @@ gives the multiplicity ratio needed for a target fraction $f$:
 For unit-norm memories, $\beta$ changes the common component covariance and therefore
 the overlap, posterior responsibilities, and decoded output, but it does not change the
 prior mixture weights $w_k$ or $f_{\mathrm{eff}}$.
-The standard SA framework exhibits a phase transition at critical inverse temperature $\beta^{*}$
-that depends on the PCA dimension $d$ and the number of stored patterns. Under multiplicity
+The standard SA framework exhibits an entropy crossover at an operating inverse temperature
+$\beta^{*}$ that depends on the PCA dimension $d$ and the number of stored patterns. Under multiplicity
 weighting, the relevant quantity is the effective number of patterns
 $K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2} / \sum_k r_k^{2}$, which equals $K$ when all $r_k$
 are equal and converges to $K_{\mathrm{des}}$ as $\rho \to \infty$.
 
-\begin{remark}[Phase transition: analytic baseline and multiplicity shift]\label{rem:beta-star}
+\begin{remark}[Entropy crossover: analytic baseline and multiplicity shift]\label{rem:beta-star}
 The companion paper~\cite{varnerSAProtein2026} establishes, via a concentration-of-measure
 argument on the softmax attention entropy, that for the \emph{unweighted} SA sampler ($\rho=1$)
-the phase transition satisfies
+the crossover satisfies
 \begin{equation}\label{eq:beta-star}
   \beta^{*} \;\approx\; 1.57 + 0.28\sqrt{d},
 \end{equation}

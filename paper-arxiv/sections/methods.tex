@@ -34,9 +34,15 @@ accessions have exact accession matches in that activity table. The accession de
 Tyr13 marker agree for 64 of 74 sequences (86.5\%).
 
 For multiplicity-weighted runs, the multiplicity vector was set to $r_k = \rho$ for designated
-patterns and $r_k = 1$ for background patterns, and $\beta^{*}(\vr)$ was found by sweeping
-50--60 logarithmically spaced $\beta$ values in $[0.1,\, 500]$ and locating the inflection
-point of the weighted attention entropy. Twenty to fifty independently seeded chains were run per
+patterns and $r_k = 1$ for background patterns. The operating inverse temperature
+$\beta^{*}(\vr)$ was selected as the entropy-crossover onset, the point of maximum downward
+curvature of the weighted attention entropy with respect to $\log \beta$ on a fixed
+logarithmic grid spanning $\beta \in [0.1,\, 500]$, using 50 grid points for the canonical
+six-family sweeps and 50 to 60 elsewhere, with entropy evaluated at the first 20 stored memory
+columns. This is a descriptive operating point rather than an estimate of a thermodynamic phase
+transition, and entropy is evaluated at stored memories rather than at samples. Recomputing the
+onset from all stored memories moved the selected value by one grid step, a factor of 1.19, for
+Homeobox and $\omega$-conotoxin, and left Kunitz, SH3, WW and Forkhead unchanged. Twenty to fifty independently seeded chains were run per
 condition, yielding 620--1{,}550 retained states after burn-in and thinning. The canonical
 six-family sweeps used five replicate runs of 20 chains, and reported uncertainty across replicate
 summaries rather than treating retained states within a chain as independent. Marker fidelity was

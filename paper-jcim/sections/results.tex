@@ -11,7 +11,7 @@ $\omega$-conotoxin O-superfamily ($K=74$, curated
 from SwissProt), was used to test hard curation on a therapeutically relevant peptide system
 associated with the Cav2.2 calcium channel. For each family, we split sequences into designated and
 background subsets using the stated marker or accession rule, built conditioned
-memory matrices, and generated sequences via Langevin dynamics at the entropy-inflection inverse
+memory matrices, and generated sequences via Langevin dynamics at the entropy-crossover inverse
 temperature $\beta^{*}$. The Fisher separation index $S$, a measure of how well PCA separates
 designated from background sequences, varied from \WWSeparation{} (WW, heavily interleaved)
 to \HomeoboxSeparation{}
@@ -28,7 +28,7 @@ but is not by itself an activity measurement for every sequence. We designated t
 with K/R at P1 as the marker-positive subset ($K_{\mathrm{des}} = 32$) and the remaining 67 as
 marker-negative background
 ($K_{\mathrm{bg}} = 67$), built separate memory matrices from each group, found $\beta^{*}$
-for each via entropy inflection, and generated 930 sequences per condition (30 chains $\times$
+for each via the entropy-crossover onset, and generated 930 sequences per condition (30 chains $\times$
 5{,}000 steps, thinned after burn-in). We observed that 100\% of
 designated-subset-conditioned sequences had K/R at P1; 0\% of background-conditioned sequences
 did; and full-family generation produced 41\% K/R, close to the natural proportion
@@ -59,7 +59,7 @@ We tested multiplicity-weighted generation on the Kunitz family ($K = 99$,
 $K_{\mathrm{des}} = 32$ K/R-positive sequences, $K_{\mathrm{bg}} = 67$ background),
 sweeping $\rho$ from 1 (standard SA, no bias) to 500 in the canonical replicated
 analysis (Fig.~\ref{fig:phase-transition}, Table~\ref{tab:per-family-rho}). For each $\rho$, we
-computed the multiplicity vector $\vr$, found $\beta^{*}(\vr)$ via entropy inflection on the
+computed the multiplicity vector $\vr$, found $\beta^{*}(\vr)$ via the entropy-crossover onset on the
 weighted attention distribution, and ran five independent replicates of 20 chains
 (620 retained samples per replicate). Two quantities were tracked at each $\rho$: the mean softmax attention weight on designated
 patterns ($\bar{a}_{\mathrm{des}}$, measured in continuous PCA space during sampling) and the
@@ -75,12 +75,11 @@ that the attention weights achieved. This discrepancy between latent designated 
 decoded marker marginal is the calibration gap. As
 Eq.~\ref{eq:decoder-pushforward} shows, it reflects both false negatives and
 false positives under the complete latent-to-sequence map. Sequence diversity decreased modestly from 0.56 to 0.51 over this range and
-KL divergence increased from 0.007 to 0.017. The phase transition
+KL divergence increased from 0.007 to 0.017. The entropy crossover
 $\beta^{*}$ shifted from 4.4 at $\rho=1$ ($K_{\mathrm{eff}} = 99$) to 9.3 at
 $\rho=1{,}000$ ($K_{\mathrm{eff}} = 32.1$), and the entropy curves at different $\rho$ values
-formed a family of sigmoidal profiles with systematically rightward-shifted inflection points,
-consistent with $\beta^{*}(\vr)$ depending on $K_{\mathrm{eff}}(\vr)$ rather than the raw
-pattern count $K$ (Fig.~\ref{fig:phase-transition}). To understand why $f_{\mathrm{obs}}$
+formed a family of sigmoidal profiles with systematically rightward-shifted onset points
+(Fig.~\ref{fig:phase-transition}). To understand why $f_{\mathrm{obs}}$
 lagged $f_{\mathrm{eff}}$, we measured all three layers of the signal chain
 (Eq.~\ref{eq:gap-decomp}) independently across a fine $\rho$ sweep ($\rho \in [1, 1000]$,
 17~values, 5~replicates each), recording at each step: (i)~the total softmax attention weight
