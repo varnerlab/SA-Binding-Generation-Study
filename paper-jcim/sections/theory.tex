@@ -120,19 +120,20 @@ with $R^{2}=0.97$ across eight Pfam families spanning $d \in [18, 186]$, and is 
 independent of $K$ for $K \geq 30$.
 At $\rho=1$, Eq.~\eqref{eq:beta-star} therefore gives the analytic value directly from the
 alignment. For $\rho > 1$, the logit biases $\log r_k$ pre-concentrate the attention
-distribution at $\beta=0$: the weighted entropy at zero temperature is $H_{\vr}(0) = \log
-K_{\mathrm{eff}}(\vr) < \log K$, a lower starting entropy than the unweighted case.
-Reaching the retrieval-phase inflection from this pre-concentrated starting point requires
-a higher inverse temperature, so $\beta^{*}(\rho) \geq \beta^{*}(1)$.
-For intermediate $\rho$, $\beta^{*}(\rho)$ is located as the inflection of the weighted
-attention entropy $H_{\vr}(\beta)$ via a one-dimensional sweep, a negligible computation
-relative to sequence generation.
+distribution at $\beta=0$, where the attention weights reduce to
+$w_k = r_k / \sum_j r_j$ and the limiting entropy is the Shannon entropy
+$H_{\vr}(0) = -\sum_k w_k \log w_k < \log K$. The effective pattern count
+$K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^2 / \sum_k r_k^2$ is a separate inverse-Simpson
+descriptor of the same weights, and $\log K_{\mathrm{eff}}$ is their Renyi-2 entropy,
+which coincides with $H_{\vr}(0)$ only when the weights are equal.
+For intermediate $\rho$, the operating point $\beta^{*}(\rho)$ is located as the onset of
+the entropy crossover of the weighted attention entropy $H_{\vr}(\beta)$ via a
+one-dimensional sweep.
 \end{remark}
 
 Empirically, $\beta^{*}$ increases monotonically from 4.4 ($\rho = 1$, $K_{\mathrm{eff}} = 99$)
-to 9.3 ($\rho = 1000$, $K_{\mathrm{eff}} = 32.1$) in the Kunitz domain, consistent with
-Remark~\ref{rem:beta-star}: more inverse temperature is required as the logit biases concentrate
-probability mass on fewer effective patterns.
+to 9.3 ($\rho = 1000$, $K_{\mathrm{eff}} = 32.1$) in the Kunitz domain. We report this
+displacement as an observation. We do not derive it from $K_{\mathrm{eff}}$.
 
 \subsection{The Calibration Gap}\label{sec:gap}
 

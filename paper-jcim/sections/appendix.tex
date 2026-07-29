@@ -151,11 +151,11 @@ attention weight toward designated patterns, but this shift must still pass
 through finite-temperature latent noise, the normalized-coordinate PCA
 reconstruction, and argmax decoding to produce discrete residues. These
 operations jointly determine the observed calibration gap. Third, $\rho$ shifts the
-phase transition: the logit biases pre-concentrate the attention distribution
-at $\beta = 0$, reducing the weighted entropy to
-$H_{\mathbf{r}}(0) = \log K_{\mathrm{eff}}(\mathbf{r}) < \log K$, so
-reaching the retrieval-phase inflection requires a higher inverse temperature
-$\beta^{*}(\rho) \geq \beta^{*}(1)$. We observed this empirically:
+entropy crossover: the logit biases pre-concentrate the attention distribution
+at $\beta = 0$, reducing the weighted entropy to the Shannon entropy
+$H_{\mathbf{r}}(0) = -\sum_k w_k \log w_k < \log K$ with
+$w_k = r_k / \sum_j r_j$. We observed that the crossover moved to higher inverse
+temperature as $\rho$ increased:
 $\beta^{*}$ increased from 4.4 ($\rho=1$, $K_{\mathrm{eff}} = 99$) to 9.3
 ($\rho=1{,}000$, $K_{\mathrm{eff}} = 32.1$) on the Kunitz domain
 (Fig.~\MainRef{fig:phase-transition}). By contrast, hard curation (where the
@@ -186,10 +186,9 @@ high-TM-score region while HMM-emitted sequences scatter broadly across
 lower values. The entropy curves for the full $\rho$ sweep
 ($\rho \in \{1, 2, 5, 10, 20, 50, 100, 200, 500, 1000\}$) on the Kunitz
 family produce a monotonically rightward-shifting family of sigmoid curves
-with $\beta^{*}(\rho)$ increasing from 4.35 ($\rho=1$) to 9.26
-($\rho=1000$), consistent with $\beta^{*} \propto \log K_{\mathrm{eff}}$
-predicted by the mean-field argument in the main text
-(Fig.~\MainRef{fig:phase-transition}).
+with the operating point increasing from 4.35 ($\rho=1$) to 9.26 ($\rho=1000$)
+(Fig.~\MainRef{fig:phase-transition}). We report this displacement without asserting a
+functional relationship to $K_{\mathrm{eff}}$.
 
 \begin{table}[ht]
   \centering

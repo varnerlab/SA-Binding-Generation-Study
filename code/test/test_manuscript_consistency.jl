@@ -26,3 +26,26 @@ manuscript_body(path) =
         @test manuscript_body(jcim_path) == manuscript_body(arxiv_path)
     end
 end
+
+# Both claims are false. The beta -> 0 attention entropy is the Shannon entropy of the
+# weights, not the Renyi-2 entropy log K_eff; see the shannon_entropy docstring in
+# code/src/Binding.jl. And beta* rises while log K_eff falls, so the proportionality in
+# the appendix has the wrong direction and contradicts the mechanism argued earlier in
+# the same file.
+const RETRACTED_CLAIMS = [
+    "H_{\\vr}(0) = \\log K_{\\mathrm{eff}}",
+    "H_{\\mathbf{r}}(0) = \\log K_{\\mathrm{eff}}",
+    "\\beta^{*} \\propto \\log K_{\\mathrm{eff}}",
+]
+
+squeeze_whitespace(text) = replace(text, r"\s+" => " ")
+
+@testset "retracted entropy claims stay out of the manuscript" begin
+    repo = normpath(joinpath(@__DIR__, "..", ".."))
+    for tree in ("paper-jcim", "paper-arxiv"), name in SHARED_SECTIONS
+        text = squeeze_whitespace(read(joinpath(repo, tree, "sections", name), String))
+        for claim in RETRACTED_CLAIMS
+            @test !occursin(claim, text)
+        end
+    end
+end
