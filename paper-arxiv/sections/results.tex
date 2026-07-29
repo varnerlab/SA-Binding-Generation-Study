@@ -155,13 +155,20 @@ $\beta$: at equal retrieval sharpness, hard masking recovers more marker signal 
 by 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$ and 0.075 (SE 0.029) at $f_{\mathrm{eff}} = 0.7$, a
 margin that contracts monotonically into the sampling noise as $\rho$ grows, reaching 0.002
 (SE 0.030) at $f_{\mathrm{eff}} = 0.99$ where the mask and the strongest finite-$\rho$ condition
-coincide. Because the attention weights track $f_{\mathrm{eff}}$ to within a fraction of a percent
-($\Delta_{\mathrm{attn}} \approx 0$, Eq.~\ref{eq:gap-decomp}), this masking advantage is not an
-attention effect but a decode effect: eliminating background attention concentrates the weighted
-superposition on designated patterns alone, placing the state where the leading PCA components
-resolve the designated residue most reliably. Recovery on this intermediate-separation family is
+coincide. Hard masking removes the background components outright, so it raises the intended
+designated mass from $f_{\mathrm{eff}}$ to one. The comparison at matched $\beta$ therefore
+spans conditions with different intended mass, and the contraction of the margin as
+$f_{\mathrm{eff}}$ approaches one is what that difference predicts. Attention realized the
+intended mass in each condition to within a fraction of a percent
+($\Delta_{\mathrm{attn}} \approx 0$, Eq.~\ref{eq:gap-decomp}), so the informative quantity is
+the size of the response rather than its direction. A difference of 0.5 in intended designated
+mass produced a difference of 0.111 (SE 0.027) in observed marker fraction. That attenuation is
+imposed by the full latent-to-sequence map, comprising finite-temperature Gaussian noise in the
+latent space, the normalized-coordinate PCA reconstruction, and argmax decoding.
+Recovery on this intermediate-separation family is
 thus governed by two factors, retrieval sharpness $\beta$ and conditioning strength $\rho$, both
-acting through the decode gap rather than through the attention term. The high-$\beta$ recovery carried a cost, with novelty
+acting through the latent-to-sequence map rather than through a failure of attention to realize
+its target. The high-$\beta$ recovery carried a cost, with novelty
 falling from 0.42 at the mask's $\beta^{*}$ to 0.16 at $\beta = 512$ as the chains concentrated on
 individual designated patterns (Table~\ref{tab:mask-recovery}). Hard curation reached complete
 marker retention at low $\beta$ while retaining higher novelty (0.32), more efficiently than the
