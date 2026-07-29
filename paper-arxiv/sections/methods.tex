@@ -41,9 +41,13 @@ curvature of the weighted attention entropy with respect to $\log \beta$ on a fi
 logarithmic grid spanning $\beta \in [0.1,\, 500]$, using 50 grid points for the canonical
 six-family sweeps and 50 to 60 elsewhere, with entropy evaluated at the first 20 stored memory
 columns. This is a descriptive operating point rather than an estimate of a thermodynamic phase
-transition, and entropy is evaluated at stored memories rather than at samples. Recomputing the
-onset from all stored memories moved the selected value by one grid step, a factor of 1.19, for
-Homeobox and $\omega$-conotoxin, and left Kunitz, SH3, WW and Forkhead unchanged. Twenty to fifty independently seeded chains were run per
+transition, and entropy is evaluated at stored memories rather than at samples. Because the probe
+set is the first 20 columns, the selected value depends on alignment row order. Recomputing the
+onset from all stored memories changed it in 8 of the 48 family and multiplicity conditions: six
+by one grid step (a factor of 1.19), Forkhead at $\rho=20$ by two steps, and SH3 at $\rho=50$ by
+four steps. WW was unchanged at every $\rho$. Rerunning those eight conditions at the all-memory
+onset changed the observed marker fraction by less than 0.04 in seven of them, and by 0.100 for
+SH3 at $\rho=50$. Twenty to fifty independently seeded chains were run per
 condition, yielding 620--1{,}550 retained states after burn-in and thinning. The canonical
 six-family sweeps used five replicate runs of 20 chains, and reported uncertainty across replicate
 summaries rather than treating retained states within a chain as independent. Marker fidelity was

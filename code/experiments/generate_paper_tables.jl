@@ -28,6 +28,25 @@ function latex_family(name)
     name == "Conotoxin" ? raw"$\omega$-Conotoxin" : name
 end
 
+# Typeset labels for the conotoxin SAR table, keyed by MVIIA position. The frequencies
+# come from the CSV so they cannot drift from the analysis. The residue names and the
+# abbreviated role and effect strings are typesetting choices and stay here. The key set
+# is the authoritative list of rows the table must contain.
+const SAR_LABELS = Dict(
+    13 => ("Tyr", "Primary reported marker", "Ala: abolishes activity"),
+    2  => ("Lys", "Loop 2 stabilization", "Ala: 40\$\\times\$ loss (GVIA)"),
+    10 => ("Arg", "Loop 2 binding", "Critical for interaction"),
+    11 => ("Leu", "Loop 2 binding", "Critical for interaction"),
+    1  => ("Cys", "Disulfide framework", "Required for fold"),
+    8  => ("Cys", "Disulfide framework", "Required for fold"),
+    15 => ("Cys", "Disulfide framework", "Required for fold"),
+    16 => ("Cys", "Disulfide framework", "Required for fold"),
+    20 => ("Cys", "Disulfide framework", "Required for fold"),
+    25 => ("Cys", "Disulfide framework", "Required for fold"),
+    21 => ("Arg", "Electrostatic", "Ala: reduced potency"),
+    4  => ("Lys", "P/Q selectivity", "Ala: important for P/Q"),
+)
+
 function validate_inputs()
     cross_path = joinpath(DATA_DIR, "multi_family_comparison_6fam_aggregated.csv")
     isfile(cross_path) || error("Missing canonical cross-family CSV: $cross_path")
@@ -91,7 +110,12 @@ function validate_inputs()
     sar_path = joinpath(DATA_DIR, "omega_conotoxin", "sar_agreement.csv")
     isfile(sar_path) || error("Missing conotoxin SAR table: $sar_path")
     sar = CSV.read(sar_path, DataFrame)
-    nrow(sar) == 12 || error("Conotoxin SAR table must have twelve rows")
+    nrow(sar) == length(SAR_LABELS) ||
+        error("Conotoxin SAR table must have $(length(SAR_LABELS)) rows, found $(nrow(sar))")
+    length(unique(sar.Position)) == nrow(sar) ||
+        error("Conotoxin SAR positions must be unique")
+    Set(Int.(sar.Position)) == Set(keys(SAR_LABELS)) ||
+        error("Conotoxin SAR position set mismatch: $(sort(Int.(sar.Position)))")
     expected_sar = [:Position, :WT_Residue, :Role, :Effect_of_mutation,
                     :Input_strong, :SA_strong, :SA_full, :Citation]
     propertynames(sar) == expected_sar ||
@@ -148,30 +172,10 @@ function generate(output_dir)
     write_text(joinpath(output_dir, "tab_cross_family.tex"),
                join(cross_rows, "\n") * "\n" * raw"\bottomrule")
 
-    # The frequencies come from the CSV so they cannot drift from the analysis. The
-    # residue names and the abbreviated role and effect strings are typesetting choices
-    # and stay here. Keyed by MVIIA position so an unmapped row is an error, never a
-    # silently dropped one.
-    sar_labels = Dict(
-        13 => ("Tyr", "Primary reported marker", "Ala: abolishes activity"),
-        2  => ("Lys", "Loop 2 stabilization", "Ala: 40\$\\times\$ loss (GVIA)"),
-        10 => ("Arg", "Loop 2 binding", "Critical for interaction"),
-        11 => ("Leu", "Loop 2 binding", "Critical for interaction"),
-        1  => ("Cys", "Disulfide framework", "Required for fold"),
-        8  => ("Cys", "Disulfide framework", "Required for fold"),
-        15 => ("Cys", "Disulfide framework", "Required for fold"),
-        16 => ("Cys", "Disulfide framework", "Required for fold"),
-        20 => ("Cys", "Disulfide framework", "Required for fold"),
-        25 => ("Cys", "Disulfide framework", "Required for fold"),
-        21 => ("Arg", "Electrostatic", "Ala: reduced potency"),
-        4  => ("Lys", "P/Q selectivity", "Ala: important for P/Q"),
-    )
     sar_rows = String[]
     for row in eachrow(sar)
         position = Int(row.Position)
-        haskey(sar_labels, position) ||
-            error("Conotoxin SAR position $position has no typeset label")
-        residue, role, effect = sar_labels[position]
+        residue, role, effect = SAR_LABELS[position]
         # Display threshold reproducing the emphasis of the hand-typed table, where
         # every designated-seeded value was bold except Leu11 at 0.24.
         designated = row.SA_strong >= 0.5 ?

@@ -62,7 +62,7 @@ $\veps\sim\mathcal{N}(\mathbf{0},\mathbf{I}_d)$.
 
 The derivation is given in the Supporting Information.
 Direct Gaussian-mixture sampling is therefore the preferred equilibrium implementation for the
-unit-norm model, and we use it as the exact reference throughout. We retain ULA for the reported
+unit-norm model, and we use it as the reference in the exact-equilibrium benchmark. We retain ULA for the reported
 generation runs to maintain comparability with the original stochastic-attention workflow and to
 characterize its finite-step behavior. ULA is not required to sample this target. Equation~\eqref{eq:gmm-target}
 is the exact target of the continuous-time diffusion, not generally the invariant law
@@ -112,9 +112,10 @@ the overlap, posterior responsibilities, and decoded output, but it does not cha
 prior mixture weights $w_k$ or $f_{\mathrm{eff}}$.
 The standard SA framework exhibits an entropy crossover at an operating inverse temperature
 $\beta^{*}$ that depends on the PCA dimension $d$ and the number of stored patterns. Under multiplicity
-weighting, the relevant quantity is the effective number of patterns
-$K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2} / \sum_k r_k^{2}$, which equals $K$ when all $r_k$
-are equal and converges to $K_{\mathrm{des}}$ as $\rho \to \infty$.
+weighting we also report the effective pattern count
+$K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2} / \sum_k r_k^{2}$ as a descriptor of weight
+concentration. It equals $K$ when all $r_k$ are equal and converges to $K_{\mathrm{des}}$
+as $\rho \to \infty$.
 
 \begin{remark}[Entropy crossover: analytic baseline and multiplicity shift]\label{rem:beta-star}
 The companion paper~\cite{varnerSAProtein2026} establishes, via a concentration-of-measure
