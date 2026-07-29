@@ -153,7 +153,7 @@ function generate(output_dir)
     # and stay here. Keyed by MVIIA position so an unmapped row is an error, never a
     # silently dropped one.
     sar_labels = Dict(
-        13 => ("Tyr", "Primary pharmacophore", "Ala: abolishes activity"),
+        13 => ("Tyr", "Primary reported marker", "Ala: abolishes activity"),
         2  => ("Lys", "Loop 2 stabilization", "Ala: 40\$\\times\$ loss (GVIA)"),
         10 => ("Arg", "Loop 2 binding", "Critical for interaction"),
         11 => ("Leu", "Loop 2 binding", "Critical for interaction"),

@@ -190,8 +190,10 @@ $\rho=1$; it would require a particular balance of false negatives and false
 positives under the decoder. Equation~\ref{eq:decoder-pushforward} makes the
 calibration gap an empirical property of the complete latent-to-sequence
 pushforward, not a test that selects a unique PCA scaling.
-To describe the PCA geometry across families, we define the Fisher separation index
+To describe the PCA geometry across families, we define the separation index
 $S = (\bar{c}_{\mathrm{within}} - \bar{c}_{\mathrm{between}}) /
 [\tfrac{1}{2}(\sigma_{\mathrm{within}} + \sigma_{\mathrm{between}})]$, where $\bar{c}$ and
 $\sigma$ denote the mean and standard deviation of pairwise cosine similarities within and
-between functional groups in PCA space.
+between functional groups in PCA space. This is a Fisher-type ratio defined for this study
+on pairwise cosine similarities. It is not the classical Fisher discriminant criterion,
+which is computed from class means and scatter matrices.

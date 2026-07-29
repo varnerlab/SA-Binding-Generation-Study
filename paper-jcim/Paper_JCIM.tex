@@ -81,7 +81,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   \caption{\textbf{Cross-family summary of all protein families tested.}
   For each family: source database, number of sequences ($K$), aligned length ($L$), PCA
   dimensionality ($d$, capturing 95\% variance), designated subset size ($K_{\mathrm{des}}$),
-  sequence marker, natural designated fraction ($f_{\mathrm{nat}}$), Fisher separation index
+  sequence marker, natural designated fraction ($f_{\mathrm{nat}}$), separation index
   ($S$), observed marker fraction under hard curation ($f_{\mathrm{obs}}^{\mathrm{hard}}$),
   and calibration gap ($\Delta$ at $\rho=500$). All six families were tested with both
   multiplicity weighting and hard curation.}
@@ -186,7 +186,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   \textbf{(A)}~Observed marker fraction $f_{\mathrm{obs}}$ versus effective designated
   fraction $f_{\mathrm{eff}}$ as the multiplicity ratio $\rho$ increases from 1 to 500
   for six protein families. The dashed diagonal marks perfect calibration.
-  \textbf{(B)}~Fisher separation index $S$ versus calibration gap $\Delta$ at $\rho = 500$.
+  \textbf{(B)}~Separation index $S$ versus calibration gap $\Delta$ at $\rho = 500$.
   An exploratory linear fit to the five Pfam families summarizes the association
   without defining a prospective threshold. The $\omega$-conotoxin point is shown
   as an external comparison and is not included in the fit.}
@@ -292,7 +292,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 \end{table}
 
 % -----------------------------------------------------------------------
-% Table 5: ω-Conotoxin pharmacophore inheritance
+% Table 5: ω-Conotoxin marker inheritance
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
@@ -379,9 +379,10 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   (designated subset, $n=23$, panel~a; full O-superfamily, $n=74$, panel~c).
   \textit{Right column:} Residual heatmaps (generated $-$ input) showing the change in
   frequency at each position--residue pair after SA generation. Panel~(b): designated-seeded
-  residuals are near-zero throughout ($|\Delta f| < 0.15$), confirming that the Tyr
-  pharmacophore at position~13, the conserved Cys framework (positions~14--16), and the
-  variable-loop diversity (positions~9--12) are reproduced with high fidelity. Panel~(d):
+  residual frequencies differ from the input by at most 0.15 in absolute value at every
+  position--residue pair. The Tyr marker at position~13, the conserved Cys framework
+  (positions~14--16), and the variable-loop diversity (positions~9--12) are reproduced
+  within that bound. Panel~(d):
   full-seeded residuals are slightly larger, reflecting the broader sequence diversity of
   the input. Blue: enrichment; red: depletion; white: no change.}
   \label{fig:conotoxin-loop}
@@ -428,9 +429,9 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   colored by conservation in the stored MSA: highly conserved ($>90\%$, red),
   conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
   ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
-  gold; the Tyr13 pharmacophore position is highlighted in green. All five sequences
+  gold; the Tyr13 marker position is highlighted in green. All five sequences
   preserve every highly conserved position ($6/6$), all six cysteines ($6/6$), and
-  carry Tyr at the pharmacophore position, while introducing $5$--$11$ substitutions
+  carry Tyr at the marker position, while introducing $5$--$11$ substitutions
   concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-seeded
   generation (blue), and SA designated-seeded generation (red). The full-seeded entropy
