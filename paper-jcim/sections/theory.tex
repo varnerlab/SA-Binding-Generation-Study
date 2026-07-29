@@ -35,9 +35,10 @@ energy is
 \end{equation}
 where $\vr = (r_1, \ldots, r_K)^{\!\top}$.
 When $r_k = 1$ for all $k$, Eq.~\eqref{eq:weighted-energy} reduces to the standard energy.
-Patterns with higher multiplicity deepen the energy wells in their vicinity; this is equivalent
-to storing $r_k$ copies of pattern $\vm_k$ without the $\mathcal{O}(d \cdot \sum_k r_k)$
-memory cost.
+Patterns with higher multiplicity deepen the energy wells in their vicinity. For integer $r_k$
+this is exactly equivalent to storing $r_k$ copies of pattern $\vm_k$ without the
+$\mathcal{O}(d \cdot \sum_k r_k)$ memory cost. For positive real $r_k$ it is the continuous
+generalization of that replication.
 
 \begin{proposition}[Exact Gaussian-mixture target]\label{prop:gmm-target}
 For unit-norm memories, the Gibbs density associated with
@@ -57,7 +58,11 @@ $\vxi=\vm_k+\beta^{-1/2}\veps$, with
 $\veps\sim\mathcal{N}(\mathbf{0},\mathbf{I}_d)$.
 \end{proposition}
 
-The derivation is given in the Supporting Information. Equation~\eqref{eq:gmm-target}
+The derivation is given in the Supporting Information.
+Direct Gaussian-mixture sampling is therefore the preferred equilibrium implementation for the
+unit-norm model, and we use it as the exact reference throughout. We retain ULA for the reported
+generation runs to maintain comparability with the original stochastic-attention workflow and to
+characterize its finite-step behavior. ULA is not required to sample this target. Equation~\eqref{eq:gmm-target}
 is the exact target of the continuous-time diffusion, not generally the invariant law
 of its finite-step Euler discretization. Thus, Eqs.~\eqref{eq:ula} and
 \eqref{eq:weighted-ula} below retain step-size and finite-time error at nonzero
