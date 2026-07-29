@@ -26,8 +26,8 @@ python experiments/render_separation_gap_figure_5fam.py  # matplotlib figures
 # HMM baseline (requires HMMER3: brew install hmmer)
 julia experiments/run_hmm_baseline.jl
 
-# Build paper PDF (from paper/ directory)
-cd ../paper && ./Build.sh Paper_v1
+# Build paper PDF (from paper-arxiv/ directory)
+cd ../paper-arxiv && ./Build.sh Paper_v1
 ```
 
 Julia 1.12 required. Package versions pinned in `code/Manifest.toml`; a human-readable snapshot is in `code/dependency_snapshot.toml`.
@@ -41,7 +41,7 @@ Julia 1.12 required. Package versions pinned in `code/Manifest.toml`; a human-re
 2. Activates the project environment from `Project.toml`/`Manifest.toml`
 3. Loads all packages and source modules in order: `Data.jl` -> `Compute.jl` -> `Utilities.jl` -> `Protein.jl` -> `Binding.jl`
 
-No global RNG seed is set; each experiment manages its own seeds via `seed=` arguments for reproducibility.
+The core samplers use caller-local random-number generators via `seed=` or `rng=` arguments. The canonical family-sweep producer also uses local RNGs, so it does not mutate Julia's global RNG state.
 
 ### Source modules (`code/src/`)
 
@@ -55,9 +55,9 @@ No global RNG seed is set; each experiment manages its own seeds via `seed=` arg
 
 Per-family subdirectories contain Stockholm seed alignments, generated FASTA files, and multiplicity sweep CSVs. Six protein families are studied: WW (PF00397), Forkhead (PF00250), Kunitz (PF00014), SH3 (PF00018), Homeobox (PF00046), and omega-conotoxin (O-superfamily, under `omega_conotoxin/`). Cross-family results live in `code/data/multi_family_comparison_5fam.csv`.
 
-### Paper (`paper/`)
+### Paper (`paper-arxiv/`)
 
-Main file: `paper/Paper_v1.tex`. Section files in `paper/sections/` (abstract, introduction, results, discussion, theory, methods, appendix). References: `paper/References_v1.bib`. JCIM-formatted version under `paper/jcim/`. Build with `./Build.sh Paper_v1` from the `paper/` directory.
+Main file: `paper-arxiv/Paper_v1.tex`. Section files in `paper-arxiv/sections/` (abstract, introduction, results, discussion, theory, methods, appendix). References: `paper-arxiv/References_v1.bib`. JCIM-formatted version under `paper-arxiv/jcim/`. Build with `./Build.sh Paper_v1` from the `paper-arxiv/` directory.
 
 ## Terminology
 

@@ -33,9 +33,11 @@ generative process on a functional subset without retraining?}
 
 A seemingly simple answer is to \emph{curate} the input, restricting the alignment to only those
 sequences that a practitioner has identified (through experimental screens, literature annotation,
-or functional assays) as belonging to the functional subset of interest. SA then generates new
+or another selection rule) as belonging to a designated subset of interest. SA then generates new
 sequences in their image. We show that this strategy works: even three designated input sequences
-suffice for complete phenotype transfer in the Kunitz domain. But hard curation discards all
+suffice for complete retention of the selected K/R-at-P1 marker in the Kunitz domain. This is
+marker retention after selection on that marker, not independent functional validation. Hard
+curation also discards all
 remaining family members, losing the fold-level constraints they provide. A more principled
 approach would retain the full family while continuously upweighting the designated subset. SA works by encoding each sequence in the alignment as a column in a matrix (the memory matrix),
 then running a physics-inspired sampler that generates new sequences by taking noisy steps through
@@ -54,7 +56,7 @@ the sequences the user points to.
 
 In this study, we developed the theory of multiplicity-weighted SA and tested it on five Pfam
 protein families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) spanning a range of family
-sizes ($K = 55$--$420$) and functional-subset geometries. We showed that the multiplicity
+sizes ($K = 55$--$420$) and designated-subset geometries. We showed that the multiplicity
 weights enter the sampler as a simple logit bias, preserving the analytic score function and
 $\mathcal{O}(dK)$ cost of the original method. The energy-level conditioning is exact: the
 largest absolute deviation between mean softmax attention and the target fraction is

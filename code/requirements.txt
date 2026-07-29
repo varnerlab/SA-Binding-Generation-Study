@@ -1,0 +1,9 @@
+# Python dependencies used by code/experiments/*.py.
+# External tools such as PyMOL, ColabFold, and TM-align are installed separately.
+biopython==1.86
+fair-esm==2.0.0
+matplotlib==3.10.8
+numpy==1.26.4
+pandas==2.3.3
+scipy==1.17.1
+torch==2.10.0

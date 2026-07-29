@@ -23,7 +23,7 @@ using StatsBase
 const PFAM_ID = "PF00014"
 const CACHE_DIR = joinpath(_CODE_DIR, "data", "kunitz")
 const FIG_DIR = joinpath(_CODE_DIR, "figs", "sequence_analysis")
-const PAPER_FIG_DIR = joinpath(_CODE_DIR, "..", "paper", "sections", "figs")
+const PAPER_FIG_DIR = joinpath(_CODE_DIR, "..", "paper-arxiv", "sections", "figs")
 mkpath(FIG_DIR)
 
 # ── Load stored MSA ─────────────────────────────────────────────────────────
@@ -314,7 +314,7 @@ cp(joinpath(FIG_DIR, "sequence_analysis_kunitz.pdf"),
    joinpath(PAPER_FIG_DIR, "sequence_analysis_kunitz.pdf"); force=true)
 cp(joinpath(FIG_DIR, "sequence_analysis_kunitz.png"),
    joinpath(PAPER_FIG_DIR, "sequence_analysis_kunitz.png"); force=true)
-@info "Copied to paper/sections/figs/"
+@info "Copied to paper-arxiv/sections/figs/"
 
 @info "\n======================================================================="
 @info "Sequence analysis figure complete!"

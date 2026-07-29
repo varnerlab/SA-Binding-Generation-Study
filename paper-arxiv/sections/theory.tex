@@ -4,9 +4,17 @@
 Let $\vX = [\vm_1, \ldots, \vm_K] \in \R^{d \times K}$ be a memory matrix whose columns are
 unit-norm, PCA-encoded protein sequences from a family alignment of $K$ members, each represented
 in $d$ dimensions. The modern Hopfield energy~\cite{ramsauerHopfieldNetworksAll2021} at state
-$\vxi \in \R^d$ is $E(\vxi) = \tfrac{1}{2}\|\vxi\|^{2} - \tfrac{1}{\beta}\log\sum_{k}\exp(\beta\,\vm_{k}^{\!\top}\vxi)$, where $\beta > 0$ is an inverse temperature. The score function
-$\nabla_{\vxi}\log p_{\beta}(\vxi) =
-\beta[\vX\,\softmax(\beta\,\vX^{\!\top}\vxi) - \vxi]$ is
+$\vxi \in \R^d$ is
+\[
+E(\vxi) = \tfrac{1}{2}\|\vxi\|^{2}
+- \tfrac{1}{\beta}\log\sum_{k}\exp(\beta\,\vm_{k}^{\!\top}\vxi),
+\]
+where $\beta > 0$ is an inverse temperature. Its score function,
+\[
+\nabla_{\vxi}\log p_{\beta}(\vxi)
+= \beta[\vX\,\softmax(\beta\,\vX^{\!\top}\vxi) - \vxi],
+\]
+is
 \emph{exact} and computed by a single attention operation; applying the unadjusted Langevin
 algorithm (ULA) with score step size $\alpha/\beta$, for $\alpha \in (0,1)$, yields the stochastic attention
 update~\cite{varnerSAProtein2026}:
@@ -33,8 +41,10 @@ memory cost.
 
 \begin{proposition}[Score function]\label{prop:score}
 The score function of $p_{\vr}(\vxi) \propto \exp(-\beta\,E_{\vr}(\vxi))$ is
-$\nabla_{\vxi}\log p_{\vr}(\vxi) =
-\beta[\vX\,\softmax(\beta\,\vX^{\!\top}\vxi + \log\vr) - \vxi]$,
+\[
+\nabla_{\vxi}\log p_{\vr}(\vxi)
+= \beta[\vX\,\softmax(\beta\,\vX^{\!\top}\vxi + \log\vr) - \vxi],
+\]
 where $\log\vr = (\log r_1, \ldots, \log r_K)^{\!\top}$ is the elementwise log-multiplicity.
 \end{proposition}
 
@@ -99,7 +109,7 @@ probability mass on fewer effective patterns.
 
 \subsection{The Calibration Gap}\label{sec:gap}
 
-The signal chain from multiplicity weights to decoded sequence phenotype passes through several
+The signal chain from multiplicity weights to a decoded sequence marker passes through several
 transformations:
 \begin{equation}\label{eq:signal-chain}
   \rho
@@ -114,7 +124,7 @@ transformations:
 \end{equation}
 where $\bar{a}_{\mathrm{des}}$ is the mean attention weight on designated patterns during
 sampling, $f_{\mathrm{soft}}$ is the continuous-valued residue probability at the marker position,
-and $f_{\mathrm{obs}}$ is the fraction of generated sequences displaying the designated phenotype
+and $f_{\mathrm{obs}}$ is the fraction of generated sequences displaying the designated marker
 after argmax decoding. We define the calibration gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$
 and decompose it into three independently measurable components:
 \begin{equation}\label{eq:gap-decomp}
@@ -123,11 +133,16 @@ and decompose it into three independently measurable components:
   + \underbrace{(f_{\mathrm{soft}} - f_{\mathrm{obs}})}_{\Delta_{\mathrm{argmax}}}.
 \end{equation}
 The exact mixture representation also gives a direct component-conditioned
-description of the final step. Let $C$ be the generating mixture component,
-let $q_{\mathrm{des}} =
-\Pr(\text{decoded marker positive}\mid C\in\mathcal{D})$, and let
-$q_{\mathrm{bg}} =
-\Pr(\text{decoded marker positive}\mid C\notin\mathcal{D})$. Then
+description of the final step. Let $C$ be the generating mixture component, and define
+\[
+\begin{aligned}
+q_{\mathrm{des}}
+  &= \Pr(\text{decoded marker positive}\mid C\in\mathcal{D}),\\
+q_{\mathrm{bg}}
+  &= \Pr(\text{decoded marker positive}\mid C\notin\mathcal{D}).
+\end{aligned}
+\]
+Then
 \begin{equation}\label{eq:decoder-pushforward}
   f_{\mathrm{obs}}
   = f_{\mathrm{eff}}q_{\mathrm{des}}

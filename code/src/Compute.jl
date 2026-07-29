@@ -35,7 +35,9 @@ At each step the algorithm performs three operations:
 - `α::Float64=0.1`: Step size (learning rate) in `(0, 1)`. Smaller values reduce 
   ULA discretization bias at the cost of slower mixing.
 - `seed::Union{Int, Nothing}=nothing`: Optional random seed for the noise sequence. 
-  If `nothing`, the global RNG state is used unchanged.
+  Pass either `seed` or `rng`, not both.
+- `rng::Union{AbstractRNG, Nothing}=nothing`: Optional caller-owned RNG. When both
+  `seed` and `rng` are `nothing`, the sampler uses and advances Julia's default RNG.
 
 # Returns
 A named tuple `(t, Ξ)` where:
@@ -59,7 +61,8 @@ result = sample(X, ξ₀, 500; β=2.0, α=0.1, seed=42)
 """
 function sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int;
     β::Float64 = 1.0, α::Float64 = 0.1,
-    seed::Union{Int, Nothing} = nothing)
+    seed::Union{Int, Nothing} = nothing,
+    rng::Union{AbstractRNG, Nothing} = nothing)
 
     # --- input validation ---
     d, K = size(X)
@@ -69,10 +72,10 @@ function sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int;
     β > 0   || throw(ArgumentError("β must be positive, got β = $β"))
     0 < α < 1 || throw(ArgumentError("α must be in (0,1), got α = $α"))
 
-    # --- seed the RNG if requested ---
-    if seed !== nothing
-        Random.seed!(seed)
-    end
+    seed !== nothing && rng !== nothing &&
+        throw(ArgumentError("Pass either seed or rng, not both"))
+    local_rng = rng === nothing ?
+        (seed === nothing ? Random.default_rng() : MersenneTwister(seed)) : rng
 
     # --- pre-allocate output ---
     # Ξ is (T+1) × d: row i holds ξ at time t = i-1
@@ -91,7 +94,7 @@ function sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int;
         w = softmax(logits)              # NNlib.softmax (numerically stable)
 
         # Step 2: draw isotropic Gaussian noise  ε ~ N(0, I_d)
-        ε = randn(d)
+        ε = randn(local_rng, d)
 
         # Step 3: Langevin update
         #   ξ_{t+1} = (1 - α) ξ_t + α X a_t + √(2α/β) ε_t
@@ -155,6 +158,8 @@ If rejected, the chain stays at ``\\boldsymbol{\\xi}_t``.
 - `β::Float64=1.0`: Inverse temperature.
 - `α::Float64=0.1`: Step size (learning rate) in `(0, 1)`.
 - `seed::Union{Int, Nothing}=nothing`: Optional random seed.
+- `rng::Union{AbstractRNG, Nothing}=nothing`: Optional caller-owned RNG. Pass either
+  `seed` or `rng`, not both.
 
 # Returns
 A named tuple `(t, Ξ, accept_rate)` where:
@@ -172,7 +177,8 @@ result.accept_rate  # e.g. 0.73
 """
 function mala_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int;
     β::Float64 = 1.0, α::Float64 = 0.1,
-    seed::Union{Int, Nothing} = nothing)
+    seed::Union{Int, Nothing} = nothing,
+    rng::Union{AbstractRNG, Nothing} = nothing)
 
     # --- input validation ---
     d, K = size(X)
@@ -182,10 +188,10 @@ function mala_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int;
     β > 0   || throw(ArgumentError("β must be positive, got β = $β"))
     0 < α < 1 || throw(ArgumentError("α must be in (0,1), got α = $α"))
 
-    # --- seed the RNG if requested ---
-    if seed !== nothing
-        Random.seed!(seed)
-    end
+    seed !== nothing && rng !== nothing &&
+        throw(ArgumentError("Pass either seed or rng, not both"))
+    local_rng = rng === nothing ?
+        (seed === nothing ? Random.default_rng() : MersenneTwister(seed)) : rng
 
     # --- pre-allocate output ---
     Ξ = Matrix{Float64}(undef, T + 1, d)
@@ -230,7 +236,7 @@ function mala_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int;
     for t in 1:T
 
         # Step 1: propose  ξ* = μ(ξ_t) + σ ε,  ε ~ N(0, I)
-        ε = randn(d)
+        ε = randn(local_rng, d)
         ξ_prop = μ_curr .+ noise_scale .* ε
 
         # Step 2: compute acceptance probability
@@ -242,7 +248,7 @@ function mala_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int;
                      (-nlt_curr + log_proposal(ξ_prop, μ_curr))
 
         # Step 3: accept or reject
-        if log(rand()) < log_accept
+        if log(rand(local_rng)) < log_accept
             # accept the proposal
             ξ .= ξ_prop
             μ_curr  = μ_prop

@@ -29,3 +29,19 @@ JuliaLocalPreferences.toml
 
 # Machine-local Claude Code settings (per-developer, not shared)
 .claude/settings.local.json
+
+# Generated LaTeX outputs; source figures under sections/figs and figs remain tracked.
+/texput.log
+/paper-arxiv/**/*.aux
+/paper-arxiv/**/*.bbl
+/paper-arxiv/**/*.blg
+/paper-arxiv/**/*.fdb_latexmk
+/paper-arxiv/**/*.fls
+/paper-arxiv/**/*.log
+/paper-arxiv/**/*.out
+/paper-arxiv/**/*.synctex.gz
+/paper-arxiv/Paper_v1.pdf
+/paper-arxiv/jcim/Paper_JCIM.pdf
+/paper-arxiv/jcim/Paper_JCIM_SI.pdf
+/paper-arxiv/jcim/acs-Paper_JCIM.bib
+/paper-arxiv/jcim/acs-Paper_JCIM_SI.bib

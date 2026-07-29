@@ -6,7 +6,7 @@ The companion paper describing the base SA method is: *Training-Free Generation 
 
 ## Repository organization
 
-The repository has two top-level directories: `code/` for all computational work (Julia and Python) and `paper/` for the LaTeX manuscript.
+The repository has two top-level directories: `code/` for all computational work (Julia and Python) and `paper-arxiv/` for the LaTeX manuscript.
 
 ### Source library (`code/src/`)
 
@@ -67,15 +67,32 @@ The main experiment scripts, each self-contained and runnable from the command l
 
 **Replicate variants** (`*_with_replicates.jl`) run multiple random seeds for uncertainty quantification.
 
-### Paper (`paper/`)
+### Paper (`paper-arxiv/`)
 
-The main file `Paper_v1.tex` inputs section files from `paper/sections/` (abstract, introduction, results, discussion, theory, methods, appendix), and references are in `References_v1.bib`. Figures are in `paper/sections/figs/` and `paper/figs/`. Running `./Build.sh` from the `paper/` directory executes the standard four-pass LaTeX compilation cycle and produces `Paper_v1.pdf`.
+The main file `Paper_v1.tex` inputs section files from `paper-arxiv/sections/` (abstract, introduction, results, discussion, theory, methods, appendix), and references are in `References_v1.bib`. Figures are in `paper-arxiv/sections/figs/` and `paper-arxiv/figs/`. Running `./Build.sh Paper_v1` from the `paper-arxiv/` directory executes the standard four-pass LaTeX compilation cycle and produces `Paper_v1.pdf`.
+
+For the JCIM format, build the main article before the supplement because the
+supplement imports cross-references from the main auxiliary file:
+
+```bash
+cd paper-arxiv/jcim
+./Build.sh Paper_JCIM
+./Build.sh Paper_JCIM_SI
+```
 
 ## Getting started
 
 The Julia experiments were developed and tested with [Julia](https://julialang.org/downloads/) 1.12. The simplest installation route on all platforms is [juliaup](https://github.com/JuliaLang/juliaup) (`curl -fsSL https://install.julialang.org | sh` on macOS/Linux, or `winget install Julia` on Windows). On the first run, `Include.jl` will download and precompile all Julia dependencies automatically.
 
-Several validation and figure scripts are written in Python (3.9+) and depend on matplotlib, numpy, and BioPython. Structure rendering requires [PyMOL](https://pymol.org/). ESM2 perplexity scoring requires `fair-esm` and `torch`. AlphaFold2 cross-validation runs on [Google Colab](https://github.com/sokrypton/ColabFold) via ColabFold and requires a GPU runtime. [HMMER3](http://hmmer.org/) is required for the HMM baseline (`brew install hmmer` on macOS). Building the paper PDF requires a LaTeX distribution with `pdflatex` and `bibtex` ([TeX Live](https://tug.org/texlive/) or [MiKTeX](https://miktex.org/)).
+Several validation and figure scripts are written in Python (3.9+). Their exact
+package versions are recorded in `code/requirements.txt` and can be installed
+with `python -m pip install -r requirements.txt` from `code/`. Structure
+rendering requires [PyMOL](https://pymol.org/). AlphaFold2 cross-validation runs
+on [Google Colab](https://github.com/sokrypton/ColabFold) via ColabFold and
+requires a GPU runtime. [HMMER3](http://hmmer.org/) is required for the HMM
+baseline (`brew install hmmer` on macOS). Building the paper PDF requires a
+LaTeX distribution with `pdflatex` and `bibtex`
+([TeX Live](https://tug.org/texlive/) or [MiKTeX](https://miktex.org/)).
 
 To reproduce the core experiments:
 
@@ -109,10 +126,10 @@ python experiments/render_separation_gap_figure_5fam.py
 python experiments/render_entropy_curves.py
 
 # Paper
-cd ../paper && ./Build.sh
+cd ../paper-arxiv && ./Build.sh Paper_v1
 ```
 
-The experiments can be run independently in any order, with the exception that structure validation and ESM2 scoring require the SA-generated sequence FASTA files produced by the core experiments. Each script writes its output (CSVs, figures, FASTA files) to `code/data/` or `code/figs/`. All random seeds are passed explicitly to sampling functions, so running the scripts from scratch will produce identical results regardless of platform.
+The experiments can be run independently in any order, with the exception that structure validation and ESM2 scoring require the SA-generated sequence FASTA files produced by the core experiments. Each script writes its output (CSVs, figures, FASTA files) to `code/data/` or `code/figs/`. The core samplers and canonical family-sweep producer use caller-local random-number generators and explicit seeds, so repeated runs in the same software environment are deterministic. Exact floating-point agreement across operating systems or hardware is not promised.
 
 ## License
 

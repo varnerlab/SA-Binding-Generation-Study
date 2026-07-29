@@ -22,7 +22,7 @@ using StatsBase
 # ── Configuration ────────────────────────────────────────────────────────────
 const DATA_DIR = joinpath(_CODE_DIR, "data", "omega_conotoxin")
 const FIG_DIR = joinpath(_CODE_DIR, "figs", "conotoxin_sequence_analysis")
-const PAPER_FIG_DIR = joinpath(_CODE_DIR, "..", "paper", "sections", "figs")
+const PAPER_FIG_DIR = joinpath(_CODE_DIR, "..", "paper-arxiv", "sections", "figs")
 mkpath(FIG_DIR)
 
 # ── Load stored MSA (aligned) ───────────────────────────────────────────────
@@ -299,7 +299,7 @@ cp(joinpath(FIG_DIR, "sequence_analysis_conotoxin.pdf"),
    joinpath(PAPER_FIG_DIR, "sequence_analysis_conotoxin.pdf"); force=true)
 cp(joinpath(FIG_DIR, "sequence_analysis_conotoxin.png"),
    joinpath(PAPER_FIG_DIR, "sequence_analysis_conotoxin.png"); force=true)
-@info "Copied to paper/sections/figs/"
+@info "Copied to paper-arxiv/sections/figs/"
 
 @info "\n======================================================================="
 @info "ω-Conotoxin sequence analysis figure complete!"

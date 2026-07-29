@@ -1,22 +1,24 @@
 % abstract.tex -- Abstract
 Protein sequence generation via stochastic attention produces plausible family members from
 small alignments without training, but treats all stored sequences equally and cannot direct
-generation toward a functional subset of interest. We show that a single scalar parameter,
+generation toward a designated subset of interest. We show that a single scalar parameter,
 added as a bias to the sampler's attention logits, continuously shifts generation from
 the full family toward a user-specified subset, with no retraining and no change to the model architecture. A practitioner supplies a small set of sequences (for example, hits
 from a binding screen) and a multiplicity ratio that controls how strongly generation favors
 them. The method is agnostic to what the subset represents: binding, stability, specificity,
 or any other property. We find that the conditioning is exact at the level of the sampler's internal
-representation, but that the decoded sequence phenotype can fall short because the dimensionality reduction used to encode sequences
+representation, but that the decoded sequence marker can fall short because the dimensionality reduction used to encode sequences
 is followed by unit normalization, finite-temperature sampling, affine reconstruction, and
 argmax decoding. We term
 this discrepancy the calibration gap and examine its association with a geometric measure
-of how well the encoding separates the functional subset from the rest of the family.
+of how well the encoding separates the designated subset from the rest of the family.
 Experiments on five Pfam families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) show an
 exploratory inverse association between separation and gap, with substantial sensitivity to
 which family is included.
-Applied to omega-conotoxin peptides targeting a calcium channel involved in pain signaling,
-curated seeding from 23 characterized binders produces over a thousand candidates that preserve
-the primary pharmacophore and all experimentally identified binding determinants. These results show that stochastic attention enables practitioners to expand a handful of
-experimentally characterized sequences into diverse candidate libraries without retraining
-a generative model.
+Applied to omega-conotoxin peptides associated with a calcium channel involved in pain signaling,
+curated seeding from 23 designated accessions produces over a thousand candidates enriched for
+the Tyr13 sequence marker and several residues reported in prior mutagenesis studies while
+retaining the cysteine scaffold. These sequence and structure-model results generate hypotheses
+for experimental testing; they do not establish binding. Stochastic attention can therefore
+expand a user-designated sequence set into diverse candidate libraries without retraining a
+generative model.

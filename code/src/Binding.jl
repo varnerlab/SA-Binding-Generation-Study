@@ -205,7 +205,8 @@ once and adds it at each step.
 function biased_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
                         iface::InterfaceProfile;
                         β::Float64=1.0, α::Float64=0.1, λ::Float64=0.1,
-                        seed::Union{Int, Nothing}=nothing)
+                        seed::Union{Int, Nothing}=nothing,
+                        rng::Union{AbstractRNG, Nothing}=nothing)
 
     d = size(X, 1)
     length(ξ₀) == d || throw(DimensionMismatch(
@@ -214,9 +215,10 @@ function biased_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
     β > 0   || throw(ArgumentError("β must be positive"))
     0 < α < 1 || throw(ArgumentError("α must be in (0,1)"))
 
-    if seed !== nothing
-        Random.seed!(seed)
-    end
+    seed !== nothing && rng !== nothing &&
+        throw(ArgumentError("Pass either seed or rng, not both"))
+    local_rng = rng === nothing ?
+        (seed === nothing ? Random.default_rng() : MersenneTwister(seed)) : rng
 
     Ξ = Matrix{Float64}(undef, T + 1, d)
     Ξ[1, :] .= ξ₀
@@ -234,7 +236,7 @@ function biased_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
         w = softmax(logits)
 
         # noise
-        ε = randn(d)
+        ε = randn(local_rng, d)
 
         # biased Langevin update
         ξ .= (1.0 - α) .* ξ .+ α .* (X * w) .- bias_step .+ noise_scale .* ε
@@ -535,7 +537,8 @@ gradient to the update rather than a bias to the softmax logits.
 function logit_bias_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
                             b::Vector{Float64};
                             β::Float64=1.0, α::Float64=0.1,
-                            seed::Union{Int,Nothing}=nothing)
+                            seed::Union{Int,Nothing}=nothing,
+                            rng::Union{AbstractRNG,Nothing}=nothing)
     d, K = size(X)
     length(ξ₀) == d || throw(DimensionMismatch(
         "Initial state has length $(length(ξ₀)) but X has $d rows"))
@@ -546,9 +549,10 @@ function logit_bias_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
     β > 0   || throw(ArgumentError("β must be positive, got β = $β"))
     0 < α < 1 || throw(ArgumentError("α must be in (0,1), got α = $α"))
 
-    if seed !== nothing
-        Random.seed!(seed)
-    end
+    seed !== nothing && rng !== nothing &&
+        throw(ArgumentError("Pass either seed or rng, not both"))
+    local_rng = rng === nothing ?
+        (seed === nothing ? Random.default_rng() : MersenneTwister(seed)) : rng
 
     Ξ = Matrix{Float64}(undef, T + 1, d)
     Ξ[1, :] .= ξ₀
@@ -558,7 +562,7 @@ function logit_bias_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
     for t in 1:T
         logits = β .* (X' * ξ) .+ b
         w = softmax(logits)
-        ε = randn(d)
+        ε = randn(local_rng, d)
         ξ .= (1.0 - α) .* ξ .+ α .* (X * w) .+ noise_scale .* ε
         Ξ[t + 1, :] .= ξ
     end
@@ -597,7 +601,8 @@ Delegates to `logit_bias_sample` with `b = log(w)`.
 function weighted_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
                           pattern_weights::Vector{Float64};
                           β::Float64=1.0, α::Float64=0.1,
-                          seed::Union{Int, Nothing}=nothing)
+                          seed::Union{Int, Nothing}=nothing,
+                          rng::Union{AbstractRNG, Nothing}=nothing)
     K = size(X, 2)
     length(pattern_weights) == K || throw(DimensionMismatch(
         "pattern_weights has length $(length(pattern_weights)) but X has $K columns"))
@@ -605,7 +610,8 @@ function weighted_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
     any(w -> w > 0, pattern_weights) || throw(ArgumentError("At least one weight must be positive"))
 
     # b = log(w); log(0) = -Inf is handled by the core (softmax weight 0).
-    return logit_bias_sample(X, ξ₀, T, log.(pattern_weights); β=β, α=α, seed=seed)
+    return logit_bias_sample(X, ξ₀, T, log.(pattern_weights);
+                             β=β, α=α, seed=seed, rng=rng)
 end
 
 """
@@ -621,22 +627,24 @@ conditioning.
 function masked_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
                         keep::AbstractVector{Bool};
                         β::Float64=1.0, α::Float64=0.1,
-                        seed::Union{Int, Nothing}=nothing)
+                        seed::Union{Int, Nothing}=nothing,
+                        rng::Union{AbstractRNG, Nothing}=nothing)
     K = size(X, 2)
     length(keep) == K || throw(DimensionMismatch(
         "keep has length $(length(keep)) but X has $K columns"))
     b = [keep[k] ? 0.0 : -Inf for k in 1:K]
-    return logit_bias_sample(X, ξ₀, T, b; β=β, α=α, seed=seed)
+    return logit_bias_sample(X, ξ₀, T, b; β=β, α=α, seed=seed, rng=rng)
 end
 
 function masked_sample(X::Matrix{Float64}, ξ₀::Vector{Float64}, T::Int,
                         keep_indices::Vector{Int};
                         β::Float64=1.0, α::Float64=0.1,
-                        seed::Union{Int, Nothing}=nothing)
+                        seed::Union{Int, Nothing}=nothing,
+                        rng::Union{AbstractRNG, Nothing}=nothing)
     K = size(X, 2)
     keep = falses(K)
     keep[keep_indices] .= true
-    return masked_sample(X, ξ₀, T, keep; β=β, α=α, seed=seed)
+    return masked_sample(X, ξ₀, T, keep; β=β, α=α, seed=seed, rng=rng)
 end
 
 """
@@ -933,7 +941,7 @@ Returns: (X̂_aug, aug_indices) where aug_indices marks the new columns.
 """
 function augment_memory_interpolations(X̂::Matrix{Float64}, binder_indices::Vector{Int};
                                         n_interp::Int=50, seed::Int=42)
-    Random.seed!(seed)
+    rng = MersenneTwister(seed)
     d, K = size(X̂)
     n_binders = length(binder_indices)
     n_binders >= 2 || throw(ArgumentError("Need at least 2 binders for interpolation"))
@@ -941,13 +949,13 @@ function augment_memory_interpolations(X̂::Matrix{Float64}, binder_indices::Vec
     new_cols = Matrix{Float64}(undef, d, n_interp)
     for i in 1:n_interp
         # pick two random binders
-        j1, j2 = rand(binder_indices, 2)
+        j1, j2 = rand(rng, binder_indices, 2)
         while j1 == j2
-            j2 = rand(binder_indices)
+            j2 = rand(rng, binder_indices)
         end
 
         # random mixing coefficient (avoid extremes)
-        t = 0.15 + 0.7 * rand()  # t ∈ [0.15, 0.85]
+        t = 0.15 + 0.7 * rand(rng)  # t ∈ [0.15, 0.85]
         ξ_mix = t .* X̂[:, j1] .+ (1 - t) .* X̂[:, j2]
 
         # normalize to unit norm
@@ -1024,7 +1032,7 @@ toward the center of the binder distribution.
 function build_consensus_seeded_memory(X̂::Matrix{Float64}, binder_indices::Vector{Int};
                                         n_consensus::Int=3, perturbation::Float64=0.05,
                                         seed::Int=42)
-    Random.seed!(seed)
+    rng = MersenneTwister(seed)
     d, K = size(X̂)
 
     # compute binder centroid
@@ -1035,7 +1043,7 @@ function build_consensus_seeded_memory(X̂::Matrix{Float64}, binder_indices::Vec
     consensus_cols = Matrix{Float64}(undef, d, n_consensus)
     consensus_cols[:, 1] = binder_mean  # exact centroid
     for i in 2:n_consensus
-        ξ = binder_mean .+ perturbation .* randn(d)
+        ξ = binder_mean .+ perturbation .* randn(rng, d)
         ξ ./= (norm(ξ) + 1e-12)
         consensus_cols[:, i] = ξ
     end
@@ -1063,10 +1071,11 @@ function generate_weighted_sequences(X̂::Matrix{Float64}, pca_model, L::Int,
 
     @info "Generating weighted sequences: $n_chains chains × $T steps (β=$β)"
     for chain in 1:n_chains
+        chain_rng = MersenneTwister(seed + chain)
         k = mod1(chain, K)
-        ξ₀ = X̂[:, k] .+ 0.01 .* randn(d)
+        ξ₀ = X̂[:, k] .+ 0.01 .* randn(chain_rng, d)
 
-        result = weighted_sample(X̂, ξ₀, T, weights; β=β, α=α, seed=seed + chain)
+        result = weighted_sample(X̂, ξ₀, T, weights; β=β, α=α, rng=chain_rng)
 
         for t in burnin:thin:T
             ξ = result.Ξ[t + 1, :]
@@ -1104,9 +1113,10 @@ function generate_masked_sequences(X̂::Matrix{Float64}, pca_model, L::Int,
 
     @info "Generating masked sequences: $n_chains chains × $T steps (β=$β, kept=$(length(keep_indices))/$K)"
     for chain in 1:n_chains
+        chain_rng = MersenneTwister(seed + chain)
         k = mod1(chain, K)   # neutral warm-start over all columns (matches baselines)
-        ξ₀ = X̂[:, k] .+ 0.01 .* randn(d)
-        result = masked_sample(X̂, ξ₀, T, keep; β=β, α=α, seed=seed + chain)
+        ξ₀ = X̂[:, k] .+ 0.01 .* randn(chain_rng, d)
+        result = masked_sample(X̂, ξ₀, T, keep; β=β, α=α, rng=chain_rng)
         for t in burnin:thin:T
             ξ = result.Ξ[t + 1, :]
             push!(gen_seqs, decode_sample(ξ, pca_model, L))
@@ -1140,11 +1150,12 @@ function generate_sequences(X̂::Matrix{Float64}, pca_model, L::Int;
 
     @info "Generating sequences: $n_chains chains × $T steps (β=$β, α=$α)"
     for chain in 1:n_chains
-        # initialize near a random stored pattern
+        chain_rng = MersenneTwister(seed + chain)
+        # Initialize near a deterministically cycled stored pattern.
         k = mod1(chain, K)
-        ξ₀ = X̂[:, k] .+ 0.01 .* randn(d)
+        ξ₀ = X̂[:, k] .+ 0.01 .* randn(chain_rng, d)
 
-        result = sample(X̂, ξ₀, T; β=β, α=α, seed=seed + chain)
+        result = sample(X̂, ξ₀, T; β=β, α=α, rng=chain_rng)
 
         # collect samples after burn-in with thinning
         for t in burnin:thin:T
@@ -1180,10 +1191,11 @@ function generate_biased_sequences(X̂::Matrix{Float64}, pca_model, L::Int,
 
     @info "Generating biased sequences: $n_chains chains × $T steps (β=$β, λ=$λ)"
     for chain in 1:n_chains
+        chain_rng = MersenneTwister(seed + chain)
         k = mod1(chain, K)
-        ξ₀ = X̂[:, k] .+ 0.01 .* randn(d)
+        ξ₀ = X̂[:, k] .+ 0.01 .* randn(chain_rng, d)
 
-        result = biased_sample(X̂, ξ₀, T, iface; β=β, α=α, λ=λ, seed=seed + chain)
+        result = biased_sample(X̂, ξ₀, T, iface; β=β, α=α, λ=λ, rng=chain_rng)
 
         for t in burnin:thin:T
             ξ = result.Ξ[t + 1, :]

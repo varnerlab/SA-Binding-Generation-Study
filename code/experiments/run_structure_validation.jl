@@ -298,7 +298,7 @@ source_colors = Dict(
 )
 
 source_order = ["stored", "SA_full", "SA_strong", "SA_weak", "HMM_emit"]
-source_labels = ["Stored", "SA (full)", "SA (strong)", "SA (weak)", "HMM emit"]
+source_labels = ["Stored", "SA (full)", "SA (K/R+)", "SA (K/R-)", "HMM emit"]
 
 # Filter to sources that exist in results
 available = [s for s in source_order if s in unique(success_df.source)]
@@ -348,7 +348,7 @@ savefig(p_combined, joinpath(FIG_DIR, "structure_validation_combined.png"))
 
 # Figure 4: pLDDT vs TM-score scatter
 p_scatter = plot(; xlabel="Mean pLDDT", ylabel="TM-score (vs 1BPI)",
-    title="Structure Quality: pLDDT vs TM-score",
+    title="Structure-model Scores: pLDDT vs TM-score",
     size=(600, 500), dpi=300, legend=:bottomright, margin=5Plots.mm)
 for s in available
     label = avail_labels[findfirst(==(s), available)]

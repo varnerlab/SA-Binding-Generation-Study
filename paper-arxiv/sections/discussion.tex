@@ -1,13 +1,13 @@
 % discussion.tex
 We have shown that pattern multiplicity in the modern Hopfield energy provides a principled,
-training-free mechanism for conditioning protein sequence generation on functional subsets. The
+training-free mechanism for conditioning protein sequence generation on user-designated subsets. The
 theoretical framework is exact: multiplicity weights tilt the Boltzmann distribution through a
 simple logit bias, and their equilibrium target is a known Gaussian mixture. The finite-step ULA
 implementation retains discretization and mixing error, which we assess against exact samples.
 A single scalar $\rho$ continuously interpolates between unconditioned generation
 and hard subset curation, and the practitioner can compute the required $\rho$ for any target
 effective designated fraction directly from the family composition (Eq.~\ref{eq:rho-inverse}). On
-the Kunitz domain, curated memory achieved 100\% phenotype transfer with as few as three
+the Kunitz domain, curated memory achieved 100\% retention of the selected K/R-at-P1 marker with as few as three
 designated input sequences; multiplicity-weighted generation on the full family increased
 marker fidelity from the natural proportion (32\%) to
 \KunitzFobsFiveHundred{} $\pm$ \KunitzFobsFiveHundredSD{} at $\rho = 500$; and the
@@ -30,66 +30,67 @@ as a descriptive diagnostic rather than an \emph{a priori} predictor or decision
 Broader prospective validation is required before it can guide the choice between multiplicity
 weighting and hard curation.
 
-Hard curation achieves complete phenotype transfer with as few as three designated
-input sequences. Many experimental campaigns (phage display, yeast
+Hard curation achieves complete marker retention with as few as three designated
+input sequences. If the designation comes from an independent experimental campaign, such as phage display or yeast
 surface display, functional selections, or even literature curation) produce exactly this kind of
-small, functionally characterized set. The practitioner brings external knowledge (``these
+small, functionally characterized set. The practitioner can bring external knowledge (``these
 sequences bind my target,'' ``these variants are thermostable,'' ``these hits came from my
-screen'') and SA converts this small set into a large, diverse candidate library while preserving
-the input phenotype. This ``small-set amplifier'' capability complements high-throughput screening:
+screen'') and SA converts this small set into a large, diverse candidate library while enriching
+its associated sequence features. In the present Kunitz experiment, selection and evaluation both
+used K/R at P1, so complete recovery is marker retention rather than functional validation. The
+``small-set amplifier'' capability could complement high-throughput screening:
 the screen identifies a few hits, SA expands them computationally, and the expanded library can be
 fed back into a second round of selection or directly into functional assays. The method itself is
 agnostic to the meaning of the designation; it biases the sampler toward the designated patterns
 regardless of whether the underlying phenotype is binding, stability, expression, or any other
-property. The scaling study shows that even $K_{\mathrm{des}} = 3$ suffices for phenotype
-transfer; diversity improves with more input sequences but saturates near
+property. The scaling study shows that even $K_{\mathrm{des}} = 3$ suffices for marker
+retention; diversity improves with more input sequences but saturates near
 $K_{\mathrm{des}} = 20$.
 
 The $\omega$-conotoxin experiment extends the small-set amplifier result to a therapeutically
 relevant peptide family and illustrates a practically important design choice: whether to seed SA
-from the full family or from a curated functional subset. Full-family seeding is appropriate when
+from the full family or from a curated designated subset. Full-family seeding is appropriate when
 the goal is to generate novel family members with broad structural diversity; curated seeding is
 necessary when the goal is to preserve a specific pharmacophore. In the $\omega$-conotoxin case,
 the O-superfamily is structurally coherent (all members share the C--C--CC--C--C disulfide
 framework) but functionally heterogeneous (members block N-type, P/Q-type, or sodium channels
 with varying selectivity). Full-family seeding dilutes the Cav2.2-specific Tyr pharmacophore
 because the PCA encoding reflects the full structural diversity; curated seeding from the 23
-N-type blockers concentrates the PCA subspace on Cav2.2-relevant variation, allowing SA to
-regenerate it with 98\% fidelity. This generalizes the separation-index interpretation: even
-when $S$ is moderate, hard curation can achieve high pharmacophore transfer by
-restricting the memory to the functional subset of interest. The cost (lower sequence diversity
+designated accessions concentrates the PCA subspace on their sequence variation, allowing SA to
+recover Tyr13 at 98\% frequency. The accession designation and Tyr13 marker agree for only
+86.5\% of stored sequences, so these outcomes are related but not interchangeable. This illustrates
+the separation-index interpretation: even
+when $S$ is moderate, hard curation can achieve high marker retention by
+restricting the memory to the designated subset. The cost (lower sequence diversity
 and reduced novelty, 0.46 vs.\ 0.60) reflects the narrower PCA basis, consistent with the
 Kunitz scaling study.
 
-The AlphaFold2-multimer analysis shows that SA-generated $\omega$-conotoxins are
-indistinguishable from natural sequences under complex prediction: all four metrics (pTM, iPTM,
-confidence, interface pLDDT) overlap between generated and control groups with no significant
-differences. This is consistent with the structural and pharmacophore validation: generation
-preserves the properties that determine predicted binding geometry. The absolute scores are
-modest across all groups, a known limitation of multimer prediction for small-peptide--channel
-complexes; experimental binding assays are needed to determine whether the preserved
-pharmacophore translates to functional Cav2.2 block.
+The AlphaFold2-multimer analysis produced uniformly low-confidence predictions for generated and
+control sequences: iPTM was approximately 0.10 and interface pLDDT approximately 37--41.
+Permutation tests detected no group differences, but nonsignificance at sample sizes 10/10/5
+does not establish equivalence or preserved binding geometry. These calculations therefore
+provide no positive evidence about Cav2.2 interaction; experimental complex structures and
+binding assays are needed.
 
 Several limitations should be acknowledged. The cross-family regression spans only five Pfam
 families, with $\omega$-conotoxin displayed externally rather than included in the fit. Its
 leave-one-family-out sensitivity and nonmonotonic points preclude a validated predictive rule;
 additional prospectively selected families are needed to characterize the $S$--$\Delta$
-relationship. Our functional splits are defined by single marker positions
+relationship. Our Pfam splits are defined by data-selected single marker positions
 (P1 in Kunitz, Trp in SH3, specificity-loop residue in WW, Gln at position~50 in Homeobox,
 H/N at the recognition helix in Forkhead); multi-position phenotypes, where specificity depends
 on coordinated residue identities at several positions, may exhibit different calibration
 behavior. We have not experimentally
-validated the binding activity of generated sequences; the phenotype fidelity reported here is a
-necessary but not sufficient condition for functional binding. For the $\omega$-conotoxin family,
-we validated SA-generated sequences against published SAR data from alanine-scanning and
-site-directed mutagenesis studies~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}
-and found that strong-seeded generation preserved all experimentally identified binding
-determinants (Table~\ref{tab:sar-agreement}); for the Kunitz domain, deep mutational scanning
+validated the binding activity of generated sequences; marker fidelity is not evidence of
+functional binding. For the $\omega$-conotoxin family, we compared generated residue frequencies
+with positions reported by alanine-scanning and site-directed mutagenesis studies
+~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}. Designated-seeded
+generation retained the cysteine scaffold and Tyr13 signal and enriched several reported
+positions (Table~\ref{tab:sar-agreement}), but this does not establish their effects in the new
+sequence backgrounds. For the Kunitz domain, deep mutational scanning
 data for the BPTI--trypsin interaction are now
 available~\cite{heyneBPTIDMS2021} and could provide a quantitative binding-landscape comparison
-in future work. Computational binding affinity predictions (e.g., via AlphaFold-Multimer or
-FoldX) could provide an additional intermediate validation tier between sequence-level markers
-and experimental assays. Finally, we tested interface-weighted PCA
+in future work. Finally, we tested interface-weighted PCA
 encoding as a strategy to close the calibration gap, but found it neutral at low weights and
 destructive at high weights; the PCA bottleneck reflects the geometric entanglement of functional
 and structural variation in the family, not the absence of interface-position components.
@@ -100,6 +101,6 @@ multiplicities to different functional categories. The PCA bottleneck that limit
 effectiveness might be reduced by alternative sequence encodings. Learned representations from
 protein language models, for instance, may better separate functional subsets than linear PCA.
 The $\beta$ lever suggests that adaptive temperature schedules, increasing $\beta$ during sampling
-to sharpen the multiplicity bias, could improve phenotype transfer without permanently sacrificing
+to sharpen the multiplicity bias, could improve marker transfer without permanently sacrificing
 diversity. These extensions remain within the analytic, training-free framework that makes
 stochastic attention practical for the scarce-data regime.

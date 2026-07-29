@@ -8,38 +8,45 @@ remaining columns. The cleaned alignment was one-hot encoded ($20$ amino acid ch
 position, gaps mapped to zero vectors) yielding a $20L \times K$ matrix, reduced by PCA
 (retaining $95\%$ of variance) to a $d \times K$ matrix, and column-normalized to unit norm.
 ULA chains were run with step size $\alpha = 0.01$ for $T = 5{,}000$ steps, initialized near
-random stored patterns with small Gaussian perturbation; samples were collected after a
+stored patterns cycled deterministically across the memory with independent, locally seeded
+Gaussian perturbations; samples were collected after a
 burn-in of 2{,}000 steps with thinning every 100 steps. We tested five Pfam families (Kunitz
 domains (PF00014, $K=99$, $L=53$), SH3 domains (PF00018, $K=55$, $L=48$), WW domains
 (PF00397, $K=420$, $L=31$), Homeobox domains (PF00046, $K=136$, $L=57$), and Forkhead domains
 (PF00250, $K=246$, $L=87$)) and the $\omega$-conotoxin O-superfamily ($K=74$, $L=26$, curated
-from SwissProt). For each family, we defined a binary functional split based on a single marker
-position reflecting external biological knowledge, not a property discovered by the method: for
+from SwissProt). For each Pfam family, we defined a binary split using a data-selected
+single-position sequence marker. Biological literature motivated the residue class where
+available, but the marker was not treated as a direct activity label: for
 Kunitz, the P1 position (primary contact residue with serine proteases) was identified as the
 column with the highest Lys frequency and sequences with K or R at P1 were designated as the
-functional subset ($K_{\mathrm{des}} = 32$); for SH3, the conserved Trp in the hydrophobic
+marker-positive subset ($K_{\mathrm{des}} = 32$); for SH3, the selected Trp marker
 binding groove was the marker ($K_{\mathrm{des}} = 33$); for WW, the specificity-determining
 position was the highest-entropy column in the middle third of the alignment
 ($K_{\mathrm{des}} = 69$); for Homeobox, Gln at position~50 in the recognition helix
 (the primary determinant of TAAT-core DNA-binding specificity) was the marker
 ($K_{\mathrm{des}} = 102$); for Forkhead, His or Asn at the H3 recognition helix
 position (residues that make base-specific contacts in the major groove) was the marker
-($K_{\mathrm{des}} = 122$); and for $\omega$-conotoxin, 23 confirmed or predicted N-type Cav2.2
-blockers were designated as strong binders based on pharmacological
-characterization~\cite{omegaConotoxinSAR2006}.
+($K_{\mathrm{des}} = 122$). For $\omega$-conotoxin, the designation was instead defined by
+23 accession IDs in the study's curated input FASTA. The other 51 accessions were conditioning
+background, not demonstrated nonbinders. The tracked accession audit records the designation,
+Tyr13 marker, and available repository activity metadata; only 5 designated and 2 background
+accessions have exact accession matches in that activity table. The accession designation and
+Tyr13 marker agree for 64 of 74 sequences (86.5\%).
 
 For multiplicity-weighted runs, the multiplicity vector was set to $r_k = \rho$ for designated
 patterns and $r_k = 1$ for background patterns, and $\beta^{*}(\vr)$ was found by sweeping
 50--60 logarithmically spaced $\beta$ values in $[0.1,\, 500]$ and locating the inflection
-point of the weighted attention entropy. Twenty to fifty independent chains were run per
-condition, yielding 620--1{,}550 sequences after burn-in and thinning. Phenotype fidelity was
+point of the weighted attention entropy. Twenty to fifty independently seeded chains were run per
+condition, yielding 620--1{,}550 retained states after burn-in and thinning. The canonical
+six-family sweeps used five replicate runs of 20 chains, and reported uncertainty across replicate
+summaries rather than treating retained states within a chain as independent. Marker fidelity was
 measured as the fraction of generated sequences displaying the designated marker residue at the
 marker position; attention diagnostics recorded the mean softmax weight on designated patterns
 during sampling; sequence diversity was computed as one minus the mean pairwise sequence identity
 (estimated from 300--500 random pairs); and amino acid composition fidelity was measured by KL
 divergence between generated and reference amino acid frequencies. The Fisher separation
 index $S$ was computed from pairwise cosine similarities between unit-norm PCA vectors within
-and between functional groups. Structural validation used
+and between designated and background groups. Structural validation used
 ESMFold~\cite{esmfold2022} to predict structures for 50 sequences per source, with pLDDT
 extracted from the B-factor column and TM-scores computed against experimental reference
 structures (1BPI chain~A for Kunitz, 1OMG chain~A for $\omega$-conotoxin) using
@@ -47,10 +54,15 @@ TM-align~\cite{tmAlign2005}; these results were independently cross-validated wi
 ColabFold~\cite{jumperHighlyAccurate2021,mirdita2022colabfold} (1 model, 3 recycles,
 MMseqs2 MSA, no relaxation) run on Google Colab with a T4 GPU. Sequence plausibility was assessed using ESM2-650M
 pseudo-perplexity computed via masked marginal scoring over all
-positions~\cite{esmfold2022}.
+positions~\cite{esmfold2022}. Formal within-chain effective sample sizes and convergence
+diagnostics were not used; the exact Gaussian-mixture baseline instead checks the finite-step ULA
+results against independent equilibrium draws.
 
-Conditioning enters the sampler as an additive bias $\mathbf{b}$ on the attention logits,
-$\mathrm{softmax}(\beta\,X^{\top}\xi + \mathbf{b})$, with entries in $\mathbb{R} \cup \{-\infty\}$.
+Conditioning enters the sampler as an additive bias $\mathbf{b}$ on the attention logits:
+\[
+\mathrm{softmax}(\beta\,X^{\top}\xi + \mathbf{b}),
+\qquad b_k \in \mathbb{R} \cup \{-\infty\}.
+\]
 The unweighted sampler corresponds to $\mathbf{b} = \mathbf{0}$, multiplicity weighting to
 $\mathbf{b} = \log\vr$, and hard attention masking to $b_k = -\infty$ on background patterns,
 which assigns those memories softmax weight exactly zero. Because the softmax is invariant to a

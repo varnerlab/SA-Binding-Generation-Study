@@ -12,6 +12,9 @@
 \usepackage{multirow}
 \usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage{xr-hyper}
+
+\externaldocument[main-]{Paper_JCIM}
 
 % --- theorem environments ---
 \newtheorem{theorem}{Theorem}
@@ -31,6 +34,10 @@
 \newcommand{\veps}{\bm{\epsilon}}
 \newcommand{\R}{\mathbb{R}}
 \DeclareMathOperator{\softmax}{softmax}
+\newcommand{\PaperRoot}{..}
+\newcommand{\MainRef}[1]{\ref{main-#1}}
+\newcommand{\MainEqRef}[1]{\eqref{main-#1}}
+\input{../sections/generated/numbers}
 
 \title{Supporting Information: Conditioning Protein Generation via Hopfield Pattern Multiplicity}
 
@@ -56,7 +63,7 @@ Cornell University, Ithaca, New York 14850, United States}
   \centering
   \includegraphics[width=0.72\textwidth]{../sections/figs/plddt_vs_tmscore_scatter.pdf}
   \caption{\textbf{pLDDT and TM-score are positively correlated; SA sequences cluster in
-  the high-quality region.}
+  the high model-score region.}
   Each point represents one predicted structure (50 per source). Stored (gray) and SA-generated
   (blue, red, green) sequences cluster tightly above pLDDT $>85$ and TM-score $>0.8$ (upper
   right quadrant). HMM sequences (orange) scatter broadly, with many falling below the
@@ -64,5 +71,7 @@ Cornell University, Ithaca, New York 14850, United States}
   threshold (horizontal dashed line).}
   \label{fig:plddt-tmscore-scatter}
 \end{figure}
+
+\bibliography{../References_v1}
 
 \end{document}

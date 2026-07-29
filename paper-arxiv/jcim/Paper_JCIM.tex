@@ -34,6 +34,7 @@
 \newcommand{\veps}{\bm{\epsilon}}
 \newcommand{\R}{\mathbb{R}}
 \DeclareMathOperator{\softmax}{softmax}
+\input{../sections/generated/numbers}
 
 % --- metadata ---
 \title{Conditioning Protein Generation via Hopfield Pattern Multiplicity}
@@ -68,8 +69,6 @@ All Pfam seed alignments are publicly available from InterPro. Source code and e
 scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{acknowledgement}
 
-\bibliography{../References_v1}
-
 % -----------------------------------------------------------------------
 % Figures and Tables
 % -----------------------------------------------------------------------
@@ -82,42 +81,40 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   \caption{\textbf{Cross-family summary of all protein families tested.}
   For each family: source database, number of sequences ($K$), aligned length ($L$), PCA
   dimensionality ($d$, capturing 95\% variance), designated subset size ($K_{\mathrm{des}}$),
-  phenotype marker, natural designated fraction ($f_{\mathrm{nat}}$), Fisher separation index
-  ($S$), observed phenotype fraction under hard curation ($f_{\mathrm{obs}}^{\mathrm{hard}}$),
-  and calibration gap ($\Delta$ at $\rho=500$). All four families were tested with both
+  sequence marker, natural designated fraction ($f_{\mathrm{nat}}$), Fisher separation index
+  ($S$), observed marker fraction under hard curation ($f_{\mathrm{obs}}^{\mathrm{hard}}$),
+  and calibration gap ($\Delta$ at $\rho=500$). All six families were tested with both
   multiplicity weighting and hard curation.}
   \label{tab:cross-family}
   \small
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{lcccccccccc}
     \toprule
     Family & Source & $K$ & $L$ & $d$ & $K_{\mathrm{des}}$ & Marker
            & $f_{\mathrm{nat}}$ & $S$
            & $f_{\mathrm{obs}}^{\mathrm{hard}}$ & $\Delta$ \\
     \midrule
-    Kunitz & PF00014 & 99  & 53 & 80  & 32 & P1 K/R  & 0.32 & 0.20 & 1.00 & 0.37 \\
-    SH3    & PF00018 & 55  & 48 & 46  & 33 & Trp     & 0.60 & 0.34 & 1.00 & 0.01 \\
-    WW     & PF00397 & 420 & 31 & 186 & 69 & Spec.\ loop & 0.16 & 0.11 & 1.00 & 0.63 \\
-    $\omega$-Conotoxin & SwissProt & 74 & 26 & 34 & 23 & Tyr13 & 0.31 & 0.78 & 0.98 & 0.15 \\
-    \bottomrule
+    \input{../sections/generated/tab_cross_family}
   \end{tabular}
+  }
 \end{table}
 
 % -----------------------------------------------------------------------
-% Fig 1: Binder scaling
+% Fig 1: Designated-subset scaling
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth]{../sections/figs/study1_binder_scaling.pdf}
   \caption{\textbf{Diversity and composition fidelity improve with more input
-  binders; phenotype fidelity is perfect at every sample size.}
+  K/R-positive sequences; marker retention is complete at every sample size.}
   Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
-  the Kunitz strong-binder set (3 replicates each; shaded bands show $\pm 1$
+  the Kunitz K/R-positive set (3 replicates each; shaded bands show $\pm 1$
   s.d.). P1 K/R fraction was 1.0 at every sample size (not shown).
   \textit{Left:} Pairwise sequence diversity increases from 0.36
   ($K_{\mathrm{des}}=3$) to 0.50 ($K_{\mathrm{des}}=32$).
   \textit{Right:} KL divergence of amino acid composition decreases from 0.047
-  to 0.009 over the same range. Three input binders suffice for perfect
-  phenotype transfer; more binders improve the compositional and diversity
+  to 0.009 over the same range. Three inputs suffice for complete K/R marker
+  retention; more inputs improve the compositional and diversity
   quality of the generated library.}
   \label{fig:scaling}
 \end{figure}
@@ -130,17 +127,53 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   \includegraphics[width=0.82\textwidth]{../sections/figs/fig5_entropy_curves.pdf}
   \caption{\textbf{Phase transition shifts rightward with increasing multiplicity
   ratio $\rho$.}
-  Attention entropy $H(\beta)$ as a function of inverse temperature $\beta$
-  (log scale) for $\rho \in \{1, 5, 20, 100, 1000\}$ on the Kunitz family.
-  Each curve shows a sigmoidal drop from high entropy (exploration phase) to
-  near-zero entropy (retrieval phase); dashed vertical lines mark the inflection
-  point $\beta^{*}(\rho)$ for each curve.
-  As $\rho$ increases, $K_{\mathrm{eff}}$ decreases and $\beta^{*}$ shifts
-  rightward (from 4.3 at $\rho=1$ to 10.1 at $\rho=1000$), consistent with
-  fewer effective competing attractors requiring higher inverse temperature to
-  produce an ordered phase.}
+  Attention entropy $H(\beta)$ normalized by $\log K$ as a function of inverse
+  temperature $\beta$ for $\rho \in \{1,5,20,100,1000\}$ on Kunitz.
+  As $\rho$ increases from 1 to 1000, $K_{\mathrm{eff}}$ decreases from 99
+  to 32.1 and the measured inflection shifts from 4.4 to 9.3.}
   \label{fig:phase-transition}
 \end{figure}
+
+% -----------------------------------------------------------------------
+% Fig: Hard-mask beta sweep
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.72\textwidth]{../sections/figs/fig_mask_betasweep.pdf}
+  \caption{\textbf{Recovery is set by retrieval sharpness and conditioning strength,
+  both acting through the decode gap.}
+  P1 K/R fraction for the Kunitz designated subset versus inverse temperature
+  $\beta$ under a hard attention mask. The mask is the
+  $\Delta_{\mathrm{attn}}=0$ envelope: recovery increases from 0.46 at
+  $\beta=2$ to 1.00 at $\beta=512$. Finite-$\rho$ multiplicity conditions
+  sit below this envelope at matched $\beta$, while hard curation reaches complete
+  K/R marker retention on its subset-only basis.}
+  \label{fig:mask-betasweep}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Table: Hard-mask recovery
+% -----------------------------------------------------------------------
+\begin{table}[p]
+  \centering
+  \caption{\textbf{Kunitz P1 K/R recovery across the conditioning axis.}
+  The designated subset is K/R at P1 ($K_{\mathrm{des}}=32$). All conditions use
+  the full-family PCA basis except hard curation, which rebuilds the basis from
+  the designated subset. P1 K/R is the chain-level mean $\pm$ standard error
+  over 30 chains.}
+  \label{tab:mask-recovery}
+  \begin{tabular}{lccc}
+    \toprule
+    Condition & $\beta$ & P1 K/R & Novelty \\
+    \midrule
+    Unconditional ($b=0$) & 3.8 & $0.39 \pm 0.02$ & 0.42 \\
+    Multiplicity (strongest finite $\rho$) & 7.7 & $0.59 \pm 0.02$ & 0.39 \\
+    Hard mask ($b=-\infty$), at $\beta^{*}$ & 3.2 & $0.50 \pm 0.02$ & 0.42 \\
+    Hard mask ($b=-\infty$), $\beta=512$ & 512 & $1.00 \pm 0.00$ & 0.16 \\
+    Hard curation (subset basis) & 3.2 & $1.00 \pm 0.00$ & 0.32 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 % -----------------------------------------------------------------------
 % Fig 3: Separation index vs. calibration gap
@@ -148,22 +181,15 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth]{../sections/figs/fig2_separation_vs_gap.pdf}
-  \caption{\textbf{Calibration trajectories reveal family-dependent gaps predicted by
+  \caption{\textbf{Calibration trajectories reveal family-dependent gaps associated with
   PCA-space separation.}
-  \textbf{(A)}~Observed phenotype fraction $f_{\mathrm{obs}}$ versus effective designated
+  \textbf{(A)}~Observed marker fraction $f_{\mathrm{obs}}$ versus effective designated
   fraction $f_{\mathrm{eff}}$ as the multiplicity ratio $\rho$ increases from 1 to 500
-  for four protein families. The dashed diagonal marks perfect calibration
-  ($f_{\mathrm{obs}} = f_{\mathrm{eff}}$). SH3 domains ($S = 0.34$, green) track the
-  diagonal closely; Kunitz domains ($S = 0.20$, blue) curve below with $\Delta = 0.37$;
-  WW domains ($S = 0.11$, red) show the largest departure with $\Delta = 0.63$;
-  $\omega$-conotoxin ($S = 0.78$, purple) shows a moderate gap ($\Delta = 0.15$) despite
-  high PCA separation. Double-headed arrows indicate the calibration gap at $\rho = 500$.
+  for six protein families. The dashed diagonal marks perfect calibration.
   \textbf{(B)}~Fisher separation index $S$ versus calibration gap $\Delta$ at $\rho = 500$.
-  A linear fit to the three Pfam families (filled markers; $\Delta \approx 0.92 - 2.7\,S$,
-  $R^{2} = 1.00$) confirms that the gap is quantitatively predicted by the geometric
-  separation of functional subsets in PCA space. The $\omega$-conotoxin point (open diamond)
-  follows the monotonic trend but lies above the Pfam regression, consistent with its
-  pharmacologically defined binder split and imperfect single-residue marker.}
+  An exploratory linear fit to the five Pfam families summarizes the association
+  without defining a prospective threshold. The $\omega$-conotoxin point is shown
+  as an external comparison and is not included in the fit.}
   \label{fig:separation-vs-gap}
 \end{figure}
 
@@ -172,54 +198,30 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
-  \caption{\textbf{Per-family $\rho$ sweep: attention weights track
-  $f_{\mathrm{eff}}$ exactly; decoded phenotype fidelity depends on PCA
-  separation.} Selected $\rho$ values for each family.
+  \caption{\textbf{Per-family $\rho$ sweep: mean attention weights track
+  $f_{\mathrm{eff}}$ closely; decoded marker fidelity varies across PCA
+  geometries.} Selected $\rho$ values for each family.
   $f_{\mathrm{eff}}$: effective designated fraction from multiplicity weights;
   $\bar{a}_{\mathrm{des}}$: mean softmax attention on designated patterns;
-  $f_{\mathrm{obs}}$: hard-decoded phenotype fraction (930 sequences);
+  $f_{\mathrm{obs}}$: mean hard-decoded marker fraction across five independent
+  replicates (620 retained samples per replicate); error bars are replicate s.d.;
   $D$: mean pairwise diversity.
   In all families $\bar{a}_{\mathrm{des}} \approx f_{\mathrm{eff}}$
-  (energy conditioning is exact), but $f_{\mathrm{obs}}$ converges fastest
-  for SH3 ($S=0.34$) and slowest for WW ($S=0.11$), reflecting the
-  PCA-space calibration gap.}
+  within finite-sample uncertainty, but $f_{\mathrm{obs}}$ converges fastest
+  for Homeobox ($S=0.42$) and slowest for WW ($S=0.11$), reflecting the
+  observed latent-to-sequence calibration gap.}
   \label{tab:per-family-rho}
   \small
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{llcccccc}
     \toprule
     Family & ($K$, $K_{\mathrm{des}}$, $S$)
       & $\rho$ & $f_{\mathrm{eff}}$ & $\bar{a}_{\mathrm{des}}$
       & $f_{\mathrm{obs}}$ & $\Delta$ & $D$ \\
     \midrule
-    \multirow{4}{*}{Kunitz (PF00014)}
-      & \multirow{4}{*}{(99, 32, 0.20)}
-      &    1 & 0.323 & 0.324 & 0.406 & $-$0.08 & 0.563 \\
-    & &   10 & 0.827 & 0.832 & 0.539 & 0.29 & 0.547 \\
-    & &  100 & 0.980 & 0.981 & 0.615 & 0.37 & 0.520 \\
-    & & 1000 & 0.998 & 0.998 & 0.634 & 0.36 & 0.514 \\
-    \midrule
-    \multirow{4}{*}{SH3 (PF00018)}
-      & \multirow{4}{*}{(55, 33, 0.34)}
-      &    1 & 0.600 & 0.614 & 0.852 & $-$0.25 & 0.580 \\
-    & &   10 & 0.938 & 0.941 & 0.906 & 0.03 & 0.575 \\
-    & &  100 & 0.991 & 0.991 & 0.977 & 0.01 & 0.559 \\
-    & & 1000 & 0.999 & 0.999 & 0.992 & 0.01 & 0.510 \\
-    \midrule
-    \multirow{4}{*}{WW (PF00397)}
-      & \multirow{4}{*}{(420, 69, 0.11)}
-      &    1 & 0.164 & 0.152 & 0.131 & 0.03 & 0.690 \\
-    & &   10 & 0.663 & 0.661 & 0.226 & 0.44 & 0.676 \\
-    & &  100 & 0.947 & 0.947 & 0.303 & 0.64 & 0.649 \\
-    & & 1000 & 0.995 & 0.995 & 0.371 & 0.62 & 0.642 \\
-    \midrule
-    \multirow{4}{*}{$\omega$-Cntx (SwissProt)}
-      & \multirow{4}{*}{(74, 23, 0.78)}
-      &    1 & 0.311 & 0.299 & 0.456 & $-$0.15 & 0.557 \\
-    & &   10 & 0.819 & 0.809 & 0.650 & 0.17 & 0.516 \\
-    & &  100 & 0.978 & 0.972 & 0.769 & 0.21 & 0.470 \\
-    & &  500 & 0.996 & 0.994 & 0.847 & 0.15 & 0.435 \\
-    \bottomrule
+    \input{../sections/generated/tab_per_family_rho}
   \end{tabular}
+  }
 \end{table}
 
 % -----------------------------------------------------------------------
@@ -227,7 +229,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
-  \caption{\textbf{Structural, linguistic, and functional validation on the Kunitz domain.}
+  \caption{\textbf{Structure-model, language-model, and sequence-marker evaluation on the Kunitz domain.}
   pLDDT: ESMFold predicted confidence (0--100; $>70$ = confident).
   TM: TM-score against 1BPI chain~A ($>0.5$ = same fold).
   PPL: ESM2-650M masked-marginal pseudo-perplexity (lower = more plausible).
@@ -236,23 +238,25 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   $D$: mean pairwise diversity.
   Structural and LM values are mean $\pm$ s.d.\ across 50 sequences;
   sequence-level metrics are mean $\pm$ s.d.\ across 5 replicates.
-  SA-generated sequences are indistinguishable from natural sequences on all
-  structural and linguistic metrics; SA strong-conditioning achieves perfect
-  phenotype transfer, a capability unavailable to unconditional baselines.}
+  SA-generated and stored sequences have similar structure-model and language-model
+  summaries. Conditioning on the K/R-positive subset yields complete K/R marker
+  retention; this is not an experimental binding measurement.}
   \label{tab:structure-validation}
   \small
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{lcccccc}
     \toprule
     Source & pLDDT & TM & PPL & P1 K/R & KL ($\times 10^{3}$) & $D$ \\
     \midrule
     Stored (natural)      & $89.3 \pm 3.2$  & $0.83 \pm 0.03$ & $4.97 \pm 0.98$ & 0.32 & 0 & 0.63 \\
     SA (full family)      & $90.4 \pm 1.2$  & $0.84 \pm 0.01$ & $4.78 \pm 0.64$ & $0.41 \pm 0.01$ & $6.9 \pm 0.1$ & 0.56 \\
-    SA (strong binders)   & $90.7 \pm 1.1$  & $0.83 \pm 0.01$ & $4.72 \pm 0.60$ & $1.00 \pm 0.00$ & $19.5 \pm 0.4$ & 0.50 \\
-    SA (weak binders)     & $91.0 \pm 1.2$  & $0.85 \pm 0.01$ & $4.73 \pm 0.72$ & $0.00 \pm 0.00$ & $12.4 \pm 0.3$ & 0.53 \\
-    HMM emit (HMMER3)     & $60.4 \pm 13.1$ & $0.60 \pm 0.10$ & $16.1 \pm 4.2$  & $0.15 \pm 0.03$ & $29.7 \pm 11.3$ & 0.56 \\
+    SA (K/R-positive)     & $90.7 \pm 1.1$  & $0.83 \pm 0.01$ & $4.72 \pm 0.60$ & $1.00 \pm 0.00$ & $19.5 \pm 0.4$ & 0.50 \\
+    SA (K/R-negative)     & $91.0 \pm 1.2$  & $0.85 \pm 0.01$ & $4.73 \pm 0.72$ & $0.00 \pm 0.00$ & $12.4 \pm 0.3$ & 0.53 \\
+    HMM emit (HMMER3)     & $60.4 \pm 13.1$ & $0.60 \pm 0.19$ & $16.1 \pm 4.2$  & $0.15 \pm 0.03$ & $29.7 \pm 11.3$ & 0.56 \\
     Bootstrap (resample)  & ---             & ---              & ---              & $0.30 \pm 0.04$ & $1.0 \pm 0.3$ & 0.56 \\
     \bottomrule
   \end{tabular}
+  }
 \end{table}
 
 % -----------------------------------------------------------------------
@@ -260,16 +264,14 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
-  \caption{\textbf{AlphaFold2-ptm cross-validation of structural quality.}
+  \caption{\textbf{AlphaFold2-ptm structure-model comparison.}
   Independent structure predictions via ColabFold (AlphaFold2-ptm, 1 model,
   3 recycles, MMseqs2 MSA) for 50 sequences per source.
   pLDDT: mean predicted confidence ($0$--$100$).
   TM: TM-score against experimental reference (1BPI chain~A for Kunitz,
   1OMG chain~A for $\omega$-conotoxin).
-  AF2 confirms the ESMFold results: SA-generated Kunitz sequences match or
-  exceed stored sequences on both metrics; conotoxin TM-scores are lower
-  overall, consistent with the 26-residue peptide length, but SA strong-seeded
-  sequences achieve the highest pLDDT and TM-scores in both families.}
+  These model-derived summaries are consistent with the ESMFold comparison.
+  They do not establish experimental folding or binding.}
   \label{tab:af2-validation}
   \small
   \begin{tabular}{llcccc}
@@ -278,12 +280,12 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
     \midrule
     \multirow{3}{*}{Kunitz}
       & Stored (natural)       & 50 & $93.5 \pm 4.0$ & $0.83 \pm 0.03$ \\
-      & SA (strong binders)    & 50 & $94.6 \pm 1.4$ & $0.84 \pm 0.01$ \\
+      & SA (K/R-positive)      & 50 & $94.6 \pm 1.4$ & $0.84 \pm 0.01$ \\
       & SA (full family)       & 50 & $95.0 \pm 1.3$ & $0.85 \pm 0.01$ \\
     \midrule
     \multirow{3}{*}{$\omega$-Conotoxin}
       & Stored (natural)       & 50 & $67.9 \pm 9.8$ & $0.35 \pm 0.11$ \\
-      & SA (strong binders)    & 50 & $78.5 \pm 4.1$ & $0.47 \pm 0.02$ \\
+      & SA (designated subset) & 50 & $78.5 \pm 4.1$ & $0.47 \pm 0.02$ \\
       & SA (full family)       & 50 & $73.9 \pm 10.4$ & $0.39 \pm 0.12$ \\
     \bottomrule
   \end{tabular}
@@ -294,11 +296,11 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
-  \caption{\textbf{$\omega$-Conotoxin Cav2.2 pharmacophore inheritance under curated vs.\
+  \caption{\textbf{$\omega$-Conotoxin Tyr13 marker retention under curated vs.\
   full-family seeding.}
-  Tyr13\%: fraction with tyrosine at the primary pharmacophore position (col.~13).
+  Tyr13\%: fraction with tyrosine at the selected marker position (col.~13).
   K+R\%: basic residue fraction (electrostatic complementarity). KL: amino acid composition
-  divergence. Novelty: mean cosine distance to nearest stored pattern. Strong-binder seeding
+  divergence. Novelty: mean cosine distance to nearest stored pattern. Designated-subset seeding
   amplifies Tyr13 from 82.6\% to 98.3\% and preserves the basic-residue signature exactly,
   while full-family seeding dilutes both signals.}
   \label{tab:conotoxin-pharmacophore}
@@ -308,9 +310,9 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
     Condition & $N$ & Tyr13 (\%) & K+R (\%) & KL & Novelty \\
     \midrule
     Input: full family          &   74 & 33.8 &  9.9 & 0      & 0 \\
-    Input: strong binders       &   23 & 82.6 & 19.7 & 0      & 0 \\
+    Input: designated subset    &   23 & 82.6 & 19.7 & 0      & 0 \\
     Generated: full-seeded      & 1550 & 46.9 & 12.0 & 0.0075 & 0.60 \\
-    Generated: strong-seeded    & 1550 & 98.3 & 20.1 & 0.0083 & 0.46 \\
+    Generated: designated-seeded & 1550 & 98.3 & 20.1 & 0.0083 & 0.46 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -319,22 +321,20 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % Table 6: SAR agreement
 % -----------------------------------------------------------------------
 \begin{table}[p]
-  \caption{\textbf{SA-generated $\omega$-conotoxin sequences preserve experimentally
-  validated binding determinants.}
+  \caption{\textbf{Residue frequencies at reported $\omega$-conotoxin SAR positions.}
   Published structure--activity relationship (SAR) data for $\omega$-conotoxin
   binding to Cav2.2 identify critical residues whose mutation abolishes or
   substantially reduces channel block.\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}\textsuperscript{,}\cite{satoAlaScanMVIIC2000,schroederLys2Effects2012,schroederChiralityTyr131999}
-  For each SAR-critical position, the table reports the fraction of sequences that
-  retain the wild-type residue (or a conservative K/R substitution for basic positions).
-  SA strong-seeded generation preserves the primary pharmacophore (Tyr13: 98.3\%)
-  and all six cysteines ($\geq 97.4\%$), while enriching basic residues at
-  functionally important loop~2 positions relative to the input.}
+  For each reported position, the table reports the fraction retaining the listed
+  residue (or a K/R substitution at basic positions). Designated-subset generation
+  retains the Tyr13 signal and cysteine scaffold and enriches several reported
+  positions. These frequencies do not test mutation effects in the generated backgrounds.}
   \label{tab:sar-agreement}
   \centering
   \small
   \begin{tabular}{clllccc}
     \toprule
-    Pos. & WT & Role & Mutation effect & Input & SA strong & SA full \\
+    Pos. & WT & Role & Mutation effect & Input & SA des. & SA full \\
     \midrule
     13 & Tyr & Primary pharmacophore & Ala: abolishes activity & 0.83 & \textbf{0.98} & 0.47 \\
     2  & Lys & Loop 2 stabilization  & Ala: 40$\times$ loss (GVIA) & 0.96 & \textbf{0.98} & 0.46 \\
@@ -353,6 +353,30 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 \end{table}
 
 % -----------------------------------------------------------------------
+% Table: Docking validation
+% -----------------------------------------------------------------------
+\begin{table}[p]
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3.5pt}
+  \caption{\textbf{Low-confidence AlphaFold2-multimer predictions for generated
+  and control $\omega$-conotoxins.}
+  Complex-level scores for sequences modeled with the Cav2.2 pore domain via
+  ColabFold in multimer mode. The uniformly low absolute values do not establish
+  binding geometry.}
+  \label{tab:docking-validation}
+  \begin{tabular}{lcccc}
+    \toprule
+    Group & $n$ & Mean pTM & Mean iPTM & Mean interface pLDDT \\
+    \midrule
+    SA designated-subset & 10 & $0.221\pm0.007$ & $0.105\pm0.008$ & $37.2\pm5.4$ \\
+    SA full-family & 10 & $0.219\pm0.008$ & $0.104\pm0.007$ & $38.2\pm4.0$ \\
+    Natural controls & 5 & $0.228\pm0.004$ & $0.108\pm0.007$ & $40.7\pm3.5$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------
 % Fig 4: Binding-loop heatmaps with residuals
 % -----------------------------------------------------------------------
 \begin{figure}[p]
@@ -361,9 +385,9 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   \caption{\textbf{Binding-loop amino acid frequencies and generation residuals for
   the $\omega$-conotoxin family (positions 9--17).}
   \textit{Left column:} Per-position amino acid frequency heatmaps for the input sequences
-  (strong Cav2.2 binders, $n=23$, panel~a; full O-superfamily, $n=74$, panel~c).
+  (designated subset, $n=23$, panel~a; full O-superfamily, $n=74$, panel~c).
   \textit{Right column:} Residual heatmaps (generated $-$ input) showing the change in
-  frequency at each position--residue pair after SA generation. Panel~(b): strong-seeded
+  frequency at each position--residue pair after SA generation. Panel~(b): designated-seeded
   residuals are near-zero throughout ($|\Delta f| < 0.15$), confirming that the Tyr
   pharmacophore at position~13, the conserved Cys framework (positions~14--16), and the
   variable-loop diversity (positions~9--12) are reproduced with high fidelity. Panel~(d):
@@ -379,9 +403,9 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   \centering
   \includegraphics[width=\textwidth]{../sections/figs/sequence_analysis_kunitz.pdf}
   \caption{\textbf{Sequence-level analysis of SA-generated Kunitz domain sequences
-  conditioned on strong trypsin binders.}
+  conditioned on the K/R-positive subset.}
   \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
-  SA strong-binder-conditioned sequences (ranked by ESMFold pLDDT). Positions are
+  SA K/R-positive-subset-conditioned sequences (ranked by ESMFold pLDDT). Positions are
   colored by conservation in the stored MSA: highly conserved ($>90\%$, red),
   conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
   ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
@@ -390,10 +414,10 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   highly conserved position ($11/11$), all six cysteines ($6/6$), and carry K or R
   at P1, while introducing $19$--$26$ substitutions concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-family
-  generation (blue), and SA strong-binder-conditioned generation (red). The
+  generation (blue), and SA K/R-positive-subset-conditioned generation (red). The
   full-family entropy correlation is very high ($r = 0.988$), confirming that SA
   recapitulates the position-specific conservation pattern of the natural family.
-  The strong-conditioned entropy correlation is slightly lower ($r = 0.932$), with
+  The K/R-positive-subset entropy correlation is slightly lower ($r = 0.932$), with
   the largest deviation at the P1 position (column~25): conditioning collapses P1
   diversity to K/R, reducing entropy at this site while preserving the entropy
   profile elsewhere.}
@@ -407,9 +431,9 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   \centering
   \includegraphics[width=\textwidth]{../sections/figs/sequence_analysis_conotoxin.pdf}
   \caption{\textbf{Sequence-level analysis of SA-generated $\omega$-conotoxin sequences
-  conditioned on strong Cav2.2 binders.}
+  conditioned on the designated subset.}
   \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
-  SA strong-binder-conditioned sequences (ranked by ESMFold pLDDT). Positions are
+  SA designated-subset-conditioned sequences (ranked by ESMFold pLDDT). Positions are
   colored by conservation in the stored MSA: highly conserved ($>90\%$, red),
   conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
   ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
@@ -418,12 +442,11 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   carry Tyr at the pharmacophore position, while introducing $5$--$11$ substitutions
   concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-seeded
-  generation (blue), and SA strong-seeded generation (red). The full-seeded entropy
+  generation (blue), and SA designated-seeded generation (red). The full-seeded entropy
   correlation is near-perfect ($r = 0.997$), confirming faithful recapitulation of
-  position-specific conservation. The strong-seeded correlation is lower
-  ($r = 0.745$), reflecting the fact that conditioning on 23 strong Cav2.2 binders
-  collapses diversity not only at the Tyr13 pharmacophore but also at co-varying
-  loop residues that contribute to channel binding specificity.}
+  position-specific conservation. The designated-seeded correlation is lower
+  ($r = 0.745$), reflecting lower diversity after conditioning on the 23-sequence
+  designated subset, including at Tyr13 and co-varying loop residues.}
   \label{fig:conotoxin-sequence-analysis}
 \end{figure}
 
@@ -433,9 +456,9 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth]{../figs/fold_superposition_combined.pdf}
-  \caption{\textbf{SA-generated sequences fold into native-like structures for both
-  protein families.}
-  C$\alpha$ backbone superposition of the highest TM-score SA strong-conditioned
+  \caption{\textbf{Structure models place selected SA-generated sequences near
+  experimental family references.}
+  C$\alpha$ backbone superposition of the highest TM-score SA designated-subset-conditioned
   sequence (colored by per-residue pLDDT confidence) onto the experimental reference
   structure (gray, semi-transparent), shown in two orthogonal views.
   \textbf{(A,\,B)}~Kunitz domain: the SA-generated variant aligns to the BPTI crystal
@@ -445,23 +468,25 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   \textbf{(C,\,D)}~$\omega$-Conotoxin: the SA-generated variant aligns to the MVIIA
   NMR structure (1OMG chain~A) with TM $= 0.53$, consistent with the small peptide
   length (26 residues) where TM-score normalization is noisy; the cystine-knot
-  topology and loop architecture are visually preserved, with pLDDT $\sim 80$
-  (cyan/green) reflecting the intrinsic flexibility of the inter-cysteine loops.
+  topology and loop architecture appear in the prediction, with pLDDT $\sim 80$
+  (cyan/green).
   Colorbar: pLDDT confidence scale (red $= 50$, blue $= 100$).
   Structures predicted by ESMFold~\cite{esmfold2022}; alignment by
   TM-align~\cite{tmAlign2005}.}
   \label{fig:fold-superposition}
 \end{figure}
 
+\bibliography{../References_v1}
+
 % -----------------------------------------------------------------------
 % Supporting Information
 % -----------------------------------------------------------------------
 \begin{suppinfo}
 
-Supporting Information includes: detailed sequence encoding and PCA projection
-pipeline (Section~S1); supplementary per-family $\rho$ sweep tables for
-Kunitz, SH3, and WW domains (Tables~S1--S3); $\beta/\beta^{*}$ temperature
-sweep analysis (Table~S4); and pLDDT vs.\ TM-score scatter plot (Figure~S1).
+Supporting Information includes the sequence encoding and PCA projection
+pipeline; per-family $\rho$ sweeps for all six families; the
+$\beta/\beta^{*}$ temperature sweep; docking permutation statistics; the exact
+Gaussian-mixture derivation; and the pLDDT versus TM-score scatter plot.
 
 \end{suppinfo}
 

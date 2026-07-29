@@ -292,11 +292,11 @@ save_fasta(gen_strong_seqs, joinpath(DATA_DIR, "generated_strong_seeded.fasta"),
 # Summary
 # ══════════════════════════════════════════════════════════════════════════════
 # ══════════════════════════════════════════════════════════════════════════════
-# Step 10: Copy figures to paper/sections/figs
+# Step 10: Copy figures to paper-arxiv/sections/figs
 # ══════════════════════════════════════════════════════════════════════════════
-@info "\nStep 10: Copying figures to paper"
+@info "\nStep 10: Copying figures to paper-arxiv"
 
-const PAPER_FIG_DIR = joinpath(_CODE_DIR, "..", "paper", "sections", "figs")
+const PAPER_FIG_DIR = joinpath(_CODE_DIR, "..", "paper-arxiv", "sections", "figs")
 mkpath(PAPER_FIG_DIR)
 
 if isdir(FIG_DIR) && !isempty(readdir(FIG_DIR))

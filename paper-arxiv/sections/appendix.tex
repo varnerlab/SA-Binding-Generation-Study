@@ -1,6 +1,9 @@
 % appendix.tex -- Supplementary Material
+\providecommand{\PaperRoot}{.}
+\providecommand{\MainRef}[1]{\ref{#1}}
+\providecommand{\MainEqRef}[1]{\eqref{#1}}
 
-\section{Sequence Encoding, PCA Projection, and Multiplicity Conditioning}\label{app:pca}
+\section{Sequence Encoding and Multiplicity Conditioning}\label{app:pca}
 
 Stochastic attention (SA) stores unit-norm memory vectors and evolves continuous
 states in $\mathbb{R}^d$, while protein sequences are discrete objects over a
@@ -54,7 +57,7 @@ We retained the smallest dimension $d$ such that
 $\sum_{j=1}^d \sigma_j^2 / \sum_{j=1}^r \sigma_j^2 \geq 0.95$ (at least
 95\% of total variance). Across the six families, $d$ ranged from 34
 ($\omega$-conotoxin) to 186 (WW), yielding compression ratios of
-$3.3\times$ to $21\times$ (Table~\ref{tab:cross-family}). Each sequence was
+$3.3\times$ to $21\times$ (Table~\MainRef{tab:cross-family}). Each sequence was
 then projected as
 $\mathbf{z}_k = \mathbf{W}_d^\top(\mathbf{x}_k - \bar{\mathbf{x}})
 \in \mathbb{R}^d$, where
@@ -65,7 +68,7 @@ This normalization ensures that similarity scores lie in $[-1, 1]$ and
 prevents patterns with larger PCA norms from dominating the softmax attention.
 The columns $\mathbf{m}_1, \ldots, \mathbf{m}_K$ form the memory matrix
 $\hat{\mathbf{X}} \in \mathbb{R}^{d \times K}$ used throughout the paper.
-The Langevin sampler (Eq.~\ref{eq:ula}) produces continuous states
+The Langevin sampler (Eq.~\MainRef{eq:ula}) produces continuous states
 $\boldsymbol{\xi} \in \mathbb{R}^d$, which are decoded back to amino acid
 sequences by affine PCA reconstruction
 $\hat{\mathbf{x}} = \bar{\mathbf{x}} + \mathbf{W}_d\boldsymbol{\xi}
@@ -83,13 +86,13 @@ radius. Multiplying it by a stored-memory radius scales both its component
 signal and its finite-temperature noise, so we treat such rescaling as a
 decoder-sensitivity intervention rather than an inverse operation.
 
-The multiplicity-weighted Hopfield energy (Eq.~\ref{eq:weighted-energy})
+The multiplicity-weighted Hopfield energy (Eq.~\MainRef{eq:weighted-energy})
 assigns a weight $r_k > 0$ to each stored pattern $\mathbf{m}_k$. For the
 binary functional split used throughout this paper, we set $r_k = \rho$ for
 the $K_{\mathrm{des}}$ designated patterns and $r_k = 1$ for the
 $K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ background patterns, where
 $\rho \geq 1$ is the multiplicity ratio. The weighted score function
-(Proposition~\ref{prop:score}) adds $\log\rho$ to the pre-softmax logits of
+(Proposition~\MainRef{prop:score}) adds $\log\rho$ to the pre-softmax logits of
 designated patterns and $\log 1 = 0$ to background patterns. To derive the
 effect of $\rho$ on the attention distribution, consider the idealized case
 where the query $\boldsymbol{\xi}$ has equal similarity to all stored
@@ -114,7 +117,7 @@ and solving for $\rho$:
   \rho(f) &= \frac{f\,K_{\mathrm{bg}}}{K_{\mathrm{des}}\,(1-f)}.
   \label{eq:rho-inverse-derived}
 \end{align}
-This is Eq.~\eqref{eq:rho-inverse} in the main text. Equal similarity gives
+This is Eq.~\MainEqRef{eq:rho-inverse} in the main text. Equal similarity gives
 Eq.~\eqref{eq:feff-def} pointwise. More generally, the exact Gaussian-mixture
 identity (Section~\ref{app:gmm}) makes $f_{\mathrm{eff}}$ the exact latent
 designated-component probability, and the expected posterior designated
@@ -122,7 +125,7 @@ attention equals the same quantity by the law of total expectation. In the
 finite-step canonical ULA sweeps, the largest absolute deviation of empirical
 mean attention from $f_{\mathrm{eff}}(\rho)$ was \AttnMaxDevPts{} percentage
 points (\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$;
-Table~\ref{tab:per-family-rho}). This residual includes finite sampling, mixing,
+Table~\MainRef{tab:per-family-rho}). This residual includes finite sampling, mixing,
 and ULA discretization error. The effective number of patterns under
 multiplicity weighting,
 $K_{\mathrm{eff}}(\mathbf{r}) = (\sum_k r_k)^2 / \sum_k r_k^2
@@ -155,12 +158,12 @@ reaching the retrieval-phase inflection requires a higher inverse temperature
 $\beta^{*}(\rho) \geq \beta^{*}(1)$. We observed this empirically:
 $\beta^{*}$ increased from 4.4 ($\rho=1$, $K_{\mathrm{eff}} = 99$) to 9.3
 ($\rho=1{,}000$, $K_{\mathrm{eff}} = 32.1$) on the Kunitz domain
-(Fig.~\ref{fig:phase-transition}). By contrast, hard curation (where the
+(Fig.~\MainRef{fig:phase-transition}). By contrast, hard curation (where the
 memory matrix is built from the designated subset only) \emph{does} change
 the PCA: the centering vector, principal directions, and retained dimension
 are all computed from $K_{\mathrm{des}}$ sequences, capturing
 subset-specific variation that may be orthogonal to the leading components
-of the full-family PCA. This is why hard curation achieved 100\% phenotype
+of the full-family PCA. This is why hard curation achieved 100\% marker
 transfer regardless of the Fisher separation index $S$, while multiplicity
 weighting was limited by the full-family PCA geometry.
 
@@ -174,7 +177,7 @@ multiplicity vector; $f_{\mathrm{obs}}$ is the hard-decoded marker fraction
 averaged across five independent replicates (620 retained samples per replicate);
 $\bar{a}_{\mathrm{des}}$ is the mean softmax attention weight on designated
 patterns; and $D$ is the mean pairwise diversity. Uncertainties are replicate
-standard deviations. Table~\ref{tab:beta-sweep} reports phenotype fraction and
+standard deviations. Table~\ref{tab:beta-sweep} reports marker fraction and
 diversity as a function of $\beta/\beta^{*}$ for three fixed $\rho$ values
 on the Kunitz domain. Figure~\ref{fig:plddt-tmscore-scatter} shows the joint
 distribution of ESMFold pLDDT and TM-score for all 250 predicted Kunitz
@@ -185,8 +188,8 @@ lower values. The entropy curves for the full $\rho$ sweep
 family produce a monotonically rightward-shifting family of sigmoid curves
 with $\beta^{*}(\rho)$ increasing from 4.35 ($\rho=1$) to 9.26
 ($\rho=1000$), consistent with $\beta^{*} \propto \log K_{\mathrm{eff}}$
-predicted by the mean-field argument in Section~\ref{sec:theory}
-(Fig.~\ref{fig:phase-transition}).
+predicted by the mean-field argument in the main text
+(Fig.~\MainRef{fig:phase-transition}).
 
 \begin{table}[ht]
   \centering
@@ -197,7 +200,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    \input{sections/generated/tab_kunitz_rho}
+    \input{\PaperRoot/sections/generated/tab_kunitz_rho}
   \end{tabular}
 \end{table}
 
@@ -210,7 +213,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    \input{sections/generated/tab_sh3_rho}
+    \input{\PaperRoot/sections/generated/tab_sh3_rho}
   \end{tabular}
 \end{table}
 
@@ -223,7 +226,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    \input{sections/generated/tab_ww_rho}
+    \input{\PaperRoot/sections/generated/tab_ww_rho}
   \end{tabular}
 \end{table}
 
@@ -236,7 +239,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    \input{sections/generated/tab_homeobox_rho}
+    \input{\PaperRoot/sections/generated/tab_homeobox_rho}
   \end{tabular}
 \end{table}
 
@@ -249,7 +252,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    \input{sections/generated/tab_forkhead_rho}
+    \input{\PaperRoot/sections/generated/tab_forkhead_rho}
   \end{tabular}
 \end{table}
 
@@ -263,7 +266,7 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
     \toprule
     $\rho$ & $f_{\mathrm{eff}}$ & $f_{\mathrm{obs}}$ & $\bar{a}_{\mathrm{des}}$ & $D$ \\
     \midrule
-    \input{sections/generated/tab_omega_conotoxin_rho}
+    \input{\PaperRoot/sections/generated/tab_omega_conotoxin_rho}
   \end{tabular}
 \end{table}
 
@@ -298,12 +301,11 @@ predicted by the mean-field argument in Section~\ref{sec:theory}
 \end{table}
 
 \section*{Docking-statistics note}
-For the $\omega$-conotoxin docking validation (Table~\ref{tab:docking-validation}),
-group-level comparisons (SA strong-conditioned, SA full-conditioned, and
+For the $\omega$-conotoxin docking validation (Table~\MainRef{tab:docking-validation}),
+group-level comparisons (SA designated-subset, SA full-family, and
 natural $\omega$-conotoxin controls) were evaluated using exact two-sided
 permutation tests on mean complex-level scores (iPTM, pTM, confidence, and
-interface-pLDDT), with sample sizes $n_{\mathrm{SA,strong}}=10$,
-$n_{\mathrm{SA,full}}=10$, and $n_{\mathrm{control}}=5$. No pairwise
+interface pLDDT), with sample sizes 10, 10, and 5, respectively. No pairwise
 contrast reached significance at $\alpha=0.05$ (all $p > 0.05$; smallest observed
 $p=0.0726$ for confidence, SA full vs controls).
 
@@ -311,9 +313,10 @@ $p=0.0726$ for confidence, SA full vs controls).
   \centering
   \caption{Pairwise exact permutation p-values for $\omega$-conotoxin docking comparisons (all $H_0$: equal means).}
   \label{tab:docking-permutation-pvalues}
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{lccc}
     \toprule
-    \textbf{Metric} & \textbf{SA strong vs SA full} & \textbf{SA strong vs controls} & \textbf{SA full vs controls} \\
+    \textbf{Metric} & \textbf{SA des. vs SA full} & \textbf{SA des. vs controls} & \textbf{SA full vs controls} \\
     \midrule
     iPTM & 1.0000 & 0.7502 & 0.4752 \\
     pTM & 0.7873 & 0.1285 & 0.1092 \\
@@ -321,6 +324,7 @@ $p=0.0726$ for confidence, SA full vs controls).
     Interface pLDDT & 0.6556 & 0.2238 & 0.2934 \\
     \bottomrule
   \end{tabular}
+  }
 \end{table}
 
-\input{sections/si_gmm_derivation}
+\input{\PaperRoot/sections/si_gmm_derivation}

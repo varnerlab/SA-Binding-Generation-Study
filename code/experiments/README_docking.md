@@ -69,6 +69,9 @@ This would provide computational evidence that multiplicity weighting produces s
 - `figs/docking_validation/binding_scores_comparison.pdf` - Main figure for paper
 - Individual ColabFold outputs in subdirectories
 
+The tracked 25-row manuscript dataset and the excluded failed/stale archives
+are documented in `data/omega_conotoxin/docking_validation/README.md`.
+
 ## Integration with Paper
 
 The binding scores comparison figure can be added as a new panel or supplementary figure showing computational validation of the generated sequences' predicted binding ability.

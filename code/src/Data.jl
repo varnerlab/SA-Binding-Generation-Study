@@ -19,9 +19,9 @@ This is the standard setup in the Hopfield capacity literature.
   If `nothing`, datasets are returned in memory but not saved. When a path is 
   provided, a single `data.jld2` file is written containing all datasets and 
   metadata, plus individual `patterns_i.csv` files for portability.
-- `seed::Union{Int, Nothing}=nothing`: Random seed for reproducibility. If `nothing`, 
-  the global RNG state is used unchanged. When provided, `Random.seed!(seed)` is 
-  called before generation so that results are exactly reproducible.
+- `seed::Union{Int, Nothing}=nothing`: Random seed for reproducibility.
+- `rng::Union{AbstractRNG, Nothing}=nothing`: Optional caller-owned RNG. Pass either
+  `seed` or `rng`, not both.
 
 # Returns
 A `Dict{String, Any}` with the following keys:
@@ -58,22 +58,23 @@ result = JLD2.load("data/synthetic/data.jld2", "result")
 """
 function datagenerate(d::Int, K::Int, N::Int;
     path::Union{String, Nothing} = nothing,
-    seed::Union{Int, Nothing} = nothing)::Dict{String, Any}
+    seed::Union{Int, Nothing} = nothing,
+    rng::Union{AbstractRNG, Nothing} = nothing)::Dict{String, Any}
 
     # validate inputs
     d > 0 || throw(ArgumentError("d must be positive, got d = $d"))
     K > 0 || throw(ArgumentError("K must be positive, got K = $K"))
     N > 0 || throw(ArgumentError("N must be positive, got N = $N"))
 
-    # set seed if provided
-    if seed !== nothing
-        Random.seed!(seed)
-    end
+    seed !== nothing && rng !== nothing &&
+        throw(ArgumentError("Pass either seed or rng, not both"))
+    local_rng = rng === nothing ?
+        (seed === nothing ? Random.default_rng() : MersenneTwister(seed)) : rng
 
     # generate N datasets
     datasets = Vector{Matrix{Float64}}(undef, N)
     for i in 1:N
-        X = randn(d, K)                    # d × K, entries ~ N(0,1)
+        X = randn(local_rng, d, K)         # d × K, entries ~ N(0,1)
         for k in 1:K
             X[:, k] ./= norm(X[:, k])      # normalize each column to the unit sphere
         end

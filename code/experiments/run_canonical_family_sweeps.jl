@@ -105,14 +105,15 @@ function run_replicated_sweep(analysis)
 
         for rep in 1:N_REPS
             seed = 20_000 + (rho_index - 1) * N_REPS + rep
-            Random.seed!(seed)
+            replicate_rng = MersenneTwister(seed)
             generated = String[]
             attention = Float64[]
             for chain in 1:N_CHAINS
+                chain_rng = MersenneTwister(seed + chain)
                 memory_index = mod1(chain, K)
-                xi0 = analysis.X[:, memory_index] .+ 0.01 .* randn(d)
+                xi0 = analysis.X[:, memory_index] .+ 0.01 .* randn(chain_rng, d)
                 sampled = weighted_sample(analysis.X, xi0, N_STEPS, weights;
-                                          β=beta, α=0.01, seed=seed + chain)
+                                          β=beta, α=0.01, rng=chain_rng)
                 for t in BURN_IN:THIN:N_STEPS
                     xi = sampled.Ξ[t + 1, :]
                     push!(generated, decode_sample(xi, analysis.pca_model, L))
@@ -128,9 +129,9 @@ function run_replicated_sweep(analysis)
             pair_ids = Float64[]
             n = length(generated)
             for _ in 1:min(300, n * (n - 1) ÷ 2)
-                i, j = rand(1:n), rand(1:n)
+                i, j = rand(replicate_rng, 1:n), rand(replicate_rng, 1:n)
                 while i == j
-                    j = rand(1:n)
+                    j = rand(replicate_rng, 1:n)
                 end
                 push!(pair_ids, sequence_identity(generated[i], generated[j]))
             end
