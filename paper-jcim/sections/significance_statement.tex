@@ -1,0 +1,14 @@
+% Significance Statement — saved for potential PNAS submission
+% To use, add to Paper_v1.tex after \end{abstract}:
+%   \noindent\fbox{\parbox{\textwidth}{\small\textbf{Significance Statement.}
+%   \input{sections/significance_statement}}}
+%   \bigskip
+
+Protein engineers routinely isolate a handful of functional binders (via phage display, yeast
+surface display, or functional selections) but lack a systematic way to expand these small sets
+into diverse candidate libraries without retraining a generative model. We show that a single
+scalar parameter added to the softmax logits of a Hopfield-energy sampler continuously conditions
+generation from ``any family member'' to ``only binders,'' with no training, no GPU, and no
+architectural changes. An exploratory comparison across five Pfam families relates conditioning
+effectiveness to a cheap geometric property of the alignment, motivating broader validation of
+this diagnostic before it is used as a prospective decision rule.

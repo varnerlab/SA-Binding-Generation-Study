@@ -34,7 +34,7 @@
 \newcommand{\veps}{\bm{\epsilon}}
 \newcommand{\R}{\mathbb{R}}
 \DeclareMathOperator{\softmax}{softmax}
-\input{../sections/generated/numbers}
+\input{sections/generated/numbers}
 
 % --- metadata ---
 \title{Conditioning Protein Generation via Hopfield Pattern Multiplicity}
@@ -47,21 +47,21 @@ Cornell University, Ithaca, New York 14850, United States}
 \begin{document}
 
 \begin{abstract}
-\input{../sections/abstract}
+\input{sections/abstract}
 \end{abstract}
 
 \section{Introduction}
-\input{../sections/introduction}
+\input{sections/introduction}
 
 \section{Results}
-\input{../sections/results}
+\input{sections/results}
 
 \section{Discussion}
-\input{../sections/discussion}
+\input{sections/discussion}
 
 \section{Materials and Methods}
-\input{../sections/theory}
-\input{../sections/methods}
+\input{sections/theory}
+\input{sections/methods}
 
 \begin{acknowledgement}
 The author thanks the Cornell Center for Advanced Computing for computational resources.
@@ -94,7 +94,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
            & $f_{\mathrm{nat}}$ & $S$
            & $f_{\mathrm{obs}}^{\mathrm{hard}}$ & $\Delta$ \\
     \midrule
-    \input{../sections/generated/tab_cross_family}
+    \input{sections/generated/tab_cross_family}
   \end{tabular}
   }
 \end{table}
@@ -104,7 +104,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{../sections/figs/study1_binder_scaling.pdf}
+  \includegraphics[width=\textwidth]{sections/figs/study1_binder_scaling.pdf}
   \caption{\textbf{Diversity and composition fidelity improve with more input
   K/R-positive sequences; marker retention is complete at every sample size.}
   Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
@@ -124,7 +124,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=0.82\textwidth]{../sections/figs/fig5_entropy_curves.pdf}
+  \includegraphics[width=0.82\textwidth]{sections/figs/fig5_entropy_curves.pdf}
   \caption{\textbf{Phase transition shifts rightward with increasing multiplicity
   ratio $\rho$.}
   Attention entropy $H(\beta)$ normalized by $\log K$ as a function of inverse
@@ -139,7 +139,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=0.72\textwidth]{../sections/figs/fig_mask_betasweep.pdf}
+  \includegraphics[width=0.72\textwidth]{sections/figs/fig_mask_betasweep.pdf}
   \caption{\textbf{Recovery is set by retrieval sharpness and conditioning strength,
   both acting through the decode gap.}
   P1 K/R fraction for the Kunitz designated subset versus inverse temperature
@@ -180,7 +180,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{../sections/figs/fig2_separation_vs_gap.pdf}
+  \includegraphics[width=\textwidth]{sections/figs/fig2_separation_vs_gap.pdf}
   \caption{\textbf{Calibration trajectories reveal family-dependent gaps associated with
   PCA-space separation.}
   \textbf{(A)}~Observed marker fraction $f_{\mathrm{obs}}$ versus effective designated
@@ -219,7 +219,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
       & $\rho$ & $f_{\mathrm{eff}}$ & $\bar{a}_{\mathrm{des}}$
       & $f_{\mathrm{obs}}$ & $\Delta$ & $D$ \\
     \midrule
-    \input{../sections/generated/tab_per_family_rho}
+    \input{sections/generated/tab_per_family_rho}
   \end{tabular}
   }
 \end{table}
@@ -381,7 +381,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{../sections/figs/loop_heatmap_with_residuals.pdf}
+  \includegraphics[width=\textwidth]{sections/figs/loop_heatmap_with_residuals.pdf}
   \caption{\textbf{Binding-loop amino acid frequencies and generation residuals for
   the $\omega$-conotoxin family (positions 9--17).}
   \textit{Left column:} Per-position amino acid frequency heatmaps for the input sequences
@@ -401,7 +401,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{../sections/figs/sequence_analysis_kunitz.pdf}
+  \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_kunitz.pdf}
   \caption{\textbf{Sequence-level analysis of SA-generated Kunitz domain sequences
   conditioned on the K/R-positive subset.}
   \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
@@ -429,7 +429,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{../sections/figs/sequence_analysis_conotoxin.pdf}
+  \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_conotoxin.pdf}
   \caption{\textbf{Sequence-level analysis of SA-generated $\omega$-conotoxin sequences
   conditioned on the designated subset.}
   \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
@@ -455,7 +455,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{../figs/fold_superposition_combined.pdf}
+  \includegraphics[width=\textwidth]{figs/fold_superposition_combined.pdf}
   \caption{\textbf{Structure models place selected SA-generated sequences near
   experimental family references.}
   C$\alpha$ backbone superposition of the highest TM-score SA designated-subset-conditioned
@@ -476,7 +476,7 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
   \label{fig:fold-superposition}
 \end{figure}
 
-\bibliography{../References_v1}
+\bibliography{References_v1}
 
 % -----------------------------------------------------------------------
 % Supporting Information
@@ -486,7 +486,8 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 Supporting Information includes the sequence encoding and PCA projection
 pipeline; per-family $\rho$ sweeps for all six families; the
 $\beta/\beta^{*}$ temperature sweep; docking permutation statistics; the exact
-Gaussian-mixture derivation; and the pLDDT versus TM-score scatter plot.
+Gaussian-mixture derivation and exact-equilibrium benchmark; and the pLDDT versus
+TM-score scatter plot.
 
 \end{suppinfo}
 

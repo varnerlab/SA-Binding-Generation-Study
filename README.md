@@ -6,7 +6,9 @@ The companion paper describing the base SA method is: *Training-Free Generation 
 
 ## Repository organization
 
-The repository has two top-level directories: `code/` for all computational work (Julia and Python) and `paper-arxiv/` for the LaTeX manuscript.
+The repository has three main top-level directories: `code/` for all computational work
+(Julia and Python), `paper-arxiv/` for the arXiv LaTeX manuscript, and `paper-jcim/`
+for the independent JCIM manuscript and Supporting Information.
 
 ### Source library (`code/src/`)
 
@@ -67,17 +69,25 @@ The main experiment scripts, each self-contained and runnable from the command l
 
 **Replicate variants** (`*_with_replicates.jl`) run multiple random seeds for uncertainty quantification.
 
-### Paper (`paper-arxiv/`)
+### Papers (`paper-arxiv/` and `paper-jcim/`)
 
-The main file `Paper_v1.tex` inputs section files from `paper-arxiv/sections/` (abstract, introduction, results, discussion, theory, methods, appendix), and references are in `References_v1.bib`. Figures are in `paper-arxiv/sections/figs/` and `paper-arxiv/figs/`. Running `./Build.sh Paper_v1` from the `paper-arxiv/` directory executes the standard four-pass LaTeX compilation cycle and produces `Paper_v1.pdf`.
-
-For the JCIM format, build the main article before the supplement because the
-supplement imports cross-references from the main auxiliary file:
+The arXiv main file `paper-arxiv/Paper_v1.tex` uses the section files, references,
+and figures stored under `paper-arxiv/`. Build it with:
 
 ```bash
-cd paper-arxiv/jcim
-./Build.sh Paper_JCIM
-./Build.sh Paper_JCIM_SI
+cd paper-arxiv
+./Build.sh Paper_v1
+```
+
+The JCIM source is a separate snapshot under `paper-jcim/`, with its own
+`sections/`, `figs/`, and `References_v1.bib`. Changes to one paper tree therefore
+do not modify the other. Build the JCIM main article before the supplement because
+the supplement imports cross-references from the main auxiliary file. The Makefile
+does both in the required order:
+
+```bash
+cd paper-jcim
+make
 ```
 
 ## Getting started

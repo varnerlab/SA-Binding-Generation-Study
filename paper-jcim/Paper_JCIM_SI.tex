@@ -34,12 +34,12 @@
 \newcommand{\veps}{\bm{\epsilon}}
 \newcommand{\R}{\mathbb{R}}
 \DeclareMathOperator{\softmax}{softmax}
-\newcommand{\PaperRoot}{..}
+\newcommand{\PaperRoot}{.}
 \newcommand{\MainRef}[1]{\ref{main-#1}}
 \newcommand{\MainEqRef}[1]{\eqref{main-#1}}
-\input{../sections/generated/numbers}
+\input{sections/generated/numbers}
 
-\title{Supporting Information: Conditioning Protein Generation via Hopfield Pattern Multiplicity}
+\title{Conditioning Protein Generation via Hopfield Pattern Multiplicity}
 
 \author{Jeffrey D.~Varner}
 \email{jdv27@cornell.edu}
@@ -54,14 +54,14 @@ Cornell University, Ithaca, New York 14850, United States}
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\theequation}{S\arabic{equation}}
 
-\input{../sections/appendix}
+\input{sections/appendix}
 
 % -----------------------------------------------------------------------
 % Fig S1: pLDDT vs TM-score scatter
 % -----------------------------------------------------------------------
 \begin{figure}[p]
   \centering
-  \includegraphics[width=0.72\textwidth]{../sections/figs/plddt_vs_tmscore_scatter.pdf}
+  \includegraphics[width=0.72\textwidth]{sections/figs/plddt_vs_tmscore_scatter.pdf}
   \caption{\textbf{pLDDT and TM-score are positively correlated; SA sequences cluster in
   the high model-score region.}
   Each point represents one predicted structure (50 per source). Stored (gray) and SA-generated
@@ -72,6 +72,6 @@ Cornell University, Ithaca, New York 14850, United States}
   \label{fig:plddt-tmscore-scatter}
 \end{figure}
 
-\bibliography{../References_v1}
+\bibliography{References_v1}
 
 \end{document}
