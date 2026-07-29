@@ -87,7 +87,21 @@ function validate_inputs()
             error("$family cross-family gap SD disagrees with its aggregate")
         aggregates[family] = aggregate
     end
-    return cross, aggregates
+
+    sar_path = joinpath(DATA_DIR, "omega_conotoxin", "sar_agreement.csv")
+    isfile(sar_path) || error("Missing conotoxin SAR table: $sar_path")
+    sar = CSV.read(sar_path, DataFrame)
+    nrow(sar) == 12 || error("Conotoxin SAR table must have twelve rows")
+    expected_sar = [:Position, :WT_Residue, :Role, :Effect_of_mutation,
+                    :Input_strong, :SA_strong, :SA_full, :Citation]
+    propertynames(sar) == expected_sar ||
+        error("Conotoxin SAR schema mismatch: $(propertynames(sar))")
+    for col in [:Input_strong, :SA_strong, :SA_full]
+        all(x -> 0 <= x <= 1, sar[!, col]) ||
+            error("Conotoxin SAR $col outside [0,1]")
+    end
+
+    return cross, aggregates, sar
 end
 
 function linear_fit(x, y)
@@ -107,7 +121,7 @@ function write_text(path, content)
 end
 
 function generate(output_dir)
-    cross, aggregates = validate_inputs()
+    cross, aggregates, sar = validate_inputs()
     mkpath(output_dir)
 
     for (family, slug) in FAMILY_SLUGS
@@ -133,6 +147,42 @@ function generate(output_dir)
     end
     write_text(joinpath(output_dir, "tab_cross_family.tex"),
                join(cross_rows, "\n") * "\n" * raw"\bottomrule")
+
+    # The frequencies come from the CSV so they cannot drift from the analysis. The
+    # residue names and the abbreviated role and effect strings are typesetting choices
+    # and stay here. Keyed by MVIIA position so an unmapped row is an error, never a
+    # silently dropped one.
+    sar_labels = Dict(
+        13 => ("Tyr", "Primary pharmacophore", "Ala: abolishes activity"),
+        2  => ("Lys", "Loop 2 stabilization", "Ala: 40\$\\times\$ loss (GVIA)"),
+        10 => ("Arg", "Loop 2 binding", "Critical for interaction"),
+        11 => ("Leu", "Loop 2 binding", "Critical for interaction"),
+        1  => ("Cys", "Disulfide framework", "Required for fold"),
+        8  => ("Cys", "Disulfide framework", "Required for fold"),
+        15 => ("Cys", "Disulfide framework", "Required for fold"),
+        16 => ("Cys", "Disulfide framework", "Required for fold"),
+        20 => ("Cys", "Disulfide framework", "Required for fold"),
+        25 => ("Cys", "Disulfide framework", "Required for fold"),
+        21 => ("Arg", "Electrostatic", "Ala: reduced potency"),
+        4  => ("Lys", "P/Q selectivity", "Ala: important for P/Q"),
+    )
+    sar_rows = String[]
+    for row in eachrow(sar)
+        position = Int(row.Position)
+        haskey(sar_labels, position) ||
+            error("Conotoxin SAR position $position has no typeset label")
+        residue, role, effect = sar_labels[position]
+        # Display threshold reproducing the emphasis of the hand-typed table, where
+        # every designated-seeded value was bold except Leu11 at 0.24.
+        designated = row.SA_strong >= 0.5 ?
+            @sprintf("\\textbf{%.2f}", row.SA_strong) : @sprintf("%.2f", row.SA_strong)
+        push!(sar_rows, @sprintf(
+            "%d & %s & %s & %s & %.2f & %s & %.2f \\\\",
+            position, residue, role, effect,
+            row.Input_strong, designated, row.SA_full))
+    end
+    write_text(joinpath(output_dir, "tab_sar_agreement.tex"),
+               join(sar_rows, "\n") * "\n" * raw"\bottomrule")
 
     selected_rho = Set([1.0, 10.0, 100.0, 500.0])
     per_family_rows = String[]
