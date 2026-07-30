@@ -178,20 +178,6 @@ function write_execution_record(spec::CanonicalFamilySpec)
     atomic_csv_write(joinpath(DATA_DIR, spec.slug, "canonical_sweep_execution.csv"), record)
 end
 
-function prepare_legacy_kunitz()
-    spec = only(filter(s -> s.family == "Kunitz", CANONICAL_FAMILIES))
-    analysis = family_analysis(spec)
-    aggregate_path = joinpath(DATA_DIR, spec.slug, "multiplicity_sweep_aggregated.csv")
-    aggregate = normalize_aggregate(CSV.read(aggregate_path, DataFrame))
-    validate_aggregate(aggregate, spec.family)
-    atomic_csv_write(aggregate_path, aggregate)
-    raw_path = joinpath(DATA_DIR, spec.slug, "multiplicity_sweep_raw_replicates.csv")
-    raw = CSV.read(raw_path, DataFrame)
-    Symbol("ρ") in propertynames(raw) && rename!(raw, Symbol("ρ") => :rho)
-    atomic_csv_write(raw_path, raw)
-    write_family_metadata(analysis, 1.0, 0.0)
-end
-
 function assemble_cross_family()
     rows = DataFrame[]
     for spec in CANONICAL_FAMILIES
@@ -220,10 +206,10 @@ function assemble_cross_family()
             :hard_curation_std, :cal_gap_mean, :cal_gap_std, :fit_included)
     atomic_csv_write(joinpath(DATA_DIR, "multi_family_comparison_6fam_aggregated.csv"), comparison)
 
-    kunitz_execution = joinpath(DATA_DIR, "kunitz", "canonical_sweep_execution.csv")
-    kunitz_origin = isfile(kunitz_execution) ?
-        "canonical driver; see data/kunitz/canonical_sweep_execution.csv" :
-        "legacy replicated aggregate; normalized to canonical schema"
+    # Every canonical family, Kunitz included, is swept by this driver. Earlier versions
+    # carried Kunitz forward as a legacy aggregate; that path is gone, so the recorded
+    # origin is unconditional rather than inferred from a file's existence.
+    kunitz_origin = "canonical driver; see data/kunitz/canonical_sweep_execution.csv"
     provenance = DataFrame(
         parameter=["rho_grid", "n_replicates", "n_chains", "n_steps", "burn_in", "thin",
                    "replicate_seed_formula", "kunitz_origin"],
@@ -251,12 +237,9 @@ function parse_requested_families(args)
 end
 
 requested, assemble_only = parse_requested_families(ARGS)
-rerun_kunitz = "kunitz" in requested
-rerun_kunitz || prepare_legacy_kunitz()
 
 if !assemble_only
-    rerun_specs = rerun_kunitz ? CANONICAL_FAMILIES :
-                  filter(s -> s.family != "Kunitz", CANONICAL_FAMILIES)
+    rerun_specs = CANONICAL_FAMILIES
     !isempty(requested) && (rerun_specs = filter(s -> lowercase(s.family) in requested ||
                                                   s.slug in requested, rerun_specs))
     for spec in rerun_specs
