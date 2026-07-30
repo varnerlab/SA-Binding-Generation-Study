@@ -9,7 +9,7 @@ below is a distribution over all of $\mathbb{R}^{d}$.
 Where does the sampler settle if we run it for a long time? For the underlying
 continuous-time dynamics the answer is the Boltzmann distribution
 $p_\beta(\boldsymbol{\xi})\propto e^{-\beta E_r(\boldsymbol{\xi})}$, built from the
-multiplicity-weighted Hopfield energy
+multiplicity-weighted Hopfield energy:
 \begin{equation}
   E_r(\boldsymbol{\xi})
   = \tfrac12\lVert\boldsymbol{\xi}\rVert^2
@@ -28,7 +28,7 @@ the mixture weights.
 
 It helps to write down the shape we are aiming for first. A Gaussian in $d$
 dimensions with mean $\boldsymbol{\mu}$ and the same variance $\sigma^{2}$ in every
-direction has density
+direction has density:
 \begin{align}
   \mathcal{N}(\boldsymbol{\xi};\,\boldsymbol{\mu},\,\sigma^{2}\mathbf{I})
   &= \left(2\pi\sigma^{2}\right)^{-d/2}
@@ -168,7 +168,7 @@ top and the bottom, so they cancel and never matter:
      \frac{r_k}{\sum_{j=1}^{K} r_j}\,
      \mathcal{N}(\boldsymbol{\xi};\,\mathbf{m}_k,\,\beta^{-1}\mathbf{I}) .
 \end{align}
-Writing $w_k = r_k / \sum_j r_j$ for the normalized multiplicities, this is
+Writing $w_k = r_k / \sum_j r_j$ for the normalized multiplicities, this is given by:
 \begin{equation}
   \boxed{\;
   p_\beta(\boldsymbol{\xi})

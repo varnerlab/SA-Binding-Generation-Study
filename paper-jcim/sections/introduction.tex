@@ -9,7 +9,7 @@ Structure-conditioned inverse folding methods~\cite{dauparasProteinMPNN2022} des
 a given backbone but require a target structure as input. Protein language
 models~\cite{esmfold2022} trained on evolutionary databases can score or sample sequences, but
 conditioning them on a specific functional property typically requires fine-tuning on labeled
-data. Profile HMMs~\cite{hmmer3} capture family-level statistics from alignments but, in the
+data. Profile hidden Markov models (HMMs)~\cite{hmmer3} capture family-level statistics from alignments but, in the
 Kunitz comparison reported below, produced sequences with low structural confidence and poor
 compositional fidelity. For the scarce-data regime (families with tens to hundreds of members,
 typical of Pfam seed alignments), models trained on the target family alone have limited
@@ -63,7 +63,7 @@ $\mathcal{O}(dK)$ cost of the original method. The energy-level conditioning is 
 largest absolute deviation between mean softmax attention and the target fraction is
 \AttnMaxDevPts{} percentage points (\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$) across the
 canonical replicated sweeps. However, we found that the decoded sequence marker can fall short
-of this target after finite-temperature sampling, reconstruction from unit-normalized PCA
+of this target after finite-temperature sampling, reconstruction from unit-normalized principal component analysis (PCA)
 coordinates, and argmax decoding. We termed
 this discrepancy the calibration gap and examined its association with a simple geometric
 quantity, the separation index $S$, which measures how well PCA separates designated from

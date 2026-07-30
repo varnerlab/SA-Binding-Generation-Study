@@ -7,9 +7,9 @@ $>50\%$ gaps and sequences with $>30\%$ gaps in the remaining columns, then one-
 cleaned alignment with 20 amino acid channels per position and mapped gaps to zero vectors.
 PCA retained 95\% of the variance, and the resulting columns were normalized to unit norm.
 
-ULA chains used step size $\alpha=0.01$ and ran for $T=5{,}000$ steps, each starting near a
+Each ULA chain used step size $\alpha=0.01$ and ran for $T=5{,}000$ steps, starting near a
 stored pattern with patterns assigned cyclically across the memory and with independent local
-RNGs generating the initial perturbations and Langevin noise. Samples were collected after
+random number generators (RNGs) generating the initial perturbations and Langevin noise. Samples were collected after
 2{,}000 burn-in steps and then every 100 steps. We tested five Pfam families, Kunitz
 (PF00014, $K=99$, $L=53$), SH3 (PF00018, $K=55$, $L=48$), WW (PF00397, $K=420$, $L=31$),
 Homeobox (PF00046, $K=136$, $L=57$), and Forkhead (PF00250, $K=246$, $L=87$), together with

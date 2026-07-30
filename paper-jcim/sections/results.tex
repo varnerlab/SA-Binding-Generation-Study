@@ -36,13 +36,13 @@ selected on this marker, so it records marker retention rather than independent 
 trypsin inhibition. Sequence-level inspection showed that the top
 K/R-positive-subset-conditioned sequences preserved all 11 highly conserved positions, all six
 cysteines, and K/R at P1 while carrying 19--26 substitutions concentrated at variable sites.
-Per-position Shannon entropy correlated with the stored MSA for both full-family generation
+Per-position Shannon entropy correlated with the stored multiple sequence alignment (MSA) for both full-family generation
 ($r = 0.988$) and K/R-positive-subset conditioning ($r = 0.932$), with the largest change at
 P1, where conditioning restricted the residues to K/R (Fig.~\ref{fig:sequence-analysis}).
 Retention also held as the designated input shrank, since subsampling
 $K_{\mathrm{des}} \in \{3, 5, 8, 10, 15, 20, 25, 32\}$ K/R-positive sequences with three
 replicates per size gave 100\% P1 retention at every size, including $K_{\mathrm{des}}=3$,
-while pairwise sequence diversity increased from 0.35 to 0.50 and KL divergence decreased from
+while pairwise sequence diversity increased from 0.35 to 0.50 and Kullback-Leibler (KL) divergence decreased from
 0.070 to 0.009 over the same range (Fig.~\ref{fig:scaling}). Smaller input sets define a
 narrower PCA subspace and therefore produced less diverse libraries, so compositional fidelity
 and diversity both improved as inputs were added while marker retention did not change.
@@ -86,13 +86,13 @@ was not well represented by the leading $d=80$ principal components, consistent 
 Kunitz split's separation index of $S=\KunitzSeparation$, which indicates partial PCA overlap.
 Because the closed-form Gaussian-mixture target permits independent equilibrium sampling
 without a Markov chain, we could also ask whether finite-step sampling produced the gap, and we
-compared 1{,}640 exact draws with 1{,}640 retained ULA states at $\rho\in\{1,10,500\}$ using
+compared 1{,}640 exact draws with 1{,}640 retained unadjusted Langevin (ULA) states at $\rho\in\{1,10,500\}$ using
 the same $\beta^{*}$ and decoder in each comparison, with the full comparison provided in the
 Supporting Information. At $\rho=500$ the exact
 designated-component probability was $f_{\mathrm{eff}}=0.996$, while the decoded P1~K/R
 fraction was 0.604 under exact sampling and 0.597 under ULA, and the amino acid composition
 divergence $D_{\mathrm{KL}}(\text{exact} \parallel \text{ULA})$ between the two decoded
-libraries was $1.19\times10^{-4}$. Across all three conditions, exact and ULA MAP-designated
+libraries was $1.19\times10^{-4}$. Across all three conditions, exact and ULA maximum a posteriori (MAP) designated
 basin occupancies differed by at most 0.026 and the decoded P1~K/R fractions by at most 0.016.
 The calibration gap therefore persists at exact equilibrium. Finite-step ULA discretization
 and mixing error were not its main source.
@@ -138,7 +138,7 @@ loss. Under the fixed mask the P1~K/R fraction increased from 0.46 at $\beta = 2
 $\beta = 512$ without reaching a plateau, so the residual decode gap
 $\Delta_{\mathrm{PCA}} + \Delta_{\mathrm{argmax}}$ shrank as retrieval sharpened rather than
 saturating at a fixed floor. At matched $\beta$, hard masking recovered more marker signal
-than finite-$\rho$ weighting, by 0.085 (SE 0.028) at $f_{\mathrm{eff}} = 0.5$ and 0.053
+than finite-$\rho$ weighting, by 0.085 with a standard error (SE) of 0.028 at $f_{\mathrm{eff}} = 0.5$ and 0.053
 (SE 0.029) at $f_{\mathrm{eff}} = 0.7$, and that advantage fell to 0.003 (SE 0.030) at
 $f_{\mathrm{eff}} = 0.99$, where the mask and the strongest finite-$\rho$ condition coincided.
 

@@ -46,7 +46,7 @@ We computed PCA from the one-hot encoded alignment by first centering the data:
 $\bar{\mathbf{x}} = K^{-1}\sum_{k=1}^K \mathbf{x}_k$ (the family's
 position-specific amino acid frequency profile),
 $\tilde{\mathbf{X}} = \mathbf{X} - \bar{\mathbf{x}}\mathbf{1}_K^\top$,
-and then computing the economy SVD
+and then computing the economy singular value decomposition (SVD)
 $\tilde{\mathbf{X}} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$, where
 $\mathbf{U} \in \mathbb{R}^{d_{\mathrm{full}} \times r}$ contains the
 principal directions of variation,
@@ -99,7 +99,7 @@ where the query $\boldsymbol{\xi}$ has equal similarity to all stored
 patterns, i.e., $\mathbf{m}_k^\top\boldsymbol{\xi} = c$ for all $k$. The
 softmax attention weight on pattern $k$ simplifies to
 $a_k = r_k / \sum_{j} r_j$, and the total attention weight on all designated
-patterns is:
+patterns is given by:
 \begin{equation}\label{eq:feff-def}
   f_{\mathrm{eff}}(\rho)
   \;=\; \sum_{k \in \mathrm{des}} a_k

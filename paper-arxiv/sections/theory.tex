@@ -4,7 +4,7 @@
 Let $\vX = [\vm_1, \ldots, \vm_K] \in \R^{d \times K}$ be a memory matrix whose columns are
 unit-norm, PCA-encoded protein sequences from a family alignment of $K$ members, each represented
 in $d$ dimensions. The modern Hopfield energy~\cite{ramsauerHopfieldNetworksAll2021} at state
-$\vxi \in \R^d$ is
+$\vxi \in \R^d$ is given by:
 \[
 E(\vxi) = \tfrac{1}{2}\|\vxi\|^{2}
 - \tfrac{1}{\beta}\log\sum_{k}\exp(\beta\,\vm_{k}^{\!\top}\vxi),
@@ -26,7 +26,7 @@ attention update~\cite{varnerSAProtein2026}:
 \end{equation}
 We extend this framework to condition generation on a functional subset by assigning a
 multiplicity weight $r_k > 0$ to each stored pattern. The \emph{multiplicity-weighted} Hopfield
-energy is
+energy is given by:
 \begin{equation}\label{eq:weighted-energy}
   \boxed{
   E_{\vr}(\vxi) = \tfrac{1}{2}\|\vxi\|^{2}
@@ -43,7 +43,7 @@ generalization of that replication.
 \begin{proposition}[Exact Gaussian-mixture target]\label{prop:gmm-target}
 For unit-norm memories, the Gibbs density associated with
 Eq.~\eqref{eq:weighted-energy}, and hence the stationary law of the corresponding
-continuous-time overdamped Langevin diffusion, is
+continuous-time overdamped Langevin diffusion, is given by:
 \begin{equation}\label{eq:gmm-target}
   \boxed{
   p_{\vr}(\vxi)
@@ -74,7 +74,7 @@ matter how long we run, and the error from stopping after finitely many
 steps~\cite{durmusMoulinesULA2017}.
 
 \begin{proposition}[Score function]\label{prop:score}
-The score function of $p_{\vr}(\vxi) \propto \exp(-\beta\,E_{\vr}(\vxi))$ is
+The score function of $p_{\vr}(\vxi) \propto \exp(-\beta\,E_{\vr}(\vxi))$ is given by:
 \[
 \nabla_{\vxi}\log p_{\vr}(\vxi)
 = \beta[\vX\,\softmax(\beta\,\vX^{\!\top}\vxi + \log\vr) - \vxi],
@@ -83,7 +83,7 @@ where $\log\vr = (\log r_1, \ldots, \log r_K)^{\!\top}$ is the elementwise log-m
 \end{proposition}
 
 The proof follows from the identity $r_k\,\exp(a_k) = \exp(a_k + \log r_k)$: the weights are
-absorbed into the softmax logits. The resulting Langevin update is
+absorbed into the softmax logits. The resulting Langevin update is given by:
 \begin{equation}\label{eq:weighted-ula}
   \boxed{
   \vxi_{t+1}
@@ -114,7 +114,7 @@ patterns, and $\rho$ is then the only free parameter.
 The designated patterns therefore carry total multiplicity $K_{\mathrm{des}}\rho$
 out of $K_{\mathrm{des}}\rho + K_{\mathrm{bg}}$ in all, so by
 Eq.~\eqref{eq:gmm-target} the probability that a draw comes from a designated
-component is
+component is given by:
 \begin{equation}\label{eq:f-eff}
   f_{\mathrm{eff}}(\rho)
   = \frac{K_{\mathrm{des}}\,\rho}{K_{\mathrm{des}}\,\rho + K_{\mathrm{bg}}} ,
@@ -154,7 +154,7 @@ thermodynamic happens there.
 
 For standard SA the operating point does not have to be found by sweeping at all. The
 companion paper~\cite{varnerSAProtein2026} establishes, from a concentration-of-measure
-argument on the attention entropy, that the unweighted sampler ($\rho=1$) satisfies
+argument on the attention entropy, that the unweighted sampler ($\rho=1$) satisfies:
 \begin{equation}\label{eq:beta-star}
   \beta^{*} \;\approx\; 1.57 + 0.28\sqrt{d},
 \end{equation}
@@ -180,8 +180,11 @@ equals the Shannon entropy $H_{\vr}(0)$ only when the weights are equal.
 
 \subsection{The Calibration Gap}\label{sec:gap}
 
-The signal chain from multiplicity weights to a decoded sequence marker passes through several
-transformations:
+Setting $\rho$ fixes $f_{\mathrm{eff}}$, the share of the equilibrium mixture that sits on
+designated components. That share is a statement about the latent state $\vxi$. What we can
+count in the output is a different quantity, the fraction of generated sequences that carry the
+designated marker after argmax decoding, which we write $f_{\mathrm{obs}}$. Four steps of the
+signal chain separate the one from the other:
 \begin{equation}\label{eq:signal-chain}
   \rho
   \;\xrightarrow{\;\text{exact}\;}\;
@@ -194,19 +197,34 @@ transformations:
   f_{\mathrm{obs}},
 \end{equation}
 where $\bar{a}_{\mathrm{des}}$ is the mean attention weight on designated patterns during
-sampling, $f_{\mathrm{soft}}$ is the continuous-valued residue probability at the marker position,
-and $f_{\mathrm{obs}}$ is the fraction of generated sequences displaying the designated marker
-after argmax decoding. We define the calibration gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$
-and decompose it into three independently measurable components:
+sampling, and $f_{\mathrm{soft}}$ is the continuous-valued probability of the designated residue
+at the marker position, read off before the decoder commits to a letter. The labels say what
+each step does to the number handed to it. \emph{Exact} means the step introduces no
+approximation of its own. Eq.~\eqref{eq:f-eff} turns $\rho$ into $f_{\mathrm{eff}}$ by algebra,
+and the multiplicities enter the attention logits directly in Eq.~\eqref{eq:weighted-ula}, which
+is why the measured $\bar{a}_{\mathrm{des}}$ tracks $f_{\mathrm{eff}}$. \emph{Lossy} means the
+step discards information it was given. The PCA reconstruction returns a blend of amino acid
+frequencies, and the marker distinction can be buried in that blend when designated and
+background patterns sit close together in PCA space. \emph{Nonlinear} means the step is a
+threshold rather than a proportion. Argmax keeps only the residue with the highest probability,
+so a shift of $f_{\mathrm{soft}}$ from 0.45 to 0.55 flips every decoded letter at that position,
+while an equal shift from 0.05 to 0.15 flips none. The calibration gap is what the chain loses
+end to end, $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$, and each step contributes a term
+that can be measured on its own:
 \begin{equation}\label{eq:gap-decomp}
   \Delta = \underbrace{(f_{\mathrm{eff}} - \bar{a}_{\mathrm{des}})}_{\Delta_{\mathrm{attn}}\;\approx\;0}
   + \underbrace{(\bar{a}_{\mathrm{des}} - f_{\mathrm{soft}})}_{\Delta_{\mathrm{PCA}}}
   + \underbrace{(f_{\mathrm{soft}} - f_{\mathrm{obs}})}_{\Delta_{\mathrm{argmax}}}.
 \end{equation}
-Because the target is exactly a mixture, we can also describe the final step by
-conditioning on which component actually generated the sample. Let $C$ be that
-component and let $\mathcal{D}$ be the index set of the designated patterns, so that
-$C\in\mathcal{D}$ says the draw came from a designated component. Define
+The first term asks whether the sampler delivered the mixture it was asked for, the second how
+much of the marker distinction survived the representation, and the third how much of what
+survived cleared the threshold.
+
+The decomposition locates where the number is lost. It does not say what a matched number would
+prove. Because the target is exactly a mixture, we can also describe the final step by
+conditioning on which component actually produced the sample.
+Let $C$ be that component and let $\mathcal{D}$ be the index set of the designated patterns, so
+that $C\in\mathcal{D}$ says the draw came from a designated component. We define:
 \[
 \begin{aligned}
 q_{\mathrm{des}}
@@ -215,7 +233,9 @@ q_{\mathrm{bg}}
   &= \Pr(\text{decoded marker positive}\mid C\notin\mathcal{D}).
 \end{aligned}
 \]
-Then
+These are decoding rates, one per group. The rate $q_{\mathrm{des}}$ is how often a draw from a
+designated component decodes to a marker-positive sequence, which is the outcome we want, and
+$q_{\mathrm{bg}}$ is how often a background draw does the same, which is an error. Combining these rates gives:
 \begin{equation}\label{eq:decoder-pushforward}
   f_{\mathrm{obs}}
   = f_{\mathrm{eff}}q_{\mathrm{des}}
@@ -229,10 +249,13 @@ Thus $f_{\mathrm{obs}}=f_{\mathrm{eff}}$ is not something the algebra requires a
 $\rho=1$. It holds only when the decoder's false negatives happen to balance its
 false positives. The calibration gap is therefore a quantity to be measured across
 the whole path from latent state to sequence, not a diagnostic for tuning that
-path, and matching $f_{\mathrm{obs}}$ to $f_{\mathrm{eff}}$ in particular does not
+path. Matching $f_{\mathrm{obs}}$ to $f_{\mathrm{eff}}$ in particular does not
 identify a correct PCA scaling, because a decoder that carries no information at
 all can match the two by trading one error rate against the other.
-To describe the PCA geometry across families, we define the separation index
+Both the lossy step and the nonlinear step depend on how the designated and background
+sequences sit relative to each other in PCA space, so we need one number for that geometry,
+comparable across families.
+We define the separation index
 $S = (\bar{c}_{\mathrm{within}} - \bar{c}_{\mathrm{between}}) /
 [\tfrac{1}{2}(\sigma_{\mathrm{within}} + \sigma_{\mathrm{between}})]$, where $\bar{c}$ and
 $\sigma$ denote the mean and standard deviation of pairwise cosine similarities within and
