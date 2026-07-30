@@ -12,6 +12,8 @@ const PAPER_FACING_SCRIPTS = [
     "run_kunitz_binding_experiment.jl",
     "run_omega_conotoxin_experiment.jl",
     "run_augmented_memory_deepdive.jl",
+    # Produces calibration_beta_sweep.csv, the source of the appendix beta-sweep table.
+    "run_calibration_diagnostics.jl",
 ]
 
 @testset "paper-facing scripts use the all-memory operating point" begin

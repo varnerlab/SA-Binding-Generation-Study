@@ -71,8 +71,7 @@ for ρ in ρ_fine
     r = multiplicity_vector(K_total, strong_idx; ρ=ρ)
     f_eff = effective_binder_fraction(r, strong_idx)
     K_eff_val = effective_num_patterns(r)
-    pt = find_weighted_entropy_inflection(X̂, r; n_betas=50)
-    β = pt.β_star
+    β = all_memory_onset(X̂, r; n_betas=50)
     log_r = log.(r)
 
     for rep in 1:n_reps
@@ -157,8 +156,7 @@ beta_sweep_results = DataFrame(
 
 for ρ in ρ_fixed
     r = multiplicity_vector(K_total, strong_idx; ρ=ρ)
-    pt = find_weighted_entropy_inflection(X̂, r; n_betas=50)
-    β_star = pt.β_star
+    β_star = all_memory_onset(X̂, r; n_betas=50)
 
     for bm in β_multipliers
         β_use = β_star * bm
@@ -272,10 +270,10 @@ position_results = DataFrame(
 
 for ρ in ρ_pos_sweep
     r = multiplicity_vector(K_total, strong_idx; ρ=ρ)
-    pt = find_weighted_entropy_inflection(X̂, r; n_betas=50)
+    β_star = all_memory_onset(X̂, r; n_betas=50)
 
     seqs, _ = generate_weighted_sequences(X̂, pca_model, L, r;
-        β=pt.β_star, n_chains=30, T=5000, seed=42)
+        β=β_star, n_chains=30, T=5000, seed=42)
 
     for (i, pos) in enumerate(binding_loop)
         consensus_aa = binder_consensus[i]

@@ -105,11 +105,11 @@ a Markov chain. We compared 1{,}640 exact draws with 1{,}640 retained ULA states
 $\rho\in\{1,10,500\}$, using the same $\beta^{*}$ and decoder in each comparison. At
 $\rho=500$, the exact designated-component probability was
 $f_{\mathrm{eff}}=0.996$, while the decoded P1~K/R fraction was 0.604 under exact
-sampling and 0.593 under ULA. The amino acid composition divergence
+sampling and 0.597 under ULA. The amino acid composition divergence
 $D_{\mathrm{KL}}(\text{exact} \parallel \text{ULA})$ between the two decoded libraries
-was $1.15\times10^{-4}$. Across all three conditions, exact
-and ULA MAP-designated basin occupancies differed by at most 0.004, and the decoded
-P1~K/R fractions differed by at most 0.026. The full comparison is provided in the
+was $1.19\times10^{-4}$. Across all three conditions, exact
+and ULA MAP-designated basin occupancies differed by at most 0.026, and the decoded
+P1~K/R fractions differed by at most 0.016. The full comparison is provided in the
 Supporting Information. These results show that the calibration gap persists at
 exact equilibrium, indicating that finite-step ULA discretization and mixing error were not
 the main source of the gap.
@@ -153,8 +153,8 @@ $\beta = 512$ with no plateau (Fig.~\ref{fig:mask-betasweep}), showing that the 
 $\Delta_{\mathrm{PCA}} + \Delta_{\mathrm{argmax}}$ is not a fixed floor but contracts as retrieval
 sharpens. Each finite-$\rho$ multiplicity condition sits below this ceiling at its own matched
 $\beta$: at equal retrieval sharpness, hard masking recovers more marker signal than soft weighting,
-by 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$ and 0.075 (SE 0.029) at $f_{\mathrm{eff}} = 0.7$, a
-margin that contracts monotonically into the sampling noise as $\rho$ grows, reaching 0.002
+by 0.085 (SE 0.028) at $f_{\mathrm{eff}} = 0.5$ and 0.053 (SE 0.029) at $f_{\mathrm{eff}} = 0.7$, a
+margin that contracts monotonically into the sampling noise as $\rho$ grows, reaching 0.003
 (SE 0.030) at $f_{\mathrm{eff}} = 0.99$ where the mask and the strongest finite-$\rho$ condition
 coincide. Hard masking removes the background components outright, so it raises the intended
 designated mass from $f_{\mathrm{eff}}$ to one. The comparison at matched $\beta$ therefore
@@ -163,7 +163,7 @@ $f_{\mathrm{eff}}$ approaches one is what that difference predicts. Attention re
 intended mass in each condition to within a fraction of a percent
 ($\Delta_{\mathrm{attn}} \approx 0$, Eq.~\ref{eq:gap-decomp}), so the informative quantity is
 the size of the response rather than its direction. A difference of 0.5 in intended designated
-mass produced a difference of 0.111 (SE 0.027) in observed marker fraction. That attenuation is
+mass produced a difference of 0.085 (SE 0.028) in observed marker fraction. That attenuation is
 imposed by the full latent-to-sequence map, comprising finite-temperature Gaussian noise in the
 latent space, the normalized-coordinate PCA reconstruction, and argmax decoding.
 Recovery on this intermediate-separation family is
