@@ -473,6 +473,21 @@ function find_entropy_transition(X̂::Matrix{Float64},
             K_eff = effective_num_patterns(r), βs = βs, Hs = Hs)
 end
 
+"""
+    all_memory_onset(X̂, r=ones(size(X̂,2)); n_betas=50) -> Float64
+
+Entropy-crossover onset evaluated over ALL stored memories. This is the paper-facing
+operating-point rule. Unlike the earlier `find_entropy_inflection` and
+`find_weighted_entropy_inflection`, which probe the first 20 alignment columns, the
+result does not depend on alignment row order.
+
+Pass the grid the calling experiment actually uses: 50 points for the canonical and mask
+calculations, 60 for the exact-GMM benchmark, 80 for the entropy-curve figure.
+"""
+all_memory_onset(X̂::Matrix{Float64}, r::Vector{Float64}=ones(size(X̂, 2));
+                 n_betas::Int=50) =
+    find_entropy_transition(X̂, r; n_betas=n_betas, n_probes=size(X̂, 2)).β_onset
+
 # ══════════════════════════════════════════════════════════════════════════════
 # MSA statistics (for β* prediction — Section 2b of paper)
 # ══════════════════════════════════════════════════════════════════════════════

@@ -23,7 +23,27 @@ end
     a = find_entropy_transition(X; n_betas=40, n_probes=16, seed=1)
     b = find_entropy_transition(X[:, 16:-1:1]; n_betas=40, n_probes=16, seed=1)
     @test isapprox(a.β_steepest, b.β_steepest; rtol=1e-8)
+    @test isapprox(a.β_onset, b.β_onset; rtol=1e-8)
     @test isapprox(a.Hs, b.Hs; rtol=1e-8)             # curve independent of column order
     @test a.β_steepest > 0
     @test length(a.Hs) == 40
+end
+
+@testset "all_memory_onset is the paper-facing operating-point rule" begin
+    X = unitcols(10, 24, 91)
+    r = abs.(randn(MersenneTwister(3), 24)) .+ 0.2
+
+    # It is exactly find_entropy_transition over every stored memory.
+    @test all_memory_onset(X, r; n_betas=40) ==
+          find_entropy_transition(X, r; n_betas=40, n_probes=24).β_onset
+
+    # Unweighted default: r defaults to uniform weights.
+    @test all_memory_onset(X; n_betas=40) ==
+          find_entropy_transition(X; n_betas=40, n_probes=24).β_onset
+
+    # Order independence, which is the entire point. The first-20-column rule
+    # fails this; that is the defect being corrected.
+    perm = randperm(MersenneTwister(12), 24)
+    @test all_memory_onset(X, r; n_betas=40) ==
+          all_memory_onset(X[:, perm], r[perm]; n_betas=40)
 end
