@@ -818,7 +818,7 @@ Edit 3 (line 55), replace `Across the four families, $d$ ranged from 34` with `A
 
 - [ ] **Step 4: Build the paper**
 
-Run: `cd paper-arxiv && ./Build.sh Paper_v1`
+Run: `cd paper-arxiv && make`
 Expected: completes; `Paper_v1.pdf` regenerated.
 
 - [ ] **Step 5: Verify a clean build with both SI labels resolved**

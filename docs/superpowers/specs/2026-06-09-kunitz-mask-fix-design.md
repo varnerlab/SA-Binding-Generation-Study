@@ -156,7 +156,8 @@ function.
 - **`paper/Paper_v1.tex`** — update `tab:mask-recovery` values to the re-run
   numbers, add chain-level CIs, and (if it reads cleanly) a matched-beta residual
   column. Update the `fig:mask-betasweep` caption to the corrected claim.
-- **Rebuild** `Paper_v1.pdf` via `paper/Build.sh Paper_v1`.
+- **Rebuild** `Paper_v1.pdf` via `make` in `paper-arxiv/`. This spec predates both the
+  `paper/` to `paper-arxiv/` rename and the removal of `Build.sh`.
 
 ### C5. Tests
 

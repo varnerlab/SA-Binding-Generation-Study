@@ -746,7 +746,7 @@ printf '\n\\input{sections/si_gmm_derivation}\n' >> paper-arxiv/sections/appendi
 
 Run:
 ```bash
-cd /Users/jdv27/Desktop/julia_work/SA-Binding-Generation-Study/paper-arxiv && ./Build.sh Paper_v1
+cd /Users/jdv27/Desktop/julia_work/SA-Binding-Generation-Study/paper-arxiv && make
 grep -c 'app:gmm' Paper_v1.aux
 ```
 Expected: the build completes and produces `Paper_v1.pdf`; `grep -c` returns `1` (the new label `app:gmm` was written to the aux file, so the subsection compiled). If the build has pre-existing warnings unrelated to `si_gmm_derivation`, ignore them (build hygiene is Plan 6); only a `si_gmm_derivation`-referencing error blocks this task.

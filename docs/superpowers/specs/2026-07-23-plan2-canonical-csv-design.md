@@ -53,7 +53,7 @@ Decisions locked with the author:
   {1, 2, 5, 10, 20, 50, 100, 500}. The single-run-only rho=1000 rows are dropped from the paper
   (rho=500 already shows saturation). Kunitz and WW are not re-run.
 - **Generated files are committed**, not built on the fly. Wiring the generator into
-  `Build.sh` is deferred to W6 / Plan 6.
+  the paper Makefiles is deferred to W6 / Plan 6.
 - **The 0.638 combined-approach number is a different experiment** (multiplicity plus
   interface-PCA) and stays only where that approach is discussed, correctly labeled. It is not
   reconciled into the main Kunitz multiplicity number.
