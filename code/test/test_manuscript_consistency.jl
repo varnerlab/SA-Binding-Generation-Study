@@ -8,12 +8,31 @@ const SHARED_SECTIONS = [
     "significance_statement.tex", "theory.tex",
 ]
 
-# The arXiv theory.tex wraps the exact-mixture proposition in a samepage box for
-# layout only. That wrapper is the single sanctioned difference between the trees.
+# Two sanctioned layout-only differences between the trees. The arXiv theory.tex
+# wraps the exact-mixture proposition in a samepage box. The JCIM results.tex
+# interleaves \Display... float-placement macros between paragraphs, because JCIM
+# sets its floats inline while the arXiv tree places them after the bibliography.
+# Neither carries manuscript prose, so both are stripped before comparison.
 const LAYOUT_ONLY_LINES = Set(["\\begin{samepage}", "\\end{samepage}"])
 
-manuscript_body(path) =
-    filter(line -> !(strip(line) in LAYOUT_ONLY_LINES), readlines(path))
+is_layout_only(line) =
+    strip(line) in LAYOUT_ONLY_LINES || startswith(strip(line), "\\Display")
+
+# Dropping a layout-only line strands the blank line that separated it from the
+# surrounding prose, so collapse blank runs and trailing blanks after filtering.
+function manuscript_body(path)
+    body = String[]
+    for line in readlines(path)
+        is_layout_only(line) && continue
+        isempty(strip(line)) &&
+            (isempty(body) || isempty(strip(last(body)))) && continue
+        push!(body, line)
+    end
+    while !isempty(body) && isempty(strip(last(body)))
+        pop!(body)
+    end
+    return body
+end
 
 @testset "JCIM and arXiv section sources stay in sync" begin
     repo = normpath(joinpath(@__DIR__, "..", ".."))
@@ -26,6 +45,28 @@ manuscript_body(path) =
         @test isfile(arxiv_path)
         @test manuscript_body(jcim_path) == manuscript_body(arxiv_path)
     end
+end
+
+# Stripping the \Display macros above hides them from the cross-tree diff, so
+# check separately that every one invoked in the JCIM text is defined, and that
+# display_items.tex carries no orphan definitions.
+@testset "JCIM display-item macros are defined and all used" begin
+    repo = normpath(joinpath(@__DIR__, "..", ".."))
+    sections = joinpath(repo, "paper-jcim", "sections")
+    invoked = Set{String}()
+    for name in SHARED_SECTIONS
+        text = read(joinpath(sections, name), String)
+        for m in eachmatch(r"^\\(Display\w+)"m, text)
+            push!(invoked, m.captures[1])
+        end
+    end
+    defined = Set(
+        m.captures[1] for m in
+        eachmatch(r"\\newcommand\{\\(Display\w+)\}",
+                  read(joinpath(sections, "display_items.tex"), String))
+    )
+    @test !isempty(invoked)
+    @test invoked == defined
 end
 
 # Both claims are false. The beta -> 0 attention entropy is the Shannon entropy of the
@@ -86,11 +127,13 @@ end
         ("SA (K/R-negative)", only(filter(r -> r.condition == "Weak binders", eachrow(binding)))),
     ]
 
-    for (tree, wrapper) in (
-        ("paper-jcim", "Paper_JCIM.tex"),
-        ("paper-arxiv", "Paper_v1.tex"),
+    # The arXiv tree keeps its tables in the wrapper document; the JCIM tree
+    # defines them in display_items.tex and invokes them from the section text.
+    for (tree, wrappers) in (
+        ("paper-jcim", ["Paper_JCIM.tex", joinpath("sections", "display_items.tex")]),
+        ("paper-arxiv", ["Paper_v1.tex"]),
     )
-        text = read(joinpath(repo, tree, wrapper), String)
+        text = join((read(joinpath(repo, tree, w), String) for w in wrappers), '\n')
         for (label, source) in source_rows
             row = table_row(text, label)
             @test occursin(pm2(source, :p1_kr_mean, :p1_kr_std), row)

@@ -1,94 +1,86 @@
 % discussion.tex
 Pattern multiplicity in the modern Hopfield energy provides a training-free way to condition
-protein sequence generation on user-designated subsets. Multiplicity weights add a logit bias
-to the Boltzmann distribution. The corresponding continuous-time equilibrium target is an
-exact Gaussian mixture. Finite-step ULA retains discretization and mixing error. Its decoded
-marker fractions and amino acid compositions were similar to independent exact-equilibrium
-draws. Exact sampling also reproduced the large gap between
+protein sequence generation on user-designated subsets, since the multiplicity weights add a
+logit bias to the Boltzmann distribution whose corresponding continuous-time equilibrium
+target is an exact Gaussian mixture. Finite-step ULA retains discretization and mixing error,
+but its decoded marker fractions and amino acid compositions were similar to independent
+exact-equilibrium draws, and exact sampling reproduced the large gap between
 $f_{\mathrm{eff}}=0.996$ and decoded P1~K/R recovery at $\rho=500$, indicating that
-finite-step ULA error was not the main source of that gap.
-A single scalar $\rho$ continuously interpolates between unconditioned generation
-and hard subset curation. The required $\rho$ for a target designated fraction follows
-directly from the family composition (Eq.~\ref{eq:rho-inverse}). In the Kunitz domain,
-curated memory retained the selected K/R-at-P1 marker with as few as three designated
-inputs. Full-family multiplicity weighting increased marker fidelity from 32\% to
-\KunitzFobsFiveHundred{} $\pm$ \KunitzFobsFiveHundredSD{} at $\rho = 500$.
-Results across five Pfam families showed an association between PCA-space geometry and
-conditioning effectiveness.
+finite-step ULA error was not the main source of that gap. A single scalar $\rho$ continuously
+interpolates between unconditioned generation and hard subset curation, and the value required
+for a target designated fraction follows directly from the family composition
+(Eq.~\ref{eq:rho-inverse}). In the Kunitz domain, curated memory retained the selected
+K/R-at-P1 marker with as few as three designated inputs, while full-family multiplicity
+weighting increased marker fidelity from 32\% to \KunitzFobsFiveHundred{} $\pm$
+\KunitzFobsFiveHundredSD{} at $\rho = 500$, and results across five Pfam families showed an
+association between PCA-space geometry and conditioning effectiveness.
 
 We observed a calibration gap between latent designated mass and decoded marker frequency.
 The mean attention differed from $f_{\mathrm{eff}}$ by at most \AttnMaxDevPts{} percentage
-points across the canonical sweeps. The remaining gap arises as latent states pass through
+points across the canonical sweeps, so the remaining gap arises as latent states pass through
 finite-temperature noise, unit-normalized PCA coordinates, affine reconstruction, and argmax
 decoding (Eq.~\ref{eq:decoder-pushforward}). When the designated and background subsets
 overlap in PCA space, the energy bias may not change the decoded residue identity. Across five
-Pfam families, the exploratory linear fit had
-$R^{2}=\RelationRsq$, but it was sensitive to individual families: leave-one-family-out slopes
-ranged from \RelationLooSlopeMin{} to \RelationLooSlopeMax{} and $R^{2}$ from
-\RelationLooRsqMin{} to \RelationLooRsqMax{}. The separation index should therefore be treated
-as a descriptive diagnostic rather than an \emph{a priori} predictor or decision threshold.
-Broader prospective validation is required before it can guide the choice between multiplicity
-weighting and hard curation.
+Pfam families, the exploratory linear fit had $R^{2}=\RelationRsq$, but it was sensitive to
+individual families, since leave-one-family-out slopes ranged from \RelationLooSlopeMin{} to
+\RelationLooSlopeMax{} and $R^{2}$ from \RelationLooRsqMin{} to \RelationLooRsqMax{}. The
+separation index should therefore be treated as a descriptive diagnostic rather than an
+\emph{a priori} predictor or decision threshold, and broader prospective validation is
+required before it can guide the choice between multiplicity weighting and hard curation.
 
-Hard curation retained the marker with as few as three designated input sequences. Small
-characterized sets can arise from screens, functional selections, or literature curation.
-SA can use such a set to generate additional sequences that share its sequence features.
-In the Kunitz experiment, selection and evaluation both used K/R at P1. Complete recovery
-therefore shows marker retention rather than functional validation. Generated candidates would
-still require experimental screening. The method does not assign a biological meaning to the
-designation. The scaling study shows that diversity increased with the number of designated
-inputs and changed little beyond $K_{\mathrm{des}}=20$.
+Small characterized sets of the kind hard curation requires arise routinely from screens,
+functional selections, and literature curation, and SA can expand such a set into additional
+sequences that share its features. In the Kunitz experiment, however, selection and evaluation
+both used K/R at P1, so complete recovery shows marker retention rather than functional
+validation, generated candidates would still require experimental screening, and the method
+does not assign a biological meaning to the designation. The scaling study showed that
+diversity increased with the number of designated inputs and changed little beyond
+$K_{\mathrm{des}}=20$. The $\omega$-conotoxin experiment provides a second example of
+conditioning from a small designated subset, and it also contrasts full-family with
+curated-subset seeding. Full-family seeding is appropriate when the goal is to generate novel
+family members with broad structural diversity, whereas curated seeding is necessary when the
+goal is to preserve a specific sequence marker. That contrast is sharp in the O-superfamily,
+which is structurally coherent, with all members sharing the C--C--CC--C--C disulfide
+framework, yet functionally heterogeneous, with members blocking N-type, P/Q-type, or sodium
+channels at varying selectivity. Full-family seeding therefore dilutes the Tyr13-associated
+marker, because its PCA encoding reflects the full sequence diversity. Curated seeding instead
+restricts the PCA basis to variation among the 23 designated accessions, and it recovered
+Tyr13 at 98\% frequency. Because the accession designation and the Tyr13 marker agree for only
+86.5\% of stored sequences, these two outcomes are related but not interchangeable. The
+comparison also shows how the separation index should be read, since even at moderate $S$ hard
+curation can achieve high marker retention by restricting the memory to the designated subset.
+That retention costs sequence diversity and novelty (0.46 vs.\ 0.60), a cost that reflects the
+narrower PCA basis and is consistent with the Kunitz scaling study.
 
-The $\omega$-conotoxin experiment provides a second example of conditioning from a small
-designated subset. It also compares full-family and curated-subset seeding. Full-family seeding is appropriate when
-the goal is to generate novel family members with broad structural diversity; curated seeding is
-necessary when the goal is to preserve a specific sequence marker. In the $\omega$-conotoxin case,
-the O-superfamily is structurally coherent (all members share the C--C--CC--C--C disulfide
-framework) but functionally heterogeneous (members block N-type, P/Q-type, or sodium channels
-with varying selectivity). Full-family seeding dilutes the Tyr13-associated marker
-because its PCA encoding reflects the full sequence diversity. Curated seeding restricts the
-PCA basis to variation among the 23 designated accessions. It recovered Tyr13 at 98\%
-frequency. The accession designation and Tyr13 marker agree for only
-86.5\% of stored sequences, so these outcomes are related but not interchangeable. This illustrates
-the separation-index interpretation: even
-when $S$ is moderate, hard curation can achieve high marker retention by
-restricting the memory to the designated subset. The cost (lower sequence diversity
-and reduced novelty, 0.46 vs.\ 0.60) reflects the narrower PCA basis, consistent with the
-Kunitz scaling study.
+Several limitations should be acknowledged. The AlphaFold2-multimer analysis produced
+low-confidence predictions for both generated and control sequences, with iPTM of
+approximately 0.10 and interface pLDDT of approximately 37--41. Permutation tests detected no
+group differences, but nonsignificance at sample sizes 10/10/5 does not establish equivalence
+or preserved binding geometry, so those calculations provide no positive evidence about Cav2.2
+interaction. The cross-family regression spans only five Pfam families, with
+$\omega$-conotoxin displayed externally rather than included in the fit, and its
+leave-one-family-out sensitivity and nonmonotonic points preclude a validated predictive rule,
+so additional prospectively selected families are needed to characterize the
+$S$--$\Delta$ relationship. Our Pfam splits are defined by data-selected single marker
+positions (P1 in Kunitz, Trp in SH3, a specificity-loop residue in WW, Gln at position~50 in
+Homeobox, and H/N in the Forkhead recognition helix), and multi-position phenotypes may show
+different calibration behavior because they depend on coordinated residue identities. We have
+also not experimentally validated the binding activity of generated sequences, and marker
+fidelity is not evidence of functional binding. For the $\omega$-conotoxin family, we compared
+generated residue frequencies with positions reported by alanine-scanning and site-directed
+mutagenesis studies~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012},
+and designated-seeded generation retained the cysteine scaffold and Tyr13 signal and enriched
+several reported positions (Table~\ref{tab:sar-agreement}), but this does not establish their
+effects in the new sequence backgrounds. For the Kunitz domain, deep mutational scanning data
+for the BPTI--trypsin interaction are now available~\cite{heyneBPTIDMS2021} and could provide
+a quantitative binding-landscape comparison in future work.
 
-The AlphaFold2-multimer analysis produced low-confidence predictions for generated and
-control sequences: iPTM was approximately 0.10 and interface pLDDT approximately 37--41.
-Permutation tests detected no group differences, but nonsignificance at sample sizes 10/10/5
-does not establish equivalence or preserved binding geometry. These calculations therefore
-provide no positive evidence about Cav2.2 interaction; experimental complex structures and
-binding assays are needed.
-
-Several limitations should be acknowledged. The cross-family regression spans only five Pfam
-families, with $\omega$-conotoxin displayed externally rather than included in the fit. Its
-leave-one-family-out sensitivity and nonmonotonic points preclude a validated predictive rule;
-additional prospectively selected families are needed to characterize the $S$--$\Delta$
-relationship. Our Pfam splits are defined by data-selected single marker positions
-(P1 in Kunitz, Trp in SH3, a specificity-loop residue in WW, Gln at position~50 in
-Homeobox, and H/N in the Forkhead recognition helix). Multi-position phenotypes may show
-different calibration behavior because they depend on coordinated residue identities.
-We have not experimentally
-validated the binding activity of generated sequences; marker fidelity is not evidence of
-functional binding. For the $\omega$-conotoxin family, we compared generated residue frequencies
-with positions reported by alanine-scanning and site-directed mutagenesis studies
-~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}. Designated-seeded
-generation retained the cysteine scaffold and Tyr13 signal and enriched several reported
-positions (Table~\ref{tab:sar-agreement}), but this does not establish their effects in the new
-sequence backgrounds. For the Kunitz domain, deep mutational scanning
-data for the BPTI--trypsin interaction are now
-available~\cite{heyneBPTIDMS2021} and could provide a quantitative binding-landscape comparison
-in future work.
-
-Looking forward, the multiplicity framework opens several directions. The binary split
-(designated/background) generalizes naturally to multi-class conditioning by assigning different
-multiplicities to different functional categories. The PCA bottleneck that limits conditioning
-effectiveness might be reduced by alternative sequence encodings. Learned representations from
-protein language models, for instance, may better separate functional subsets than linear PCA.
-The $\beta$ lever suggests that adaptive temperature schedules, increasing $\beta$ during sampling
-to sharpen the multiplicity bias, could improve marker transfer without permanently sacrificing
-diversity. These extensions remain within the analytic, training-free framework that makes
-stochastic attention practical for the scarce-data regime.
+Looking forward, the multiplicity framework opens several directions. The binary
+designated-background split generalizes to multi-class conditioning by assigning different
+multiplicities to different functional categories, and the PCA bottleneck that limits
+conditioning effectiveness might be reduced by alternative sequence encodings, since learned
+representations from protein language models may separate functional subsets better than
+linear PCA does. The $\beta$ lever suggests that adaptive temperature schedules, increasing
+$\beta$ during sampling to sharpen the multiplicity bias, could improve marker transfer
+without permanently sacrificing diversity. All of these extensions remain within the analytic,
+training-free framework that makes stochastic attention practical for the scarce-data regime.

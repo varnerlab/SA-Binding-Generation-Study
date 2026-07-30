@@ -119,7 +119,7 @@ and solving for $\rho$:
 \end{align}
 This is Eq.~\MainEqRef{eq:rho-inverse} in the main text. Equal similarity gives
 Eq.~\eqref{eq:feff-def} pointwise. More generally, the exact Gaussian-mixture
-identity (Section~\ref{app:gmm}) makes $f_{\mathrm{eff}}$ the exact latent
+identity (Appendix~\ref{app:gmm}) makes $f_{\mathrm{eff}}$ the exact latent
 designated-component probability, and the expected posterior designated
 attention equals the same quantity by the law of total expectation. In the
 finite-step canonical ULA sweeps, the largest absolute deviation of empirical
@@ -178,13 +178,13 @@ multiplicity vector; $f_{\mathrm{obs}}$ is the hard-decoded marker fraction
 averaged across five independent replicates (620 retained samples per replicate);
 $\bar{a}_{\mathrm{des}}$ is the mean softmax attention weight on designated
 patterns; and $D$ is the mean pairwise diversity. Uncertainties are replicate
-standard deviations. Table~\ref{tab:beta-sweep} reports marker fraction and
-diversity as a function of $\beta/\beta^{*}$ for three fixed $\rho$ values
-on the Kunitz domain. Figure~\ref{fig:plddt-tmscore-scatter} shows the joint
-distribution of ESMFold pLDDT and TM-score for all 250 predicted Kunitz
-structures: SA-generated sequences cluster tightly in the high-pLDDT,
-high-TM-score region while HMM-emitted sequences scatter broadly across
-lower values. The entropy curves for the full $\rho$ sweep
+standard deviations. Marker fraction and diversity are reported as a function
+of $\beta/\beta^{*}$ for three fixed $\rho$ values on the Kunitz domain
+(Table~\ref{tab:beta-sweep}). Across all 250 predicted Kunitz structures,
+SA-generated sequences cluster tightly in the high-pLDDT, high-TM-score region
+of the joint ESMFold pLDDT and TM-score distribution while HMM-emitted
+sequences scatter broadly across lower values
+(Fig.~\ref{fig:plddt-tmscore-scatter}). The entropy curves for the full $\rho$ sweep
 ($\rho \in \{1, 2, 5, 10, 20, 50, 100, 200, 500, 1000\}$) on the Kunitz
 family produce a monotonically rightward-shifting family of sigmoid curves
 with the operating point increasing from 4.35 ($\rho=1$) to 9.26 ($\rho=1000$)

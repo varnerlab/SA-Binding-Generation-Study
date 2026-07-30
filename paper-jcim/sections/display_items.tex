@@ -1,0 +1,378 @@
+% JCIM display items, grouped by the Results subsection where they are discussed.
+% Each group ends with a float barrier so tables and figures remain near the
+% corresponding text under the ACS Fast Format layout.
+
+\newcommand{\DisplayCrossFamily}{%
+\begin{table}[htbp]
+  \centering
+  \caption{\textbf{Cross-family summary of all protein families tested.}
+  For each family: source database, number of sequences ($K$), aligned length ($L$), PCA
+  dimensionality ($d$, capturing 95\% variance), designated subset size ($K_{\mathrm{des}}$),
+  sequence marker, natural designated fraction ($f_{\mathrm{nat}}$), separation index
+  ($S$), observed marker fraction under hard curation ($f_{\mathrm{obs}}^{\mathrm{hard}}$),
+  and calibration gap ($\Delta$ at $\rho=500$). All six families were tested with both
+  multiplicity weighting and hard curation.}
+  \label{tab:cross-family}
+  \small
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lcccccccccc}
+    \toprule
+    Family & Source & $K$ & $L$ & $d$ & $K_{\mathrm{des}}$ & Marker
+           & $f_{\mathrm{nat}}$ & $S$
+           & $f_{\mathrm{obs}}^{\mathrm{hard}}$ & $\Delta$ \\
+    \midrule
+    \input{sections/generated/tab_cross_family}
+  \end{tabular}
+  }
+\end{table}
+\FloatBarrier
+}
+
+\newcommand{\DisplayHardCuration}{%
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/study1_binder_scaling.pdf}
+  \caption{\textbf{Sequence properties vary with the number of designated inputs.}
+  Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
+  the Kunitz K/R-positive set (3 replicates each; shaded bands show $\pm 1$
+  s.d.). P1 K/R fraction was 1.0 at every sample size (not shown).
+  \textit{Left:} Pairwise sequence diversity increases from 0.35
+  ($K_{\mathrm{des}}=3$) to 0.50 ($K_{\mathrm{des}}=32$).
+  \textit{Right:} KL divergence of amino acid composition decreases from 0.070
+  to 0.009 over the same range. All input sizes retained the selected marker.
+  Larger input sets produced more diverse libraries.}
+  \label{fig:scaling}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_kunitz.pdf}
+  \caption{\textbf{Sequence-level analysis of SA-generated Kunitz domain sequences
+  conditioned on the K/R-positive subset.}
+  \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
+  SA K/R-positive-subset-conditioned sequences (ranked by ESMFold pLDDT). Positions are
+  colored by conservation in the stored MSA: highly conserved ($>90\%$, red),
+  conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
+  ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
+  gold; the P1 position is highlighted in purple. Dots indicate matches to the
+  consensus; letters indicate substitutions. All five sequences preserve every
+  highly conserved position ($11/11$), all six cysteines ($6/6$), and carry K or R
+  at P1, while introducing $19$--$26$ substitutions concentrated at variable sites.
+  \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-family
+  generation (blue), and SA K/R-positive-subset-conditioned generation (red). The
+  full-family entropy correlation is $r = 0.988$, showing similar position-specific
+  conservation in the generated and stored sequences.
+  The K/R-positive-subset entropy correlation is slightly lower ($r = 0.932$), with
+  the largest deviation at the P1 position (column~25): conditioning collapses P1
+  diversity to K/R, reducing entropy at this site while preserving the entropy
+  profile elsewhere.}
+  \label{fig:sequence-analysis}
+\end{figure}
+\FloatBarrier
+}
+
+\newcommand{\DisplayMultiplicity}{%
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.82\textwidth]{sections/figs/fig5_entropy_curves.pdf}
+  \caption{\textbf{Entropy crossover shifts rightward with increasing multiplicity
+  ratio $\rho$.}
+  Attention entropy $H(\beta)$ normalized by $\log K$ as a function of inverse
+  temperature $\beta$ for $\rho \in \{1,5,20,100,1000\}$ on Kunitz.
+  As $\rho$ increases from 1 to 1000, $K_{\mathrm{eff}}$ decreases from 99
+  to 32.1 and the measured onset shifts from 4.4 to 9.3.}
+  \label{fig:phase-transition}
+\end{figure}
+\FloatBarrier
+
+\begin{table}[htbp]
+  \centering
+  \caption{\textbf{Per-family $\rho$ sweep: mean attention weights track
+  $f_{\mathrm{eff}}$ closely; decoded marker fidelity varies across PCA
+  geometries.} Selected $\rho$ values for each family.
+  $f_{\mathrm{eff}}$: effective designated fraction from multiplicity weights;
+  $\bar{a}_{\mathrm{des}}$: mean softmax attention on designated patterns;
+  $f_{\mathrm{obs}}$: mean hard-decoded marker fraction across five independent
+  replicates (620 retained samples per replicate); error bars are replicate s.d.;
+  $D$: mean pairwise diversity.
+  In all families $\bar{a}_{\mathrm{des}} \approx f_{\mathrm{eff}}$
+  within finite-sample uncertainty, but $f_{\mathrm{obs}}$ converges fastest
+  for Homeobox ($S=0.42$) and slowest for WW ($S=0.11$), reflecting the
+  observed latent-to-sequence calibration gap.}
+  \label{tab:per-family-rho}
+  \small
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{llcccccc}
+    \toprule
+    Family & ($K$, $K_{\mathrm{des}}$, $S$)
+      & $\rho$ & $f_{\mathrm{eff}}$ & $\bar{a}_{\mathrm{des}}$
+      & $f_{\mathrm{obs}}$ & $\Delta$ & $D$ \\
+    \midrule
+    \input{sections/generated/tab_per_family_rho}
+  \end{tabular}
+  }
+\end{table}
+\FloatBarrier
+}
+
+\newcommand{\DisplaySeparation}{%
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/fig2_separation_vs_gap.pdf}
+  \caption{\textbf{Calibration trajectories reveal family-dependent gaps associated with
+  PCA-space separation.}
+  \textbf{(A)}~Observed marker fraction $f_{\mathrm{obs}}$ versus effective designated
+  fraction $f_{\mathrm{eff}}$ as the multiplicity ratio $\rho$ increases from 1 to 500
+  for six protein families. The dashed diagonal marks perfect calibration.
+  \textbf{(B)}~Separation index $S$ versus calibration gap $\Delta$ at $\rho = 500$.
+  An exploratory linear fit to the five Pfam families summarizes the association
+  without defining a prospective threshold. The $\omega$-conotoxin point is shown
+  as an external comparison and is not included in the fit.}
+  \label{fig:separation-vs-gap}
+\end{figure}
+\FloatBarrier
+}
+
+\newcommand{\DisplayHardMask}{%
+\begin{table}[htbp]
+  \centering
+  \caption{\textbf{Kunitz P1 K/R recovery across the conditioning axis.}
+  The designated subset is K/R at P1 ($K_{\mathrm{des}}=32$). All conditions use
+  the full-family PCA basis except hard curation, which rebuilds the basis from
+  the designated subset. P1 K/R is the chain-level mean $\pm$ standard error
+  over 30 chains.}
+  \label{tab:mask-recovery}
+  \small
+  \begin{tabular}{lccc}
+    \toprule
+    Condition & $\beta$ & P1 K/R & Novelty \\
+    \midrule
+    Unconditional ($b=0$) & 3.8 & $0.39 \pm 0.02$ & 0.42 \\
+    Multiplicity (strongest finite $\rho$) & 7.7 & $0.59 \pm 0.02$ & 0.39 \\
+    Hard mask ($b=-\infty$), at $\beta^{*}$ & 3.2 & $0.50 \pm 0.02$ & 0.42 \\
+    Hard mask ($b=-\infty$), $\beta=512$ & 512 & $1.00 \pm 0.00$ & 0.16 \\
+    Hard curation (subset basis) & 3.2 & $1.00 \pm 0.00$ & 0.32 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.72\textwidth]{sections/figs/fig_mask_betasweep.pdf}
+  \caption{\textbf{Recovery is set by retrieval sharpness and conditioning strength,
+  both acting through the decode gap.}
+  P1 K/R fraction for the Kunitz designated subset versus inverse temperature
+  $\beta$ under a hard attention mask. The mask is the
+  $\Delta_{\mathrm{attn}}=0$ envelope: recovery increases from 0.46 at
+  $\beta=2$ to 1.00 at $\beta=512$. Finite-$\rho$ multiplicity conditions
+  sit below this envelope at matched $\beta$, while hard curation reaches complete
+  K/R marker retention on its subset-only basis.}
+  \label{fig:mask-betasweep}
+\end{figure}
+\FloatBarrier
+}
+
+\newcommand{\DisplayConotoxin}{%
+\begin{table}[htbp]
+  \centering
+  \caption{\textbf{$\omega$-Conotoxin Tyr13 marker retention under curated vs.\
+  full-family seeding.}
+  Tyr13\%: fraction with tyrosine at the selected marker position (col.~13).
+  K+R\%: basic residue fraction (electrostatic complementarity). KL: amino acid composition
+  divergence. Novelty: mean cosine distance to nearest stored pattern. Designated-subset seeding
+  increased the Tyr13 frequency from 82.6\% to 98.3\% and produced a similar
+  basic-residue fraction (19.7\% against 20.1\%), while full-family seeding reduced both.}
+  \label{tab:conotoxin-pharmacophore}
+  \small
+  \begin{tabular}{lccccc}
+    \toprule
+    Condition & $N$ & Tyr13 (\%) & K+R (\%) & KL & Novelty \\
+    \midrule
+    Input: full family           &   74 & 33.8 &  9.9 & 0      & 0 \\
+    Input: designated subset     &   23 & 82.6 & 19.7 & 0      & 0 \\
+    Generated: full-seeded       & 1550 & 46.9 & 12.0 & 0.0075 & 0.60 \\
+    Generated: designated-seeded & 1550 & 98.3 & 20.1 & 0.0083 & 0.46 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/loop_heatmap_with_residuals.pdf}
+  \caption{\textbf{Binding-loop amino acid frequencies and generation residuals for
+  the $\omega$-conotoxin family (positions 9--17).}
+  \textit{Left column:} Per-position amino acid frequency heatmaps for the input sequences
+  (designated subset, $n=23$, panel~a; full O-superfamily, $n=74$, panel~c).
+  \textit{Right column:} Residual heatmaps (generated $-$ input) showing the change in
+  frequency at each position--residue pair after SA generation. Panel~(b): designated-seeded
+  residual frequencies differ from the input by at most 0.15 in absolute value at every
+  position--residue pair. The Tyr marker at position~13, the conserved Cys framework
+  (positions~14--16), and the variable-loop diversity (positions~9--12) are reproduced
+  within that bound. Panel~(d):
+  full-seeded residuals are slightly larger, reflecting the broader sequence diversity of
+  the input. Blue: enrichment; red: depletion; white: no change.}
+  \label{fig:conotoxin-loop}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_conotoxin.pdf}
+  \caption{\textbf{Sequence-level analysis of SA-generated $\omega$-conotoxin sequences
+  conditioned on the designated subset.}
+  \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
+  SA designated-subset-conditioned sequences (ranked by ESMFold pLDDT). Positions are
+  colored by conservation in the stored MSA: highly conserved ($>90\%$, red),
+  conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
+  ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
+  gold; the Tyr13 marker position is highlighted in green. All five sequences
+  preserve every highly conserved position ($6/6$), all six cysteines ($6/6$), and
+  carry Tyr at the marker position, while introducing $5$--$11$ substitutions
+  concentrated at variable sites.
+  \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-seeded
+  generation (blue), and SA designated-seeded generation (red). The full-seeded entropy
+  correlation is $r = 0.997$. The designated-seeded correlation is lower
+  ($r = 0.745$), reflecting lower diversity after conditioning on the 23-sequence
+  designated subset, including at Tyr13 and co-varying loop residues.}
+  \label{fig:conotoxin-sequence-analysis}
+\end{figure}
+\FloatBarrier
+
+  \begin{table}[htbp]
+  \caption{\textbf{Residue frequencies at reported $\omega$-conotoxin SAR positions.}
+  Published structure--activity relationship (SAR) data for $\omega$-conotoxin
+  binding to Cav2.2 identify critical residues whose mutation abolishes or
+  substantially reduces channel block.\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}\textsuperscript{,}\cite{satoAlaScanMVIIC2000,schroederLys2Effects2012,schroederChiralityTyr131999}
+  For each reported position, the table reports the fraction retaining the listed
+  residue (or a K/R substitution at basic positions). The six framework cysteines are
+  invariant across the designated input, so the table reports their retention rather
+  than their enrichment. Designated-subset generation retains the Tyr13 signal and the
+  cysteine scaffold, and raises the frequency at Tyr13, Arg10, position~21 and Lys4
+  relative to the designated input.
+  These frequencies do not test mutation effects in the generated backgrounds.}
+  \label{tab:sar-agreement}
+  \centering
+  \small
+  \begin{tabular}{clllccc}
+    \toprule
+    Pos. & WT & Role & Mutation effect & Input & SA des. & SA full \\
+    \midrule
+    \input{sections/generated/tab_sar_agreement}
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{figs/fold_superposition_combined.pdf}
+  \caption{\textbf{Structure models place selected SA-generated sequences near
+  experimental family references.}
+  C$\alpha$ backbone superposition of the highest TM-score SA designated-subset-conditioned
+  sequence (colored by per-residue pLDDT confidence) onto the experimental reference
+  structure (gray, semi-transparent), shown in two orthogonal views.
+  \textbf{(A,\,B)}~Kunitz domain: the SA-generated variant aligns to the BPTI crystal
+  structure (1BPI chain~A) with TM $= 0.94$, reproducing the characteristic double-loop
+  architecture, three-stranded antiparallel $\beta$-sheet, and $\alpha$-helical turn;
+  pLDDT $> 90$ throughout (deep blue) indicates high-confidence prediction.
+  \textbf{(C,\,D)}~$\omega$-Conotoxin: the SA-generated variant aligns to the MVIIA
+  NMR structure (1OMG chain~A) with TM $= 0.53$, consistent with the small peptide
+  length (26 residues) where TM-score normalization is noisy; the cystine-knot
+  topology and loop architecture appear in the prediction, with pLDDT $\sim 80$
+  (cyan/green).
+  Colorbar: pLDDT confidence scale (red $= 50$, blue $= 100$).
+  Structures predicted by ESMFold~\cite{esmfold2022}; alignment by
+  TM-align~\cite{tmAlign2005}.}
+  \label{fig:fold-superposition}
+\end{figure}
+\FloatBarrier
+}
+
+\newcommand{\DisplayDocking}{%
+\begin{table}[htbp]
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3.5pt}
+  \caption{\textbf{Low-confidence AlphaFold2-multimer predictions for generated
+  and control $\omega$-conotoxins.}
+  Complex-level scores for sequences modeled with the Cav2.2 pore domain via
+  ColabFold in multimer mode. The uniformly low absolute values do not establish
+  binding geometry.}
+  \label{tab:docking-validation}
+  \begin{tabular}{lcccc}
+    \toprule
+    Group & $n$ & Mean pTM & Mean iPTM & Mean interface pLDDT \\
+    \midrule
+    SA designated-subset & 10 & $0.221\pm0.007$ & $0.105\pm0.008$ & $37.2\pm5.4$ \\
+    SA full-family & 10 & $0.219\pm0.008$ & $0.104\pm0.007$ & $38.2\pm4.0$ \\
+    Natural controls & 5 & $0.228\pm0.004$ & $0.108\pm0.007$ & $40.7\pm3.5$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+}
+
+\newcommand{\DisplayModelValidation}{%
+\begin{table}[htbp]
+  \centering
+  \caption{\textbf{Structure-model, language-model, and sequence-marker evaluation on the Kunitz domain.}
+  pLDDT: ESMFold predicted confidence (0--100; $>70$ = confident).
+  TM: TM-score against 1BPI chain~A ($>0.5$ = same fold).
+  PPL: ESM2-650M masked-marginal pseudo-perplexity (lower = more plausible).
+  P1~K/R: fraction with Lys/Arg at the primary trypsin contact.
+  KL: amino acid composition divergence ($\times 10^{3}$).
+  $D$: mean pairwise diversity.
+  Structural and LM values are mean $\pm$ s.d.\ across 50 sequences;
+  sequence-level metrics are mean $\pm$ s.d.\ across 5 replicates.
+  SA-generated and stored sequences have similar structure-model and language-model
+  summaries. Conditioning on the K/R-positive subset yields complete K/R marker
+  retention; this is not an experimental binding measurement.}
+  \label{tab:structure-validation}
+  \small
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lcccccc}
+    \toprule
+    Source & pLDDT & TM & PPL & P1 K/R & KL ($\times 10^{3}$) & $D$ \\
+    \midrule
+    Stored (natural)      & $89.3 \pm 3.2$  & $0.83 \pm 0.03$ & $4.97 \pm 0.98$ & 0.32 & 0 & 0.63 \\
+    SA (full family)      & $90.4 \pm 1.2$  & $0.84 \pm 0.01$ & $4.78 \pm 0.64$ & $0.38 \pm 0.03$ & $7.6 \pm 0.9$ & 0.56 \\
+    SA (K/R-positive)     & $90.7 \pm 1.1$  & $0.83 \pm 0.01$ & $4.72 \pm 0.60$ & $1.00 \pm 0.00$ & $18.7 \pm 0.9$ & 0.50 \\
+    SA (K/R-negative)     & $91.0 \pm 1.2$  & $0.85 \pm 0.01$ & $4.73 \pm 0.72$ & $0.00 \pm 0.00$ & $11.2 \pm 0.2$ & 0.53 \\
+    HMM emit (HMMER3)     & $60.4 \pm 13.1$ & $0.60 \pm 0.19$ & $16.1 \pm 4.2$  & $0.17 \pm 0.04$ & $27.1 \pm 2.1$ & 0.90 \\
+    Bootstrap (resample)  & ---             & ---              & ---              & $0.30 \pm 0.04$ & $1.0 \pm 0.3$ & 0.62 \\
+    \bottomrule
+  \end{tabular}
+  }
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{\textbf{AlphaFold2-ptm structure-model comparison.}
+  Independent structure predictions via ColabFold (AlphaFold2-ptm, 1 model,
+  3 recycles, MMseqs2 MSA) for 50 sequences per source.
+  pLDDT: mean predicted confidence ($0$--$100$).
+  TM: TM-score against experimental reference (1BPI chain~A for Kunitz,
+  1OMG chain~A for $\omega$-conotoxin).
+  These model-derived summaries are consistent with the ESMFold comparison.
+  They do not establish experimental folding or binding.}
+  \label{tab:af2-validation}
+  \small
+  \begin{tabular}{llcccc}
+    \toprule
+    Family & Source & $n$ & pLDDT & TM-score \\
+    \midrule
+    \multirow{3}{*}{Kunitz}
+      & Stored (natural)       & 50 & $93.5 \pm 4.0$ & $0.83 \pm 0.03$ \\
+      & SA (K/R-positive)      & 50 & $94.6 \pm 1.4$ & $0.84 \pm 0.01$ \\
+      & SA (full family)       & 50 & $95.0 \pm 1.3$ & $0.85 \pm 0.01$ \\
+    \midrule
+    \multirow{3}{*}{$\omega$-Conotoxin}
+      & Stored (natural)       & 50 & $67.9 \pm 9.8$ & $0.35 \pm 0.11$ \\
+      & SA (designated subset) & 50 & $78.5 \pm 4.1$ & $0.47 \pm 0.02$ \\
+      & SA (full family)       & 50 & $73.9 \pm 10.4$ & $0.39 \pm 0.12$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+}

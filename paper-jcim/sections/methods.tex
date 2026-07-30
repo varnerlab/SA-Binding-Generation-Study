@@ -10,11 +10,10 @@ PCA retained 95\% of the variance, and the resulting columns were normalized to 
 ULA chains used step size $\alpha=0.01$ and ran for $T=5{,}000$ steps. Each chain started
 near a stored pattern, with patterns assigned cyclically across the memory. Independent local
 RNGs generated the initial perturbations and Langevin noise. Samples were collected after
-2{,}000 burn-in steps and then every 100 steps. We tested five Pfam families. They were
-Kunitz (PF00014, $K=99$, $L=53$), SH3 (PF00018, $K=55$, $L=48$), and WW
-(PF00397, $K=420$, $L=31$). They also included Homeobox
-(PF00046, $K=136$, $L=57$) and Forkhead (PF00250, $K=246$, $L=87$).
-The $\omega$-conotoxin O-superfamily had $K=74$ and $L=26$ and was curated from
+2{,}000 burn-in steps and then every 100 steps. We tested five Pfam families, Kunitz
+(PF00014, $K=99$, $L=53$), SH3 (PF00018, $K=55$, $L=48$), WW (PF00397, $K=420$, $L=31$),
+Homeobox (PF00046, $K=136$, $L=57$), and Forkhead (PF00250, $K=246$, $L=87$), together with
+the $\omega$-conotoxin O-superfamily ($K=74$, $L=26$), which was curated from
 SwissProt. For each Pfam family, we defined a binary split using a data-selected
 single-position sequence marker. Biological literature motivated the residue class where
 available, but the marker was not treated as a direct activity label. For Kunitz, the P1
