@@ -8,6 +8,7 @@ using Test
     include("test_gmm_identity.jl")
     include("test_entropy_identities.jl")
     include("test_transition_statistic.jl")
+    include("test_operating_point_rule.jl")
     include("test_mask.jl")
     include("test_encode_decode.jl")
     include("test_decoder_characterization.jl")

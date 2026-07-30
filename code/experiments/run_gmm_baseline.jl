@@ -28,7 +28,7 @@ rows = DataFrame(rho=Float64[], beta_star=Float64[], f_eff=Float64[],
 for ρ in [1.0, 10.0, 500.0]
     r = multiplicity_vector(K_total, strong; ρ=ρ)
     f_eff = effective_binder_fraction(r, strong)
-    β = find_weighted_entropy_inflection(X̂, r; n_betas=60).β_star   # paper's operating β
+    β = all_memory_onset(X̂, r; n_betas=60)   # paper's operating β
     ula_seqs, ula_pca = generate_weighted_sequences(X̂, pca, L, r;
         β=β, n_chains=40, T=6000, α=0.01, burnin=2000, thin=100, seed=42)
     N = length(ula_seqs)

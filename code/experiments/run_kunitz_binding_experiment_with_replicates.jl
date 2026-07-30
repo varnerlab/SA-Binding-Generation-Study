@@ -109,21 +109,18 @@ end
 # ══════════════════════════════════════════════════════════════════════════════
 @info "Step 4: Finding β* for each subset"
 
-pt_all = find_entropy_inflection(X̂_all)
-β_all = pt_all.β_star
+β_all = all_memory_onset(X̂_all)
 @info "  Full family:    β* = $(round(β_all, digits=2))"
 
 if length(strong_idx) >= 5
-    pt_strong = find_entropy_inflection(X̂_strong)
-    β_strong = pt_strong.β_star
+    β_strong = all_memory_onset(X̂_strong)
 else
     β_strong = β_all
 end
 @info "  Strong binders: β* = $(round(β_strong, digits=2))"
 
 if length(weak_idx) >= 5
-    pt_weak = find_entropy_inflection(X̂_weak)
-    β_weak = pt_weak.β_star
+    β_weak = all_memory_onset(X̂_weak)
 else
     β_weak = β_all
 end

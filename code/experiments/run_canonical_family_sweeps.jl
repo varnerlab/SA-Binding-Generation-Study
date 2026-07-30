@@ -74,12 +74,12 @@ end
 function hard_curation_replicates(analysis)
     group_char = analysis.char_mat[analysis.group_A, :]
     X_hard, pca_hard, _, _ = build_memory_matrix(group_char; pratio=0.95)
-    transition = find_entropy_inflection(X_hard)
+    beta_hard = all_memory_onset(X_hard)
     values = Float64[]
     L = size(analysis.char_mat, 2)
     for rep in 1:N_REPS
         sequences, _ = generate_sequences(X_hard, pca_hard, L;
-            β=transition.β_star, n_chains=N_CHAINS, T=N_STEPS, seed=10_000 + rep)
+            β=beta_hard, n_chains=N_CHAINS, T=N_STEPS, seed=10_000 + rep)
         fraction = count(s -> length(s) >= analysis.marker_pos &&
                              s[analysis.marker_pos] in analysis.marker_residues,
                          sequences) / length(sequences)
@@ -101,7 +101,7 @@ function run_replicated_sweep(analysis)
         weights = multiplicity_vector(K, analysis.group_A; ρ=rho)
         f_eff = effective_binder_fraction(weights, analysis.group_A)
         log_weights = log.(weights)
-        beta = find_weighted_entropy_inflection(analysis.X, weights; n_betas=50).β_star
+        beta = all_memory_onset(analysis.X, weights; n_betas=50)
 
         for rep in 1:N_REPS
             seed = 20_000 + (rho_index - 1) * N_REPS + rep

@@ -65,7 +65,7 @@ length(designated_idx) >= 5 || error("Too few designated sequences ($(length(des
 
 # --- Full-family basis (shared by unconditional, multiplicity, mask) ---
 X̂_all, pca_all, L_all, _ = build_memory_matrix(char_mat; pratio=0.95)
-β_all = find_entropy_inflection(X̂_all).β_star
+β_all = all_memory_onset(X̂_all)
 @info "  Full-family β* = $(round(β_all, digits=3))"
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -131,7 +131,7 @@ push!(results, ("unconditional", effective_binder_fraction(ones(K_total), design
 mult_rows = NamedTuple[]
 for ft in [0.5, 0.7, 0.9, 0.95, 0.99]
     res = build_multiplicity_conditioned_memory(char_mat, designated_idx; f_target=ft)
-    β_w = find_weighted_entropy_inflection(res.X̂, res.r; n_betas=50).β_star
+    β_w = all_memory_onset(res.X̂, res.r; n_betas=50)
     seqs, _ = generate_weighted_sequences(res.X̂, res.pca_model, L, res.r;
         β=β_w, n_chains=N_CHAINS, T=5000, seed=42)
     local m = eval_condition(seqs, "multiplicity(f=$ft)", N_CHAINS)
@@ -141,7 +141,7 @@ end
 
 # --- Condition 3: Hard mask (b = -Inf on background, full basis) at its own β* ---
 @info "Condition 3: Hard mask"
-β_mask = find_entropy_inflection(X̂_all[:, designated_idx]).β_star
+β_mask = all_memory_onset(X̂_all[:, designated_idx])
 mask_seqs, _ = generate_masked_sequences(X̂_all, pca_all, L, designated_idx;
     β=β_mask, n_chains=N_CHAINS, T=5000, seed=42)
 m = eval_condition(mask_seqs, "mask", N_CHAINS)
@@ -150,7 +150,7 @@ push!(results, ("mask", 1.0, β_mask, m.p1_kr, m.p1_kr_se, m.novelty, m.novelty_
 # --- Condition 4: Hard curation (subset basis) ---
 @info "Condition 4: Hard curation (subset basis)"
 X̂_cur, pca_cur, _, _ = build_memory_matrix(char_mat[designated_idx, :]; pratio=0.95)
-β_cur = find_entropy_inflection(X̂_cur).β_star
+β_cur = all_memory_onset(X̂_cur)
 cur_seqs, _ = generate_sequences(X̂_cur, pca_cur, L; β=β_cur, n_chains=N_CHAINS, T=5000, seed=42)
 m = eval_condition(cur_seqs, "curation", N_CHAINS)
 push!(results, ("curation", 1.0, β_cur, m.p1_kr, m.p1_kr_se, m.novelty, m.novelty_se, m.diversity, m.kl, m.n))

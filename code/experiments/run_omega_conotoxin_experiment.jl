@@ -113,13 +113,10 @@ X̂_strong, pca_strong, _, _ = build_memory_matrix(char_strong; pratio=0.95)
 # ══════════════════════════════════════════════════════════════════════════════
 # Step 4: Find β* for each seed condition
 # ══════════════════════════════════════════════════════════════════════════════
-@info "Step 4: Finding β* (phase transition) for each seed"
+@info "Step 4: Finding the entropy-crossover onset β* for each seed"
 
-pt_full   = find_entropy_inflection(X̂_full)
-pt_strong = find_entropy_inflection(X̂_strong)
-
-β_full   = pt_full.β_star
-β_strong = pt_strong.β_star
+β_full   = all_memory_onset(X̂_full)
+β_strong = all_memory_onset(X̂_strong)
 
 @info "  Full family    β* = $(round(β_full,   digits=2))"
 @info "  Strong binders β* = $(round(β_strong, digits=2))"

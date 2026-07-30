@@ -35,11 +35,11 @@ open(joinpath(CACHE_DIR, "entropy_curves.csv"), "w") do io
     for ρ in ρ_values
         r = multiplicity_vector(K_total, strong_idx; ρ=ρ)
         K_eff = effective_num_patterns(r)
-        pt = find_weighted_entropy_inflection(X̂, r; n_betas=n_betas)
+        pt = find_entropy_transition(X̂, r; n_betas=n_betas, n_probes=size(X̂, 2))
         for (β, H) in zip(pt.βs, pt.Hs)
-            println(io, "$ρ,$K_eff,$β,$H,$(pt.β_star)")
+            println(io, "$ρ,$K_eff,$β,$H,$(pt.β_onset)")
         end
-        @info "  ρ=$ρ: K_eff=$(round(K_eff, digits=1)), β*=$(round(pt.β_star, digits=2))"
+        @info "  ρ=$ρ: K_eff=$(round(K_eff, digits=1)), β*=$(round(pt.β_onset, digits=2))"
     end
 end
 

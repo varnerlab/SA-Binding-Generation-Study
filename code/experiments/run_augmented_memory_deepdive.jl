@@ -54,8 +54,7 @@ strong_seqs = stored_seqs[strong_idx]
 
 # build full-family baseline
 X̂_full, pca_full, _, _ = build_memory_matrix(char_mat; pratio=0.95)
-pt_full = find_entropy_inflection(X̂_full)
-β_full = pt_full.β_star
+β_full = all_memory_onset(X̂_full)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Helper: evaluate a generation run
@@ -143,8 +142,7 @@ for n_bind in n_binder_values
         sub_char = char_mat[sub_idx, :]
         pratio = n_use <= 5 ? 0.99 : 0.95  # keep more variance for tiny sets
         X̂_sub, pca_sub, _, _ = build_memory_matrix(sub_char; pratio=pratio)
-        pt_sub = find_entropy_inflection(X̂_sub)
-        β_sub = pt_sub.β_star
+        β_sub = all_memory_onset(X̂_sub)
 
         # generate
         n_chains = max(10, n_use)
@@ -222,8 +220,7 @@ println()
 # Start with curated binder memory, then augment with interpolations
 strong_char = char_mat[strong_idx, :]
 X̂_strong, pca_strong, _, _ = build_memory_matrix(strong_char; pratio=0.95)
-pt_strong = find_entropy_inflection(X̂_strong)
-β_strong = pt_strong.β_star
+β_strong = all_memory_onset(X̂_strong)
 
 n_interp_values = [0, 10, 25, 50, 100, 200]
 interp_results = DataFrame(
@@ -245,8 +242,7 @@ for n_int in n_interp_values
     end
 
     # re-compute β* for augmented memory
-    pt_aug = find_entropy_inflection(X̂_use)
-    β_aug = pt_aug.β_star
+    β_aug = all_memory_onset(X̂_use)
 
     seqs, pca_vecs = generate_sequences(X̂_use, pca_strong, L;
         β=β_aug, n_chains=20, T=5000, seed=42)
@@ -284,8 +280,7 @@ for bf in binder_fractions
     mmem = build_mixed_memory(char_mat, strong_idx;
         binder_fraction=bf, target_K=K_total, seed=42)
 
-    pt_mix = find_entropy_inflection(mmem.X̂)
-    β_mix = pt_mix.β_star
+    β_mix = all_memory_onset(mmem.X̂)
 
     seqs, pca_vecs = generate_sequences(mmem.X̂, mmem.pca_model, L;
         β=β_mix, n_chains=20, T=5000, seed=42)
@@ -329,8 +324,7 @@ for nc in consensus_counts
         X̂_use = result_cons.X̂_aug
     end
 
-    pt_c = find_entropy_inflection(X̂_use)
-    β_c = pt_c.β_star
+    β_c = all_memory_onset(X̂_use)
 
     seqs, pca_vecs = generate_sequences(X̂_use, pca_full, L;
         β=β_c, n_chains=20, T=5000, seed=42)
