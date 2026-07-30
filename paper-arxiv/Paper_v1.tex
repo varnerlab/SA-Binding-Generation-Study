@@ -94,7 +94,7 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \bibliographystyle{unsrtnat}
 \bibliography{References_v1}
 
-% --- Figures and Tables (placed after bibliography, PNAS-style) ---
+% --- Tables followed by figures (placed after bibliography) ---
 \clearpage
 
 % -----------------------------------------------------------------------
@@ -122,98 +122,6 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
   \end{tabular}
   }
 \end{table}
-
-% -----------------------------------------------------------------------
-% Fig 1: Binder scaling (old Fig 2; old Fig 1 bar chart removed)
-% -----------------------------------------------------------------------
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=\textwidth]{sections/figs/study1_binder_scaling.pdf}
-  \caption{\textbf{Sequence properties vary with the number of designated inputs.}
-  Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
-  the Kunitz K/R-positive set (3 replicates each; shaded bands show $\pm 1$
-  s.d.). P1 K/R fraction was 1.0 at every sample size (not shown).
-  \textit{Left:} Pairwise sequence diversity increases from 0.35
-  ($K_{\mathrm{des}}=3$) to 0.50 ($K_{\mathrm{des}}=32$).
-  \textit{Right:} KL divergence of amino acid composition decreases from 0.070
-  to 0.009 over the same range. All input sizes retained the selected marker.
-  Larger input sets produced more diverse libraries.}
-  \label{fig:scaling}
-\end{figure}
-
-% -----------------------------------------------------------------------
-% Fig 2: Phase transition entropy curves (old rho sweep figure removed)
-% -----------------------------------------------------------------------
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=0.82\textwidth]{sections/figs/fig5_entropy_curves.pdf}
-  \caption{\textbf{Entropy crossover shifts rightward with increasing multiplicity
-  ratio $\rho$.}
-  Attention entropy $H(\beta)$ normalized by $\log K$ (the uniform limit) as a
-  function of inverse temperature $\beta$ (log scale) for
-  $\rho \in \{1, 5, 20, 100, 1000\}$ on the Kunitz family ($K=99$,
-  $K_{\mathrm{des}}=32$). At $\rho=1$ (standard SA), the entropy starts at
-  $H/\log K = 1$ (uniform attention over all patterns); as $\rho$ increases,
-  the multiplicity bias pre-concentrates the attention distribution, lowering the
-  starting entropy toward $\log K_{\mathrm{des}} / \log K \approx 0.75$ (dotted
-  line). Each curve shows a sigmoidal drop to near-zero entropy; dots and dashed
-  vertical lines mark the crossover onset $\beta^{*}(\rho)$, the point of maximum
-  downward curvature. As $\rho$ increases from 1 to 1000, $K_{\mathrm{eff}}$
-  decreases from 99 to 32.1 and $\beta^{*}$ shifts rightward from 4.4 to 9.3.}
-  \label{fig:phase-transition}
-\end{figure}
-
-% -----------------------------------------------------------------------
-% Fig 3: Separation index vs. calibration gap
-% -----------------------------------------------------------------------
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=\textwidth]{sections/figs/fig2_separation_vs_gap.pdf}
-  \caption{\textbf{Calibration trajectories reveal family-dependent gaps associated with
-  PCA-space separation.}
-  \textbf{(A)}~Observed marker fraction $f_{\mathrm{obs}}$ versus effective designated
-  fraction $f_{\mathrm{eff}}$ as the multiplicity ratio $\rho$ increases from 1 to 500
-  for six protein families. The dashed diagonal marks perfect calibration
-  ($f_{\mathrm{obs}} = f_{\mathrm{eff}}$). Homeobox
-  ($S = \HomeoboxSeparation$) and SH3 ($S = \SHThreeSeparation$)
-  domains track the diagonal closely; Kunitz ($S = \KunitzSeparation$) and Forkhead
-  ($S = \ForkheadSeparation$) curve below; WW domains ($S = \WWSeparation$) show the
-  largest departure; $\omega$-conotoxin ($S = \ConotoxinSeparation$) shows a moderate gap
-  despite high PCA separation. Double-headed arrows
-  indicate the calibration gap at $\rho = 500$.
-  \textbf{(B)}~Separation index $S$ versus calibration gap $\Delta$ at $\rho = 500$.
-  Error bars show replicate s.d. An exploratory linear fit to the five Pfam families
-  (filled markers; $\Delta \approx \RelationIntercept{} \RelationSlope\,S$,
-  $R^{2}=\RelationRsq$) summarizes the association without defining a prospective
-  threshold. The $\omega$-conotoxin point (open diamond) is displayed as an external
-  comparison and is not included in the fit.}
-  \label{fig:separation-vs-gap}
-\end{figure}
-
-% -----------------------------------------------------------------------
-% Fig: Hard-mask beta sweep (rho -> infinity endpoint)
-% -----------------------------------------------------------------------
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.72\textwidth]{sections/figs/fig_mask_betasweep.pdf}
-  \caption{\textbf{Recovery is set by retrieval sharpness and conditioning strength, both
-  acting through the decode gap.}
-  P1~K/R fraction for the Kunitz designated subset versus inverse temperature
-  $\beta$ (log scale) under the hard attention mask ($b = -\infty$ on background
-  patterns; red curve, 30 chains per point, error bars are standard error across
-  chains). The mask is the $\Delta_{\mathrm{attn}} = 0$ envelope: recovery climbs
-  monotonically from 0.46 at $\beta = 2$ to 1.00 at $\beta = 512$ with no plateau.
-  The finite-$\rho$ multiplicity conditions (blue diamonds, each at its own
-  $\beta^{*}(\vr)$) sit below this envelope at matched $\beta$: hard masking recovers more
-  marker signal than soft weighting by 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$,
-  contracting into the noise as $\rho \to \infty$ (0.002, SE 0.030, at
-  $f_{\mathrm{eff}} = 0.99$); faint red points show the mask run at each matched
-  $\beta$. Since $\Delta_{\mathrm{attn}} \approx 0$ (attention tracks $f_{\mathrm{eff}}$), this
-  is a decode effect, not an attention effect. Hard curation (green triangle) reaches complete transfer at low $\beta$ on
-  its subset-only basis; unconditional generation (gray square) is shown for
-  reference.}
-  \label{fig:mask-betasweep}
-\end{figure}
 
 % -----------------------------------------------------------------------
 % Table: Hard-mask recovery across the conditioning axis
@@ -415,6 +323,100 @@ Natural controls & 5 & $0.228\pm0.004$ & $0.108\pm0.007$ & $40.7\pm3.5$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\clearpage
+
+% -----------------------------------------------------------------------
+% Fig 1: Binder scaling (old Fig 2; old Fig 1 bar chart removed)
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/study1_binder_scaling.pdf}
+  \caption{\textbf{Sequence properties vary with the number of designated inputs.}
+  Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
+  the Kunitz K/R-positive set (3 replicates each; shaded bands show $\pm 1$
+  s.d.). P1 K/R fraction was 1.0 at every sample size (not shown).
+  \textit{Left:} Pairwise sequence diversity increases from 0.35
+  ($K_{\mathrm{des}}=3$) to 0.50 ($K_{\mathrm{des}}=32$).
+  \textit{Right:} KL divergence of amino acid composition decreases from 0.070
+  to 0.009 over the same range. All input sizes retained the selected marker.
+  Larger input sets produced more diverse libraries.}
+  \label{fig:scaling}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Fig 2: Phase transition entropy curves (old rho sweep figure removed)
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.82\textwidth]{sections/figs/fig5_entropy_curves.pdf}
+  \caption{\textbf{Entropy crossover shifts rightward with increasing multiplicity
+  ratio $\rho$.}
+  Attention entropy $H(\beta)$ normalized by $\log K$ (the uniform limit) as a
+  function of inverse temperature $\beta$ (log scale) for
+  $\rho \in \{1, 5, 20, 100, 1000\}$ on the Kunitz family ($K=99$,
+  $K_{\mathrm{des}}=32$). At $\rho=1$ (standard SA), the entropy starts at
+  $H/\log K = 1$ (uniform attention over all patterns); as $\rho$ increases,
+  the multiplicity bias pre-concentrates the attention distribution, lowering the
+  starting entropy toward $\log K_{\mathrm{des}} / \log K \approx 0.75$ (dotted
+  line). Each curve shows a sigmoidal drop to near-zero entropy; dots and dashed
+  vertical lines mark the crossover onset $\beta^{*}(\rho)$, the point of maximum
+  downward curvature. As $\rho$ increases from 1 to 1000, $K_{\mathrm{eff}}$
+  decreases from 99 to 32.1 and $\beta^{*}$ shifts rightward from 4.4 to 9.3.}
+  \label{fig:phase-transition}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Fig 3: Separation index vs. calibration gap
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{sections/figs/fig2_separation_vs_gap.pdf}
+  \caption{\textbf{Calibration trajectories reveal family-dependent gaps associated with
+  PCA-space separation.}
+  \textbf{(A)}~Observed marker fraction $f_{\mathrm{obs}}$ versus effective designated
+  fraction $f_{\mathrm{eff}}$ as the multiplicity ratio $\rho$ increases from 1 to 500
+  for six protein families. The dashed diagonal marks perfect calibration
+  ($f_{\mathrm{obs}} = f_{\mathrm{eff}}$). Homeobox
+  ($S = \HomeoboxSeparation$) and SH3 ($S = \SHThreeSeparation$)
+  domains track the diagonal closely; Kunitz ($S = \KunitzSeparation$) and Forkhead
+  ($S = \ForkheadSeparation$) curve below; WW domains ($S = \WWSeparation$) show the
+  largest departure; $\omega$-conotoxin ($S = \ConotoxinSeparation$) shows a moderate gap
+  despite high PCA separation. Double-headed arrows
+  indicate the calibration gap at $\rho = 500$.
+  \textbf{(B)}~Separation index $S$ versus calibration gap $\Delta$ at $\rho = 500$.
+  Error bars show replicate s.d. An exploratory linear fit to the five Pfam families
+  (filled markers; $\Delta \approx \RelationIntercept{} \RelationSlope\,S$,
+  $R^{2}=\RelationRsq$) summarizes the association without defining a prospective
+  threshold. The $\omega$-conotoxin point (open diamond) is displayed as an external
+  comparison and is not included in the fit.}
+  \label{fig:separation-vs-gap}
+\end{figure}
+
+% -----------------------------------------------------------------------
+% Fig: Hard-mask beta sweep (rho -> infinity endpoint)
+% -----------------------------------------------------------------------
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.72\textwidth]{sections/figs/fig_mask_betasweep.pdf}
+  \caption{\textbf{Recovery is set by retrieval sharpness and conditioning strength, both
+  acting through the decode gap.}
+  P1~K/R fraction for the Kunitz designated subset versus inverse temperature
+  $\beta$ (log scale) under the hard attention mask ($b = -\infty$ on background
+  patterns; red curve, 30 chains per point, error bars are standard error across
+  chains). The mask is the $\Delta_{\mathrm{attn}} = 0$ envelope: recovery climbs
+  monotonically from 0.46 at $\beta = 2$ to 1.00 at $\beta = 512$ with no plateau.
+  The finite-$\rho$ multiplicity conditions (blue diamonds, each at its own
+  $\beta^{*}(\vr)$) sit below this envelope at matched $\beta$: hard masking recovers more
+  marker signal than soft weighting by 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$,
+  contracting into the noise as $\rho \to \infty$ (0.002, SE 0.030, at
+  $f_{\mathrm{eff}} = 0.99$); faint red points show the mask run at each matched
+  $\beta$. Since $\Delta_{\mathrm{attn}} \approx 0$ (attention tracks $f_{\mathrm{eff}}$), this
+  is a decode effect, not an attention effect. Hard curation (green triangle) reaches complete transfer at low $\beta$ on
+  its subset-only basis; unconditional generation (gray square) is shown for
+  reference.}
+  \label{fig:mask-betasweep}
+\end{figure}
 
 % -----------------------------------------------------------------------
 % Fig: Binding-loop heatmaps with residuals
