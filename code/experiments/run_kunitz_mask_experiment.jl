@@ -255,6 +255,14 @@ scatter!(p_beta, [cur_row.beta[1]], [cur_row.p1_kr[1]], yerror=[cur_row.p1_kr_se
 hline!(p_beta, [1.0], linestyle=:dot, color=:black, alpha=0.4, label="")
 savefig(p_beta, joinpath(FIG_DIR, "fig_mask_betasweep.png"))
 savefig(p_beta, joinpath(FIG_DIR, "fig_mask_betasweep.pdf"))
+# This is the only mask figure either manuscript includes, and both read it from their own
+# sections/figs. Write it there directly so a rerun cannot leave the papers on a stale copy.
+for tree in ("paper-jcim", "paper-arxiv")
+    dest = joinpath(dirname(_CODE_DIR), tree, "sections", "figs")
+    isdir(dest) || continue
+    savefig(p_beta, joinpath(dest, "fig_mask_betasweep.pdf"))
+    @info "Wrote fig_mask_betasweep into $tree"
+end
 @info "Wrote fig_mask_betasweep"
 
 # --- Calibration figure: observed vs target effective fraction (with mask/curation/uncond) ---
