@@ -26,8 +26,13 @@ python experiments/render_separation_gap_figure_5fam.py  # matplotlib figures
 # HMM baseline (requires HMMER3: brew install hmmer)
 julia experiments/run_hmm_baseline.jl
 
-# Build paper PDF (from paper-arxiv/ directory)
+# Build the arXiv paper (single document, appendix and SI derivation included inline)
 cd ../paper-arxiv && ./Build.sh Paper_v1
+
+# Build the JCIM submission. Use make: the appendix and the GMM SI table live in
+# Paper_JCIM_SI.tex, so `./Build.sh Paper_JCIM` alone leaves a STALE SI PDF while
+# Paper_JCIM_SI.log still reports a clean build from an earlier run.
+cd ../paper-jcim && make          # main, then SI
 ```
 
 Julia 1.12 required. Package versions pinned in `code/Manifest.toml`; a human-readable snapshot is in `code/dependency_snapshot.toml`.
@@ -55,9 +60,13 @@ The core samplers use caller-local random-number generators via `seed=` or `rng=
 
 Per-family subdirectories contain Stockholm seed alignments, generated FASTA files, and multiplicity sweep CSVs. Six protein families are studied: WW (PF00397), Forkhead (PF00250), Kunitz (PF00014), SH3 (PF00018), Homeobox (PF00046), and omega-conotoxin (O-superfamily, under `omega_conotoxin/`). Cross-family results live in `code/data/multi_family_comparison_5fam.csv`.
 
-### Paper (`paper-arxiv/`)
+### Papers (`paper-arxiv/` and `paper-jcim/`)
 
-Main file: `paper-arxiv/Paper_v1.tex`. Section files in `paper-arxiv/sections/` (abstract, introduction, results, discussion, theory, methods, appendix). References: `paper-arxiv/References_v1.bib`. JCIM-formatted version under `paper-arxiv/jcim/`. Build with `./Build.sh Paper_v1` from the `paper-arxiv/` directory.
+Two sibling trees, not nested. The arXiv version is `paper-arxiv/Paper_v1.tex`, one document with the appendix and GMM derivation inlined; build it with `./Build.sh Paper_v1`. The JCIM submission is `paper-jcim/Paper_JCIM.tex` plus a separate supporting-information document `paper-jcim/Paper_JCIM_SI.tex` that carries the appendix and the GMM SI table; build both with `make` from `paper-jcim/`.
+
+Each tree has its own `sections/`, `References*.bib`, and `sections/figs/`. The nine shared section files are kept byte-identical across the trees by `code/test/test_manuscript_consistency.jl`, so edit them in both. Files that live only in `Paper_JCIM.tex` or `Paper_v1.tex`, including figure and table wrappers, are not covered and must be edited twice by hand.
+
+Tables and prose numbers under `sections/generated/` are produced by `code/experiments/generate_paper_tables.jl` from the canonical CSVs and byte-compared against both trees by `code/test/test_generated_paper_tables.jl`. Never hand-edit them; regenerate instead.
 
 ## Terminology
 

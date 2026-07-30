@@ -25,6 +25,7 @@ using Test
             "tab_forkhead_rho.tex",
             "tab_omega_conotoxin_rho.tex",
             "tab_sar_agreement.tex",
+            "tab_beta_sweep.tex",
         ])
         @test sort(readdir(generated)) == expected_files
         for committed in committed_trees

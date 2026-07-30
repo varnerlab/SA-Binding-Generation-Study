@@ -18,6 +18,13 @@ const FAMILY_SLUGS = [
 ]
 const RHO_GRID = Float64[1, 2, 5, 10, 20, 50, 100, 500]
 
+# The appendix beta-sweep table reports a subset of the multipliers in
+# calibration_beta_sweep.csv. Both lists are authoritative: the table must contain exactly
+# these rows, and the CSV must contain exactly these multipliers.
+const BETA_SWEEP_RHO = Float64[10, 50, 200]
+const BETA_SWEEP_REPORTED = Float64[0.5, 1.0, 1.5, 2.0, 3.0]
+const BETA_SWEEP_ALL_MULTIPLIERS = Float64[0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0]
+
 using CSV, DataFrames, Printf, Statistics
 
 fmt3(x) = @sprintf("%.3f", x)
@@ -125,7 +132,36 @@ function validate_inputs()
             error("Conotoxin SAR $col outside [0,1]")
     end
 
-    return cross, aggregates, sar
+    beta_path = joinpath(DATA_DIR, "kunitz", "calibration_beta_sweep.csv")
+    isfile(beta_path) || error("Missing Kunitz beta sweep: $beta_path")
+    beta_sweep = CSV.read(beta_path, DataFrame)
+    expected_beta = [Symbol("ρ"), Symbol("β_mult"), Symbol("β_used"), Symbol("β_star"),
+                     :f_observed, :diversity, :mean_valid]
+    propertynames(beta_sweep) == expected_beta ||
+        error("Kunitz beta sweep schema mismatch: $(propertynames(beta_sweep))")
+    Set(beta_sweep[!, Symbol("ρ")]) == Set(BETA_SWEEP_RHO) ||
+        error("Kunitz beta sweep rho set mismatch: $(sort(unique(beta_sweep[!, Symbol("ρ")])))")
+    for rho in BETA_SWEEP_RHO
+        block = filter(Symbol("ρ") => ==(rho), beta_sweep)
+        nrow(block) == length(BETA_SWEEP_ALL_MULTIPLIERS) ||
+            error("Kunitz beta sweep rho=$rho must have $(length(BETA_SWEEP_ALL_MULTIPLIERS)) rows")
+        block[!, Symbol("β_mult")] == BETA_SWEEP_ALL_MULTIPLIERS ||
+            error("Kunitz beta sweep rho=$rho multiplier grid mismatch")
+        # One operating point per rho, and beta_used must be the multiplier times it.
+        length(unique(block[!, Symbol("β_star")])) == 1 ||
+            error("Kunitz beta sweep rho=$rho has more than one operating point")
+        for row in eachrow(block)
+            isapprox(row[Symbol("β_used")],
+                     row[Symbol("β_mult")] * row[Symbol("β_star")]; rtol=1e-9) ||
+                error("Kunitz beta sweep rho=$rho beta_used disagrees with mult times beta_star")
+        end
+    end
+    for col in [:f_observed, :diversity]
+        all(x -> 0 <= x <= 1, beta_sweep[!, col]) ||
+            error("Kunitz beta sweep $col outside [0,1]")
+    end
+
+    return cross, aggregates, sar, beta_sweep
 end
 
 function linear_fit(x, y)
@@ -145,7 +181,7 @@ function write_text(path, content)
 end
 
 function generate(output_dir)
-    cross, aggregates, sar = validate_inputs()
+    cross, aggregates, sar, beta_sweep = validate_inputs()
     mkpath(output_dir)
 
     for (family, slug) in FAMILY_SLUGS
@@ -187,6 +223,19 @@ function generate(output_dir)
     end
     write_text(joinpath(output_dir, "tab_sar_agreement.tex"),
                join(sar_rows, "\n") * "\n" * raw"\bottomrule")
+
+    beta_rows = String[]
+    for (block_index, rho) in enumerate(BETA_SWEEP_RHO)
+        block_index > 1 && push!(beta_rows, raw"\midrule")
+        block = filter(Symbol("ρ") => ==(rho), beta_sweep)
+        for mult in BETA_SWEEP_REPORTED
+            row = only(eachrow(filter(Symbol("β_mult") => ==(mult), block)))
+            push!(beta_rows, @sprintf("%-3d & %.2f & %.3f & %.3f \\\\",
+                                      Int(rho), mult, row.f_observed, row.diversity))
+        end
+    end
+    write_text(joinpath(output_dir, "tab_beta_sweep.tex"),
+               join(beta_rows, "\n") * "\n" * raw"\bottomrule")
 
     selected_rho = Set([1.0, 10.0, 100.0, 500.0])
     per_family_rows = String[]
