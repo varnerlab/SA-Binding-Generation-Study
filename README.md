@@ -97,7 +97,7 @@ The Julia experiments were developed and tested with [Julia](https://julialang.o
 
 Several validation and figure scripts are written in Python (3.9+). Their exact
 package versions are recorded in `code/requirements.txt` and can be installed
-with `python -m pip install -r requirements.txt` from `code/`. Structure
+with `python3 -m pip install -r requirements.txt` from `code/`. Structure
 rendering requires [PyMOL](https://pymol.org/). AlphaFold2 cross-validation runs
 on [Google Colab](https://github.com/sokrypton/ColabFold) via ColabFold and
 requires a GPU runtime. [HMMER3](http://hmmer.org/) is required for the HMM
@@ -130,11 +130,11 @@ julia experiments/run_structure_validation.jl
 julia experiments/run_hmm_baseline.jl
 
 # ESM2 perplexity (requires fair-esm and torch)
-python experiments/score_esm2_perplexity.py
+python3 experiments/score_esm2_perplexity.py
 
 # Regenerate publication figures
-python experiments/render_separation_gap_figure_5fam.py
-python experiments/render_entropy_curves.py
+python3 experiments/render_separation_gap_figure_5fam.py
+python3 experiments/render_entropy_curves.py
 
 # Papers
 cd ../paper-arxiv && make

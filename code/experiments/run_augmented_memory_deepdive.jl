@@ -62,7 +62,8 @@ X̂_full, pca_full, _, _ = build_memory_matrix(char_mat; pratio=0.95)
 function evaluate_generation(seqs::Vector{String}, pca_vecs::Vector{Vector{Float64}},
                               X̂::Matrix{Float64}, β::Float64,
                               ref_seqs::Vector{String}, p1_pos::Int,
-                              binding_loop::Vector{Int})
+                              binding_loop::Vector{Int};
+                              rng::AbstractRNG=Random.default_rng())
     n = length(seqs)
     n == 0 && return nothing
 
@@ -73,8 +74,8 @@ function evaluate_generation(seqs::Vector{String}, pca_vecs::Vector{Vector{Float
     n_pairs = min(500, n * (n - 1) ÷ 2)  # cap for speed
     pair_ids = Float64[]
     for _ in 1:n_pairs
-        i, j = rand(1:n), rand(1:n)
-        while i == j; j = rand(1:n); end
+        i, j = rand(rng, 1:n), rand(rng, 1:n)
+        while i == j; j = rand(rng, 1:n); end
         push!(pair_ids, sequence_identity(seqs[i], seqs[j]))
     end
     mean_pairwise_id = mean(pair_ids)
@@ -151,15 +152,21 @@ for (size_index, n_bind) in enumerate(n_binder_values)
 
         # generate
         n_chains = max(10, n_use)
+        replicate_seed = replicate_base_seed(
+            SCALING_SEED_ORIGIN,
+            condition_block_index(
+                (size_index, rep),
+                (length(n_binder_values), n_replicates),
+            ),
+        )
         seqs, pca_vecs = generate_sequences(X̂_sub, pca_sub, L;
             β=β_sub, n_chains=n_chains, T=5000,
-            seed=replicate_base_seed(SCALING_SEED_ORIGIN,
-                condition_block_index((size_index, rep),
-                                      (length(n_binder_values), n_replicates))))
+            seed=replicate_seed)
 
         # evaluate
         ev = evaluate_generation(seqs, pca_vecs, X̂_sub, β_sub,
-                                  strong_seqs, p1_pos, binding_loop)
+                                  strong_seqs, p1_pos, binding_loop;
+                                  rng=MersenneTwister(replicate_seed))
         if ev !== nothing
             push!(scaling_results, (n_use, rep, ev.p1_kr_frac, ev.diversity,
                                      ev.mean_novelty, ev.mean_seqid,
@@ -182,6 +189,32 @@ scaling_agg = combine(groupby(scaling_results, :n_binders),
 )
 show(stdout, scaling_agg)
 println()
+
+function save_scaling_outputs(scaling_results, scaling_agg)
+    p = plot(layout=(1, 2), size=(900, 400), margin=8Plots.mm,
+        title=["Sequence Diversity" "AA KL Divergence"])
+
+    plot!(p[1], scaling_agg.n_binders, scaling_agg.diversity_mean,
+        ribbon=scaling_agg.diversity_std, fillalpha=0.3,
+        marker=:circle, linewidth=2, color=:coral, label="",
+        xlabel="Number of designated inputs", ylabel="Pairwise diversity")
+
+    plot!(p[2], scaling_agg.n_binders, scaling_agg.kl_mean,
+        ribbon=scaling_agg.kl_std, fillalpha=0.3,
+        marker=:circle, linewidth=2, color=:forestgreen, label="",
+        xlabel="Number of designated inputs", ylabel="KL(AA)")
+
+    savefig(p, joinpath(FIG_DIR, "study1_binder_scaling.pdf"))
+    savefig(p, joinpath(FIG_DIR, "study1_binder_scaling.png"))
+    CSV.write(joinpath(CACHE_DIR, "deepdive_scaling.csv"), scaling_results)
+    @info "  Saved study1_binder_scaling and deepdive_scaling.csv"
+end
+
+if "--scaling-only" in ARGS
+    save_scaling_outputs(scaling_results, scaling_agg)
+    @info "Binder-scaling rerun complete"
+    exit()
+end
 
 # ══════════════════════════════════════════════════════════════════════════════
 # STUDY 2: Weighted Memory — soft curation via softmax bias
@@ -358,22 +391,7 @@ println()
 @info "="^70
 
 # --- Figure 1: Scaling study (2-panel: diversity + KL) ---
-p1 = plot(layout=(1, 2), size=(900, 400), margin=8Plots.mm,
-    title=["Sequence Diversity" "AA KL Divergence"])
-
-plot!(p1[1], scaling_agg.n_binders, scaling_agg.diversity_mean,
-    ribbon=scaling_agg.diversity_std, fillalpha=0.3,
-    marker=:circle, linewidth=2, color=:coral, label="",
-    xlabel="Number of input binders", ylabel="Pairwise diversity")
-
-plot!(p1[2], scaling_agg.n_binders, scaling_agg.kl_mean,
-    ribbon=scaling_agg.kl_std, fillalpha=0.3,
-    marker=:circle, linewidth=2, color=:forestgreen, label="",
-    xlabel="Number of input binders", ylabel="KL(AA)")
-
-savefig(p1, joinpath(FIG_DIR, "study1_binder_scaling.pdf"))
-savefig(p1, joinpath(FIG_DIR, "study1_binder_scaling.png"))
-@info "  Saved study1_binder_scaling"
+save_scaling_outputs(scaling_results, scaling_agg)
 
 # --- Figure 2: Weighted memory ---
 p2 = plot(layout=(1, 3), size=(1200, 400), margin=8Plots.mm,
@@ -486,7 +504,6 @@ savefig(p6, joinpath(FIG_DIR, "study6_pareto_front.png"))
 # ══════════════════════════════════════════════════════════════════════════════
 # Save all results
 # ══════════════════════════════════════════════════════════════════════════════
-CSV.write(joinpath(CACHE_DIR, "deepdive_scaling.csv"), scaling_results)
 CSV.write(joinpath(CACHE_DIR, "deepdive_weighted.csv"), weighted_results)
 CSV.write(joinpath(CACHE_DIR, "deepdive_interpolation.csv"), interp_results)
 CSV.write(joinpath(CACHE_DIR, "deepdive_mixed.csv"), mixed_results)

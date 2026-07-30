@@ -129,17 +129,15 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth]{sections/figs/study1_binder_scaling.pdf}
-  \caption{\textbf{Diversity and composition fidelity improve with more input
-  K/R-positive sequences; marker retention is complete at every sample size.}
+  \caption{\textbf{Sequence properties vary with the number of designated inputs.}
   Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
   the Kunitz K/R-positive set (3 replicates each; shaded bands show $\pm 1$
   s.d.). P1 K/R fraction was 1.0 at every sample size (not shown).
-  \textit{Left:} Pairwise sequence diversity increases from 0.36
+  \textit{Left:} Pairwise sequence diversity increases from 0.35
   ($K_{\mathrm{des}}=3$) to 0.50 ($K_{\mathrm{des}}=32$).
-  \textit{Right:} KL divergence of amino acid composition decreases from 0.047
-  to 0.009 over the same range. Three input binders suffice for perfect
-  K/R marker retention; more inputs improve the compositional and diversity
-  quality of the generated library.}
+  \textit{Right:} KL divergence of amino acid composition decreases from 0.070
+  to 0.009 over the same range. All input sizes retained the selected marker.
+  Larger input sets produced more diverse libraries.}
   \label{fig:scaling}
 \end{figure}
 
@@ -300,11 +298,11 @@ are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
     Source & pLDDT & TM & PPL & P1 K/R & KL ($\times 10^{3}$) & $D$ \\
     \midrule
     Stored (natural)      & $89.3 \pm 3.2$  & $0.83 \pm 0.03$ & $4.97 \pm 0.98$ & 0.32 & 0 & 0.63 \\
-    SA (full family)      & $90.4 \pm 1.2$  & $0.84 \pm 0.01$ & $4.78 \pm 0.64$ & $0.41 \pm 0.01$ & $6.9 \pm 0.1$ & 0.56 \\
-    SA (K/R-positive)     & $90.7 \pm 1.1$  & $0.83 \pm 0.01$ & $4.72 \pm 0.60$ & $1.00 \pm 0.00$ & $19.5 \pm 0.4$ & 0.50 \\
-    SA (K/R-negative)     & $91.0 \pm 1.2$  & $0.85 \pm 0.01$ & $4.73 \pm 0.72$ & $0.00 \pm 0.00$ & $12.4 \pm 0.3$ & 0.53 \\
-    HMM emit (HMMER3)     & $60.4 \pm 13.1$ & $0.60 \pm 0.19$ & $16.1 \pm 4.2$  & $0.15 \pm 0.03$ & $29.7 \pm 11.3$ & 0.56 \\
-    Bootstrap (resample)  & ---             & ---              & ---              & $0.30 \pm 0.04$ & $1.0 \pm 0.3$ & 0.56 \\
+    SA (full family)      & $90.4 \pm 1.2$  & $0.84 \pm 0.01$ & $4.78 \pm 0.64$ & $0.38 \pm 0.03$ & $7.6 \pm 0.9$ & 0.56 \\
+    SA (K/R-positive)     & $90.7 \pm 1.1$  & $0.83 \pm 0.01$ & $4.72 \pm 0.60$ & $1.00 \pm 0.00$ & $18.7 \pm 0.9$ & 0.50 \\
+    SA (K/R-negative)     & $91.0 \pm 1.2$  & $0.85 \pm 0.01$ & $4.73 \pm 0.72$ & $0.00 \pm 0.00$ & $11.2 \pm 0.2$ & 0.53 \\
+    HMM emit (HMMER3)     & $60.4 \pm 13.1$ & $0.60 \pm 0.19$ & $16.1 \pm 4.2$  & $0.17 \pm 0.04$ & $27.1 \pm 2.1$ & 0.90 \\
+    Bootstrap (resample)  & ---             & ---              & ---              & $0.30 \pm 0.04$ & $1.0 \pm 0.3$ & 0.62 \\
     \bottomrule
   \end{tabular}
   }
@@ -458,8 +456,8 @@ Natural controls & 5 & $0.228\pm0.004$ & $0.108\pm0.007$ & $40.7\pm3.5$ \\
   at P1, while introducing $19$--$26$ substitutions concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-family
   generation (blue), and SA K/R-positive-subset-conditioned generation (red). The
-  full-family entropy correlation is very high ($r = 0.988$), confirming that SA
-  recapitulates the position-specific conservation pattern of the natural family.
+  full-family entropy correlation is $r = 0.988$, showing similar position-specific
+  conservation in the generated and stored sequences.
   The K/R-positive-subset correlation is slightly lower ($r = 0.932$), with
   the largest deviation at the P1 position (column~25): conditioning collapses P1
   diversity to K/R, reducing entropy at this site while preserving the entropy
@@ -486,8 +484,7 @@ Natural controls & 5 & $0.228\pm0.004$ & $0.108\pm0.007$ & $40.7\pm3.5$ \\
   concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-seeded
   generation (blue), and SA designated-seeded generation (red). The full-seeded entropy
-  correlation is near-perfect ($r = 0.997$), confirming faithful recapitulation of
-  position-specific conservation. The designated-seeded correlation is lower
+  correlation is $r = 0.997$. The designated-seeded correlation is lower
   ($r = 0.745$), reflecting lower diversity after conditioning on the 23-sequence
   designated subset, including at Tyr13 and co-varying loop residues.}
   \label{fig:conotoxin-sequence-analysis}

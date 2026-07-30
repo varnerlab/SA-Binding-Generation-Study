@@ -77,12 +77,23 @@ end
         @test length(Set(seeds)) == length(seeds)
     end
 
-    @testset "the four calculations cannot collide with each other" begin
+    @testset "HMM comparison SA replicates: every chain run has its own stream" begin
+        bases = [
+            replicate_base_seed(50_000_000, condition_block_index((c, p), (2, 5)))
+            for c in 1:2, p in 1:5
+        ]
+        seeds, unique_seeds = collect_streams(vec(bases), 30)
+        @test length(unique_seeds) == length(seeds) == 300
+    end
+
+    @testset "the six calculations cannot collide with each other" begin
         blocks = Dict(
             "hard_curation" => (10_000_000, 6 * 5),
             "sweep"         => (20_000_000, 6 * 8 * 5),
             "kunitz"        => (30_000_000, 3 * 5),
             "scaling"       => (40_000_000, 8 * 3),
+            "hmm_sa"        => (50_000_000, 2 * 5),
+            "hmm_emit"      => (70_000_000, 4),
         )
         spans = Dict(k => (o, o + (n - 1) * SEED_BLOCK + SEED_BLOCK)
                      for (k, (o, n)) in blocks)
@@ -90,5 +101,51 @@ end
             a < b || continue
             @test hi_a <= lo_b || hi_b <= lo_a   # disjoint seed spaces
         end
+    end
+
+    @testset "paper-facing diversity metrics use local RNGs" begin
+        root = normpath(joinpath(@__DIR__, ".."))
+        kunitz = read(
+            joinpath(root, "experiments", "run_kunitz_binding_experiment_with_replicates.jl"),
+            String,
+        )
+        scaling = read(
+            joinpath(root, "experiments", "run_augmented_memory_deepdive.jl"),
+            String,
+        )
+        hmm = read(joinpath(root, "experiments", "run_hmm_baseline.jl"), String)
+
+        @test occursin("rand(rng, 1:n)", kunitz)
+        @test occursin("rng=MersenneTwister(seed)", kunitz)
+        @test !occursin("i, j = rand(1:n), rand(1:n)", kunitz)
+
+        @test occursin("rand(rng, 1:n)", scaling)
+        @test occursin("rng=MersenneTwister(replicate_seed)", scaling)
+        @test !occursin("i, j = rand(1:n), rand(1:n)", scaling)
+        @test occursin("\"--scaling-only\" in ARGS", scaling)
+
+        @test occursin("HMM_SA_SEED_ORIGIN", hmm)
+        @test occursin("HMM_EMIT_SEED_ORIGIN", hmm)
+        @test occursin("sequence_pair_diversity", hmm)
+        @test occursin("rng=MersenneTwister(seed)", hmm)
+        @test occursin("Computing HMM baseline metrics across", hmm)
+        @test !occursin("sample_diversity(pca_vecs)", hmm)
+        @test !occursin("seed = 10000 + rep", hmm)
+        @test !occursin("seed = 20000 + rep", hmm)
+        @test !occursin("Random.seed!", hmm)
+    end
+
+    @testset "replicate rerun preserves downstream-validation FASTAs by default" begin
+        script = read(
+            joinpath(
+                @__DIR__,
+                "..",
+                "experiments",
+                "run_kunitz_binding_experiment_with_replicates.jl",
+            ),
+            String,
+        )
+        @test occursin("\"--refresh-example-fastas\" in ARGS", script)
+        @test occursin("Preserved example FASTAs", script)
     end
 end

@@ -24,6 +24,9 @@ const N_HMM_SEQS = 150
 const N_REPS = 5           # replicates for SA generation
 const P1_POSITION = 25     # P1 residue position in cleaned Kunitz alignment
 const STRONG_BINDER_AA = Set(['K', 'R'])
+const HMM_SA_SEED_ORIGIN = 50_000_000
+const BOOTSTRAP_SEED_ORIGIN = 60_000_000
+const HMM_EMIT_SEED_ORIGIN = 70_000_000
 
 mkpath(FIG_DIR)
 
@@ -46,13 +49,11 @@ nonbinder_indices = setdiff(1:K, binder_indices)
 
 # build memory matrices
 X̂, pca_model, L_out, d_full = build_memory_matrix(char_mat; pratio=0.95)
-pt = find_entropy_inflection(X̂)
-β_star = pt.β_star
+β_star = all_memory_onset(X̂)
 
 # curated binder memory
 binder_result = build_binder_memory(char_mat, binder_indices)
-pt_binder = find_entropy_inflection(binder_result.X̂)
-β_binder = pt_binder.β_star
+β_binder = all_memory_onset(binder_result.X̂)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Step 2: Generate HMM baseline sequences
@@ -67,23 +68,21 @@ run(`hmmbuild --amino $hmm_file $sto_file`)
 # Emit sequences
 run(`hmmemit -N $N_HMM_SEQS --seed 42 -o $hmm_fasta $hmm_file`)
 
-# Parse and clean HMM sequences
-hmm_raw = parse_fasta(hmm_fasta)
-@info "  HMM emitted $(length(hmm_raw)) raw sequences"
-
-hmm_seqs = String[]
-for (name, seq) in hmm_raw
-    # keep only standard amino acids
-    cleaned = filter(c -> c in AA_ALPHABET, seq)
-    # align to reference length
-    if length(cleaned) >= L
-        push!(hmm_seqs, cleaned[1:L])
-    else
-        # pad with most common AA at each position (use alanine as fallback)
-        padded = cleaned * repeat("A", L - length(cleaned))
-        push!(hmm_seqs, padded)
+function clean_hmm_sequences(path, alignment_length)
+    seqs = String[]
+    for (_, seq) in parse_fasta(path)
+        cleaned = filter(c -> c in AA_ALPHABET, seq)
+        if length(cleaned) >= alignment_length
+            push!(seqs, cleaned[1:alignment_length])
+        else
+            push!(seqs, cleaned * repeat("A", alignment_length - length(cleaned)))
+        end
     end
+    return seqs
 end
+
+# The ESM2 and structure-validation scripts consume this seed-42 FASTA.
+hmm_seqs = clean_hmm_sequences(hmm_fasta, L)
 @info "  HMM processed: $(length(hmm_seqs)) sequences of length $L"
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -105,14 +104,29 @@ function project_seqs_to_full_pca(seqs, full_pca_model, L_full)
     return pca_vecs
 end
 
-# Helper to compute metrics for a set of sequences
-# pca_vecs must be in the full-family PCA space (for consistent novelty/diversity)
-function compute_metrics(seqs, pca_vecs, stored_seqs, X̂)
+# Estimate mean pairwise sequence diversity with the same 300-pair definition used
+# by the Kunitz condition experiment.
+function sequence_pair_diversity(seqs, rng; n_pairs=300)
+    n = length(seqs)
+    n < 2 && return 0.0
+    pair_ids = Float64[]
+    for _ in 1:min(n_pairs, n * (n - 1) ÷ 2)
+        i, j = rand(rng, 1:n), rand(rng, 1:n)
+        while i == j
+            j = rand(rng, 1:n)
+        end
+        push!(pair_ids, sequence_identity(seqs[i], seqs[j]))
+    end
+    return 1.0 - mean(pair_ids)
+end
+
+# pca_vecs must be in the full-family PCA space for consistent novelty.
+function compute_metrics(seqs, pca_vecs, stored_seqs, X̂; rng)
     p1_kr = mean(s -> s[P1_POSITION] in STRONG_BINDER_AA ? 1.0 : 0.0, seqs)
     kl = aa_composition_kl(seqs, stored_seqs)
     nov = mean(sample_novelty(v, X̂) for v in pca_vecs)
     seqid = mean(nearest_sequence_identity(s, stored_seqs) for s in seqs)
-    div = sample_diversity(pca_vecs)
+    div = sequence_pair_diversity(seqs, rng)
     valid = mean(valid_residue_fraction(s) for s in seqs)
     return (p1_kr=p1_kr, kl=kl, novelty=nov, seqid=seqid, diversity=div, valid=valid)
 end
@@ -120,58 +134,51 @@ end
 # SA full family replicates
 sa_full_metrics = []
 for rep in 1:N_REPS
-    seed = 10000 + rep
+    seed = replicate_base_seed(
+        HMM_SA_SEED_ORIGIN,
+        condition_block_index((1, rep), (2, N_REPS)),
+    )
     seqs, pca_vecs = generate_sequences(X̂, pca_model, L; β=β_star, seed=seed)
-    push!(sa_full_metrics, compute_metrics(seqs, pca_vecs, stored_seqs, X̂))
+    push!(sa_full_metrics, compute_metrics(
+        seqs, pca_vecs, stored_seqs, X̂; rng=MersenneTwister(seed)))
 end
 
 # SA strong binder replicates
 sa_strong_metrics = []
 for rep in 1:N_REPS
-    seed = 20000 + rep
+    seed = replicate_base_seed(
+        HMM_SA_SEED_ORIGIN,
+        condition_block_index((2, rep), (2, N_REPS)),
+    )
     seqs, _ = generate_sequences(binder_result.X̂, binder_result.pca_model,
                                   binder_result.L; β=β_binder, seed=seed)
     # Re-project into full-family PCA space for consistent metrics
     pca_vecs = project_seqs_to_full_pca(seqs, pca_model, L)
-    push!(sa_strong_metrics, compute_metrics(seqs, pca_vecs, stored_seqs, X̂))
+    push!(sa_strong_metrics, compute_metrics(
+        seqs, pca_vecs, stored_seqs, X̂; rng=MersenneTwister(seed)))
 end
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Step 4: Compute HMM metrics
 # ══════════════════════════════════════════════════════════════════════════════
-@info "Computing HMM baseline metrics"
-
-# Project HMM sequences into PCA space for novelty/diversity
-hmm_pca_vecs = Vector{Float64}[]
-for seq in hmm_seqs
-    # one-hot encode
-    x = zeros(d_full)
-    for pos in 1:L
-        idx = get(AA_TO_IDX, seq[pos], 0)
-        idx > 0 && (x[(pos-1)*N_AA + idx] = 1.0)
+@info "Computing HMM baseline metrics across $N_REPS emissions"
+hmm_replicate_seqs = [hmm_seqs]
+hmm_replicate_seeds = [42]
+mktempdir() do temp_dir
+    for rep in 2:N_REPS
+        seed = replicate_base_seed(HMM_EMIT_SEED_ORIGIN, rep - 2)
+        path = joinpath(temp_dir, "hmm_generated_rep$(rep).fasta")
+        run(`hmmemit -N $N_HMM_SEQS --seed $seed -o $path $hmm_file`)
+        push!(hmm_replicate_seqs, clean_hmm_sequences(path, L))
+        push!(hmm_replicate_seeds, seed)
     end
-    # project to PCA space
-    ξ = vec(MultivariateStats.transform(pca_model, x))
-    push!(hmm_pca_vecs, ξ)
 end
 
-hmm_metrics = compute_metrics(hmm_seqs, hmm_pca_vecs, stored_seqs, X̂)
-
-# Per-chain metrics for HMM (split into groups of 5 for SE estimation)
-n_per_group = 5
-n_groups = div(length(hmm_seqs), n_per_group)
-hmm_chain_p1 = Float64[]
-hmm_chain_kl = Float64[]
-hmm_chain_nov = Float64[]
-hmm_chain_seqid = Float64[]
-for g in 1:n_groups
-    idx_range = ((g-1)*n_per_group + 1):(g*n_per_group)
-    group_seqs = hmm_seqs[idx_range]
-    group_pca = hmm_pca_vecs[idx_range]
-    push!(hmm_chain_p1, mean(s -> s[P1_POSITION] in STRONG_BINDER_AA ? 1.0 : 0.0, group_seqs))
-    push!(hmm_chain_kl, aa_composition_kl(group_seqs, stored_seqs))
-    push!(hmm_chain_nov, mean(sample_novelty(v, X̂) for v in group_pca))
-    push!(hmm_chain_seqid, mean(nearest_sequence_identity(s, stored_seqs) for s in group_seqs))
+hmm_metrics = []
+for (seqs, seed) in zip(hmm_replicate_seqs, hmm_replicate_seeds)
+    pca_vecs = project_seqs_to_full_pca(seqs, pca_model, L)
+    push!(hmm_metrics, compute_metrics(
+        seqs, pca_vecs, stored_seqs, X̂; rng=MersenneTwister(seed)))
 end
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -180,11 +187,12 @@ end
 @info "Computing bootstrap baseline"
 bootstrap_metrics = []
 for rep in 1:N_REPS
-    Random.seed!(30000 + rep)
-    boot_idx = rand(1:K, N_HMM_SEQS)
+    rng = MersenneTwister(replicate_base_seed(BOOTSTRAP_SEED_ORIGIN, rep - 1))
+    boot_idx = rand(rng, 1:K, N_HMM_SEQS)
     boot_seqs = stored_seqs[boot_idx]
     boot_pca = [X̂[:, i] for i in boot_idx]
-    push!(bootstrap_metrics, compute_metrics(boot_seqs, boot_pca, stored_seqs, X̂))
+    push!(bootstrap_metrics, compute_metrics(
+        boot_seqs, boot_pca, stored_seqs, X̂; rng=rng))
 end
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -204,17 +212,8 @@ end
 
 sa_full_summary = summarize(sa_full_metrics)
 sa_strong_summary = summarize(sa_strong_metrics)
+hmm_summary = summarize(hmm_metrics)
 bootstrap_summary = summarize(bootstrap_metrics)
-
-# HMM uses chain-based SE
-hmm_summary = Dict(
-    :p1_kr => (mean(hmm_chain_p1), std(hmm_chain_p1) / sqrt(n_groups)),
-    :kl => (hmm_metrics.kl, std(hmm_chain_kl) / sqrt(n_groups)),
-    :novelty => (mean(hmm_chain_nov), std(hmm_chain_nov) / sqrt(n_groups)),
-    :seqid => (mean(hmm_chain_seqid), std(hmm_chain_seqid) / sqrt(n_groups)),
-    :diversity => (hmm_metrics.diversity, 0.0),
-    :valid => (hmm_metrics.valid, 0.0),
-)
 
 # Build results DataFrame
 methods = ["SA (full family)", "SA (strong binders)", "HMM emit", "Bootstrap"]
@@ -254,7 +253,7 @@ sa_full_p1_vals = [m.p1_kr for m in sa_full_metrics]
 sa_full_nov_vals = [m.novelty for m in sa_full_metrics]
 sa_full_seqid_vals = [m.seqid for m in sa_full_metrics]
 
-# Compare SA vs HMM (using chain-level values for HMM, replicate-level for SA)
+# Compare SA and HMM replicate summaries.
 function sig_marker(p)
     p < 0.001 ? "***" : p < 0.01 ? "**" : p < 0.05 ? "*" : "n.s."
 end
@@ -306,7 +305,7 @@ p_seqid = bar(method_labels, [s[:seqid][1] for s in summaries];
 
 p_div = bar(method_labels, [s[:diversity][1] for s in summaries];
     yerror=[s[:diversity][2] for s in summaries],
-    ylabel="Diversity", title="Diversity (PCA space)",
+    ylabel="Diversity", title="Sequence Diversity",
     color=reshape(colors, 1, :), legend=false, bar_width=0.6,
     linewidth=0, xrotation=15, margin=3Plots.mm)
 

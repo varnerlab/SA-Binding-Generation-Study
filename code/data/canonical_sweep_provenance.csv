@@ -5,5 +5,5 @@ n_chains,20
 n_steps,5000
 burn_in,2000
 thin,100
-replicate_seed_formula,20000 + (rho_index-1)*n_replicates + replicate; chain adds chain_index
+replicate_seed_formula,"replicate_base_seed(20000000, condition_block_index((family, rho, replicate), (6, 8, 5))) with block 1000; chain adds chain_index. Hard curation uses origin 10000000 over (family, replicate)"
 kunitz_origin,canonical driver; see data/kunitz/canonical_sweep_execution.csv

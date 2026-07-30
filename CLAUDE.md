@@ -20,8 +20,8 @@ julia experiments/run_new_family_validation.jl
 julia experiments/run_omega_conotoxin_experiment.jl
 
 # Python validation scripts
-python experiments/score_esm2_perplexity.py      # requires fair-esm, torch
-python experiments/render_separation_gap_figure_5fam.py  # matplotlib figures
+python3 experiments/score_esm2_perplexity.py      # requires fair-esm, torch
+python3 experiments/render_separation_gap_figure_5fam.py  # matplotlib figures
 
 # HMM baseline (requires HMMER3: brew install hmmer)
 julia experiments/run_hmm_baseline.jl

@@ -27,11 +27,11 @@ family distribution without preference for any functional subset. In practice, e
 often want something more specific: not just ``a plausible Kunitz domain,'' but a Kunitz domain
 that \emph{inhibits trypsin}; not just ``a plausible SH3 domain,'' but one that binds a
 particular proline-rich motif. Family alignments define a shared fold (all 99 Kunitz sequences
-share the same disulfide framework and double-loop architecture), but the members differ in
-which target they bind, and that specificity is encoded in a small number of positions (e.g.,
-the P1 contact residue) rather than in the global fold. The alignment captures structure; the
-practitioner wants to condition on function. The question is: \emph{how can we condition the
-generative process on a functional subset without retraining?}
+share the same disulfide framework and double-loop architecture). Members can still differ in
+their targets. A small number of positions, such as the P1 contact residue, can encode this
+specificity. The alignment captures the shared family structure, but the practitioner may want
+to condition on a selected function. This raises the question of how to condition the
+generative process on a functional subset without retraining.
 
 A seemingly simple answer is to \emph{curate} the input, restricting the alignment to only those
 sequences that a practitioner has identified (through experimental screens, literature annotation,
@@ -39,14 +39,12 @@ or another selection rule) as belonging to a designated subset of interest. SA t
 sequences in their image. We show that this strategy works: even three designated input sequences
 suffice for complete retention of the selected K/R-at-P1 marker in the Kunitz domain. This is
 marker retention after selection on that marker, not independent functional validation. Hard
-curation also discards all
-remaining family members, losing the fold-level constraints they provide. A more principled
-approach would retain the full family while continuously upweighting the designated subset. SA works by encoding each sequence in the alignment as a column in a matrix (the memory matrix),
-then running a physics-inspired sampler that generates new sequences by taking noisy steps through
-the landscape defined by these stored sequences. At each step, the sampler computes an attention
-distribution over the stored sequences and moves toward a weighted average of them. The key
-observation we exploit is that adding a bias term to these attention scores deepens the energy
-wells around specific sequences, causing the sampler to spend more time near them. Concretely,
+curation also discards the remaining family members and the fold-level constraints they provide.
+A continuous alternative retains the full family while upweighting the designated subset.
+SA encodes each aligned sequence as a column in a memory matrix. A stochastic sampler then moves
+through the landscape defined by these stored sequences. At each step, it computes attention
+weights over the stored sequences and moves toward their weighted average. Adding a bias to these
+attention scores makes the sampler spend more time near selected sequences. Concretely,
 we assign a multiplicity weight $r_k > 0$ to each stored sequence and add $\log r_k$ to its
 attention score before the softmax normalization. A single parameter, the multiplicity ratio
 $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, controls the strength of this bias:

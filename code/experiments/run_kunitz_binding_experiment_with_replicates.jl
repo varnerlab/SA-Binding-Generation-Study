@@ -150,7 +150,9 @@ results_raw = DataFrame(
 )
 
 # Helper function for metrics evaluation
-function evaluate_binding_metrics(seqs, reference_seqs, pca_vecs, X̂, p1_pos)
+function evaluate_binding_metrics(seqs, reference_seqs, pca_vecs, X̂, p1_pos;
+                                  rng::AbstractRNG,
+                                  composition_reference_seqs=reference_seqs)
     n = length(seqs)
     n == 0 && return (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
@@ -161,7 +163,7 @@ function evaluate_binding_metrics(seqs, reference_seqs, pca_vecs, X̂, p1_pos)
     valid = mean(valid_residue_fraction.(seqs))
 
     # KL divergence
-    kl = aa_composition_kl(seqs, reference_seqs)
+    kl = aa_composition_kl(seqs, composition_reference_seqs)
 
     # Novelty using PCA vectors
     novelties = [sample_novelty(v, X̂) for v in pca_vecs]
@@ -175,8 +177,8 @@ function evaluate_binding_metrics(seqs, reference_seqs, pca_vecs, X̂, p1_pos)
     n_pairs = min(300, n * (n - 1) ÷ 2)
     pair_ids = Float64[]
     for _ in 1:n_pairs
-        i, j = rand(1:n), rand(1:n)
-        while i == j; j = rand(1:n); end
+        i, j = rand(rng, 1:n), rand(rng, 1:n)
+        while i == j; j = rand(rng, 1:n); end
         push!(pair_ids, sequence_identity(seqs[i], seqs[j]))
     end
     diversity = 1.0 - mean(pair_ids)
@@ -193,7 +195,8 @@ for rep in 1:n_reps
     seqs, pca_vecs = generate_sequences(X̂_all, pca_all, L;
         β=β_all, n_chains=30, T=5000, seed=seed)
 
-    metrics = evaluate_binding_metrics(seqs, stored_seqs, pca_vecs, X̂_all, p1_pos)
+    metrics = evaluate_binding_metrics(seqs, stored_seqs, pca_vecs, X̂_all, p1_pos;
+                                       rng=MersenneTwister(seed))
     push!(results_raw, ("Full family", rep, length(seqs), metrics...))
 end
 
@@ -207,7 +210,9 @@ if length(strong_idx) >= 5
         seqs, pca_vecs = generate_sequences(X̂_strong, pca_strong, L;
             β=β_strong, n_chains=30, T=5000, seed=seed)
 
-        metrics = evaluate_binding_metrics(seqs, strong_seqs, pca_vecs, X̂_strong, p1_pos)
+        metrics = evaluate_binding_metrics(seqs, strong_seqs, pca_vecs, X̂_strong, p1_pos;
+                                           rng=MersenneTwister(seed),
+                                           composition_reference_seqs=stored_seqs)
         push!(results_raw, ("Strong binders", rep, length(seqs), metrics...))
     end
 else
@@ -224,7 +229,9 @@ if length(weak_idx) >= 5
         seqs, pca_vecs = generate_sequences(X̂_weak, pca_weak, L;
             β=β_weak, n_chains=30, T=5000, seed=seed)
 
-        metrics = evaluate_binding_metrics(seqs, weak_seqs, pca_vecs, X̂_weak, p1_pos)
+        metrics = evaluate_binding_metrics(seqs, weak_seqs, pca_vecs, X̂_weak, p1_pos;
+                                           rng=MersenneTwister(seed),
+                                           composition_reference_seqs=stored_seqs)
         push!(results_raw, ("Weak binders", rep, length(seqs), metrics...))
     end
 else
@@ -413,13 +420,13 @@ end
 CSV.write(joinpath(CACHE_DIR, "binding_experiment_raw_replicates.csv"), results_raw)
 CSV.write(joinpath(CACHE_DIR, "binding_experiment_aggregated.csv"), results_agg)
 
-# Save one example set of sequences per condition for visualization
-if nrow(full_data) > 0
-    rep1_full = generate_sequences(X̂_all, pca_all, L; β=β_all, n_chains=30, T=5000, seed=42)[1]
-
-    function save_fasta(seqs, filepath, prefix)
+# The three example FASTAs are inputs to the ESM2 and structure-validation pipelines.
+# Refreshing them would require rerunning those downstream calculations. A replicate-only
+# rerun must therefore preserve them unless the caller explicitly requests a new example set.
+if "--refresh-example-fastas" in ARGS
+    function save_example_fasta(seqs, filepath, prefix)
         open(filepath, "w") do io
-            for (i, seq) in enumerate(seqs[1:min(50, end)])  # Save up to 50 sequences
+            for (i, seq) in enumerate(seqs[1:min(50, end)])
                 println(io, ">$(prefix)_$(lpad(i, 4, '0'))")
                 println(io, seq)
             end
@@ -427,17 +434,37 @@ if nrow(full_data) > 0
         @info "  Saved $(min(50, length(seqs))) sequences to $filepath"
     end
 
-    save_fasta(rep1_full, joinpath(CACHE_DIR, "generated_full_family_example.fasta"), "SA_full")
-end
+    if nrow(full_data) > 0
+        rep1_full = generate_sequences(
+            X̂_all, pca_all, L; β=β_all, n_chains=30, T=5000, seed=42)[1]
+        save_example_fasta(
+            rep1_full,
+            joinpath(CACHE_DIR, "generated_full_family_example.fasta"),
+            "SA_full",
+        )
+    end
 
-if nrow(strong_data) > 0 && length(strong_idx) >= 5
-    rep1_strong = generate_sequences(X̂_strong, pca_strong, L; β=β_strong, n_chains=30, T=5000, seed=42)[1]
-    save_fasta(rep1_strong, joinpath(CACHE_DIR, "generated_strong_conditioned_example.fasta"), "SA_strong")
-end
+    if nrow(strong_data) > 0 && length(strong_idx) >= 5
+        rep1_strong = generate_sequences(
+            X̂_strong, pca_strong, L; β=β_strong, n_chains=30, T=5000, seed=42)[1]
+        save_example_fasta(
+            rep1_strong,
+            joinpath(CACHE_DIR, "generated_strong_conditioned_example.fasta"),
+            "SA_strong",
+        )
+    end
 
-if nrow(weak_data) > 0 && length(weak_idx) >= 5
-    rep1_weak = generate_sequences(X̂_weak, pca_weak, L; β=β_weak, n_chains=30, T=5000, seed=42)[1]
-    save_fasta(rep1_weak, joinpath(CACHE_DIR, "generated_weak_conditioned_example.fasta"), "SA_weak")
+    if nrow(weak_data) > 0 && length(weak_idx) >= 5
+        rep1_weak = generate_sequences(
+            X̂_weak, pca_weak, L; β=β_weak, n_chains=30, T=5000, seed=42)[1]
+        save_example_fasta(
+            rep1_weak,
+            joinpath(CACHE_DIR, "generated_weak_conditioned_example.fasta"),
+            "SA_weak",
+        )
+    end
+else
+    @info "  Preserved example FASTAs; pass --refresh-example-fastas to replace them"
 end
 
 @info "\n" * "="^70

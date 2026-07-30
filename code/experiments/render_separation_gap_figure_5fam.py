@@ -143,9 +143,9 @@ ss_res = np.sum((gap_pfam - (intercept + slope * S_pfam))**2)
 ss_tot = np.sum((gap_pfam - gap_pfam.mean())**2)
 r_sq = 1 - ss_res / ss_tot
 
-x_fit = np.linspace(0.05, 0.90, 100)
+x_fit = np.linspace(S_pfam.min(), S_pfam.max(), 100)
 y_fit = intercept + slope * x_fit
-ax2.plot(x_fit, np.clip(y_fit, 0, None), ls="--", color="#e67e22", lw=2, alpha=0.8)
+ax2.plot(x_fit, y_fit, ls="--", color="#e67e22", lw=2, alpha=0.8)
 
 # conotoxin as open marker (not in fit)
 d_ctx = families["Conotoxin"]

@@ -14,10 +14,9 @@ where $\beta > 0$ is an inverse temperature. Its score function,
 \nabla_{\vxi}\log p_{\beta}(\vxi)
 = \beta[\vX\,\softmax(\beta\,\vX^{\!\top}\vxi) - \vxi],
 \]
-is
-\emph{exact} and computed by a single attention operation; applying the unadjusted Langevin
-algorithm (ULA) with score step size $\alpha/\beta$, for $\alpha \in (0,1)$, yields the stochastic attention
-update~\cite{varnerSAProtein2026}:
+is exact and requires one attention operation. Applying the unadjusted Langevin algorithm
+(ULA) with score step size $\alpha/\beta$, where $\alpha \in (0,1)$, gives the stochastic
+attention update~\cite{varnerSAProtein2026}:
 \begin{equation}\label{eq:ula}
   \vxi_{t+1}
     = (1-\alpha)\,\vxi_{t}
@@ -62,9 +61,10 @@ $\veps\sim\mathcal{N}(\mathbf{0},\mathbf{I}_d)$.
 
 The derivation is given in the Supporting Information.
 Direct Gaussian-mixture sampling is therefore the preferred equilibrium implementation for the
-unit-norm model, and we use it as the reference in the exact-equilibrium benchmark. We retain ULA for the reported
-generation runs to maintain comparability with the original stochastic-attention workflow and to
-characterize its finite-step behavior. ULA is not required to sample this target. Equation~\eqref{eq:gmm-target}
+unit-norm model. We use it as the reference in the exact-equilibrium benchmark. We retain ULA
+for the reported generation runs to compare with the original stochastic-attention workflow and
+to characterize finite-step behavior. ULA is not required to sample this target.
+Equation~\eqref{eq:gmm-target}
 is the exact target of the continuous-time diffusion, not generally the invariant law
 of its finite-step Euler discretization. Thus, Eqs.~\eqref{eq:ula} and
 \eqref{eq:weighted-ula} below retain step-size and finite-time error at nonzero
@@ -95,8 +95,9 @@ the sampler retains its $\mathcal{O}(dK)$ per-step cost.
 \subsection{Multiplicity Ratio and the Entropy Crossover}\label{sec:phase}
 
 For a binary functional split (designated subset vs.\ background), we parameterize the multiplicity
-vector by a single scalar $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, setting
-$r_k = \rho$ for patterns in the user-designated subset and $r_k = 1$ otherwise. The effective
+vector by $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$. We set
+$r_k = \rho$ for patterns in the user-designated subset and $r_k = 1$ for background patterns.
+The effective
 designated fraction, which is the exact latent designated-component probability under the
 Gaussian-mixture target, is
 $f_{\mathrm{eff}}(\rho) = K_{\mathrm{des}}\rho/(K_{\mathrm{des}}\rho + K_{\mathrm{bg}})$, where
@@ -128,8 +129,8 @@ with $R^{2}=0.97$ across eight Pfam families spanning $d \in [18, 186]$, and is 
 independent of $K$ for $K \geq 30$.
 At $\rho=1$, Eq.~\eqref{eq:beta-star} therefore gives the analytic value directly from the
 alignment. For $\rho > 1$, the logit biases $\log r_k$ pre-concentrate the attention
-distribution at $\beta=0$, where the attention weights reduce to
-$w_k = r_k / \sum_j r_j$ and the limiting entropy is the Shannon entropy
+distribution at $\beta=0$. At this point, the attention weights are
+$w_k = r_k / \sum_j r_j$. Their limiting entropy is the Shannon entropy
 $H_{\vr}(0) = -\sum_k w_k \log w_k < \log K$. The effective pattern count
 $K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^2 / \sum_k r_k^2$ is a separate inverse-Simpson
 descriptor of the same weights, and $\log K_{\mathrm{eff}}$ is their Renyi-2 entropy,

@@ -27,7 +27,7 @@ This pipeline uses AlphaFold2-multimer (via ColabFold) to validate that SA-gener
 
 2. Test installation:
 ```bash
-python run_docking_test.py
+python3 run_docking_test.py
 ```
 
 ## Usage
@@ -35,7 +35,7 @@ python run_docking_test.py
 ### Full Pipeline
 ```bash
 cd /path/to/SA-Binding-Generation-Study/code
-python experiments/run_conotoxin_docking_validation.py .
+python3 experiments/run_conotoxin_docking_validation.py .
 ```
 
 ### Analysis

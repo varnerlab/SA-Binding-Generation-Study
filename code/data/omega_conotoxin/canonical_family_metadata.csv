@@ -1,2 +1,2 @@
 family,source,pfam_id,K,L,d_pca,K_A,K_B,marker,natural_frac,separation_index,hard_curation_mean,hard_curation_std,fit_included
-Conotoxin,SwissProt,,74,26,34,23,51,Tyr13,0.3108108108108108,0.778037470595139,0.9693548387096774,0.0036065612540319403,false
+Conotoxin,SwissProt,,74,26,34,23,51,Tyr13,0.3108108108108108,0.778037470595139,0.9793548387096773,0.006183964358929289,false
