@@ -96,9 +96,14 @@ the sampler retains its $\mathcal{O}(dK)$ per-step cost.
 \subsection{Multiplicity Ratio and the Entropy Crossover}\label{sec:phase}
 
 The user designates $K_{\mathrm{des}}$ of the $K$ stored patterns, leaving the
-remaining $K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ as background. The designation is
+remaining $K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ as background. Each stored pattern is one
+sequence of the alignment, so $K_{\mathrm{des}}$ counts sequences and not alignment positions.
+In the Kunitz family studied here, the memory holds $K = 99$ aligned domains, of which the
+$K_{\mathrm{des}} = 32$ carrying Lys or Arg at the P1 contact position are designated and the
+remaining $K_{\mathrm{bg}} = 67$ are background. The designation is
 an input to the method rather than something the method infers, and nothing below
-depends on what it means. We give every designated pattern the same
+depends on what it means. A list of accession IDs would serve as well as a marker residue,
+because the sampler sees only the resulting labels. We give every designated pattern the same
 multiplicity and every background pattern the same multiplicity, and we write $\rho$
 for the ratio between the two. Fixing the background multiplicity at $1$ sets the
 scale, so $r_k = \rho$ for designated patterns and $r_k = 1$ for background
@@ -119,42 +124,61 @@ needed for a target fraction $f$:
 \begin{equation}\label{eq:rho-inverse}
   \rho(f) = \frac{f \cdot K_{\mathrm{bg}}}{K_{\mathrm{des}}\,(1-f)}.
 \end{equation}
-For unit-norm memories, $\beta$ sets the width $\beta^{-1}$ shared by every mixture
-component, so it controls how much neighboring components overlap, which component a
-given state most likely came from, and therefore what the decoder returns. It does not
-touch the mixture weights $w_k$ or $f_{\mathrm{eff}}$.
-The standard SA framework has an entropy crossover at an operating inverse temperature
-$\beta^{*}$ that depends on the PCA dimension $d$ and the number of stored patterns. Under multiplicity
-weighting we also report the effective pattern count
-$K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2} / \sum_k r_k^{2}$ as a descriptor of weight
-concentration, which equals $K$ when all $r_k$ are equal and converges to $K_{\mathrm{des}}$
-as $\rho \to \infty$.
+Choosing $\rho$ fixes the mixture we are aiming at, but it says nothing about how
+sharply the sampler retrieves from that mixture. That is the job of $\beta$, and
+$\beta$ has to be chosen before we can run anything. The division of labor is clean in
+one direction: for unit-norm memories $\beta$ sets the width $\beta^{-1}$ shared by
+every mixture component, so it controls how much neighboring components overlap, which
+component a given state most likely came from, and therefore what the decoder returns,
+but it does not touch the mixture weights $w_k$ or $f_{\mathrm{eff}}$. It is not clean
+in the other direction, and the rest of this subsection is about how $\rho$ moves the
+$\beta$ we should use.
 
-\begin{remark}[Entropy crossover: analytic baseline and multiplicity shift]\label{rem:beta-star}
-The companion paper~\cite{varnerSAProtein2026} establishes, via a concentration-of-measure
-argument on the softmax attention entropy, that for the \emph{unweighted} SA sampler ($\rho=1$)
-the crossover satisfies
+The choice matters because both extremes of $\beta$ are useless. The attention weights
+in Eq.~\eqref{eq:weighted-ula} are $\softmax(\beta\vX^{\!\top}\vxi + \log\vr)$. When
+$\beta$ is small the logits are nearly flat, every stored pattern draws close to its
+multiplicity weight $w_k$, and the sampler steps toward a weighted average of the whole
+family, which decodes to a consensus-like blur. When $\beta$ is large the softmax
+collapses onto whichever pattern the state is closest to, and the sampler sits on that
+stored sequence and reproduces it. Useful generation happens between these two
+regimes, and the attention entropy is what tells us where the transition is.
+
+Following the base SA method~\cite{varnerSAProtein2026}, we track the Shannon entropy
+$H_{\vr}(\beta)$ of the attention weights as $\beta$ increases, and we operate at the
+onset of its drop. We call that drop the entropy crossover, and we locate its onset at
+the point of maximum downward curvature of $H_{\vr}$ against $\log\beta$, writing the
+inverse temperature there as $\beta^{*}$ (Fig.~\ref{fig:phase-transition}). This is a
+convention for picking a reproducible operating point, not a claim that anything
+thermodynamic happens there.
+
+For standard SA the operating point does not have to be found by sweeping at all. The
+companion paper~\cite{varnerSAProtein2026} establishes, from a concentration-of-measure
+argument on the attention entropy, that the unweighted sampler ($\rho=1$) satisfies
 \begin{equation}\label{eq:beta-star}
   \beta^{*} \;\approx\; 1.57 + 0.28\sqrt{d},
 \end{equation}
-with $R^{2}=0.97$ across eight Pfam families spanning $d \in [18, 186]$, and is nearly
-independent of $K$ for $K \geq 30$.
-At $\rho=1$, Eq.~\eqref{eq:beta-star} therefore gives the analytic value directly from the
-alignment. For $\rho > 1$, the attention is already uneven at $\beta=0$, because the
-biases $\log r_k$ sit in the logits before $\beta$ does anything. The weights there
-are $w_k = r_k / \sum_j r_j$, and their limiting entropy is the Shannon entropy
-$H_{\vr}(0) = -\sum_k w_k \log w_k < \log K$. The effective pattern count
-$K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^2 / \sum_k r_k^2$ is a separate inverse-Simpson
-descriptor of the same weights, and $\log K_{\mathrm{eff}}$ is their Renyi-2 entropy,
-which coincides with $H_{\vr}(0)$ only when the weights are equal.
-For intermediate $\rho$, we find the operating point $\beta^{*}(\rho)$ by sweeping
-$\beta$ and taking the onset of the crossover in the weighted attention entropy
-$H_{\vr}(\beta)$.
-\end{remark}
+with $R^{2}=0.97$ across eight Pfam families spanning $d \in [18, 186]$, and nearly
+independent of $K$ for $K \geq 30$. The alignment alone therefore fixes $\beta^{*}$.
 
-Empirically, $\beta^{*}$ increases monotonically from 4.4 ($\rho = 1$, $K_{\mathrm{eff}} = 99$)
-to 9.3 ($\rho = 1000$, $K_{\mathrm{eff}} = 32.1$) in the Kunitz domain, a displacement we
-report as an observation rather than derive from $K_{\mathrm{eff}}$.
+Multiplicity weighting breaks that shortcut, which is why $\rho$ and $\beta^{*}$ belong
+in the same subsection. The biases $\log r_k$ sit in the logits before $\beta$ does
+anything, so at $\beta=0$ the attention is already uneven: its weights are
+$w_k = r_k/\sum_j r_j$ and its entropy is $H_{\vr}(0) = -\sum_k w_k \log w_k$, below
+the uniform value $\log K$ that standard SA starts from. Every entropy curve therefore
+starts lower and its drop moves to larger $\beta$
+(Fig.~\ref{fig:phase-transition}), so for $\rho > 1$ we abandon
+Eq.~\eqref{eq:beta-star} and re-find $\beta^{*}(\rho)$ by sweeping $\beta$ at each
+$\rho$. Every experiment below runs at the $\beta^{*}(\rho)$ found this way. On the
+Kunitz family it rose monotonically from 4.4 at $\rho=1$ to 9.3 at $\rho=1{,}000$.
+
+Alongside $\beta^{*}$ we report the effective pattern count
+$K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2}/\sum_k r_k^{2}$, which equals $K$ when the
+multiplicities are all equal and falls toward $K_{\mathrm{des}}$ as $\rho\to\infty$.
+On Kunitz it fell from 99 to 32.1 over the range above. It summarizes how concentrated
+the weights have become, and we report it beside the $\beta^{*}$ shift as a companion
+observation rather than derive either from the other. The two are not the same
+quantity, since $\log K_{\mathrm{eff}}$ is the Renyi-2 entropy of the weights and
+equals the Shannon entropy $H_{\vr}(0)$ only when the weights are equal.
 
 \subsection{The Calibration Gap}\label{sec:gap}
 
