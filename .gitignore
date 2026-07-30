@@ -30,6 +30,10 @@ JuliaLocalPreferences.toml
 # Machine-local Claude Code settings (per-developer, not shared)
 .claude/settings.local.json
 
+# macOS Finder metadata. Rewritten whenever a directory is browsed, so it churns
+# constantly and gets swept into unrelated commits.
+.DS_Store
+
 # Generated LaTeX outputs; source figures under sections/figs and figs remain tracked.
 /texput.log
 /paper-arxiv/**/*.aux
