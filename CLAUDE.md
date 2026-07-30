@@ -26,14 +26,19 @@ python experiments/render_separation_gap_figure_5fam.py  # matplotlib figures
 # HMM baseline (requires HMMER3: brew install hmmer)
 julia experiments/run_hmm_baseline.jl
 
-# Build the arXiv paper (single document, appendix and SI derivation included inline)
-cd ../paper-arxiv && ./Build.sh Paper_v1
+# Build the arXiv paper (single document, appendix and SI derivation inlined)
+cd ../paper-arxiv && make
 
-# Build the JCIM submission. Use make: the appendix and the GMM SI table live in
-# Paper_JCIM_SI.tex, so `./Build.sh Paper_JCIM` alone leaves a STALE SI PDF while
-# Paper_JCIM_SI.log still reports a clean build from an earlier run.
-cd ../paper-jcim && make          # main, then SI
+# Build the JCIM submission: main paper, then the supporting information. The appendix and
+# the GMM SI table live in Paper_JCIM_SI.tex, so building only the main paper would leave a
+# stale SI PDF. `make` refreshes both; `make main` builds only the main paper.
+cd ../paper-jcim && make
 ```
+
+`make` is the only supported build entry point in both paper trees. Each Makefile runs
+pdflatex, then bibtex, then pdflatex three more times, and then fails the build if the log
+still reports undefined references or citations (pdflatex itself exits 0 in that case).
+`make clean` removes the build products.
 
 Julia 1.12 required. Package versions pinned in `code/Manifest.toml`; a human-readable snapshot is in `code/dependency_snapshot.toml`.
 
@@ -62,7 +67,7 @@ Per-family subdirectories contain Stockholm seed alignments, generated FASTA fil
 
 ### Papers (`paper-arxiv/` and `paper-jcim/`)
 
-Two sibling trees, not nested. The arXiv version is `paper-arxiv/Paper_v1.tex`, one document with the appendix and GMM derivation inlined; build it with `./Build.sh Paper_v1`. The JCIM submission is `paper-jcim/Paper_JCIM.tex` plus a separate supporting-information document `paper-jcim/Paper_JCIM_SI.tex` that carries the appendix and the GMM SI table; build both with `make` from `paper-jcim/`.
+Two sibling trees, not nested. The arXiv version is `paper-arxiv/Paper_v1.tex`, one document with the appendix and GMM derivation inlined. The JCIM submission is `paper-jcim/Paper_JCIM.tex` plus a separate supporting-information document `paper-jcim/Paper_JCIM_SI.tex` that carries the appendix and the GMM SI table. Build either tree with `make`.
 
 Each tree has its own `sections/`, `References*.bib`, and `sections/figs/`. The nine shared section files are kept byte-identical across the trees by `code/test/test_manuscript_consistency.jl`, so edit them in both. Files that live only in `Paper_JCIM.tex` or `Paper_v1.tex`, including figure and table wrappers, are not covered and must be edited twice by hand.
 

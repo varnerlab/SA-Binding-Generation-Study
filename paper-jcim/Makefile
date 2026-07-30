@@ -1,12 +1,37 @@
+# Build the JCIM submission: the main paper and its supporting information.
+#
+# pdflatex exits 0 even when references or citations stay undefined, so each job's log is
+# checked explicitly afterwards. The .out file is removed first because a stale hyperref
+# outline makes the outline unstable across passes. The three passes after bibtex resolve
+# citations, cross-references and the outline.
+
 .PHONY: all main si clean
+
+LATEX  := pdflatex -halt-on-error -interaction=nonstopmode
+BIBTEX := bibtex
+
+define latex_build
+	rm -f -- "$(1).out"
+	$(LATEX) "$(1).tex"
+	$(BIBTEX) "$(1)"
+	$(LATEX) "$(1).tex"
+	$(LATEX) "$(1).tex"
+	$(LATEX) "$(1).tex"
+	@if grep -Eq 'There were undefined (references|citations)' "$(1).log"; then \
+		echo "Build failed: unresolved references or citations remain in $(1).log" >&2; \
+		exit 1; \
+	fi
+endef
 
 all: si
 
 main:
-	./Build.sh Paper_JCIM
+	$(call latex_build,Paper_JCIM)
 
+# The appendix and the GMM SI table live in Paper_JCIM_SI.tex, so building only the main
+# paper leaves a stale SI PDF behind. si depends on main so that `make` refreshes both.
 si: main
-	./Build.sh Paper_JCIM_SI
+	$(call latex_build,Paper_JCIM_SI)
 
 clean:
 	rm -f -- \

@@ -72,11 +72,12 @@ The main experiment scripts, each self-contained and runnable from the command l
 ### Papers (`paper-arxiv/` and `paper-jcim/`)
 
 The arXiv main file `paper-arxiv/Paper_v1.tex` uses the section files, references,
-and figures stored under `paper-arxiv/`. Build it with:
+and figures stored under `paper-arxiv/`. The appendix and the GMM derivation are
+inlined, so it is a single document. Build it with:
 
 ```bash
 cd paper-arxiv
-./Build.sh Paper_v1
+make
 ```
 
 The JCIM source is a separate snapshot under `paper-jcim/`, with its own
@@ -135,8 +136,9 @@ python experiments/score_esm2_perplexity.py
 python experiments/render_separation_gap_figure_5fam.py
 python experiments/render_entropy_curves.py
 
-# Paper
-cd ../paper-arxiv && ./Build.sh Paper_v1
+# Papers
+cd ../paper-arxiv && make
+cd ../paper-jcim && make
 ```
 
 The experiments can be run independently in any order, with the exception that structure validation and ESM2 scoring require the SA-generated sequence FASTA files produced by the core experiments. Each script writes its output (CSVs, figures, FASTA files) to `code/data/` or `code/figs/`. The core samplers and canonical family-sweep producer use caller-local random-number generators and explicit seeds, so repeated runs in the same software environment are deterministic. Exact floating-point agreement across operating systems or hardware is not promised.
