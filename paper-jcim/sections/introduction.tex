@@ -46,8 +46,9 @@ through the landscape defined by these stored sequences. At each step, it comput
 weights over the stored sequences and moves toward their weighted average. Adding a bias to these
 attention scores makes the sampler spend more time near selected sequences. Concretely,
 we assign a multiplicity weight $r_k > 0$ to each stored sequence and add $\log r_k$ to its
-attention score before the softmax normalization. A single parameter, the multiplicity ratio
-$\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, controls the strength of this bias:
+attention score before the softmax normalization. Every designated sequence gets the same
+weight and every background sequence gets the same weight, so a single parameter, the
+multiplicity ratio $\rho$ between the two, controls the strength of this bias:
 $\rho = 1$ recovers standard SA (no preference), while increasing $\rho$ shifts generation
 toward the designated subset. No sequences are duplicated, no parameters are trained, and no
 architectural changes are needed. The method is agnostic to what the designated subset

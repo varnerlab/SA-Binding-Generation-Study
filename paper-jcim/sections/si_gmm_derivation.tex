@@ -1,10 +1,15 @@
 \section{The Boltzmann target is an exact Gaussian mixture}\label{app:gmm}
 
-The stochastic attention sampler evolves an unconstrained state
-$\boldsymbol{\xi}\in\mathbb{R}^{d}$; the update applies no projection back to
-the sphere, and only the stored memories are unit norm. The continuous-time
-overdamped Langevin diffusion associated with the energy has Gibbs stationary law
-$p_\beta(\boldsymbol{\xi})\propto e^{-\beta E_r(\boldsymbol{\xi})}$ of the
+The sampler state $\boldsymbol{\xi}$ is a free point in $\mathbb{R}^{d}$, where $d$
+is the number of PCA coordinates. Each of the $K$ stored memories
+$\mathbf{m}_1,\ldots,\mathbf{m}_K$ has length one and carries a multiplicity weight
+$r_k > 0$. The state itself has no fixed length, because nothing in the update
+rescales it back onto the unit sphere. It can land anywhere, which is why the answer
+below is a distribution over all of $\mathbb{R}^{d}$.
+
+Where does the sampler settle if we run it for a long time? For the underlying
+continuous-time dynamics the answer is the Boltzmann distribution
+$p_\beta(\boldsymbol{\xi})\propto e^{-\beta E_r(\boldsymbol{\xi})}$, built from the
 multiplicity-weighted Hopfield energy
 \begin{equation}
   E_r(\boldsymbol{\xi})
@@ -12,49 +17,172 @@ multiplicity-weighted Hopfield energy
     - \tfrac1\beta\log\sum_{k=1}^{K} r_k\, e^{\beta\, \mathbf{m}_k^\top\boldsymbol{\xi}},
   \qquad \lVert\mathbf{m}_k\rVert = 1 .
 \end{equation}
-We show this target is exactly a Gaussian mixture. The implemented update,
-Eq.~\MainEqRef{eq:weighted-ula}, is its Euler-Maruyama discretization and
-generally approximates rather than exactly preserves this law at finite step
-size~\cite{durmusMoulinesULA2017}.
+This section shows that distribution is exactly a mixture of Gaussians. The update
+we actually run, Eq.~\MainEqRef{eq:weighted-ula}, takes finite steps, so it only
+comes close to this distribution rather than landing on it
+exactly~\cite{durmusMoulinesULA2017}.
+
+The proof takes three steps. First we exponentiate, which clears the logarithm and
+leaves one sum over the memories. Then we complete the square, which puts each term
+in the shape of a Gaussian. Then we normalize, which fixes the constants and gives
+the mixture weights.
+
+It helps to write down the shape we are aiming for first. A Gaussian in $d$
+dimensions with mean $\boldsymbol{\mu}$ and the same variance $\sigma^{2}$ in every
+direction has density
+\begin{align}
+  \mathcal{N}(\boldsymbol{\xi};\,\boldsymbol{\mu},\,\sigma^{2}\mathbf{I})
+  &= \left(2\pi\sigma^{2}\right)^{-d/2}
+     \exp\!\left[-\frac{1}{2\sigma^{2}}
+       \lVert\boldsymbol{\xi}-\boldsymbol{\mu}\rVert^{2}\right]
+     \notag\\[4pt]
+  \mathcal{N}(\boldsymbol{\xi};\,\boldsymbol{\mu},\,\beta^{-1}\mathbf{I})
+  &= \left(\tfrac{\beta}{2\pi}\right)^{\!d/2}
+     \exp\!\left[-\tfrac\beta2
+       \lVert\boldsymbol{\xi}-\boldsymbol{\mu}\rVert^{2}\right] .
+  \label{eq:si-normal}
+\end{align}
+The second line is the first with $\sigma^{2}$ set to $\beta^{-1}$, the value we
+need below. The only place $\boldsymbol{\xi}$ appears is inside
+$\lVert\boldsymbol{\xi}-\boldsymbol{\mu}\rVert^{2}$, its squared distance to the
+mean. So whenever we see something of the form
+$\exp[-\tfrac\beta2\lVert\boldsymbol{\xi}-\mathbf{c}\rVert^{2}]$, we are looking at
+a Gaussian centered at $\mathbf{c}$ with variance $\beta^{-1}$, apart from the
+constant $(\beta/2\pi)^{d/2}$ in front of it. Everything below is getting each term
+into that form with $\mathbf{c} = \mathbf{m}_k$. That is what makes each memory the
+center of a Gaussian, and $\beta$ the thing that sets its width.
 
 \paragraph{Exponentiation.}
-Multiplying by $-\beta$, the $-\tfrac1\beta$ inside the energy cancels the
-$-\beta$ outside, and $e^{\log S}=S$ removes the logarithm:
-\begin{equation}
+Multiply the energy by $-\beta$. That $-\beta$ cancels the $-\tfrac1\beta$ sitting
+in front of the logarithm, so the log term is left with nothing multiplying it:
+\begin{align}
+  -\beta E_r(\boldsymbol{\xi})
+  &= -\beta\left[\tfrac12\lVert\boldsymbol{\xi}\rVert^2
+     - \tfrac1\beta\log\sum_{k=1}^{K} r_k\,
+       e^{\beta\, \mathbf{m}_k^\top\boldsymbol{\xi}}\right]
+     \notag\\[2pt]
+  &= -\tfrac\beta2\lVert\boldsymbol{\xi}\rVert^2
+     + \log\sum_{k=1}^{K} r_k\, e^{\beta\, \mathbf{m}_k^\top\boldsymbol{\xi}} .
+\end{align}
+Now raise $e$ to both sides. A sum in the exponent becomes a product of two
+factors, and $e^{\log S} = S$ cancels the logarithm in the second one, which frees
+the sum:
+\begin{align}
   e^{-\beta E_r(\boldsymbol{\xi})}
-  = e^{-\frac\beta2\lVert\boldsymbol{\xi}\rVert^2}
-    \sum_{k=1}^{K} r_k\, e^{\beta\, \mathbf{m}_k^\top\boldsymbol{\xi}} .
-\end{equation}
+  &= e^{-\frac\beta2\lVert\boldsymbol{\xi}\rVert^2}\;
+     \exp\!\left[\log\sum_{k=1}^{K} r_k\,
+       e^{\beta\, \mathbf{m}_k^\top\boldsymbol{\xi}}\right]
+     \notag\\[2pt]
+  &= e^{-\frac\beta2\lVert\boldsymbol{\xi}\rVert^2}
+     \sum_{k=1}^{K} r_k\, e^{\beta\, \mathbf{m}_k^\top\boldsymbol{\xi}}
+     \notag\\[2pt]
+  &= \sum_{k=1}^{K} r_k\,
+     \exp\!\left[-\tfrac\beta2\lVert\boldsymbol{\xi}\rVert^2
+       + \beta\, \mathbf{m}_k^\top\boldsymbol{\xi}\right] .
+\end{align}
+The last line pulls the $e^{-\frac\beta2\lVert\boldsymbol{\xi}\rVert^{2}}$ factor
+inside the sum, which is fine because it does not depend on $k$. From here we work
+on one term at a time, and the job is to make its exponent look like the one in
+Eq.~\ref{eq:si-normal}.
 
 \paragraph{Completing the square.}
-For each term,
-$-\tfrac\beta2\lVert\boldsymbol{\xi}\rVert^2 + \beta\,\mathbf{m}_k^\top\boldsymbol{\xi}
- = -\tfrac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^2
-   + \tfrac\beta2\lVert\mathbf{m}_k\rVert^2$, hence
-\begin{equation}
+We want the exponent
+$-\tfrac\beta2\lVert\boldsymbol{\xi}\rVert^{2}
+ + \beta\,\mathbf{m}_k^\top\boldsymbol{\xi}$
+to look like $-\tfrac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^{2}$. It almost
+does. Both start with $-\tfrac\beta2\lVert\boldsymbol{\xi}\rVert^{2}$, but in ours
+the memory sits outside a square instead of inside one. The quickest way to see the
+difference is to start from what we want and expand it:
+\begin{align}
+  -\tfrac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^2
+  &= -\tfrac\beta2\left[\lVert\boldsymbol{\xi}\rVert^2
+     - 2\,\mathbf{m}_k^\top\boldsymbol{\xi}
+     + \lVert\mathbf{m}_k\rVert^2\right]
+     \notag\\[2pt]
+  &= \underbrace{-\tfrac\beta2\lVert\boldsymbol{\xi}\rVert^2
+     + \beta\,\mathbf{m}_k^\top\boldsymbol{\xi}}_{\text{exponent of the }k\text{th term}}
+     \;-\; \tfrac\beta2\lVert\mathbf{m}_k\rVert^2 .
+\end{align}
+The underbraced part is our exponent. So our exponent equals
+$-\tfrac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^{2}
+ + \tfrac\beta2\lVert\mathbf{m}_k\rVert^{2}$, which is the shape we want plus a
+constant. Putting that into every term, then splitting the constant off as its own
+factor:
+\begin{align}
   e^{-\beta E_r(\boldsymbol{\xi})}
-  = \sum_{k=1}^{K} r_k\, e^{\frac\beta2\lVert\mathbf{m}_k\rVert^2}\,
-    e^{-\frac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^2} .
-\end{equation}
+  &= \sum_{k=1}^{K} r_k\,
+     \exp\!\left[-\tfrac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^2
+       + \tfrac\beta2\lVert\mathbf{m}_k\rVert^2\right]
+     \notag\\[2pt]
+  &= \sum_{k=1}^{K} r_k\, e^{\frac\beta2\lVert\mathbf{m}_k\rVert^2}\,
+     e^{-\frac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^2} .
+\end{align}
+The last factor is now the Gaussian shape from Eq.~\ref{eq:si-normal}, with
+$\mathbf{c} = \mathbf{m}_k$. So term $k$ is a Gaussian centered on memory $k$ with
+variance $\beta^{-1}$: a large $\beta$ makes it a tight bump around that memory, a
+small $\beta$ a broad one. All that is left is the constants.
 
 \paragraph{Unit norm and normalization.}
-Because $\lVert\mathbf{m}_k\rVert = 1$ for all $k$, the factor
-$e^{\beta/2}$ is common to every term and cancels against the partition function.
-Recognizing each summand as an unnormalized isotropic Gaussian
-$\mathcal{N}(\boldsymbol{\xi};\mathbf{m}_k,\beta^{-1}\mathbf{I})$ and integrating
-over $\mathbb{R}^d$ gives
+This is the step where unit norm matters. Because $\lVert\mathbf{m}_k\rVert = 1$
+for every $k$, the leftover constant $e^{\frac\beta2\lVert\mathbf{m}_k\rVert^2}$ is
+the same number $e^{\beta/2}$ in every term, so it comes out of the sum. Each
+remaining
+factor still needs the constant $(\beta/2\pi)^{d/2}$ to be a full Gaussian density,
+so we put it in and divide it back out, which is the $(2\pi/\beta)^{d/2}$ in front:
+\begin{align}
+  e^{-\beta E_r(\boldsymbol{\xi})}
+  &= e^{\beta/2}\sum_{k=1}^{K} r_k\,
+     e^{-\frac\beta2\lVert\boldsymbol{\xi}-\mathbf{m}_k\rVert^2}
+     \notag\\[2pt]
+  &= e^{\beta/2}\left(\tfrac{2\pi}{\beta}\right)^{\!d/2}
+     \sum_{k=1}^{K} r_k\,
+     \mathcal{N}(\boldsymbol{\xi};\,\mathbf{m}_k,\,\beta^{-1}\mathbf{I}) .
+\end{align}
+To turn the $\propto$ into an $=$, we need the total $Z$, the integral over all of
+$\mathbb{R}^d$. Every Gaussian density integrates to one, so the integral leaves
+nothing behind but the sum of the $r_j$:
+\begin{align}
+  Z &= \int_{\mathbb{R}^d} e^{-\beta E_r(\boldsymbol{\xi})}\,
+       \mathrm{d}\boldsymbol{\xi}
+     \notag\\[2pt]
+    &= e^{\beta/2}\left(\tfrac{2\pi}{\beta}\right)^{\!d/2}
+       \sum_{j=1}^{K} r_j
+       \underbrace{\int_{\mathbb{R}^d}
+         \mathcal{N}(\boldsymbol{\xi};\,\mathbf{m}_j,\,\beta^{-1}\mathbf{I})\,
+         \mathrm{d}\boldsymbol{\xi}}_{=\;1}
+     \notag\\[2pt]
+    &= e^{\beta/2}\left(\tfrac{2\pi}{\beta}\right)^{\!d/2}
+       \sum_{j=1}^{K} r_j .
+\end{align}
+Dividing one by the other, $e^{\beta/2}$ and $(2\pi/\beta)^{d/2}$ sit on both the
+top and the bottom, so they cancel and never matter:
+\begin{align}
+  p_\beta(\boldsymbol{\xi})
+  &= \frac{e^{-\beta E_r(\boldsymbol{\xi})}}{Z}
+   = \frac{e^{\beta/2}\left(\tfrac{2\pi}{\beta}\right)^{\!d/2}
+           \sum_{k=1}^{K} r_k\,
+           \mathcal{N}(\boldsymbol{\xi};\,\mathbf{m}_k,\,\beta^{-1}\mathbf{I})}
+          {e^{\beta/2}\left(\tfrac{2\pi}{\beta}\right)^{\!d/2}
+           \sum_{j=1}^{K} r_j}
+     \notag\\[4pt]
+  &= \sum_{k=1}^{K}
+     \frac{r_k}{\sum_{j=1}^{K} r_j}\,
+     \mathcal{N}(\boldsymbol{\xi};\,\mathbf{m}_k,\,\beta^{-1}\mathbf{I}) .
+\end{align}
+Writing $w_k = r_k / \sum_j r_j$ for the normalized multiplicities, this is
 \begin{equation}
   \boxed{\;
   p_\beta(\boldsymbol{\xi})
   = \sum_{k=1}^{K} w_k\, \mathcal{N}(\boldsymbol{\xi};\,\mathbf{m}_k,\,\beta^{-1}\mathbf{I}),
   \qquad w_k = \frac{r_k}{\sum_j r_j} \; }
 \end{equation}
-an exact Gaussian mixture whose components are centered on the stored memories,
-share the isotropic covariance $\beta^{-1}\mathbf{I}$, and carry mixture weights
-equal to the normalized multiplicities. Had the memories not been unit norm, the
-weights would instead be $r_k\,e^{\frac\beta2\lVert\mathbf{m}_k\rVert^2}$; the
-result would still be a Gaussian mixture, but the weights would no longer reduce
-to $w_k$.
+an exact mixture of Gaussians, one per stored memory, each centered on its own
+memory with variance $\beta^{-1}$, and weighted by its multiplicity divided by the
+total. If the memories had not been unit norm, the
+$e^{\frac\beta2\lVert\mathbf{m}_k\rVert^2}$ would differ from term to term and would
+not come out of the sum, so the weights would be
+$r_k\,e^{\frac\beta2\lVert\mathbf{m}_k\rVert^2}$ instead. The result would still be
+a Gaussian mixture, just not with these weights.
 
 \paragraph{Corollaries.}
 \emph{(i) Exact sampling.} Draw $k\sim\mathrm{Categorical}(w)$ and
@@ -62,11 +190,13 @@ $\boldsymbol{\xi}=\mathbf{m}_k+\beta^{-1/2}\mathbf{z}$, $\mathbf{z}\sim\mathcal{
 no Markov chain is required. The continuous-time Langevin diffusion has
 $p_\beta$ as its stationary law, while finite-step ULA is subject to
 discretization and finite-time error.
-\emph{(ii) Exact designated control.} For a designated subset $B$, the latent
-probability mass on $B$ is $\sum_{k\in B} w_k = \sum_{k\in B} r_k / \sum_j r_j
-\equiv f_{\mathrm{eff}}$; with $r_k=\rho$ on $B$ and $1$ otherwise,
-$f_{\mathrm{eff}} = \rho K_B / (\rho K_B + K_{NB})$, with no equal-similarity
-assumption.
+\emph{(ii) Exact designated control.} Let the designated subset $B$ hold
+$K_{\mathrm{des}}$ of the $K$ patterns, with the remaining
+$K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ forming the background. The probability
+mass on $B$ is $\sum_{k\in B} w_k = \sum_{k\in B} r_k / \sum_j r_j
+\equiv f_{\mathrm{eff}}$. Setting $r_k=\rho$ on $B$ and $1$ otherwise gives
+$f_{\mathrm{eff}} = \rho K_{\mathrm{des}} / (\rho K_{\mathrm{des}} +
+K_{\mathrm{bg}})$, with no equal-similarity assumption.
 \emph{(iii) Score.} $\nabla_{\boldsymbol{\xi}}\log p_\beta
 = -\beta\nabla E_r
 = \beta\bigl[\mathbf{X}\,\mathrm{softmax}(\beta\mathbf{X}^\top\boldsymbol{\xi}+\log\mathbf{r})

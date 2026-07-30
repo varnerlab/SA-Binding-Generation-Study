@@ -152,9 +152,9 @@ attention weight toward designated patterns, but this shift must still pass
 through finite-temperature latent noise, the normalized-coordinate PCA
 reconstruction, and argmax decoding to produce discrete residues. These
 operations jointly determine the observed calibration gap. Third, $\rho$ shifts the
-entropy crossover: the logit biases pre-concentrate the attention distribution
-at $\beta = 0$, reducing the weighted entropy to the Shannon entropy
-$H_{\mathbf{r}}(0) = -\sum_k w_k \log w_k < \log K$ with
+entropy crossover: the logit biases make the attention uneven at $\beta = 0$
+before $\beta$ does anything, reducing the weighted entropy there to the Shannon
+entropy $H_{\mathbf{r}}(0) = -\sum_k w_k \log w_k < \log K$ with
 $w_k = r_k / \sum_j r_j$. We observed that the crossover moved to higher inverse
 temperature as $\rho$ increased:
 $\beta^{*}$ increased from 4.4 ($\rho=1$, $K_{\mathrm{eff}} = 99$) to 9.3

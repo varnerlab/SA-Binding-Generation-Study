@@ -60,15 +60,18 @@ $\veps\sim\mathcal{N}(\mathbf{0},\mathbf{I}_d)$.
 \end{samepage}
 
 The derivation is given in the Supporting Information.
-Direct Gaussian-mixture sampling is therefore the preferred equilibrium implementation for the
-unit-norm model, and we use it as the reference in the exact-equilibrium benchmark, while ULA,
-which is not required to sample this target, is retained for the reported generation runs to
-compare with the original stochastic-attention workflow and to characterize finite-step
-behavior. Equation~\eqref{eq:gmm-target}
-is the exact target of the continuous-time diffusion, not generally the invariant law
-of its finite-step Euler discretization, so Eqs.~\eqref{eq:ula} and
-\eqref{eq:weighted-ula} below retain step-size and finite-time error at nonzero
-$\alpha$~\cite{durmusMoulinesULA2017}.
+For unit-norm memories we can therefore draw equilibrium samples directly from the
+mixture, and we use those draws as the reference in the exact-equilibrium benchmark.
+We still run ULA for the reported generation runs, not because the target requires
+it, but to stay comparable with the original stochastic-attention workflow and to
+measure what finite steps cost.
+Equation~\eqref{eq:gmm-target} is exact for the idealized dynamics that
+move smoothly in time. The updates we actually run, Eqs.~\eqref{eq:ula} and
+\eqref{eq:weighted-ula} below, advance in finite jumps of size $\alpha$, and a
+stepped chain does not in general settle on the same distribution as the smooth one.
+Two errors therefore remain at nonzero $\alpha$, a step-size bias that persists no
+matter how long we run, and the error from stopping after finitely many
+steps~\cite{durmusMoulinesULA2017}.
 
 \begin{proposition}[Score function]\label{prop:score}
 The score function of $p_{\vr}(\vxi) \propto \exp(-\beta\,E_{\vr}(\vxi))$ is
@@ -94,24 +97,35 @@ the sampler retains its $\mathcal{O}(dK)$ per-step cost.
 
 \subsection{Multiplicity Ratio and the Entropy Crossover}\label{sec:phase}
 
-For a binary functional split (designated subset vs.\ background), we parameterize the multiplicity
-vector by $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, setting
-$r_k = \rho$ for patterns in the user-designated subset and $r_k = 1$ for background patterns.
-The effective
-designated fraction, which is the exact latent designated-component probability under the
-Gaussian-mixture target, is
-$f_{\mathrm{eff}}(\rho) = K_{\mathrm{des}}\rho/(K_{\mathrm{des}}\rho + K_{\mathrm{bg}})$, where
-$K_{\mathrm{des}}$ and $K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ are the number of designated and
-background patterns. At $\rho=1$,
-$f_{\mathrm{eff}} = K_{\mathrm{des}}/K$, and as $\rho \to \infty$, $f_{\mathrm{eff}} \to 1$, so
-inverting gives the multiplicity ratio needed for a target fraction $f$:
+The user designates $K_{\mathrm{des}}$ of the $K$ stored patterns, leaving the
+remaining $K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ as background. The designation is
+an input to the method rather than something the method infers, and nothing below
+depends on what it means. We give every designated pattern the same
+multiplicity and every background pattern the same multiplicity, and we write $\rho$
+for the ratio between the two. Fixing the background multiplicity at $1$ sets the
+scale, so $r_k = \rho$ for designated patterns and $r_k = 1$ for background
+patterns, and $\rho$ is then the only free parameter.
+
+The designated patterns therefore carry total multiplicity $K_{\mathrm{des}}\rho$
+out of $K_{\mathrm{des}}\rho + K_{\mathrm{bg}}$ in all, so by
+Eq.~\eqref{eq:gmm-target} the probability that a draw comes from a designated
+component is
+\begin{equation}\label{eq:f-eff}
+  f_{\mathrm{eff}}(\rho)
+  = \frac{K_{\mathrm{des}}\,\rho}{K_{\mathrm{des}}\,\rho + K_{\mathrm{bg}}} ,
+\end{equation}
+which we call the effective designated fraction. At $\rho=1$ it equals
+$K_{\mathrm{des}}/K$, the designated share of the family, and as $\rho \to \infty$
+it approaches $1$. Inverting Eq.~\eqref{eq:f-eff} gives the multiplicity ratio
+needed for a target fraction $f$:
 \begin{equation}\label{eq:rho-inverse}
   \rho(f) = \frac{f \cdot K_{\mathrm{bg}}}{K_{\mathrm{des}}\,(1-f)}.
 \end{equation}
-For unit-norm memories, $\beta$ changes the common component covariance and therefore
-the overlap, posterior responsibilities, and decoded output, but it does not change the
-prior mixture weights $w_k$ or $f_{\mathrm{eff}}$.
-The standard SA framework exhibits an entropy crossover at an operating inverse temperature
+For unit-norm memories, $\beta$ sets the width $\beta^{-1}$ shared by every mixture
+component, so it controls how much neighboring components overlap, which component a
+given state most likely came from, and therefore what the decoder returns. It does not
+touch the mixture weights $w_k$ or $f_{\mathrm{eff}}$.
+The standard SA framework has an entropy crossover at an operating inverse temperature
 $\beta^{*}$ that depends on the PCA dimension $d$ and the number of stored patterns. Under multiplicity
 weighting we also report the effective pattern count
 $K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2} / \sum_k r_k^{2}$ as a descriptor of weight
@@ -128,16 +142,16 @@ the crossover satisfies
 with $R^{2}=0.97$ across eight Pfam families spanning $d \in [18, 186]$, and is nearly
 independent of $K$ for $K \geq 30$.
 At $\rho=1$, Eq.~\eqref{eq:beta-star} therefore gives the analytic value directly from the
-alignment. For $\rho > 1$, the logit biases $\log r_k$ pre-concentrate the attention
-distribution at $\beta=0$. At this point, the attention weights are
-$w_k = r_k / \sum_j r_j$. Their limiting entropy is the Shannon entropy
+alignment. For $\rho > 1$, the attention is already uneven at $\beta=0$, because the
+biases $\log r_k$ sit in the logits before $\beta$ does anything. The weights there
+are $w_k = r_k / \sum_j r_j$, and their limiting entropy is the Shannon entropy
 $H_{\vr}(0) = -\sum_k w_k \log w_k < \log K$. The effective pattern count
 $K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^2 / \sum_k r_k^2$ is a separate inverse-Simpson
 descriptor of the same weights, and $\log K_{\mathrm{eff}}$ is their Renyi-2 entropy,
 which coincides with $H_{\vr}(0)$ only when the weights are equal.
-For intermediate $\rho$, the operating point $\beta^{*}(\rho)$ is located as the onset of
-the entropy crossover of the weighted attention entropy $H_{\vr}(\beta)$ via a
-one-dimensional sweep.
+For intermediate $\rho$, we find the operating point $\beta^{*}(\rho)$ by sweeping
+$\beta$ and taking the onset of the crossover in the weighted attention entropy
+$H_{\vr}(\beta)$.
 \end{remark}
 
 Empirically, $\beta^{*}$ increases monotonically from 4.4 ($\rho = 1$, $K_{\mathrm{eff}} = 99$)
@@ -169,8 +183,10 @@ and decompose it into three independently measurable components:
   + \underbrace{(\bar{a}_{\mathrm{des}} - f_{\mathrm{soft}})}_{\Delta_{\mathrm{PCA}}}
   + \underbrace{(f_{\mathrm{soft}} - f_{\mathrm{obs}})}_{\Delta_{\mathrm{argmax}}}.
 \end{equation}
-The exact mixture representation also gives a direct component-conditioned
-description of the final step. Let $C$ be the generating mixture component, and define
+Because the target is exactly a mixture, we can also describe the final step by
+conditioning on which component actually generated the sample. Let $C$ be that
+component and let $\mathcal{D}$ be the index set of the designated patterns, so that
+$C\in\mathcal{D}$ says the draw came from a designated component. Define
 \[
 \begin{aligned}
 q_{\mathrm{des}}
@@ -189,11 +205,13 @@ Then
   = f_{\mathrm{eff}}(1-q_{\mathrm{des}})
   - (1-f_{\mathrm{eff}})q_{\mathrm{bg}}.
 \end{equation}
-Thus $f_{\mathrm{obs}}=f_{\mathrm{eff}}$ is not an analytic requirement at
-$\rho=1$; it would require a particular balance of false negatives and false
-positives under the decoder. Equation~\ref{eq:decoder-pushforward} makes the
-calibration gap an empirical property of the complete latent-to-sequence
-pushforward, not a test that selects a unique PCA scaling.
+Thus $f_{\mathrm{obs}}=f_{\mathrm{eff}}$ is not something the algebra requires at
+$\rho=1$. It holds only when the decoder's false negatives happen to balance its
+false positives. The calibration gap is therefore a quantity to be measured across
+the whole path from latent state to sequence, not a diagnostic for tuning that
+path, and matching $f_{\mathrm{obs}}$ to $f_{\mathrm{eff}}$ in particular does not
+identify a correct PCA scaling, because a decoder that carries no information at
+all can match the two by trading one error rate against the other.
 To describe the PCA geometry across families, we define the separation index
 $S = (\bar{c}_{\mathrm{within}} - \bar{c}_{\mathrm{between}}) /
 [\tfrac{1}{2}(\sigma_{\mathrm{within}} + \sigma_{\mathrm{between}})]$, where $\bar{c}$ and
