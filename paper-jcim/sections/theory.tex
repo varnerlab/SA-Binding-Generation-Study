@@ -142,9 +142,8 @@ family, which decodes to a consensus-like blur. When $\beta$ is large the softma
 collapses onto whichever pattern the state is closest to, and the sampler sits on that
 stored sequence and reproduces it. Useful generation happens between these two
 regimes, and the attention entropy is what tells us where the transition is.
-
 Following the base SA method~\cite{varnerSAProtein2026}, we track the Shannon entropy
-$H_{\vr}(\beta)$ of the attention weights as $\beta$ increases, and we operate at the
+$H_{\vr}(\beta)$ of those weights as $\beta$ increases, and we operate at the
 onset of its drop. We call that drop the entropy crossover, and we locate its onset at
 the point of maximum downward curvature of $H_{\vr}$ against $\log\beta$, writing the
 inverse temperature there as $\beta^{*}$ (Fig.~\ref{fig:phase-transition}). This is a
@@ -159,9 +158,7 @@ argument on the attention entropy, that the unweighted sampler ($\rho=1$) satisf
 \end{equation}
 with $R^{2}=0.97$ across eight Pfam families spanning $d \in [18, 186]$, and nearly
 independent of $K$ for $K \geq 30$. The alignment alone therefore fixes $\beta^{*}$.
-
-Multiplicity weighting breaks that shortcut, which is why $\rho$ and $\beta^{*}$ belong
-in the same subsection. The biases $\log r_k$ sit in the logits before $\beta$ does
+Multiplicity weighting breaks that shortcut. The biases $\log r_k$ sit in the logits before $\beta$ does
 anything, so at $\beta=0$ the attention is already uneven: its weights are
 $w_k = r_k/\sum_j r_j$ and its entropy is $H_{\vr}(0) = -\sum_k w_k \log w_k$, below
 the uniform value $\log K$ that standard SA starts from. Every entropy curve therefore
@@ -169,14 +166,13 @@ starts lower and its drop moves to larger $\beta$
 (Fig.~\ref{fig:phase-transition}), so for $\rho > 1$ we abandon
 Eq.~\eqref{eq:beta-star} and re-find $\beta^{*}(\rho)$ by sweeping $\beta$ at each
 $\rho$. Every experiment below runs at the $\beta^{*}(\rho)$ found this way. On the
-Kunitz family it rose monotonically from 4.4 at $\rho=1$ to 9.3 at $\rho=1{,}000$.
-
-Alongside $\beta^{*}$ we report the effective pattern count
-$K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2}/\sum_k r_k^{2}$, which equals $K$ when the
-multiplicities are all equal and falls toward $K_{\mathrm{des}}$ as $\rho\to\infty$.
-On Kunitz it fell from 99 to 32.1 over the range above. It summarizes how concentrated
-the weights have become, and we report it beside the $\beta^{*}$ shift as a companion
-observation rather than derive either from the other. The two are not the same
+Kunitz family it rose monotonically from 4.4 at $\rho=1$ to 9.3 at $\rho=1{,}000$, and
+over that same range the effective pattern count
+$K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2}/\sum_k r_k^{2}$ fell from 99 to 32.1. That
+count equals $K$ when the multiplicities are all equal and falls toward
+$K_{\mathrm{des}}$ as $\rho\to\infty$, so it summarizes how concentrated the weights
+have become, and we report it beside the $\beta^{*}$ shift as a companion observation
+rather than derive either from the other. The two are not the same
 quantity, since $\log K_{\mathrm{eff}}$ is the Renyi-2 entropy of the weights and
 equals the Shannon entropy $H_{\vr}(0)$ only when the weights are equal.
 
