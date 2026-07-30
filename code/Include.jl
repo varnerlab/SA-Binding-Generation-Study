@@ -44,6 +44,9 @@ using Downloads
 # A global seed in a shared include file creates implicit state coupling
 # between scripts and makes results depend on import/execution order.
 
+# seed allocation for replicated experiments, used by the replicated drivers
+include(joinpath(_PATH_TO_SRC, "Seeds.jl"))
+
 # include the source modules (upstream SA core)
 include(joinpath(_PATH_TO_SRC, "Data.jl"))
 include(joinpath(_PATH_TO_SRC, "Compute.jl"))

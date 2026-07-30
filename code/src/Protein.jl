@@ -451,10 +451,15 @@ end
                             β_range=(0.1,500.0), n_probes=20, seed=0)
 
 Descriptive transition analysis for the (optionally multiplicity-weighted) attention
-entropy. Probes `n_probes` RANDOMLY chosen memory columns (seeded), so unlike the v1
-`find_entropy_inflection` (which used the first columns) the result is order
-independent. Returns `β_steepest` (steepest entropy drop, the transition midpoint),
-`β_onset` (maximum downward curvature), `K_eff`, and the β/H curves.
+entropy. Probes `n_probes` RANDOMLY chosen memory columns (seeded). Returns `β_steepest`
+(steepest entropy drop, the transition midpoint), `β_onset` (maximum downward curvature),
+`K_eff`, and the β/H curves.
+
+Order dependence: choosing probes at random removes the v1 `find_entropy_inflection` bias
+toward the first columns, but the result is still order dependent when `n_probes < K`,
+because the seeded permutation selects column POSITIONS. Permuting the memory columns then
+selects a different subset. Only `n_probes >= K` averages over every stored memory and is
+genuinely order independent; `all_memory_onset` is that case and is the paper-facing rule.
 
 Entropy is evaluated at stored memories, so this probes the retrieval basins and is a
 descriptive crossover statistic, not a finite-size phase-transition estimate.

@@ -133,6 +133,14 @@ end
 
 n_reps = 5
 
+# Replicate seed blocks. Chains use base + chain, so replicate bases must be spaced by more
+# than the 30 chains below; see src/Seeds.jl. The previous allocation spaced them by 1, so a
+# five-replicate condition drew on 34 streams for 150 chain runs.
+const KUNITZ_SEED_ORIGIN = 30_000_000
+const KUNITZ_CONDITIONS = 3          # 1 full family, 2 strong, 3 weak
+kunitz_seed(condition, rep) = replicate_base_seed(KUNITZ_SEED_ORIGIN,
+    condition_block_index((condition, rep), (KUNITZ_CONDITIONS, n_reps)))
+
 # DataFrame to store all individual replicate results
 results_raw = DataFrame(
     condition=String[], replicate=Int[],
@@ -180,7 +188,7 @@ end
 @info "  Generating from full family"
 for rep in 1:n_reps
     @info "    replicate $rep/$n_reps"
-    seed = 10000 + rep
+    seed = kunitz_seed(1, rep)
 
     seqs, pca_vecs = generate_sequences(X̂_all, pca_all, L;
         β=β_all, n_chains=30, T=5000, seed=seed)
@@ -194,7 +202,7 @@ if length(strong_idx) >= 5
     @info "  Generating from strong binders"
     for rep in 1:n_reps
         @info "    replicate $rep/$n_reps"
-        seed = 20000 + rep
+        seed = kunitz_seed(2, rep)
 
         seqs, pca_vecs = generate_sequences(X̂_strong, pca_strong, L;
             β=β_strong, n_chains=30, T=5000, seed=seed)
@@ -211,7 +219,7 @@ if length(weak_idx) >= 5
     @info "  Generating from weak binders"
     for rep in 1:n_reps
         @info "    replicate $rep/$n_reps"
-        seed = 30000 + rep
+        seed = kunitz_seed(3, rep)
 
         seqs, pca_vecs = generate_sequences(X̂_weak, pca_weak, L;
             β=β_weak, n_chains=30, T=5000, seed=seed)

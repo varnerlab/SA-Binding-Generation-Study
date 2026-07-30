@@ -29,6 +29,27 @@ end
     @test length(a.Hs) == 40
 end
 
+@testset "subset probing stays order dependent; only all-memory is invariant" begin
+    # Choosing probes at random removes the v1 bias toward the first columns, but the
+    # seeded permutation selects column POSITIONS, so permuting the memory probes a
+    # different subset. This is why all_memory_onset, not a random subset, is the
+    # paper-facing rule. Pinned here so the distinction is not lost again.
+    K = 24
+    subset_onset_moved = false
+    for t in 1:12
+        X = unitcols(10, K, 1000 + t)
+        r = abs.(randn(MersenneTwister(2000 + t), K)) .+ 0.2
+        perm = randperm(MersenneTwister(3000 + t), K)
+        a = find_entropy_transition(X, r; n_betas=40, n_probes=8)
+        b = find_entropy_transition(X[:, perm], r[perm]; n_betas=40, n_probes=8)
+        @test a.Hs != b.Hs                      # a different subset every time
+        a.β_onset != b.β_onset && (subset_onset_moved = true)
+        @test all_memory_onset(X, r; n_betas=40) ==
+              all_memory_onset(X[:, perm], r[perm]; n_betas=40)
+    end
+    @test subset_onset_moved   # and it moves the selected operating point in practice
+end
+
 @testset "all_memory_onset is the paper-facing operating-point rule" begin
     X = unitcols(10, 24, 91)
     r = abs.(randn(MersenneTwister(3), 24)) .+ 0.2

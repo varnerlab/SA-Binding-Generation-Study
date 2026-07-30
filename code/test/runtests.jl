@@ -10,6 +10,7 @@ using Test
     include("test_transition_statistic.jl")
     include("test_operating_point_rule.jl")
     include("test_canonical_provenance.jl")
+    include("test_replicate_seeds.jl")
     include("test_mask.jl")
     include("test_encode_decode.jl")
     include("test_decoder_characterization.jl")

@@ -18,6 +18,16 @@ const N_STEPS = 5000
 const BURN_IN = 2000
 const THIN = 100
 
+# Seed-space origins for the two replicated calculations in this driver. They are distinct
+# so the hard-curation and multiplicity blocks cannot collide with each other, and each
+# block is SEED_BLOCK wide so a replicate's chain seeds cannot reach into its neighbour.
+const HARD_CURATION_SEED_ORIGIN = 10_000_000
+const SWEEP_SEED_ORIGIN = 20_000_000
+
+# Registry position, used as the family coordinate of the seed block. Stable because
+# CANONICAL_FAMILIES is a fixed literal.
+family_index(spec) = findfirst(s -> s.slug == spec.slug, CANONICAL_FAMILIES)
+
 function atomic_csv_write(path, table)
     mkpath(dirname(path))
     temp = path * ".tmp"
@@ -77,9 +87,12 @@ function hard_curation_replicates(analysis)
     beta_hard = all_memory_onset(X_hard)
     values = Float64[]
     L = size(analysis.char_mat, 2)
+    fam = family_index(analysis.spec)
     for rep in 1:N_REPS
+        seed = replicate_base_seed(HARD_CURATION_SEED_ORIGIN,
+            condition_block_index((fam, rep), (length(CANONICAL_FAMILIES), N_REPS)))
         sequences, _ = generate_sequences(X_hard, pca_hard, L;
-            β=beta_hard, n_chains=N_CHAINS, T=N_STEPS, seed=10_000 + rep)
+            β=beta_hard, n_chains=N_CHAINS, T=N_STEPS, seed=seed)
         fraction = count(s -> length(s) >= analysis.marker_pos &&
                              s[analysis.marker_pos] in analysis.marker_residues,
                          sequences) / length(sequences)
@@ -91,6 +104,7 @@ end
 function run_replicated_sweep(analysis)
     K, L = size(analysis.char_mat)
     d = size(analysis.X, 1)
+    fam = family_index(analysis.spec)
     raw = DataFrame(
         rho=Float64[], replicate=Int[], f_eff=Float64[], f_obs=Float64[],
         attn_A=Float64[], diversity=Float64[],
@@ -104,7 +118,9 @@ function run_replicated_sweep(analysis)
         beta = all_memory_onset(analysis.X, weights; n_betas=50)
 
         for rep in 1:N_REPS
-            seed = 20_000 + (rho_index - 1) * N_REPS + rep
+            seed = replicate_base_seed(SWEEP_SEED_ORIGIN,
+                condition_block_index((fam, rho_index, rep),
+                                      (length(CANONICAL_FAMILIES), length(RHO_GRID), N_REPS)))
             replicate_rng = MersenneTwister(seed)
             generated = String[]
             attention = Float64[]
@@ -215,7 +231,9 @@ function assemble_cross_family()
                    "replicate_seed_formula", "kunitz_origin"],
         value=[join(Int.(RHO_GRID), ";"), string(N_REPS), string(N_CHAINS),
                string(N_STEPS), string(BURN_IN), string(THIN),
-               "20000 + (rho_index-1)*n_replicates + replicate; chain adds chain_index",
+               "replicate_base_seed(20000000, condition_block_index((family, rho, replicate), " *
+               "(6, 8, 5))) with block 1000; chain adds chain_index. Hard curation uses " *
+               "origin 10000000 over (family, replicate)",
                kunitz_origin],
     )
     atomic_csv_write(joinpath(DATA_DIR, "canonical_sweep_provenance.csv"), provenance)

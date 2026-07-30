@@ -125,17 +125,22 @@ scaling_results = DataFrame(
     mean_valid=Float64[], kl_aa=Float64[], loop_entropy=Float64[],
 )
 
-for n_bind in n_binder_values
+# Replicate seed blocks for the scaling study; see src/Seeds.jl. The previous allocation
+# used seed = 42 + rep, so the three replicates of a subset size shared 19 of 20 chains.
+const SCALING_SEED_ORIGIN = 40_000_000
+
+for (size_index, n_bind) in enumerate(n_binder_values)
     n_use = min(n_bind, length(strong_idx))
     for rep in 1:n_replicates
         @info "  n_binders=$n_use, replicate=$rep"
 
-        # subsample binders
-        Random.seed!(1000 * n_bind + rep)
+        # subsample binders with a caller-local RNG, so the subset does not depend on global
+        # RNG state left behind by earlier code in this script
+        subset_rng = MersenneTwister(1000 * n_bind + rep)
         if n_use >= length(strong_idx)
             sub_idx = strong_idx
         else
-            sub_idx = strong_idx[randperm(length(strong_idx))[1:n_use]]
+            sub_idx = strong_idx[randperm(subset_rng, length(strong_idx))[1:n_use]]
         end
 
         # build memory from subset
@@ -147,7 +152,10 @@ for n_bind in n_binder_values
         # generate
         n_chains = max(10, n_use)
         seqs, pca_vecs = generate_sequences(X̂_sub, pca_sub, L;
-            β=β_sub, n_chains=n_chains, T=5000, seed=42 + rep)
+            β=β_sub, n_chains=n_chains, T=5000,
+            seed=replicate_base_seed(SCALING_SEED_ORIGIN,
+                condition_block_index((size_index, rep),
+                                      (length(n_binder_values), n_replicates))))
 
         # evaluate
         ev = evaluate_generation(seqs, pca_vecs, X̂_sub, β_sub,
