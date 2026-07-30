@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-Publication figure: Phase transition shifts rightward with increasing ρ.
+Publication figure: the entropy-crossover onset shifts rightward with increasing ρ.
 Entropy normalized by log(K) so all curves live in [0, 1].
 Styled to match fig2_separation_vs_gap.
+
+Writes the figure into both manuscript trees.
 """
 import csv, pathlib, numpy as np
 import matplotlib
@@ -11,14 +13,17 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
 SCRIPT_PATH = pathlib.Path(__file__).resolve()
-REPO_ROOT = pathlib.Path(".")
+REPO_ROOT = None
 for parent in SCRIPT_PATH.parents:
-    if (parent / "code" / "data").is_dir() and (parent / "paper" / "sections").is_dir():
+    if (parent / "code" / "data").is_dir() and (parent / "paper-arxiv" / "sections").is_dir():
         REPO_ROOT = parent
         break
+if REPO_ROOT is None:
+    raise SystemExit(f"could not locate the repository root above {SCRIPT_PATH}")
 
 DATA = REPO_ROOT / "code" / "data" / "kunitz" / "entropy_curves.csv"
-OUT  = REPO_ROOT / "paper" / "sections" / "figs" / "fig5_entropy_curves.pdf"
+OUTS = [REPO_ROOT / "paper-jcim"  / "sections" / "figs" / "fig5_entropy_curves.pdf",
+        REPO_ROOT / "paper-arxiv" / "sections" / "figs" / "fig5_entropy_curves.pdf"]
 
 # --- load data ---
 curves = {}  # rho -> {beta, H, K_eff, beta_star}
@@ -63,11 +68,11 @@ for rho in rho_order:
     ax.axvline(d["beta_star"], color=color, ls="--", lw=1.2, alpha=0.5, zorder=1)
 
     # label at β* with K_eff
-    # place label at the inflection point
+    # place label at the crossover onset
     idx_star = np.argmin(np.abs(d["beta"] - d["beta_star"]))
     H_at_star = H_norm[idx_star]
 
-    # small annotation near the inflection
+    # small annotation near the onset
     ax.plot(d["beta_star"], H_at_star, "o", color=color, markersize=5, zorder=4,
             markeredgecolor="white", markeredgewidth=0.8)
 
@@ -112,9 +117,11 @@ ax.text(1.8, 0.10, "increasing $\\rho$\nshifts $\\beta^*$ rightward",
         fontsize=9, color="#555", ha="center", va="top", fontstyle="italic")
 
 plt.tight_layout()
-fig.savefig(str(OUT), dpi=300)
-fig.savefig(str(OUT).replace(".pdf", ".png"), dpi=200)
-print(f"Saved: {OUT}")
+for out in OUTS:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(str(out), dpi=300)
+    fig.savefig(str(out).replace(".pdf", ".png"), dpi=200)
+    print(f"Saved: {out}")
 print(f"log(K) = {log_K:.3f}")
 for rho in rho_order:
     d = curves[rho]

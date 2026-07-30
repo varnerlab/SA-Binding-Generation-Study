@@ -24,7 +24,8 @@ if REPO_ROOT == pathlib.Path("."):
     raise RuntimeError("Could not locate repository root from script path")
 
 DATA = REPO_ROOT / "code" / "data"
-OUT  = REPO_ROOT / "paper-arxiv" / "sections" / "figs" / "fig2_separation_vs_gap.pdf"
+OUTS = [REPO_ROOT / "paper-jcim"  / "sections" / "figs" / "fig2_separation_vs_gap.pdf",
+        REPO_ROOT / "paper-arxiv" / "sections" / "figs" / "fig2_separation_vs_gap.pdf"]
 
 # --- family definitions ---
 families = {
@@ -177,17 +178,19 @@ ax2.text(0.55, 0.88, f"$\\Delta \\approx {intercept:.2f} {slope:+.1f}\\,S$\n$R^2
          bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="#e67e22", alpha=0.8),
          va="top")
 
-ax2.set_xlabel("Fisher separation index  $S$", fontsize=11)
+ax2.set_xlabel("Separation index  $S$", fontsize=11)
 ax2.set_ylabel("Calibration gap  $\\Delta = f_{\\mathrm{eff}} - f_{\\mathrm{obs}}$", fontsize=11)
 ax2.set_xlim(0.05, 0.90)
 ax2.set_ylim(-0.05, 0.75)
 ax2.text(-0.15, 1.05, "B", transform=ax2.transAxes, fontsize=14, fontweight="bold")
 
 plt.tight_layout()
-fig.savefig(str(OUT), dpi=300)
-fig.savefig(str(OUT).replace(".pdf", ".png"), dpi=200)
-print(f"Saved: {OUT}")
-print(f"Saved: {str(OUT).replace('.pdf', '.png')}")
+for out in OUTS:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(str(out), dpi=300)
+    fig.savefig(str(out).replace(".pdf", ".png"), dpi=200)
+    print(f"Saved: {out}")
+    print(f"Saved: {str(out).replace('.pdf', '.png')}")
 print(f"\nLinear fit (Pfam only): Δ ≈ {intercept:.3f} {slope:+.3f} S  (R² = {r_sq:.3f})")
 for f in fam_order:
     print(f"  {f:12s}: S={families[f]['S']:.3f}, Δ={families[f]['Delta']:.3f}")
