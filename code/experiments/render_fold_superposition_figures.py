@@ -18,9 +18,13 @@ from Bio.PDB import PDBParser
 from scipy.interpolate import make_interp_spline
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent.parent
-TMALIGN = os.path.join(BASE, "code", "bin", "TMalign")
-FIG_DIR = os.path.join(BASE, "paper", "figs")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CODE_DIR = REPO_ROOT / "code"
+TMALIGN = CODE_DIR / "bin" / "TMalign"
+OUTPUTS = [
+    REPO_ROOT / "paper-jcim" / "figs" / "fold_superposition_combined.pdf",
+    REPO_ROOT / "paper-arxiv" / "figs" / "fold_superposition_combined.pdf",
+]
 
 parser = PDBParser(QUIET=True)
 
@@ -109,7 +113,7 @@ def smooth_values(values, n_orig, factor=5):
     return np.clip(spl(t_smooth), PLDDT_MIN, PLDDT_MAX)
 
 
-def plot_backbone_plddt(ax, coords, bfactors, linewidth=2.5, label=None):
+def plot_backbone_plddt(ax, coords, bfactors, linewidth=3.2, label=None):
     """Plot backbone trace colored by per-residue pLDDT."""
     n_orig = len(coords)
     smooth_c, _ = smooth_backbone(coords)
@@ -137,7 +141,7 @@ def plot_backbone_plddt(ax, coords, bfactors, linewidth=2.5, label=None):
         ax.plot([], [], [], color=PLDDT_CMAP(0.8), linewidth=linewidth, label=label)
 
 
-def plot_backbone_solid(ax, coords, color='#AAAAAA', linewidth=3.5, alpha=0.45, label=None):
+def plot_backbone_solid(ax, coords, color='#AAAAAA', linewidth=4.5, alpha=0.45, label=None):
     """Plot a solid-color smoothed backbone trace."""
     smooth_c, _ = smooth_backbone(coords)
     ax.plot(smooth_c[:, 0], smooth_c[:, 1], smooth_c[:, 2],
@@ -150,14 +154,17 @@ def set_equal_aspect(ax, all_coords):
     stacked = np.vstack(all_coords)
     center = stacked.mean(axis=0)
     max_range = (stacked.max(axis=0) - stacked.min(axis=0)).max() / 2.0
-    margin = max_range * 0.72  # very tight crop
+    margin = max_range * 0.64  # tight crop without clipping terminal loops
     ax.set_xlim(center[0] - margin, center[0] + margin)
     ax.set_ylim(center[1] - margin, center[1] + margin)
     ax.set_zlim(center[2] - margin, center[2] + margin)
+    ax.set_box_aspect((1, 1, 1), zoom=1.00)
 
 
 def clean_axes(ax):
     """Remove all axis decoration."""
+    ax.set_facecolor('none')
+    ax.patch.set_visible(False)
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     ax.set_zticklabels([])
@@ -177,39 +184,39 @@ def clean_axes(ax):
     ax.set_xlabel('')
     ax.set_ylabel('')
     ax.set_zlabel('')
+    ax.set_axis_off()
 
 
 def render_panel(ax, ref_coords, aligned_coords, aligned_bfactors, tm_score,
                  ref_label, sa_label, elev, azim, panel_label, show_legend=False):
     """Render one panel: reference (gray) + SA variant (pLDDT-colored)."""
     # Reference behind
-    plot_backbone_solid(ax, ref_coords, color='#AAAAAA', linewidth=4.0, alpha=0.45,
+    plot_backbone_solid(ax, ref_coords, color='#AAAAAA', linewidth=4.5, alpha=0.45,
                        label=ref_label)
 
     # SA variant on top, colored by pLDDT
-    plot_backbone_plddt(ax, aligned_coords, aligned_bfactors, linewidth=2.5,
+    plot_backbone_plddt(ax, aligned_coords, aligned_bfactors, linewidth=3.2,
                        label=sa_label)
 
     # N/C termini
-    ax.scatter(*ref_coords[0], color='#666666', s=40, zorder=10,
+    ax.scatter(*ref_coords[0], color='#666666', s=50, zorder=10,
               edgecolors='white', linewidths=0.5, alpha=0.6)
-    ax.scatter(*ref_coords[-1], color='#666666', s=40, zorder=10,
+    ax.scatter(*ref_coords[-1], color='#666666', s=50, zorder=10,
               edgecolors='white', linewidths=0.5, alpha=0.6)
     offset = 2.0
     ax.text(ref_coords[0][0], ref_coords[0][1], ref_coords[0][2] + offset, 'N',
-            fontsize=7, fontweight='bold', ha='center', color='#555555', zorder=11)
+            fontsize=8, fontweight='bold', ha='center', color='#555555', zorder=11)
     ax.text(ref_coords[-1][0], ref_coords[-1][1], ref_coords[-1][2] + offset, 'C',
-            fontsize=7, fontweight='bold', ha='center', color='#555555', zorder=11)
+            fontsize=8, fontweight='bold', ha='center', color='#555555', zorder=11)
 
     all_c = [ref_coords, aligned_coords]
     set_equal_aspect(ax, all_c)
     ax.view_init(elev=elev, azim=azim)
-    ax.dist = 6.5  # zoom camera in (default is 10)
     clean_axes(ax)
 
     # Panel label
-    ax.text2D(0.02, 0.95, panel_label, transform=ax.transAxes,
-             fontsize=14, fontweight='bold', va='top')
+    ax.text2D(0.03, 0.94, panel_label, transform=ax.transAxes,
+             fontsize=14, fontweight='bold', va='top', zorder=100)
 
     if show_legend:
         leg = ax.legend(loc='upper right', fontsize=6.5, framealpha=0.9,
@@ -218,16 +225,17 @@ def render_panel(ax, ref_coords, aligned_coords, aligned_bfactors, tm_score,
 
 
 if __name__ == "__main__":
-    os.makedirs(FIG_DIR, exist_ok=True)
+    for output in OUTPUTS:
+        output.parent.mkdir(parents=True, exist_ok=True)
 
     # ---- Data ----
     # Kunitz: best SA variant by TM-score
-    kunitz_ref_pdb = os.path.join(BASE, "code/data/kunitz/structures/1BPI_A.pdb")
-    kunitz_sa_pdb = os.path.join(BASE, "code/data/kunitz/structures/SA_strong_SA_strong_0022.pdb")
+    kunitz_ref_pdb = CODE_DIR / "data" / "kunitz" / "structures" / "1BPI_A.pdb"
+    kunitz_sa_pdb = CODE_DIR / "data" / "kunitz" / "structures" / "SA_strong_SA_strong_0022.pdb"
 
     # Conotoxin: best SA variant by TM-score
-    conot_ref_pdb = os.path.join(BASE, "code/data/omega_conotoxin/structures/1OMG_A.pdb")
-    conot_sa_pdb = os.path.join(BASE, "code/data/omega_conotoxin/structures/SA_strong_SA_strong_0024.pdb")
+    conot_ref_pdb = CODE_DIR / "data" / "omega_conotoxin" / "structures" / "1OMG_A.pdb"
+    conot_sa_pdb = CODE_DIR / "data" / "omega_conotoxin" / "structures" / "SA_strong_SA_strong_0024.pdb"
 
     # ---- Align ----
     print("=== Kunitz ===")
@@ -243,13 +251,13 @@ if __name__ == "__main__":
     print(f"  SA_strong_0024: TM = {conot_tm:.4f}, mean pLDDT = {c_plddt.mean():.1f}")
 
     # ---- Figure: 2x2 grid, compact ----
-    fig = plt.figure(figsize=(10, 8))
+    fig = plt.figure(figsize=(10, 8.8))
 
     # Use gridspec for tight control
     import matplotlib.gridspec as gridspec
     gs = gridspec.GridSpec(2, 2, figure=fig,
-                          left=-0.12, right=1.12, top=0.93, bottom=0.13,
-                          wspace=-0.30, hspace=-0.05)
+                          left=0.02, right=0.98, top=0.91, bottom=0.13,
+                          wspace=0.00, hspace=0.00)
 
     # Top row: Kunitz (A, B)
     ax1 = fig.add_subplot(gs[0, 0], projection='3d')
@@ -274,11 +282,14 @@ if __name__ == "__main__":
                  elev=15, azim=25, panel_label='D')
 
     # Row labels
-    fig.text(0.50, 0.96, 'Kunitz Domain', ha='center', fontsize=12, fontweight='bold')
-    fig.text(0.50, 0.50, r'$\omega$-Conotoxin', ha='center', fontsize=12, fontweight='bold')
+    fig.text(0.50, 0.96, 'Kunitz Domain', ha='center', fontsize=12,
+             fontweight='bold', zorder=100)
+    fig.text(0.50, 0.50, r'$\omega$-Conotoxin', ha='center', fontsize=12,
+             fontweight='bold', zorder=100)
 
     # pLDDT colorbar
     cbar_ax = fig.add_axes([0.25, 0.045, 0.50, 0.018])
+    cbar_ax.set_zorder(100)
     norm = matplotlib.colors.Normalize(vmin=PLDDT_MIN, vmax=PLDDT_MAX)
     sm = matplotlib.cm.ScalarMappable(cmap=PLDDT_CMAP, norm=norm)
     sm.set_array([])
@@ -287,6 +298,7 @@ if __name__ == "__main__":
     cbar.set_ticks([50, 60, 70, 80, 90, 100])
     cbar.ax.tick_params(labelsize=8)
 
-    plt.savefig(os.path.join(FIG_DIR, "fold_superposition_combined.pdf"), dpi=300, facecolor='white')
+    for output in OUTPUTS:
+        plt.savefig(output, dpi=300, facecolor='white')
+        print(f"\nSaved: {output}")
     plt.close()
-    print(f"\nSaved: {os.path.join(FIG_DIR, 'fold_superposition_combined.pdf')}")
