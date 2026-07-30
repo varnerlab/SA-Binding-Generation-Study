@@ -1,53 +1,54 @@
 % methods.tex
 For each experiment, we followed the stochastic attention pipeline
 of~\cite{varnerSAProtein2026} without modification to the core sampler. Seed alignments were
-downloaded from InterPro/Pfam in Stockholm format. The $\omega$-conotoxin O-superfamily was
-compiled from SwissProt and aligned with MAFFT~\cite{mafft2013}. We removed columns with
-$>50\%$ gaps and sequences with $>30\%$ gaps in the remaining columns. The cleaned alignment
-was one-hot encoded with 20 amino acid channels per position. Gaps were mapped to zero vectors.
+downloaded from InterPro/Pfam in Stockholm format, while the $\omega$-conotoxin O-superfamily
+was compiled from SwissProt and aligned with MAFFT~\cite{mafft2013}. We removed columns with
+$>50\%$ gaps and sequences with $>30\%$ gaps in the remaining columns, then one-hot encoded the
+cleaned alignment with 20 amino acid channels per position and mapped gaps to zero vectors.
 PCA retained 95\% of the variance, and the resulting columns were normalized to unit norm.
 
-ULA chains used step size $\alpha=0.01$ and ran for $T=5{,}000$ steps. Each chain started
-near a stored pattern, with patterns assigned cyclically across the memory. Independent local
-RNGs generated the initial perturbations and Langevin noise. Samples were collected after
+ULA chains used step size $\alpha=0.01$ and ran for $T=5{,}000$ steps, each starting near a
+stored pattern with patterns assigned cyclically across the memory and with independent local
+RNGs generating the initial perturbations and Langevin noise. Samples were collected after
 2{,}000 burn-in steps and then every 100 steps. We tested five Pfam families, Kunitz
 (PF00014, $K=99$, $L=53$), SH3 (PF00018, $K=55$, $L=48$), WW (PF00397, $K=420$, $L=31$),
 Homeobox (PF00046, $K=136$, $L=57$), and Forkhead (PF00250, $K=246$, $L=87$), together with
 the $\omega$-conotoxin O-superfamily ($K=74$, $L=26$), which was curated from
 SwissProt. For each Pfam family, we defined a binary split using a data-selected
-single-position sequence marker. Biological literature motivated the residue class where
-available, but the marker was not treated as a direct activity label. For Kunitz, the P1
-position was the column with the highest Lys frequency. The designated subset contained
-sequences with K or R at P1 ($K_{\mathrm{des}}=32$). For SH3, we selected the peptide-groove
-column with the highest Trp frequency among columns containing Trp in 15--85\% of sequences
-($K_{\mathrm{des}}=33$). For WW, we used the highest-entropy column in the middle third of
-the alignment ($K_{\mathrm{des}}=69$). For Homeobox, the marker was Gln at position~50 in
-the recognition helix ($K_{\mathrm{des}}=102$). For Forkhead, the marker was His or Asn at
-the H3 recognition-helix position ($K_{\mathrm{des}}=122$). For $\omega$-conotoxin, the designation was instead defined by
-23 accession IDs in the study's curated input FASTA. The other 51 accessions were conditioning
-background, not demonstrated nonbinders. The tracked accession audit records the designation,
-Tyr13 marker, and available repository activity metadata; only 5 designated and 2 background
-accessions have exact accession matches in that activity table. The accession designation and
-Tyr13 marker agree for 64 of 74 sequences (86.5\%).
+single-position sequence marker, with the residue class motivated by biological literature
+where available but not treated as a direct activity label. The marker was the column with the
+highest Lys frequency for Kunitz, denoted P1, whose designated subset contained the sequences
+with K or R at that position ($K_{\mathrm{des}}=32$); the peptide-groove column with the
+highest Trp frequency among
+columns containing Trp in 15--85\% of sequences for SH3 ($K_{\mathrm{des}}=33$); the
+highest-entropy column in the middle third of the alignment for WW ($K_{\mathrm{des}}=69$);
+Gln at position~50 in the recognition helix for Homeobox ($K_{\mathrm{des}}=102$); and His or
+Asn at the H3 recognition-helix position for Forkhead ($K_{\mathrm{des}}=122$). For
+$\omega$-conotoxin, the designation was instead defined by 23 accession IDs in the study's
+curated input FASTA, with the other 51 accessions serving as conditioning background rather
+than demonstrated nonbinders. The tracked accession audit records the designation, Tyr13
+marker, and available repository activity metadata, and only 5 designated and 2 background
+accessions have exact accession matches in that activity table, while the accession designation
+and Tyr13 marker agree for 64 of 74 sequences (86.5\%).
 
 For multiplicity-weighted runs, the multiplicity vector was set to $r_k = \rho$ for designated
-patterns and $r_k = 1$ for background patterns. The operating inverse temperature
-$\beta^{*}(\vr)$ was selected as the entropy-crossover onset. This is the point of maximum
+patterns and $r_k = 1$ for background patterns, and the operating inverse temperature
+$\beta^{*}(\vr)$ was selected as the entropy-crossover onset, which is the point of maximum
 downward curvature of weighted attention entropy with respect to $\log\beta$. We evaluated
 entropy on a fixed logarithmic grid over $\beta\in[0.1,500]$ and averaged it over all stored
-memories. The resulting operating point does not depend on alignment order. The grid used 50 points
+memories, so the resulting operating point does not depend on alignment order. The grid used 50 points
 for the canonical family sweeps and the hard-mask comparison, 60 points for the exact-equilibrium
 benchmark, and 80 points for the entropy curves in Fig.~\ref{fig:phase-transition}. This is a
 descriptive operating point rather than an estimate of a thermodynamic phase transition, and
 entropy is evaluated at stored memory vectors rather than at samples. Twenty to fifty independently seeded chains were run per
-condition, yielding 620--1{,}550 retained states after burn-in and thinning. The canonical
-six-family sweeps used five replicate runs of 20 chains. Reported uncertainty was computed
-across replicate summaries, not across retained states within a chain.
+condition, yielding 620--1{,}550 retained states after burn-in and thinning, with the canonical
+six-family sweeps using five replicate runs of 20 chains and reported uncertainty computed
+across replicate summaries rather than across retained states within a chain.
 
 Marker fidelity was the fraction of generated sequences with the designated residue at the
-marker position. Attention diagnostics recorded the mean softmax weight on designated patterns.
-Sequence diversity was one minus mean pairwise sequence identity, estimated from 300--500
-random pairs drawn with a replicate-local RNG. Amino acid composition fidelity was
+marker position; attention diagnostics recorded the mean softmax weight on designated patterns;
+sequence diversity was one minus mean pairwise sequence identity, estimated from 300--500
+random pairs drawn with a replicate-local RNG; and amino acid composition fidelity was
 $D_{\mathrm{KL}}(\text{reference}\parallel\text{generated})$. The separation
 index $S$ was computed from pairwise cosine similarities between unit-norm PCA vectors within
 and between designated and background groups. Structural validation used
@@ -56,17 +57,17 @@ extracted from the B-factor column and TM-scores computed against experimental r
 structures (1BPI chain~A for Kunitz and 1OMG chain~A for $\omega$-conotoxin) using
 TM-align~\cite{tmAlign2005}. We also ran AlphaFold2-ptm through
 ColabFold~\cite{jumperHighlyAccurate2021,mirdita2022colabfold} with one model, three recycles,
-an MMseqs2 MSA, and no relaxation. These calculations used a Google Colab T4 GPU. Sequence
+an MMseqs2 MSA, and no relaxation, on a Google Colab T4 GPU. Sequence
 plausibility was assessed with ESM2-650M pseudo-perplexity from masked marginal scoring over all
 positions~\cite{meierZeroShot2021}, using the ESM2 model~\cite{esmfold2022}. Formal within-chain effective sample sizes and convergence
-diagnostics were not used. Instead, at $\rho\in\{1,10,500\}$ we compared
+diagnostics were not used, and instead, at $\rho\in\{1,10,500\}$, we compared
 1{,}640 retained ULA states with 1{,}640 independent draws from the exact
 Gaussian-mixture target at the same $\beta^{*}$. Exact states were generated by drawing
 $k$ from the normalized multiplicities and then drawing
-$\vxi\sim\mathcal{N}(\vm_k,\beta^{-1}\mathbf{I})$. Both sets of states were passed
+$\vxi\sim\mathcal{N}(\vm_k,\beta^{-1}\mathbf{I})$, and both sets of states were passed
 through the same PCA reconstruction and argmax decoder. MAP-designated basin occupancy
 was defined as the fraction of states whose maximum-posterior component belonged to the
-designated set; unlike $f_{\mathrm{eff}}$, this hard assignment is not a mixture weight.
+designated set, and unlike $f_{\mathrm{eff}}$, this hard assignment is not a mixture weight.
 This benchmark measures the combined finite-time and discretization error of the ULA
 implementation~\cite{durmusMoulinesULA2017}.
 
@@ -84,11 +85,11 @@ fixed $\beta$~\cite{varnerSAProtein2026}. We evaluated the hard mask on the Kuni
 the designated K/R-at-P1 split ($K_{\mathrm{des}} = 32$), retaining the full-family PCA basis so
 that background patterns receive zero attention while the $d = 80$ coordinate system is unchanged.
 This isolates the effect of attention restriction from the basis rebuilding used by hard
-curation. Every condition used 30 independent Langevin chains. The chains had matched initial
-patterns across mask, multiplicity, and unconditional conditions. We report decoded P1~K/R
-fraction and sequence novelty as the mean and standard error across chains. Novelty is one minus
-the identity to the nearest sequence in the input alignment. We held the mask fixed and swept
-$\beta$ over eight logarithmically spaced values in $[2,512]$. We also evaluated the mask at
+curation. Every condition used 30 independent Langevin chains whose initial patterns were
+matched across the mask, multiplicity, and unconditional conditions. We report decoded P1~K/R
+fraction and sequence novelty, defined as one minus the identity to the nearest sequence in the
+input alignment, as the mean and standard error across chains. We held the mask fixed and swept
+$\beta$ over eight logarithmically spaced values in $[2,512]$, and we also evaluated the mask at
 each multiplicity condition's $\beta^{*}(\vr)$ to obtain the matched-$\beta$ recovery difference.
 
 All experiments were implemented in Julia~1.12 using NNlib.jl

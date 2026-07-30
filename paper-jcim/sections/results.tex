@@ -39,15 +39,13 @@ cysteines, and K/R at P1 while carrying 19--26 substitutions concentrated at var
 Per-position Shannon entropy correlated with the stored MSA for both full-family generation
 ($r = 0.988$) and K/R-positive-subset conditioning ($r = 0.932$), with the largest change at
 P1, where conditioning restricted the residues to K/R (Fig.~\ref{fig:sequence-analysis}).
-
-We next varied the designated input size, sampling
-$K_{\mathrm{des}} \in \{3, 5, 8, 10, 15, 20, 25, 32\}$ Kunitz K/R-positive sequences with
-three replicates per size (Fig.~\ref{fig:scaling}). P1 marker retention was 100\% at every
-size, including $K_{\mathrm{des}}=3$, while pairwise sequence diversity increased from 0.35 at
-$K_{\mathrm{des}}=3$ to 0.50 at $K_{\mathrm{des}}=32$ and KL divergence decreased from 0.070
-to 0.009 over the same range. Smaller input sets define a narrower PCA subspace and therefore
-produced less diverse libraries, so marker retention held from designated inputs as small as
-three sequences while compositional fidelity and diversity both improved as inputs were added.
+Retention also held as the designated input shrank, since subsampling
+$K_{\mathrm{des}} \in \{3, 5, 8, 10, 15, 20, 25, 32\}$ K/R-positive sequences with three
+replicates per size gave 100\% P1 retention at every size, including $K_{\mathrm{des}}=3$,
+while pairwise sequence diversity increased from 0.35 to 0.50 and KL divergence decreased from
+0.070 to 0.009 over the same range (Fig.~\ref{fig:scaling}). Smaller input sets define a
+narrower PCA subspace and therefore produced less diverse libraries, so compositional fidelity
+and diversity both improved as inputs were added while marker retention did not change.
 
 \DisplayHardCuration
 
@@ -86,11 +84,11 @@ the signal lost during PCA reconstruction. Even with 99.8\% of the attention on 
 patterns the continuous reconstruction did not resolve K from G at P1, because that variation
 was not well represented by the leading $d=80$ principal components, consistent with the
 Kunitz split's separation index of $S=\KunitzSeparation$, which indicates partial PCA overlap.
-
-The closed-form Gaussian-mixture target permits independent equilibrium sampling without a
-Markov chain, so we compared 1{,}640 exact draws with 1{,}640 retained ULA states at
-$\rho\in\{1,10,500\}$ using the same $\beta^{*}$ and decoder in each comparison, with the full
-comparison provided in the Supporting Information. At $\rho=500$ the exact
+Because the closed-form Gaussian-mixture target permits independent equilibrium sampling
+without a Markov chain, we could also ask whether finite-step sampling produced the gap, and we
+compared 1{,}640 exact draws with 1{,}640 retained ULA states at $\rho\in\{1,10,500\}$ using
+the same $\beta^{*}$ and decoder in each comparison, with the full comparison provided in the
+Supporting Information. At $\rho=500$ the exact
 designated-component probability was $f_{\mathrm{eff}}=0.996$, while the decoded P1~K/R
 fraction was 0.604 under exact sampling and 0.597 under ULA, and the amino acid composition
 divergence $D_{\mathrm{KL}}(\text{exact} \parallel \text{ULA})$ between the two decoded
@@ -128,11 +126,9 @@ $\rho = 10$, 50, and 200 on the Kunitz domain (Supporting Information). Higher $
 increased the P1~K/R fraction and reduced diversity, so that at $\rho = 200$ and
 $\beta = 3\beta^{*}$ P1~K/R reached 0.71 against 0.61 at $\beta^{*}$ while diversity decreased
 from 0.53 to 0.46. Conditioning strength $\rho$ and retrieval sharpness $\beta/\beta^{*}$
-therefore provide separate controls over marker retention and diversity, which raised the
-question of how much marker signal the decoder can transfer once the background contribution
-is removed entirely.
-
-We next held the background attention mass at zero and swept $\beta$ to measure the
+therefore provide separate controls over marker retention and diversity. We then asked how much
+marker signal the decoder can transfer once the background contribution is removed entirely,
+holding the background attention mass at zero and sweeping $\beta$ to measure the
 decode-limited recovery ceiling
 (Fig.~\ref{fig:mask-betasweep}, Table~\ref{tab:mask-recovery}). Hard attention masking is the
 $\rho \to \infty$ endpoint of the multiplicity axis on the full-family basis, and because it

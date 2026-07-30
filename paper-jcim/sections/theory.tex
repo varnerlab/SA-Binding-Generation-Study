@@ -33,10 +33,10 @@ energy is
     - \tfrac{1}{\beta}\log\sum_{k=1}^{K} r_k\,\exp\!\bigl(\beta\,\vm_{k}^{\!\top}\vxi\bigr),}
 \end{equation}
 where $\vr = (r_1, \ldots, r_K)^{\!\top}$.
-When $r_k = 1$ for all $k$, Eq.~\eqref{eq:weighted-energy} reduces to the standard energy.
-Patterns with higher multiplicity deepen the energy wells in their vicinity. For integer $r_k$
+When $r_k = 1$ for all $k$, Eq.~\eqref{eq:weighted-energy} reduces to the standard energy, and
+patterns with higher multiplicity deepen the energy wells in their vicinity. For integer $r_k$
 this is exactly equivalent to storing $r_k$ copies of pattern $\vm_k$ without the
-$\mathcal{O}(d \cdot \sum_k r_k)$ memory cost. For positive real $r_k$ it is the continuous
+$\mathcal{O}(d \cdot \sum_k r_k)$ memory cost, and for positive real $r_k$ it is the continuous
 generalization of that replication.
 
 \begin{proposition}[Exact Gaussian-mixture target]\label{prop:gmm-target}
@@ -59,12 +59,12 @@ $\veps\sim\mathcal{N}(\mathbf{0},\mathbf{I}_d)$.
 
 The derivation is given in the Supporting Information.
 Direct Gaussian-mixture sampling is therefore the preferred equilibrium implementation for the
-unit-norm model. We use it as the reference in the exact-equilibrium benchmark. We retain ULA
-for the reported generation runs to compare with the original stochastic-attention workflow and
-to characterize finite-step behavior. ULA is not required to sample this target.
-Equation~\eqref{eq:gmm-target}
+unit-norm model, and we use it as the reference in the exact-equilibrium benchmark, while ULA,
+which is not required to sample this target, is retained for the reported generation runs to
+compare with the original stochastic-attention workflow and to characterize finite-step
+behavior. Equation~\eqref{eq:gmm-target}
 is the exact target of the continuous-time diffusion, not generally the invariant law
-of its finite-step Euler discretization. Thus, Eqs.~\eqref{eq:ula} and
+of its finite-step Euler discretization, so Eqs.~\eqref{eq:ula} and
 \eqref{eq:weighted-ula} below retain step-size and finite-time error at nonzero
 $\alpha$~\cite{durmusMoulinesULA2017}.
 
@@ -93,7 +93,7 @@ the sampler retains its $\mathcal{O}(dK)$ per-step cost.
 \subsection{Multiplicity Ratio and the Entropy Crossover}\label{sec:phase}
 
 For a binary functional split (designated subset vs.\ background), we parameterize the multiplicity
-vector by $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$. We set
+vector by $\rho = r_{\mathrm{designated}}/r_{\mathrm{background}}$, setting
 $r_k = \rho$ for patterns in the user-designated subset and $r_k = 1$ for background patterns.
 The effective
 designated fraction, which is the exact latent designated-component probability under the
@@ -101,8 +101,8 @@ Gaussian-mixture target, is
 $f_{\mathrm{eff}}(\rho) = K_{\mathrm{des}}\rho/(K_{\mathrm{des}}\rho + K_{\mathrm{bg}})$, where
 $K_{\mathrm{des}}$ and $K_{\mathrm{bg}} = K - K_{\mathrm{des}}$ are the number of designated and
 background patterns. At $\rho=1$,
-$f_{\mathrm{eff}} = K_{\mathrm{des}}/K$; as $\rho \to \infty$, $f_{\mathrm{eff}} \to 1$. Inverting
-gives the multiplicity ratio needed for a target fraction $f$:
+$f_{\mathrm{eff}} = K_{\mathrm{des}}/K$, and as $\rho \to \infty$, $f_{\mathrm{eff}} \to 1$, so
+inverting gives the multiplicity ratio needed for a target fraction $f$:
 \begin{equation}\label{eq:rho-inverse}
   \rho(f) = \frac{f \cdot K_{\mathrm{bg}}}{K_{\mathrm{des}}\,(1-f)}.
 \end{equation}
@@ -113,7 +113,7 @@ The standard SA framework exhibits an entropy crossover at an operating inverse 
 $\beta^{*}$ that depends on the PCA dimension $d$ and the number of stored patterns. Under multiplicity
 weighting we also report the effective pattern count
 $K_{\mathrm{eff}}(\vr) = (\sum_k r_k)^{2} / \sum_k r_k^{2}$ as a descriptor of weight
-concentration. It equals $K$ when all $r_k$ are equal and converges to $K_{\mathrm{des}}$
+concentration, which equals $K$ when all $r_k$ are equal and converges to $K_{\mathrm{des}}$
 as $\rho \to \infty$.
 
 \begin{remark}[Entropy crossover: analytic baseline and multiplicity shift]\label{rem:beta-star}
@@ -139,8 +139,8 @@ one-dimensional sweep.
 \end{remark}
 
 Empirically, $\beta^{*}$ increases monotonically from 4.4 ($\rho = 1$, $K_{\mathrm{eff}} = 99$)
-to 9.3 ($\rho = 1000$, $K_{\mathrm{eff}} = 32.1$) in the Kunitz domain. We report this
-displacement as an observation. We do not derive it from $K_{\mathrm{eff}}$.
+to 9.3 ($\rho = 1000$, $K_{\mathrm{eff}} = 32.1$) in the Kunitz domain, a displacement we
+report as an observation rather than derive from $K_{\mathrm{eff}}$.
 
 \subsection{The Calibration Gap}\label{sec:gap}
 
@@ -197,5 +197,5 @@ $S = (\bar{c}_{\mathrm{within}} - \bar{c}_{\mathrm{between}}) /
 [\tfrac{1}{2}(\sigma_{\mathrm{within}} + \sigma_{\mathrm{between}})]$, where $\bar{c}$ and
 $\sigma$ denote the mean and standard deviation of pairwise cosine similarities within and
 between functional groups in PCA space. This is a Fisher-type ratio defined for this study
-on pairwise cosine similarities. It is not the classical Fisher discriminant criterion,
+on pairwise cosine similarities, not the classical Fisher discriminant criterion,
 which is computed from class means and scatter matrices.
