@@ -53,7 +53,9 @@ $\rho = 1$ recovers standard SA (no preference), while increasing $\rho$ shifts 
 toward the designated subset. No sequences are duplicated, no parameters are trained, and no
 architectural changes are needed. The method is agnostic to what the designated subset
 represents (binding, thermostability, organism of origin); it simply biases the sampler toward
-the sequences the user points to.
+the sequences the user points to. The same multiplicity-weighted mechanism has been applied to
+synthetic patient generation from small longitudinal clinical
+cohorts~\cite{varnerSAPatient2026}, so the conditioning is not specific to sequence data.
 
 In this study, we developed the theory of multiplicity-weighted SA and tested it on five Pfam
 protein families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) spanning a range of family

@@ -26,7 +26,13 @@ individual families, since leave-one-family-out slopes ranged from \RelationLooS
 \RelationLooSlopeMax{} and $R^{2}$ from \RelationLooRsqMin{} to \RelationLooRsqMax{}. The
 separation index should therefore be treated as a descriptive diagnostic rather than an
 \emph{a priori} predictor or decision threshold, and broader prospective validation is
-required before it can guide the choice between multiplicity weighting and hard curation.
+required before it can guide the choice between multiplicity weighting and hard curation. The
+gap is therefore a property of the decoder rather than of the conditioning. The same
+multiplicity weights have been used to generate synthetic patients from small clinical
+cohorts~\cite{varnerSAPatient2026}, where the generated values are clinical measurements that
+never have to be turned back into discrete symbols. Protein generation has no such option, since
+every sample must be reconstructed from PCA coordinates and then reduced to a single amino acid
+at each position. That last step, and not the multiplicity weights, is what costs us the marker.
 
 Small characterized sets of the kind hard curation requires arise routinely from screens,
 functional selections, and literature curation, and SA can expand such a set into additional
