@@ -283,9 +283,62 @@ functional relationship to $K_{\mathrm{eff}}$.
   \end{tabular}
 \end{table}
 
-\section*{Docking-statistics note}
-For the $\omega$-conotoxin docking validation (Table~\MainRef{tab:docking-validation}),
-group-level comparisons (SA designated-subset, SA full-family, and
+\section{Matched Profile-HMM Sweep}
+The matched sequence-weighted profile-HMM comparison was evaluated over the same multiplicity
+grid as SA. Table~\ref{tab:profile-hmm-rho-si} reports four representative points; the
+repository contains all eight multiplicity ratios, five independent replicates per condition,
+and the designated-subset HMM endpoint. In the profile HMM, relative row weights act directly
+on position-specific emission counts. Consequently, marker recovery approaches the weighted
+input marginal more closely than it does after SA's PCA reconstruction and argmax decoder.
+
+\begin{table}[p]
+  \centering
+  \caption{Matched SA and sequence-weighted profile-HMM benchmark across representative
+  multiplicity ratios. Both methods use the same cleaned alignments, designation labels, and
+  relative multiplicity ratio. Marker values are mean $\pm$ s.d. across five replicates of
+  620 sequences; $D$ is mean pairwise sequence diversity.}
+  \label{tab:profile-hmm-rho-si}
+  \scriptsize
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lcccccc}
+    \toprule
+    Family & $\rho$ & $f_{\mathrm{eff}}$ & SA marker & HMM marker & SA $D$ & HMM $D$ \\
+    \midrule
+    \input{\PaperRoot/sections/generated/tab_profile_hmm_rho}
+  \end{tabular}
+  }
+\end{table}
+\FloatBarrier
+
+\section{Cav2.2 Complex-Prediction Diagnostic}
+We modeled SA-generated and natural $\omega$-conotoxins with the Cav2.2 pore-domain target
+using ColabFold AlphaFold2-multimer. This calculation was treated as a diagnostic rather than
+as validation of the generation method. The SA designated-subset group ($n=10$) gave pTM
+$0.221\pm0.007$, iPTM $0.105\pm0.008$, and interface pLDDT $37.2\pm5.4$; the SA full-family
+group ($n=10$) gave $0.219\pm0.008$, $0.104\pm0.007$, and $38.2\pm4.0$; and natural controls
+($n=5$) gave $0.228\pm0.004$, $0.108\pm0.007$, and $40.7\pm3.5$. The uniformly low scores,
+including those for natural controls, show that this setup did not resolve a reliable complex
+geometry.
+
+\begin{table}[ht]
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3.5pt}
+  \caption{Low-confidence AlphaFold2-multimer predictions for generated and control
+  $\omega$-conotoxins. Values are group means $\pm$ s.d.}
+  \label{tab:docking-validation}
+  \begin{tabular}{lcccc}
+    \toprule
+    Group & $n$ & Mean pTM & Mean iPTM & Mean interface pLDDT \\
+    \midrule
+    SA designated-subset & 10 & $0.221\pm0.007$ & $0.105\pm0.008$ & $37.2\pm5.4$ \\
+    SA full-family & 10 & $0.219\pm0.008$ & $0.104\pm0.007$ & $38.2\pm4.0$ \\
+    Natural controls & 5 & $0.228\pm0.004$ & $0.108\pm0.007$ & $40.7\pm3.5$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Group-level comparisons among the SA designated-subset, SA full-family, and
 natural $\omega$-conotoxin controls) were evaluated using exact two-sided
 permutation tests on mean complex-level scores (iPTM, pTM, confidence, and
 interface pLDDT), with sample sizes 10, 10, and 5, respectively. No pairwise

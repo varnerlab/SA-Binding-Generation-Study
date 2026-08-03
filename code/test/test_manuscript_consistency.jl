@@ -34,6 +34,26 @@ function manuscript_body(path)
     return body
 end
 
+@testset "JCIM submission sections and benchmark positioning" begin
+    repo = normpath(joinpath(@__DIR__, "..", ".."))
+    wrapper = read(joinpath(repo, "paper-jcim", "Paper_JCIM.tex"), String)
+    results = read(joinpath(repo, "paper-jcim", "sections", "results.tex"), String)
+    appendix = read(joinpath(repo, "paper-jcim", "sections", "appendix.tex"), String)
+
+    for required in (
+        "keywords=true", "\\keywords{", "\\begin{tocentry}",
+        "\\section*{Data and Software Availability}",
+        "\\section*{Author Contributions}", "\\section*{Notes}",
+    )
+        @test occursin(required, wrapper)
+    end
+    @test isfile(joinpath(repo, "paper-jcim", "sections", "figs", "toc_graphic.png"))
+    @test occursin("tab:profile-hmm-benchmark", results)
+    @test !occursin("tab:docking-validation", results)
+    @test occursin("tab:profile-hmm-rho-si", appendix)
+    @test occursin("tab:docking-validation", appendix)
+end
+
 @testset "JCIM and arXiv section sources stay in sync" begin
     repo = normpath(joinpath(@__DIR__, "..", ".."))
     jcim = joinpath(repo, "paper-jcim", "sections")

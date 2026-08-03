@@ -15,6 +15,22 @@ weighting increased marker fidelity from 32\% to \KunitzFobsFiveHundred{} $\pm$
 \KunitzFobsFiveHundredSD{} at $\rho = 500$, and results across five Pfam families showed an
 association between PCA-space geometry and conditioning effectiveness.
 
+The matched profile-HMM benchmark narrows the claim of advantage. When the objective is direct
+recovery of a selected single-position marginal, sequence-weighted profile HMMs were stronger:
+at $\rho=500$ they reproduced the tracked marker at 0.988--1.000 across the five Pfam
+families, whereas SA retained a decoder-dependent calibration gap. Conversely, in the matched
+Kunitz sample, ESM2 assigned lower pseudo-perplexity to SA than to the weighted profile HMM
+($\SARhoFiveHundredPPL\pm\SARhoFiveHundredPPLSD$ versus
+$\HMMRhoFiveHundredPPL\pm\HMMRhoFiveHundredPPLSD$). These observations support a tradeoff,
+not a general dominance claim: a profile HMM transfers position-specific weights directly,
+whereas SA samples around complete stored sequences but must decode through a linear latent
+representation. Neither marker recovery nor language-model scoring demonstrates biochemical
+activity. Structure-conditioned inverse folding and pretrained generative models are also
+important comparators, but they consume a target backbone or large external training corpora and
+therefore do not constitute matched training-free baselines under the information constraints
+studied here. Prospective comparisons using experimentally measured multi-position phenotypes
+remain necessary.
+
 We observed a calibration gap between latent designated mass and decoded marker frequency.
 The mean attention differed from $f_{\mathrm{eff}}$ by at most \AttnMaxDevPts{} percentage
 points across the canonical sweeps, so the remaining gap arises as latent states pass through
@@ -58,7 +74,8 @@ curation can achieve high marker retention by restricting the memory to the desi
 That retention costs sequence diversity and novelty (0.46 vs.\ 0.60), a cost that reflects the
 narrower PCA basis and is consistent with the Kunitz scaling study.
 
-Several limitations should be acknowledged. The AlphaFold2-multimer analysis produced
+Several limitations should be acknowledged. The Supporting Information AlphaFold2-multimer
+diagnostic produced
 low-confidence predictions for both generated and control sequences, with iPTM of
 approximately 0.10 and interface pLDDT of approximately 37--41. Permutation tests detected no
 group differences, but nonsignificance at sample sizes 10/10/5 does not establish equivalence
@@ -78,7 +95,7 @@ mutagenesis studies~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConot
 and designated-seeded generation retained the cysteine scaffold and Tyr13 signal and enriched
 several reported positions (Table~\ref{tab:sar-agreement}), but this does not establish their
 effects in the new sequence backgrounds. For the Kunitz domain, deep mutational scanning data
-for the BPTI--trypsin interaction are now available~\cite{heyneBPTIDMS2021} and could provide
+for the BPTI--trypsin interaction are available~\cite{heyneBPTIDMS2021} and could provide
 a quantitative binding-landscape comparison, one of several extensions that follow from these
 limitations. The binary
 designated-background split generalizes to multi-class conditioning by assigning different

@@ -33,6 +33,8 @@ JuliaLocalPreferences.toml
 # macOS Finder metadata. Rewritten whenever a directory is browsed, so it churns
 # constantly and gets swept into unrelated commits.
 .DS_Store
+__pycache__/
+*.pyc
 
 # Generated LaTeX outputs; source figures under sections/figs and figs remain tracked.
 /texput.log
@@ -57,3 +59,5 @@ JuliaLocalPreferences.toml
 /paper-jcim/Paper_JCIM_SI.pdf
 /paper-jcim/acs-Paper_JCIM.bib
 /paper-jcim/acs-Paper_JCIM_SI.bib
+/output/arxiv/*.tar.gz
+/tmp/

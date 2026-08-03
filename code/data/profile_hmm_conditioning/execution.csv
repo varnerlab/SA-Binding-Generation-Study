@@ -1,0 +1,8 @@
+parameter,value
+families,Kunitz;SH3;WW;Homeobox;Forkhead;Conotoxin
+rho_grid,1;2;5;10;20;50;100;500
+n_replicates,5
+sequences_per_replicate,620
+hmmbuild_options,--amino --symfrac 0.0 --wgiven --enone
+hmmemit_options,-a
+seed_origin,80000000

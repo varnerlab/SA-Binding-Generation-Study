@@ -1,258 +1,223 @@
 % results.tex
 
-We evaluated SA on six protein families spanning a range of sizes, functions, and PCA-space
-geometries (Table~\ref{tab:cross-family}). Five were Pfam seed families, Kunitz
-(PF00014, $K=99$), SH3 (PF00018, $K=55$), WW (PF00397, $K=420$), Homeobox
-(PF00046, $K=136$), and Forkhead (PF00250, $K=246$), which we used to test both hard
-curation and multiplicity-weighted conditioning. Their designated subsets were defined by
-data-selected single-position markers whose residue classes were motivated by prior literature
-where available, though the markers are not themselves direct activity labels. The sixth
-family was the $\omega$-conotoxin O-superfamily ($K=74$, curated from SwissProt), included as
-a peptide example associated with the Cav2.2 calcium channel. For each family we split the
-sequences into designated and background subsets, built the conditioned memory matrices, and
-generated sequences at the entropy-crossover inverse temperature $\beta^{*}$. We characterized
-the resulting geometry by the separation index $S$, which measures how well PCA separates the
-two subsets and which ranged from \WWSeparation{} for WW to \HomeoboxSeparation{} for
-Homeobox, a range that let us compare conditioning across geometries differing in how cleanly
-the designated subset is resolved.
+We evaluated two forms of training-free conditioning across six protein families
+(Table~\ref{tab:cross-family}). Kunitz domains served as the primary test case, and four
+additional Pfam seed families---SH3, WW, Homeobox, and Forkhead---tested whether the findings
+generalized across family size and PCA geometry. The $\omega$-conotoxin O-superfamily provided
+a distinct peptide example associated with the Cav2.2 calcium channel. In every family, we
+compared hard curation, which rebuilds the memory from a designated subset, with multiplicity
+weighting, which retains the full-family memory but increases the designated patterns' weight.
+The subsets were defined by data-selected sequence markers rather than direct activity labels.
+Their separation index $S$, which measures how cleanly PCA resolves designated from background
+sequences, ranged from \WWSeparation{} for WW to \HomeoboxSeparation{} for Homeobox.
 
 \DisplayCrossFamily
 
-We restricted the memory matrix to a K/R-at-P1-positive subset of Kunitz domains
-(PF00014; $K=99$ sequences, $L=53$ aligned positions) and tested whether the selected
-sequence marker transferred to generated sequences (Fig.~\ref{fig:scaling}). Kunitz domains
-are serine protease inhibitors whose P1 residue at the primary contact site influences target
-specificity, and Lys or Arg at P1 is associated with trypsin
-specificity~\cite{laskowskiProteinInhibitors1980}, although that association is not by itself
-an activity measurement for every sequence carrying the residue. We therefore designated the
-32 sequences with K/R at P1 as the marker-positive subset ($K_{\mathrm{des}} = 32$) and the
-remaining 67 as marker-negative background ($K_{\mathrm{bg}} = 67$). We built a separate
-memory matrix for each group, selected $\beta^{*}$ from the entropy-crossover onset, and
-generated 930 sequences per condition from 30 chains run for 5{,}000 steps and thinned after
-burn-in. Every designated-subset-conditioned sequence carried K/R at P1 and no
-background-conditioned sequence did, while full-family generation produced 38\% K/R against
-32\% in the input family. Complete K/R retention is expected because the designated input was
-selected on this marker, so it records marker retention rather than independent evidence of
-trypsin inhibition. Sequence-level inspection showed that the top
-K/R-positive-subset-conditioned sequences preserved all 11 highly conserved positions, all six
-cysteines, and K/R at P1 while carrying 19--26 substitutions concentrated at variable sites.
-Per-position Shannon entropy correlated with the stored multiple sequence alignment (MSA) for both full-family generation
-($r = 0.988$) and K/R-positive-subset conditioning ($r = 0.932$), with the largest change at
-P1, where conditioning restricted the residues to K/R (Fig.~\ref{fig:sequence-analysis}).
-Retention also held as the designated input shrank, since subsampling
-$K_{\mathrm{des}} \in \{3, 5, 8, 10, 15, 20, 25, 32\}$ K/R-positive sequences with three
-replicates per size gave 100\% P1 retention at every size, including $K_{\mathrm{des}}=3$,
-while pairwise sequence diversity increased from 0.35 to 0.50 and Kullback-Leibler (KL) divergence decreased from
-0.070 to 0.009 over the same range (Fig.~\ref{fig:scaling}). Smaller input sets define a
-narrower PCA subspace and therefore produced less diverse libraries, so compositional fidelity
-and diversity both improved as inputs were added while marker retention did not change.
+\subsection{Hard Curation Preserves a Selected Marker from Scarce Inputs}
+
+We first asked whether hard curation could transfer a selected marker while preserving the
+broader family pattern. Kunitz domains (PF00014; $K=99$, $L=53$ aligned positions) provide an
+interpretable test: their P1 residue influences protease specificity, and Lys or Arg at P1 is
+associated with trypsin specificity~\cite{laskowskiProteinInhibitors1980}. We designated the
+32 K/R-at-P1 sequences as marker-positive and the remaining 67 as marker-negative, while
+treating the marker only as a sequence feature rather than an activity measurement.
+Separate memories built from these two subsets produced the expected sharp result. All 930
+sequences generated from the marker-positive memory carried K/R at P1, and none generated from
+the marker-negative memory did; full-family generation produced 38\% K/R compared with 32\% in
+the input family. Complete retention is expected because the input subset was selected on the
+same marker. It therefore establishes controllability, not independent evidence of trypsin
+inhibition.
+The conditioning remained localized rather than erasing the family pattern. The top
+marker-positive sequences retained all 11 highly conserved positions and all six cysteines
+while carrying 19--26 substitutions concentrated at variable sites. Per-position Shannon
+entropy correlated with the stored multiple sequence alignment (MSA) for both full-family
+generation ($r=0.988$) and marker-positive conditioning ($r=0.932$), with the largest change
+at P1 (Fig.~\ref{fig:sequence-analysis}). The result also held when the designated input was
+subsampled from 32 sequences down to three: P1 retention remained 100\% at every tested size,
+whereas pairwise diversity rose from 0.35 to 0.50 and Kullback--Leibler (KL) divergence fell
+from 0.070 to 0.009 as more inputs were added (Fig.~\ref{fig:scaling}). Thus, even three inputs
+were sufficient to fix the selected marker, but additional inputs improved diversity and
+compositional fidelity by defining a broader PCA subspace.
 
 \DisplayHardCuration
 
-We tested multiplicity-weighted generation on the Kunitz family ($K = 99$,
-$K_{\mathrm{des}} = 32$ K/R-positive sequences, $K_{\mathrm{bg}} = 67$ background),
-sweeping $\rho$ from 1 (standard SA, no bias) to 500 in the canonical replicated
-analysis (Fig.~\ref{fig:phase-transition}, Table~\ref{tab:per-family-rho}). For each $\rho$ we
-computed the multiplicity vector $\vr$, found $\beta^{*}(\vr)$ from the entropy-crossover
-onset of the weighted attention distribution, and ran five independent replicates of 20 chains
-with 620 retained samples per replicate. At each $\rho$ we recorded both the mean attention
-weight on designated patterns, $\bar{a}_{\mathrm{des}}$, and the decoded K/R fraction at P1,
-$f_{\mathrm{obs}}$. Across all six canonical replicated sweeps the largest absolute attention
-deviation was \AttnMaxDevPts{} percentage points
-(\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$), close but not exact finite-sample agreement with
-the target mixture fraction. The decoded marker fraction did not follow. For Kunitz, P1~K/R
-reached \KunitzFobsFiveHundred{} $\pm$ \KunitzFobsFiveHundredSD{} at $\rho=500$, short of the
-$f_{\mathrm{eff}} = 0.996$ that the attention weights achieved. This discrepancy
-between latent designated mass and the decoded marker marginal is the calibration gap, and it
-reflects both false negatives and false positives under the complete latent-to-sequence map
-(Eq.~\ref{eq:decoder-pushforward}). Over the same range sequence diversity decreased from 0.56
-to 0.51 and KL divergence increased from 0.007 to 0.017, while the entropy crossover
-$\beta^{*}$ shifted from 4.4 at $\rho=1$ ($K_{\mathrm{eff}} = 99$) to 9.3 at
-$\rho=1{,}000$ ($K_{\mathrm{eff}} = 32.1$), displacing the entropy curves to the right as
-$\rho$ increased (Fig.~\ref{fig:phase-transition}).
+\subsection{Multiplicity Weighting Reveals a Geometry-Dependent Gap}
+
+Hard curation provides a clear endpoint, but it discards the background sequences and changes
+the PCA basis. We therefore asked whether multiplicity weighting could tune Kunitz generation
+continuously on the full-family basis. The canonical replicated analysis swept $\rho$ from 1
+(no bias) to 500; at each value, we recomputed the entropy-crossover temperature
+$\beta^{*}(\vr)$ and generated five independent libraries of 620 sequences
+(Fig.~\ref{fig:phase-transition}, Table~\ref{tab:per-family-rho}). We then compared the
+designated attention mass, $\bar{a}_{\mathrm{des}}$, with the decoded P1 marker fraction,
+$f_{\mathrm{obs}}$.
+Multiplicity moved the latent mixture as designed, but the decoded sequence composition
+responded less strongly. At $\rho=500$, the attention weights assigned
+$f_{\mathrm{eff}}=0.996$ to the designated Kunitz patterns, whereas decoded P1~K/R reached
+only \KunitzFobsFiveHundred{} $\pm$ \KunitzFobsFiveHundredSD{}. We call this discrepancy
+between designated latent mass and the decoded marker marginal the calibration gap
+(Eq.~\ref{eq:decoder-pushforward}). Increasing $\rho$ also produced modest global changes:
+sequence diversity decreased from 0.56 to 0.51, KL divergence increased from 0.007 to 0.017,
+and $\beta^{*}$ shifted from 4.4 at $\rho=1$ ($K_{\mathrm{eff}}=99$) to 9.3 at
+$\rho=1{,}000$ ($K_{\mathrm{eff}}=32.1$).
 
 \DisplayMultiplicity
 
-To examine this gap, we measured three layers of the signal chain
-(Eq.~\ref{eq:gap-decomp}) over 17 values of $\rho$ from 1 to 1{,}000 with five replicates per
-value, recording designated attention mass $\bar{a}_{\mathrm{des}}$, continuous reconstructed
-K/R probability $f_{\mathrm{soft}}$, and decoded K/R fraction $f_{\mathrm{obs}}$. The
-attention gap remained small. The PCA term was the largest component, since
-$f_{\mathrm{soft}}$ stayed near 0.27 and varied by less than 0.04 over the full range of
-$\rho$. The argmax term was negative ($\approx-0.25$), so discrete decoding recovered some of
-the signal lost during PCA reconstruction. Even with 99.8\% of the attention on designated
-patterns the continuous reconstruction did not resolve K from G at P1, because that variation
-was not well represented by the leading $d=80$ principal components, consistent with the
-Kunitz split's separation index of $S=\KunitzSeparation$, which indicates partial PCA overlap.
-Because the closed-form Gaussian-mixture target permits independent equilibrium sampling
-without a Markov chain, we could also ask whether finite-step sampling produced the gap, and we
-compared 1{,}640 exact draws with 1{,}640 retained unadjusted Langevin (ULA) states at $\rho\in\{1,10,500\}$ using
-the same $\beta^{*}$ and decoder in each comparison, with the full comparison provided in the
-Supporting Information. At $\rho=500$ the exact
-designated-component probability was $f_{\mathrm{eff}}=0.996$, while the decoded P1~K/R
-fraction was 0.604 under exact sampling and 0.597 under ULA, and the amino acid composition
-divergence $D_{\mathrm{KL}}(\text{exact} \parallel \text{ULA})$ between the two decoded
-libraries was $1.19\times10^{-4}$. Across all three conditions, exact and ULA maximum a posteriori (MAP) designated
-basin occupancies differed by at most 0.026 and the decoded P1~K/R fractions by at most 0.016.
-The calibration gap therefore persists at exact equilibrium. Finite-step ULA discretization
-and mixing error were not its main source.
+To locate where the marker signal was lost, we followed it through three stages: designated
+attention mass $\bar{a}_{\mathrm{des}}$, continuous reconstructed K/R probability
+$f_{\mathrm{soft}}$, and decoded K/R fraction $f_{\mathrm{obs}}$
+(Eq.~\ref{eq:gap-decomp}). Across 17 values of $\rho$ from 1 to 1{,}000, the attention term
+remained close to its target, but $f_{\mathrm{soft}}$ stayed near 0.27 and changed by less than
+0.04. The largest loss therefore occurred during PCA reconstruction. Argmax decoding partly
+recovered that signal, giving a negative argmax contribution of approximately $-0.25$. Even
+when 99.8\% of the attention lay on designated patterns, the leading $d=80$ components did not
+cleanly resolve K from G at P1, consistent with the partial PCA overlap measured for Kunitz
+($S=\KunitzSeparation$).
+An exact-equilibrium comparison ruled out finite-step sampling as the main explanation. At
+$\rho\in\{1,10,500\}$, we compared 1{,}640 independent draws from the closed-form Gaussian
+mixture with 1{,}640 retained unadjusted Langevin (ULA) states under the same $\beta^{*}$ and
+decoder. At $\rho=500$, exact and ULA sampling produced decoded P1~K/R fractions of 0.604 and
+0.597, respectively, despite an exact designated-component probability of 0.996; their decoded
+amino acid compositions differed by only
+$D_{\mathrm{KL}}(\text{exact}\parallel\text{ULA})=1.19\times10^{-4}$. Across all three
+conditions, basin occupancies differed by at most 0.026 and marker fractions by at most 0.016.
+The calibration gap therefore persists at exact equilibrium and arises mainly after latent
+sampling, during reconstruction and decoding.
 
-We repeated the multiplicity analysis on four additional Pfam families and found that the
-calibration gap tracked PCA separation across the panel
-(Fig.~\ref{fig:separation-vs-gap}, Table~\ref{tab:cross-family}). Each split was defined by a
-data-selected marker, Trp for SH3 (PF00018; $K=55$), a middle-third residue for WW
-(PF00397; $K=420$), Gln for Homeobox (PF00046; $K=136$), and His/Asn for Forkhead
-(PF00250; $K=246$), so that together with Kunitz the five families sampled distinct PCA-space
-geometries at comparable conditioning strengths (Table~\ref{tab:per-family-rho}). Their
-calibration gaps varied inversely with separation overall, though not monotonically, and an
-exploratory unweighted fit across the five families yielded
-$\Delta \approx \RelationIntercept{} \RelationSlope\,S$ with $R^{2}=\RelationRsq$. That fit
-was sensitive to which family was included, since leave-one-family-out slopes ranged from
-\RelationLooSlopeMin{} to \RelationLooSlopeMax{} and $R^{2}$ from
-\RelationLooRsqMin{} to \RelationLooRsqMax{}. The $\omega$-conotoxin point was displayed as an
-external comparison rather than folded into the Pfam fit, so these data establish a
-preliminary association rather than a prospective threshold or decision rule. The attention
-weights nonetheless tracked $f_{\mathrm{eff}}$ closely in all six families, indicating that
-the multiplicity-weighted energy reached its target latent mass regardless of how much of that
-mass survived decoding. Hard curation, by contrast, achieved 100\% marker retention in every
-family independent of the separation index, which is expected because its PCA basis contains
-only the designated subset and therefore has no background mass to resolve.
+The Kunitz result suggested that conditioning should transfer most effectively when the PCA
+representation separates the designated and background subsets. We tested that hypothesis on
+four additional Pfam families, using Trp for SH3 (PF00018; $K=55$), a middle-third residue for
+WW (PF00397; $K=420$), Gln for Homeobox (PF00046; $K=136$), and His/Asn for Forkhead
+(PF00250; $K=246$) as the tracked markers. Together, the five Pfam splits sampled distinct
+PCA geometries at comparable conditioning strengths (Table~\ref{tab:per-family-rho}).
+The latent weighting remained accurate across the panel: over all six replicated family
+sweeps, the largest absolute deviation between designated attention and its target was
+\AttnMaxDevPts{} percentage points (\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$). What varied
+was how much of that latent mass survived decoding. Calibration gaps decreased with separation
+overall, although not monotonically, and an exploratory five-family fit gave
+$\Delta\approx\RelationIntercept{} \RelationSlope\,S$ with $R^{2}=\RelationRsq$
+(Fig.~\ref{fig:separation-vs-gap}). The small panel does not support a universal rule:
+leave-one-family-out slopes ranged from \RelationLooSlopeMin{} to \RelationLooSlopeMax{}, and
+$R^{2}$ ranged from \RelationLooRsqMin{} to \RelationLooRsqMax{}. We therefore treat the fit
+as a preliminary association, with the $\omega$-conotoxin point shown only as an external
+comparison. Hard curation, in contrast, retained the selected marker in every family because
+its subset-only basis contains no background mass to resolve.
 
 \DisplaySeparation
 
-We also tested whether increasing $\beta$ beyond $\beta^{*}$ transferred more marker signal
-through the PCA representation, sweeping $\beta/\beta^{*}$ from 0.5 to 3.0 at
-$\rho = 10$, 50, and 200 on the Kunitz domain (Supporting Information). Higher $\beta$
-increased the P1~K/R fraction and reduced diversity, so that at $\rho = 200$ and
-$\beta = 3\beta^{*}$ P1~K/R reached 0.71 against 0.61 at $\beta^{*}$ while diversity decreased
-from 0.53 to 0.46. Conditioning strength $\rho$ and retrieval sharpness $\beta/\beta^{*}$
-therefore provide separate controls over marker retention and diversity. We then asked how much
-marker signal the decoder can transfer once the background contribution is removed entirely,
-holding the background attention mass at zero and sweeping $\beta$ to measure the
-decode-limited recovery ceiling
-(Fig.~\ref{fig:mask-betasweep}, Table~\ref{tab:mask-recovery}). Hard attention masking is the
-$\rho \to \infty$ endpoint of the multiplicity axis on the full-family basis, and because it
-removes the background contribution exactly it gives $\Delta_{\mathrm{attn}} = 0$ in
-Eq.~\ref{eq:gap-decomp}, leaving the PCA and argmax terms as the only remaining sources of
-loss. Under the fixed mask the P1~K/R fraction increased from 0.46 at $\beta = 2$ to 1.00 at
-$\beta = 512$ without reaching a plateau, so the residual decode gap
-$\Delta_{\mathrm{PCA}} + \Delta_{\mathrm{argmax}}$ shrank as retrieval sharpened rather than
-saturating at a fixed floor. At matched $\beta$, hard masking recovered more marker signal
-than finite-$\rho$ weighting, by 0.085 with a standard error (SE) of 0.028 at $f_{\mathrm{eff}} = 0.5$ and 0.053
-(SE 0.029) at $f_{\mathrm{eff}} = 0.7$, and that advantage fell to 0.003 (SE 0.030) at
-$f_{\mathrm{eff}} = 0.99$, where the mask and the strongest finite-$\rho$ condition coincided.
+The calibration gap raises a natural comparator question: is the attenuation specific to
+SA's PCA decoder? We fitted a multiplicity-weighted profile HMM to each cleaned alignment and
+gave it the same labels and $\rho$ grid (Table~\ref{tab:profile-hmm-benchmark}). At
+$\rho=500$, the profile HMM recovered the tracked marker at frequencies of 0.988--1.000 in the
+five Pfam families, closer than SA to the weighted single-position marginal. This behavior is
+expected because a profile HMM estimates match-state emissions directly, whereas SA passes a
+latent sample through PCA reconstruction and argmax decoding. The $\omega$-conotoxin HMM
+recovered Tyr13 at 0.834 because its weights followed accession designation, which overlaps
+with but is not identical to the Tyr13 marker.
+More literal marker transfer did not imply a better overall sequence score. In the matched
+Kunitz $\rho=500$ comparison, ESM2 assigned pseudo-perplexity
+$\SARhoFiveHundredPPL\pm\SARhoFiveHundredPPLSD$ to SA and
+$\HMMRhoFiveHundredPPL\pm\HMMRhoFiveHundredPPLSD$ to the weighted profile HMM. Thus the HMM
+matched the selected marginal more closely, whereas the SA library received the stronger ESM2
+sequence-plausibility score under the same multiplicity ratio.
 
-Because hard masking removes the background components and raises the intended designated mass
-from $f_{\mathrm{eff}}$ to one, matched-$\beta$ comparisons carry different intended masses,
-and their difference should shrink as $f_{\mathrm{eff}}$ approaches one. Attention realized
-the intended mass in each condition to within a fraction of a percent
-($\Delta_{\mathrm{attn}} \approx 0$), yet a 0.5 difference in intended mass produced only a
-0.085 difference (SE 0.028) in observed marker fraction, because the latent-to-sequence map
-attenuated the response through noise, PCA reconstruction, and argmax decoding. Both retrieval
-sharpness $\beta$ and conditioning strength $\rho$ therefore affected recovery, and sharpening
-retrieval carried a cost, since novelty decreased from 0.42 at the mask's $\beta^{*}$ to 0.16
-at $\beta = 512$ (Table~\ref{tab:mask-recovery}). Hard curation reached complete marker
-retention at low $\beta$ with novelty of 0.32, because its subset-only basis retains
-designated variation that the leading full-family components blur.
+\DisplayProfileHMM
+
+\subsection{Retrieval Sharpness Trades Marker Recovery against Novelty}
+
+The preceding results separate two controls: $\rho$ sets the intended designated mass, whereas
+$\beta/\beta^{*}$ sets retrieval sharpness. Increasing $\beta/\beta^{*}$ from 0.5 to 3.0 at
+$\rho=10$, 50, and 200 transferred more Kunitz P1 signal through the PCA representation, but
+reduced diversity. At $\rho=200$, for example, P1~K/R rose from 0.61 at $\beta^{*}$ to 0.71
+at $3\beta^{*}$ while diversity fell from 0.53 to 0.46 (Supporting Information).
+We next removed the background attention entirely and swept $\beta$ to probe the
+decode-limited recovery ceiling (Fig.~\ref{fig:mask-betasweep},
+Table~\ref{tab:mask-recovery}). This hard mask is the $\rho\rightarrow\infty$ endpoint on the
+full-family basis: it sets $\Delta_{\mathrm{attn}}=0$ while leaving PCA reconstruction and
+argmax decoding unchanged. Under the mask, P1~K/R increased from 0.46 at $\beta=2$ to 1.00 at
+$\beta=512$ without reaching a fixed recovery floor. The gain came at a cost, as novelty fell
+from 0.42 at the mask's $\beta^{*}$ to 0.16 at $\beta=512$.
+Matched-$\beta$ comparisons led to the same conclusion. The mask exceeded finite-$\rho$
+weighting by 0.085 (SE 0.028) at $f_{\mathrm{eff}}=0.5$ and 0.053 (SE 0.029) at
+$f_{\mathrm{eff}}=0.7$, but by only 0.003 (SE 0.030) at $f_{\mathrm{eff}}=0.99$, where the
+intended masses nearly coincide. Notably, a 0.5 change in intended mass produced only a 0.085
+change in decoded marker fraction, illustrating again how strongly the latent-to-sequence map
+attenuates the response. Hard curation avoided that attenuation at low $\beta$ and achieved
+complete marker retention with novelty 0.32 because it rebuilt the PCA basis from the
+designated subset. Together, these experiments show that sharper retrieval can compensate for
+decoder loss, but only by sacrificing novelty; rebuilding the representation is more direct
+when strict marker retention is required.
 
 \DisplayHardMask
 
-We used the $\omega$-conotoxin O-superfamily to test curated conditioning beyond classical
-protein domains (Table~\ref{tab:conotoxin-pharmacophore}, Fig.~\ref{fig:conotoxin-loop}).
-These peptides come from cone snails, are rich in disulfide bonds, and block voltage-gated
-calcium channels including Cav2.2 in sensory neurons~\cite{omegaConotoxinSAR2006}, which
-contributes to pain signaling between peripheral nociceptors and the spinal cord. The family
-includes $\omega$-conotoxin MVIIA (ziconotide), an approved non-opioid analgesic for
-intractable pain~\cite{ziconotideReview2004}, and prior modeling of ATP-gated calcium dynamics
-in dorsal root ganglion neurons also identified Cav2.2 as part of the pain signaling
-network~\cite{songModelingAnalysis2009}. Within this family, Tyr13 is a reported Cav2.2 marker
-in MVIIA numbering whose hydroxyl group contacts the channel pore and whose substitution
-abolishes binding, while basic residues distributed across the peptide contribute to
-electrostatic complementarity with the channel entrance. We compiled 74 SwissProt
-$\omega$-conotoxin sequences, aligned them with MAFFT~\cite{mafft2013}, and retained 26
-positions after gap filtering, with the study's curated Cav2.2-associated input list
-designating 23 accessions and the remaining 51 sequences forming a background set for
-conditioning that is not asserted to be nonbinders. An accession-level audit records which
-designations have activity metadata in the repository and which are supported only by the
-input list.
+\subsection{Curated Conditioning Transfers Conotoxin Sequence Features}
 
-We ran two SA experiments with 50 chains, 5\,000 steps, and $\alpha = 0.01$, generating
-1\,550 sequences per condition, one using the full family ($K = 74$, $\beta^{*} = 3.23$) and
-the other using only the designated accessions ($K = 23$, $\beta^{*} = 2.72$). Tyr occurred at
-the marker position in 33.8\% of the full-family input and 46.9\% of full-family generation,
-and in 82.6\% of the designated input and 98.3\% of designated-subset generation
-(Table~\ref{tab:conotoxin-pharmacophore}). Accession designation and Tyr13 are distinct
-labels that agree for 64 of 74 stored sequences (86.5\%), with 19 marker-positive sequences in
-the designated set and six in the background, so we report designation conditioning and Tyr13
-recovery separately. Designated-subset generation contained 20.1\% Lys or Arg against 19.7\%
-in its input, whereas full-family generation contained 12.0\%, consistent with the lower K/R
-content of the full-family input.
+Having established the conditioning mechanics on Pfam domains, we asked whether hard curation
+could transfer features in a distinct disulfide-rich peptide family. $\omega$-Conotoxins block
+voltage-gated calcium channels, including Cav2.2~\cite{omegaConotoxinSAR2006}; the family
+includes MVIIA (ziconotide), an approved non-opioid analgesic~\cite{ziconotideReview2004}.
+Tyr13 is a reported Cav2.2 marker whose hydroxyl group contacts the channel pore, while basic
+residues elsewhere in the peptide contribute to electrostatic complementarity.
+We aligned 74 SwissProt $\omega$-conotoxins and retained 26 positions after gap filtering.
+The curated input list designated 23 accessions, with the other 51 used as background but not
+asserted to be nonbinders. Importantly, accession designation and Tyr13 were related but
+distinct labels: they agreed for 64 of 74 sequences (86.5\%), with 19 Tyr13-positive sequences
+in the designated set and six in the background. We therefore report accession conditioning
+and Tyr13 recovery separately; an accession-level audit identifies which designations have
+repository activity metadata and which are supported only by the input list.
+Hard curation again shifted the selected sequence statistics. From 1{,}550 generated sequences
+per condition, Tyr occurred at the marker position in 46.9\% of full-family generation versus
+33.8\% of its input, and in 98.3\% of designated-subset generation versus 82.6\% of its input
+(Table~\ref{tab:conotoxin-pharmacophore}). Designated-subset generation also contained 20.1\%
+Lys or Arg, close to 19.7\% in its input and above the 12.0\% in full-family generation.
 
-Per-position frequency heatmaps were similar for the designated input and its generated
-sequences (Fig.~\ref{fig:conotoxin-loop}). Tyr13, the conserved Cys framework, and
-variable-loop diversity were all retained, and the residual heatmaps showed small changes
-across positions. Sequence-level analysis gave the same pattern
-(Fig.~\ref{fig:conotoxin-sequence-analysis}), with the five highest-pLDDT sequences retaining
-all six highly conserved positions, all six cysteines, and Tyr at the marker while carrying
-5--11 substitutions at variable sites. The entropy correlation was $r = 0.745$ for
-designated-subset generation and $r = 0.997$ for full-family generation, the lower
-designated-subset value reflecting reduced variation at co-varying loop positions. Comparing
-12 positions with published structure--activity relationship observations
-(Table~\ref{tab:sar-agreement}), designated-subset generation retained Tyr13 at 98.3\% and all
-six disulfide-forming cysteines at frequencies of at least 97.4\%, which is unsurprising given
-that those cysteines are invariant in the designated input. It also raised the frequency of
-basic residues at loop~2 positions reported as important for channel interaction (Arg10:
-82.3\% K/R against 69.6\% in the designated input) and at position~21 (66.2\% K/R against
-47.8\%), exceeding full-family generation at every reported position outside the disulfide
-framework, where both conditions sat at or near 1.00. The generated library therefore enriched
-several residues reported by prior mutagenesis, though these frequencies do not test mutation
-effects in the generated
+The broader sequence pattern was retained alongside these marker shifts. Frequency heatmaps
+preserved Tyr13, the cysteine framework, and variable-loop diversity
+(Fig.~\ref{fig:conotoxin-loop}); per-position entropy correlations were $r=0.745$ for the
+designated subset and $r=0.997$ for the full family. The five highest-pLDDT designated-subset
+sequences retained all six highly conserved positions and all six cysteines while introducing
+5--11 substitutions at variable sites (Fig.~\ref{fig:conotoxin-sequence-analysis}).
+Comparison with 12 published structure--activity relationship positions gave a consistent but
+strictly sequence-level result. Designated-subset generation retained Tyr13 at 98.3\% and the
+six invariant disulfide-forming cysteines at frequencies of at least 97.4\%. It also increased
+K/R at reported interaction positions, including Arg10 (82.3\% versus 69.6\% in the designated
+input) and position~21 (66.2\% versus 47.8\%). These enrichments agree with residues highlighted
+by prior mutagenesis, but they do not test mutation effects in the generated
 backgrounds~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}. The top
-three designated-subset sequences had predicted disulfide-constrained loop architectures
-consistent with an inhibitor cystine-knot-like fold (Fig.~\ref{fig:fold-superposition}), so
-curated conditioning transferred sequence statistics from the 23 designated accessions to the
-generated library without retraining and without the Cav2.2 target structure.
+three sequences nevertheless had predicted disulfide-constrained loop architectures consistent
+with an inhibitor cystine-knot-like fold (Fig.~\ref{fig:fold-superposition}). Thus, without
+retraining or a Cav2.2 target structure, hard curation transferred the designated accessions'
+sequence statistics into a new library; it did not establish target binding.
 
 \DisplayConotoxin
 
-We compared complex-level predictions for SA-generated and natural $\omega$-conotoxins using
-ColabFold AlphaFold2-multimer with the Cav2.2 pore-domain target
-(Table~\ref{tab:docking-validation}). The SA designated-subset group ($n=10$) gave pTM
-$0.221\pm0.007$, iPTM $0.105\pm0.008$, and interface pLDDT $37.2\pm5.4$, the SA full-family
-group ($n=10$) gave $0.219\pm0.008$, $0.104\pm0.007$, and $38.2\pm4.0$, and the natural
-controls ($n=5$) gave $0.228\pm0.004$, $0.108\pm0.007$, and $40.7\pm3.5$. All three groups
-received low-confidence complex predictions. Exact permutation tests detected no group
-difference on the four reported metrics (all $p>0.05$), but those tests do not establish
-equivalence or preserved binding geometry, so experimental complex structures and binding
-assays are required to evaluate Cav2.2 interaction.
+\subsection{Generated Sequences Retain Plausibility and Fold Similarity}
 
-\DisplayDocking
-
-We predicted folds for 50 sequences from each source (stored, full-family SA,
-K/R-positive SA, K/R-negative SA, and HMM baseline) using ESMFold and computed TM-scores
-against the experimental Kunitz domain structure (1BPI, chain~A) to compare model-predicted
-structure summaries (Table~\ref{tab:structure-validation}). SA-generated and stored sequences
-received similar model scores, with mean pLDDT of $90.4 \pm 1.2$ for SA full-family,
-$90.7 \pm 1.1$ for SA K/R-positive, and $89.3 \pm 3.2$ for stored sequences, and every SA
-sequence exceeded the pLDDT $>70$ threshold. Their mean TM-scores were $0.84 \pm 0.01$,
-$0.83 \pm 0.01$, and $0.83 \pm 0.03$, respectively (Fig.~\ref{fig:fold-superposition}),
-whereas HMM-emitted sequences scored lower and more variably, at mean pLDDT $60.4 \pm 13.1$
-with 20\% above the threshold and mean TM-score $0.60 \pm 0.19$. AlphaFold2-ptm predictions
-via ColabFold gave the same picture, with Kunitz TM-scores of $0.83$--$0.85$ at pLDDT
-$93$--$95$ and the shorter $\omega$-conotoxins at TM-scores of $0.35$--$0.47$ and pLDDT
-$68$--$79$ (Table~\ref{tab:af2-validation})~\cite{jumperHighlyAccurate2021,mirdita2022colabfold}.
-Sequence plausibility, assessed by ESM2-650M masked marginal scoring, followed the same
-ordering, with pseudo-perplexity of $4.78 \pm 0.64$ for SA full-family, $4.72 \pm 0.60$ for SA
-K/R-positive, and $4.97 \pm 0.98$ for stored sequences against $16.1 \pm 4.2$ for HMM-emitted
-sequences, the lower SA values being consistent with generation near the center of the family
-distribution. We also compared SA directly against five HMMER3 profile-HMM emissions of 150
-sequences and five bootstrap resamples~\cite{hmmer3}, of which the seed-42 emission was also
-used for the model-based evaluations. The same separation appeared in marker terms, since
-full-family SA gave a P1~K/R fraction of $0.38 \pm 0.03$ and KL divergence of
-$0.0076 \pm 0.0009$ while HMM emission gave $0.17 \pm 0.04$ and $0.027 \pm 0.002$.
-Bootstrap resampling preserved
-composition (KL $\approx 0.001$) but produced no novel sequences, and K/R-positive-subset SA
-reached a P1~K/R fraction of $1.0 \pm 0.0$, a marker-conditioning control that neither
-unconditional baseline provides (Table~\ref{tab:structure-validation}).
+Finally, we asked whether marker control came at the expense of global sequence or structural
+plausibility. For 50 Kunitz sequences from each source---stored, full-family SA,
+marker-positive SA, marker-negative SA, and profile-HMM emission---ESMFold assigned similar
+model scores to SA and stored sequences (Table~\ref{tab:structure-validation}). Mean
+pLDDT was $90.4\pm1.2$ for full-family SA, $90.7\pm1.1$ for marker-positive SA, and
+$89.3\pm3.2$ for stored sequences, with every SA sequence above 70. Corresponding TM-scores
+against the experimental Kunitz structure (1BPI, chain~A) were $0.84\pm0.01$,
+$0.83\pm0.01$, and $0.83\pm0.03$. HMM-emitted sequences scored lower and more variably, with
+mean pLDDT $60.4\pm13.1$, 20\% above 70, and mean TM-score $0.60\pm0.19$.
+Independent AlphaFold2-ptm predictions gave the same qualitative picture: Kunitz TM-scores
+were 0.83--0.85 at pLDDT 93--95, whereas the shorter $\omega$-conotoxins had TM-scores of
+0.35--0.47 at pLDDT 68--79 (Table~\ref{tab:af2-validation})
+~\cite{jumperHighlyAccurate2021,mirdita2022colabfold}. ESM2 sequence scoring also placed SA
+near the stored family distribution. Pseudo-perplexity was $4.78\pm0.64$ for full-family SA,
+$4.72\pm0.60$ for marker-positive SA, and $4.97\pm0.98$ for stored sequences, compared with
+$16.1\pm4.2$ for HMM emission.
+A separate unconditional Kunitz benchmark confirmed the distinction among generation,
+conditioning, and resampling. Across five HMMER3 emissions and five bootstrap
+resamples~\cite{hmmer3},
+full-family SA gave a P1~K/R fraction of $0.38\pm0.03$ and KL divergence
+$0.0076\pm0.0009$, compared with $0.17\pm0.04$ and $0.027\pm0.002$ for HMM emission.
+Bootstrap resampling matched composition most closely (KL $\approx0.001$) but produced no novel
+sequences. Marker-positive SA, by contrast, reached P1~K/R $1.0\pm0.0$, a conditioning control
+that neither unconditional baseline provides (Table~\ref{tab:structure-validation}). These
+model-based evaluations do not demonstrate function, but they show that SA's marker control
+was compatible with family-level sequence plausibility and Kunitz-like predicted folds.
 
 \DisplayModelValidation

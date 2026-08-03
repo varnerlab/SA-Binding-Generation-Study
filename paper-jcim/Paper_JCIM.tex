@@ -1,4 +1,4 @@
-\documentclass[journal=jcisd8,manuscript=article]{achemso}
+\documentclass[journal=jcisd8,manuscript=article,keywords=true]{achemso}
 
 % --- standard packages ---
 \usepackage[utf8]{inputenc}
@@ -45,12 +45,20 @@
 \email{jdv27@cornell.edu}
 \affiliation{Robert Frederick Smith School of Chemical and Biomolecular Engineering,
 Cornell University, Ithaca, New York 14850, United States}
+\keywords{protein sequence generation, stochastic attention, modern Hopfield networks,
+profile hidden Markov models, Langevin dynamics, scarce-data protein design,
+conditional generation, protein engineering}
 
 \begin{document}
 
 \begin{abstract}
 \input{sections/abstract}
 \end{abstract}
+
+\begin{tocentry}
+\centering
+\includegraphics[width=3.25in,height=1.75in,keepaspectratio]{sections/figs/toc_graphic.png}
+\end{tocentry}
 
 \section{Introduction}
 \input{sections/introduction}
@@ -65,11 +73,25 @@ Cornell University, Ithaca, New York 14850, United States}
 \input{sections/theory}
 \input{sections/methods}
 
+\section*{Data and Software Availability}
+The five Pfam seed alignments are publicly available from InterPro under the accession numbers
+listed in Materials and Methods. The curated SwissProt $\omega$-conotoxin alignment,
+designation audit, canonical per-replicate data, generated tables, matched profile-HMM
+emissions, and ESM2 scoring outputs are included in the study repository at
+\url{https://github.com/varnerlab/SA-Binding-Generation-Study}. The repository also provides
+the Julia and Python scripts needed to reproduce the benchmark calculations and all reported
+display items. No proprietary data were used.
+
+\section*{Author Contributions}
+J.D.V.: Conceptualization, Methodology, Software, Validation, Formal Analysis, Investigation,
+Data Curation, Visualization, Writing--Original Draft, Writing--Review and Editing, Resources.
+
 \begin{acknowledgement}
 The author thanks the Cornell Center for Advanced Computing for computational resources.
-All Pfam seed alignments are publicly available from InterPro. Source code and experiment
-scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation-Study}.
 \end{acknowledgement}
+
+\section*{Notes}
+The author declares no competing financial interest.
 
 \bibliography{References_v1}
 
@@ -80,7 +102,8 @@ scripts are available at \url{https://github.com/varnerlab/SA-Binding-Generation
 
 Supporting Information includes the sequence encoding and PCA projection
 pipeline; per-family $\rho$ sweeps for all six families; the
-$\beta/\beta^{*}$ temperature sweep; docking permutation statistics; the exact
+$\beta/\beta^{*}$ temperature sweep; the matched profile-HMM sweep; the Cav2.2
+complex-prediction diagnostic and permutation statistics; the exact
 Gaussian-mixture derivation and exact-equilibrium benchmark; and the pLDDT versus
 TM-score scatter plot.
 

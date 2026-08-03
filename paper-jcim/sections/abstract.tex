@@ -1,27 +1,16 @@
 % abstract.tex -- Abstract
-Protein sequence generation via stochastic attention produces plausible family members from
-small alignments without training, but treats all stored sequences equally and cannot direct
-generation toward a designated subset of interest. We show that a single scalar parameter,
-added as a bias to the sampler's attention logits, continuously shifts generation from
-the full family toward a user-specified subset, with no retraining and no change to the model architecture. A practitioner supplies a small set of sequences (for example, hits
-from a binding screen) and a multiplicity ratio that controls how strongly generation favors
-them. The method is agnostic to what the subset represents: binding, stability, specificity,
-or any other property. For unit-norm memories, the multiplicity-weighted Boltzmann target is an
-exact Gaussian mixture whose component weights are the normalized multiplicities, allowing
-independent equilibrium draws to benchmark the finite-step Langevin implementation. We find that
-this conditioning is exact at the latent-component level, but that the decoded sequence marker can
-fall short because dimensionality reduction is followed by unit normalization, finite-temperature
-sampling, affine reconstruction, and argmax decoding. We term
-this discrepancy the calibration gap and examine its association with a geometric measure
-of how well the encoding separates the designated subset from the rest of the family.
-Experiments on five Pfam families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) show an
-exploratory inverse association between separation and gap, one that shifts with which family
-is included and that we therefore treat as a diagnostic to investigate rather than a decision
-rule.
-Applied to omega-conotoxin peptides associated with a calcium channel involved in pain signaling,
-curated seeding from 23 designated accessions produces over a thousand candidates enriched for
-the Tyr13 sequence marker and several residues reported in prior mutagenesis studies while
-retaining the cysteine scaffold. These sequence and structure-model results generate hypotheses
-for experimental testing; they do not establish binding. Stochastic attention can therefore
-expand a user-designated sequence set into diverse candidate libraries without retraining a
-generative model.
+Small protein-family alignments often contain a user-designated subset of interest but too
+little labeled data for training a conditional generator; we address this regime by adding one
+multiplicity ratio to the attention logits of a training-free stochastic-attention sampler,
+continuously shifting generation from the full family toward the designated sequences. For
+unit-norm memories, the resulting Boltzmann target is an exact Gaussian mixture with normalized
+multiplicities as component weights, which separates exact latent conditioning from the
+calibration gap introduced by dimensionality reduction, reconstruction, and sequence decoding.
+Across five Pfam families and an $\omega$-conotoxin peptide family, the attention mass tracked
+the analytic target while decoded single-position markers depended on subset separation; a
+matched multiplicity-weighted profile-HMM benchmark transferred those marginal markers more
+directly, whereas stochastic attention gave lower ESM2 pseudo-perplexity in the matched Kunitz
+comparison. Curated seeding of 23 $\omega$-conotoxin accessions also produced diverse sequences
+that retained the cysteine scaffold, Tyr13 marker, and several residue frequencies reported in
+prior mutagenesis studies, generating experimentally testable candidates without establishing
+binding.

@@ -161,7 +161,70 @@ function validate_inputs()
             error("Kunitz beta sweep $col outside [0,1]")
     end
 
-    return cross, aggregates, sar, beta_sweep
+    profile_path = joinpath(DATA_DIR, "profile_hmm_conditioning", "aggregated.csv")
+    profile_raw_path = joinpath(DATA_DIR, "profile_hmm_conditioning", "raw_replicates.csv")
+    profile_execution_path = joinpath(DATA_DIR, "profile_hmm_conditioning", "execution.csv")
+    for path in (profile_path, profile_raw_path, profile_execution_path)
+        isfile(path) || error("Missing profile-HMM benchmark artifact: $path")
+    end
+    profile = CSV.read(profile_path, DataFrame)
+    expected_profile = [
+        :family, :condition, :rho, :n_emitted,
+        :marker_fraction_mean, :marker_fraction_std,
+        :kl_to_full_mean, :kl_to_full_std,
+        :kl_to_designated_mean, :kl_to_designated_std,
+        :novelty_mean, :novelty_std, :diversity_mean, :diversity_std,
+        :gap_fraction_mean, :gap_fraction_std,
+        :valid_fraction_mean, :valid_fraction_std,
+    ]
+    propertynames(profile) == expected_profile ||
+        error("Profile-HMM aggregate schema mismatch: $(propertynames(profile))")
+    nrow(profile) == 54 || error("Profile-HMM aggregate must contain 54 rows")
+    Set(profile.family) == Set(first.(FAMILY_SLUGS)) ||
+        error("Profile-HMM aggregate has unexpected families")
+    multiplicity_profile = filter(:condition => ==("multiplicity"), profile)
+    subset_profile = filter(:condition => ==("designated_subset"), profile)
+    nrow(multiplicity_profile) == 48 ||
+        error("Profile-HMM aggregate must contain 48 multiplicity rows")
+    nrow(subset_profile) == 6 ||
+        error("Profile-HMM aggregate must contain six designated-subset rows")
+    for family in first.(FAMILY_SLUGS)
+        block = filter(:family => ==(family), multiplicity_profile)
+        sort(collect(skipmissing(block.rho))) == RHO_GRID ||
+            error("Profile-HMM $family rho grid mismatch")
+    end
+    all(profile.n_emitted .== 620) ||
+        error("Profile-HMM aggregate has the wrong emission count")
+    for col in expected_profile[5:end]
+        all(isfinite, profile[!, col]) ||
+            error("Profile-HMM aggregate contains non-finite $col")
+    end
+
+    profile_raw = CSV.read(profile_raw_path, DataFrame)
+    nrow(profile_raw) == 270 || error("Profile-HMM raw file must contain 270 rows")
+    all(combine(groupby(profile_raw, [:family, :condition, :rho]), nrow => :n).n .== 5) ||
+        error("Profile-HMM benchmark must contain five replicates per condition")
+    profile_execution = CSV.read(profile_execution_path, DataFrame)
+    execution_map = Dict(string(row.parameter) => string(row.value)
+                         for row in eachrow(profile_execution))
+    get(execution_map, "rho_grid", "") == join(Int.(RHO_GRID), ";") ||
+        error("Profile-HMM execution record has a noncanonical rho grid")
+    get(execution_map, "n_replicates", "") == "5" ||
+        error("Profile-HMM execution record has the wrong replicate count")
+
+    matched_esm_path = joinpath(DATA_DIR, "profile_hmm_conditioning",
+                                "kunitz_rho500_matched_esm2_summary.csv")
+    isfile(matched_esm_path) || error("Missing matched rho=500 ESM2 summary: $matched_esm_path")
+    matched_esm = CSV.read(matched_esm_path, DataFrame)
+    expected_esm = [:source, :n, :ppl_mean, :ppl_std, :mean_ll_mean, :mean_ll_std]
+    propertynames(matched_esm) == expected_esm ||
+        error("Matched ESM2 summary schema mismatch")
+    Set(matched_esm.source) ==
+        Set(["SA_multiplicity_rho500", "HMM_weighted_rho500"]) ||
+        error("Matched ESM2 summary has unexpected sources")
+    all(matched_esm.n .== 50) || error("Matched ESM2 summary must use 50 sequences per source")
+
+    return cross, aggregates, sar, beta_sweep, profile, matched_esm
 end
 
 function linear_fit(x, y)
@@ -181,7 +244,7 @@ function write_text(path, content)
 end
 
 function generate(output_dir)
-    cross, aggregates, sar, beta_sweep = validate_inputs()
+    cross, aggregates, sar, beta_sweep, profile, matched_esm = validate_inputs()
     mkpath(output_dir)
 
     for (family, slug) in FAMILY_SLUGS
@@ -258,6 +321,43 @@ function generate(output_dir)
     write_text(joinpath(output_dir, "tab_per_family_rho.tex"),
                join(per_family_rows, "\n") * "\n" * raw"\bottomrule")
 
+    profile_rows = String[]
+    for (family, _) in FAMILY_SLUGS
+        sa = only(eachrow(filter(:rho => ==(500.0), aggregates[family])))
+        family_profile = filter(:family => ==(family), profile)
+        hmm = only(eachrow(family_profile[
+            (family_profile.condition .== "multiplicity") .&
+            coalesce.(family_profile.rho .== 500.0, false), :]))
+        push!(profile_rows, @sprintf(
+            "%s & %.3f & \$%.3f \\pm %.3f\$ & \$%.3f \\pm %.3f\$ & %.3f & %.3f \\\\",
+            latex_family(family), sa.f_eff, sa.f_obs_mean, sa.f_obs_std,
+            hmm.marker_fraction_mean, hmm.marker_fraction_std,
+            sa.diversity_mean, hmm.diversity_mean))
+    end
+    write_text(joinpath(output_dir, "tab_profile_hmm_benchmark.tex"),
+               join(profile_rows, "\n") * "\n" * raw"\bottomrule")
+
+    profile_sweep_rows = String[]
+    selected_profile_rhos = [1.0, 10.0, 100.0, 500.0]
+    for (family_index, (family, _)) in enumerate(FAMILY_SLUGS)
+        for rho in selected_profile_rhos
+            sa = only(eachrow(filter(:rho => ==(rho), aggregates[family])))
+            family_profile = filter(:family => ==(family), profile)
+            hmm = only(eachrow(family_profile[
+                (family_profile.condition .== "multiplicity") .&
+                coalesce.(family_profile.rho .== rho, false), :]))
+            push!(profile_sweep_rows, @sprintf(
+                "%s & %d & %.3f & \$%.3f \\pm %.3f\$ & \$%.3f \\pm %.3f\$ & %.3f & %.3f \\\\",
+                latex_family(family), Int(rho), sa.f_eff,
+                sa.f_obs_mean, sa.f_obs_std,
+                hmm.marker_fraction_mean, hmm.marker_fraction_std,
+                sa.diversity_mean, hmm.diversity_mean))
+        end
+        family_index < length(FAMILY_SLUGS) && push!(profile_sweep_rows, raw"\midrule")
+    end
+    write_text(joinpath(output_dir, "tab_profile_hmm_rho.tex"),
+               join(profile_sweep_rows, "\n") * "\n" * raw"\bottomrule")
+
     pfam = filter(:fit_included => identity, cross)
     intercept, slope, r2 = linear_fit(pfam.separation_index, pfam.cal_gap_mean)
     loo = [linear_fit(pfam.separation_index[setdiff(1:nrow(pfam), [i])],
@@ -273,6 +373,14 @@ function generate(output_dir)
     end
     maximum_deviation = deviations[argmax(getfield.(deviations, :deviation))]
     kunitz_500 = only(eachrow(filter(:rho => ==(500.0), aggregates["Kunitz"])))
+    sa_esm = only(filter(r -> r.source == "SA_multiplicity_rho500",
+                         eachrow(matched_esm)))
+    hmm_esm = only(filter(r -> r.source == "HMM_weighted_rho500",
+                          eachrow(matched_esm)))
+    kunitz_profile = filter(:family => ==("Kunitz"), profile)
+    kunitz_hmm_500 = only(eachrow(kunitz_profile[
+        (kunitz_profile.condition .== "multiplicity") .&
+        coalesce.(kunitz_profile.rho .== 500.0, false), :]))
 
     macros = [
         raw"% Generated by code/experiments/generate_paper_tables.jl; do not edit.",
@@ -288,6 +396,15 @@ function generate(output_dir)
         "\\newcommand{\\RelationLooSlopeMax}{$(fmt1(maximum(loo_slopes)))}",
         "\\newcommand{\\RelationLooRsqMin}{$(fmt2(minimum(loo_r2)))}",
         "\\newcommand{\\RelationLooRsqMax}{$(fmt2(maximum(loo_r2)))}",
+        "\\newcommand{\\SARhoFiveHundredPPL}{$(fmt2(sa_esm.ppl_mean))}",
+        "\\newcommand{\\SARhoFiveHundredPPLSD}{$(fmt2(sa_esm.ppl_std))}",
+        "\\newcommand{\\HMMRhoFiveHundredPPL}{$(fmt2(hmm_esm.ppl_mean))}",
+        "\\newcommand{\\HMMRhoFiveHundredPPLSD}{$(fmt2(hmm_esm.ppl_std))}",
+        "\\newcommand{\\HMMRhoFiveHundredMarker}{$(fmt3(kunitz_hmm_500.marker_fraction_mean))}",
+        "\\newcommand{\\HMMRhoFiveHundredMarkerSD}{$(fmt3(kunitz_hmm_500.marker_fraction_std))}",
+        "\\newcommand{\\HMMRhoFiveHundredKL}{$(fmt1(1000kunitz_hmm_500.kl_to_full_mean))}",
+        "\\newcommand{\\HMMRhoFiveHundredKLSD}{$(fmt1(1000kunitz_hmm_500.kl_to_full_std))}",
+        "\\newcommand{\\HMMRhoFiveHundredDiversity}{$(fmt3(kunitz_hmm_500.diversity_mean))}",
     ]
     macro_names = Dict("SH3" => "SHThree")
     for row in eachrow(cross)

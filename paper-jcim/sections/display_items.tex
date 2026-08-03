@@ -289,25 +289,23 @@
 \FloatBarrier
 }
 
-\newcommand{\DisplayDocking}{%
+\newcommand{\DisplayProfileHMM}{%
 \begin{table}[htbp]
   \centering
-  \footnotesize
-  \setlength{\tabcolsep}{3.5pt}
-  \caption{\textbf{Low-confidence AlphaFold2-multimer predictions for generated
-  and control $\omega$-conotoxins.}
-  Complex-level scores for sequences modeled with the Cav2.2 pore domain via
-  ColabFold in multimer mode. The uniformly low absolute values do not establish
-  binding geometry.}
-  \label{tab:docking-validation}
-  \begin{tabular}{lcccc}
+  \caption{\textbf{Matched multiplicity-weighted profile-HMM benchmark at
+  $\rho=500$.}
+  Both methods receive the same cleaned alignment, designation labels, and relative
+  sequence weights. Marker fractions are mean $\pm$ s.d.\ across five independent
+  replicates of 620 sequences. $D$ is mean pairwise sequence diversity. The profile
+  HMM transfers the selected single-position marginal directly; SA additionally passes
+  through its PCA decoder.}
+  \label{tab:profile-hmm-benchmark}
+  \small
+  \begin{tabular}{lccccc}
     \toprule
-    Group & $n$ & Mean pTM & Mean iPTM & Mean interface pLDDT \\
+    Family & $f_{\mathrm{eff}}$ & SA marker & HMM marker & SA $D$ & HMM $D$ \\
     \midrule
-    SA designated-subset & 10 & $0.221\pm0.007$ & $0.105\pm0.008$ & $37.2\pm5.4$ \\
-    SA full-family & 10 & $0.219\pm0.008$ & $0.104\pm0.007$ & $38.2\pm4.0$ \\
-    Natural controls & 5 & $0.228\pm0.004$ & $0.108\pm0.007$ & $40.7\pm3.5$ \\
-    \bottomrule
+    \input{sections/generated/tab_profile_hmm_benchmark}
   \end{tabular}
 \end{table}
 \FloatBarrier
@@ -325,6 +323,8 @@
   $D$: mean pairwise diversity.
   Structural and LM values are mean $\pm$ s.d.\ across 50 sequences;
   sequence-level metrics are mean $\pm$ s.d.\ across 5 replicates.
+  Structure-model scores were not computed for the additional weighted profile-HMM
+  benchmark.
   SA-generated and stored sequences have similar structure-model and language-model
   summaries. Conditioning on the K/R-positive subset yields complete K/R marker
   retention; this is not an experimental binding measurement.}
@@ -340,6 +340,7 @@
     SA (K/R-positive)     & $90.7 \pm 1.1$  & $0.83 \pm 0.01$ & $4.72 \pm 0.60$ & $1.00 \pm 0.00$ & $18.7 \pm 0.9$ & 0.50 \\
     SA (K/R-negative)     & $91.0 \pm 1.2$  & $0.85 \pm 0.01$ & $4.73 \pm 0.72$ & $0.00 \pm 0.00$ & $11.2 \pm 0.2$ & 0.53 \\
     HMM emit (HMMER3)     & $60.4 \pm 13.1$ & $0.60 \pm 0.19$ & $16.1 \pm 4.2$  & $0.17 \pm 0.04$ & $27.1 \pm 2.1$ & 0.90 \\
+    HMM weighted ($\rho=500$) & --- & --- & $\HMMRhoFiveHundredPPL \pm \HMMRhoFiveHundredPPLSD$ & $\HMMRhoFiveHundredMarker \pm \HMMRhoFiveHundredMarkerSD$ & $\HMMRhoFiveHundredKL \pm \HMMRhoFiveHundredKLSD$ & \HMMRhoFiveHundredDiversity{} \\
     Bootstrap (resample)  & ---             & ---              & ---              & $0.30 \pm 0.04$ & $1.0 \pm 0.3$ & 0.62 \\
     \bottomrule
   \end{tabular}

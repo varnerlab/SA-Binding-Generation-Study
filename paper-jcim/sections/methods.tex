@@ -1,4 +1,6 @@
 % methods.tex
+\subsection{Data Curation and Sequence Encoding}
+
 For each experiment, we followed the stochastic attention pipeline
 of~\cite{varnerSAProtein2026} without modification to the core sampler. Seed alignments were
 downloaded from InterPro/Pfam in Stockholm format, while the $\omega$-conotoxin O-superfamily
@@ -30,6 +32,8 @@ than demonstrated nonbinders. The tracked accession audit records the designatio
 marker, and available repository activity metadata, and only 5 designated and 2 background
 accessions have exact accession matches in that activity table, while the accession designation
 and Tyr13 marker agree for 64 of 74 sequences (86.5\%).
+
+\subsection{SA Sampling and Evaluation}
 
 For multiplicity-weighted runs, the multiplicity vector was set to $r_k = \rho$ for designated
 patterns and $r_k = 1$ for background patterns, and the operating inverse temperature
@@ -91,6 +95,27 @@ fraction and sequence novelty, defined as one minus the identity to the nearest 
 input alignment, as the mean and standard error across chains. We held the mask fixed and swept
 $\beta$ over eight logarithmically spaced values in $[2,512]$, and we also evaluated the mask at
 each multiplicity condition's $\beta^{*}(\vr)$ to obtain the matched-$\beta$ recovery difference.
+
+\subsection{Matched Profile-HMM Benchmark}
+
+As a matched training-free baseline, we fitted HMMER3 profile HMMs to the same cleaned
+alignments used by SA. For each finite multiplicity ratio, every designated alignment row was
+assigned the relative HMMER sequence weight $\rho$ and every background row weight 1 through
+the Stockholm \texttt{\#=GS WT} annotation. We used \texttt{hmmbuild} with
+\texttt{--amino --symfrac 0.0 --wgiven --enone}; thus every retained input column was a match
+state, the supplied relative weights were used directly, and no additional effective-sequence
+number entropy weighting was applied. The $\rho\in\{1,2,5,10,20,50,100,500\}$ grid matched
+the canonical SA sweep. A separate profile HMM fitted only to designated rows represented the
+hard-curation endpoint. For every family and condition, we generated five independent
+replicates of 620 aligned sequences with \texttt{hmmemit -a}, retained columns identified as
+match states by the RF annotation, and computed marker fraction, amino acid composition
+divergence, novelty, diversity, gap fraction, and valid-residue fraction in the same canonical
+alignment coordinates used for SA. For the Kunitz comparison at $\rho=500$, we additionally
+scored the first 50 sequences of the first replicate from each method with the same local
+ESM2-650M masked-marginal pseudo-perplexity implementation. The benchmark used
+HMMER~3.4~\cite{hmmer3}.
+
+\subsection{Implementation}
 
 All experiments were implemented in Julia~1.12 using NNlib.jl
 (softmax), MultivariateStats.jl (PCA), and Distributions.jl; source code and experiment scripts
