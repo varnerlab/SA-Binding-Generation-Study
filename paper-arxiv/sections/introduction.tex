@@ -12,68 +12,60 @@ conditioning them on a specific functional property typically requires fine-tuni
 data. Profile hidden Markov models (HMMs)~\cite{hmmer3} provide a standard training-free model
 of family alignments. Sequence weights can shift their position-specific emission marginals
 toward a designated subset, making a weighted profile HMM a direct comparator for the present
-method. Profile HMMs do not model correlations between match-state emissions, whereas SA
-samples a continuous representation of complete stored sequences. We therefore compare the two
-methods under the same alignments, designation labels, and multiplicity ratios. For the
+method. Profile HMMs do not model correlations between match-state emissions, whereas
+stochastic attention samples a continuous representation of complete stored sequences. We
+therefore compared the two methods under the same alignments, designation labels, and multiplicity ratios. For the
 scarce-data regime considered here (families with tens to hundreds of members, typical of Pfam
 seed alignments), models trained on the target family alone have limited training signal.
 Pretrained models are not restricted in this way, since they draw on sequence data beyond the
 target family.
 
-Stochastic attention (SA) was developed for this regime~\cite{varnerSAProtein2026}. SA treats the
-energy function of a modern Hopfield network, constructed directly from a small family alignment,
-as a Boltzmann density and samples from it using Langevin dynamics. The method requires no
-training, runs on a laptop, and produces sequences that preserve family-level amino
-acid composition, per-position conservation, and predicted three-dimensional fold. A key
+Stochastic attention (SA) was developed for the scarce-data regime where traditional methods struggle due to limited training data~\cite{varnerSAProtein2026}. Stochastic attention treats the energy function of a modern Hopfield network, constructed directly from a small family alignment, as a Boltzmann density and samples from it using Langevin dynamics. The method requires no training, runs on a laptop, and produces sequences that preserve family-level amino acid composition, per-position conservation, and predicted three-dimensional fold. A key
 limitation, however, is that SA treats all sequences in the alignment equally. Every family
 member contributes the same weight to the energy landscape, so the sampler explores the full
 family distribution without preference for any functional subset. In practice, experimentalists
-often want something more specific: not just ``a plausible Kunitz domain,'' but a Kunitz domain
-that \emph{inhibits trypsin}; not just ``a plausible SH3 domain,'' but one that binds a
-particular proline-rich motif. Family alignments define a shared fold (all 99 Kunitz sequences
-share the same disulfide framework and double-loop architecture). Members can still differ in
-their targets. A small number of positions, such as the P1 contact residue, can encode this
-specificity. The alignment captures the shared family structure, but the practitioner may want
-to condition on a selected function. This raises the question of how to condition the
-generative process on a functional subset without retraining.
+often want something more specific: not just a plausible Kunitz domain, but a Kunitz domain
+that \emph{inhibits trypsin}; not just a plausible SH3 domain, but one that binds a
+particular proline-rich motif. The members of a family alignment share a fold but differ in
+function, and the residues that carry the difference occupy only a few positions. A sampler
+that reproduces the family distribution faithfully therefore reproduces its variation at those
+positions, producing the functionally relevant residue only as often as it appears in the
+alignment. This raises the question of how to condition the generative process on a functional
+subset without retraining.
 
-A seemingly simple answer is to \emph{curate} the input, restricting the alignment to only those
-sequences that a practitioner has identified (through experimental screens, literature annotation,
-or another selection rule) as belonging to a designated subset of interest. SA then generates new
-sequences in their image. We show that this strategy works: even three designated input sequences
-suffice for complete retention of the selected K/R-at-P1 marker in the Kunitz domain. This is
-marker retention after selection on that marker, not independent functional validation. Hard
-curation also discards the remaining family members and the fold-level constraints they provide.
-A continuous alternative retains the full family while upweighting the designated subset.
-SA encodes each aligned sequence as a column in a memory matrix. A stochastic sampler then moves
-through the landscape defined by these stored sequences. At each step, it computes attention
-weights over the stored sequences and moves toward their weighted average. Adding a bias to these
-attention scores makes the sampler spend more time near selected sequences. Concretely,
-we assign a multiplicity weight $r_k > 0$ to each stored sequence and add $\log r_k$ to its
-attention score before the softmax normalization. Every designated sequence gets the same
-weight and every background sequence gets the same weight, so a single parameter, the
-multiplicity ratio $\rho$ between the two, controls the strength of this bias:
-$\rho = 1$ recovers standard SA (no preference), while increasing $\rho$ shifts generation
-toward the designated subset. No sequences are duplicated, no parameters are trained, and no
-architectural changes are needed. The method is agnostic to what the designated subset
-represents (binding, thermostability, organism of origin); it simply biases the sampler toward
-the sequences the user points to. The same multiplicity-weighted mechanism has been applied to
-synthetic patient generation from small longitudinal clinical
-cohorts~\cite{varnerSAPatient2026}, so the conditioning is not specific to sequence data.
-
-In this study, we developed the theory of multiplicity-weighted SA and tested it on five Pfam
-protein families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) spanning a range of family
-sizes ($K = 55$--$420$) and designated-subset geometries. We showed that the multiplicity
-weights enter the sampler as a simple logit bias, preserving the analytic score function and
-$\mathcal{O}(dK)$ cost of the original method. The energy-level conditioning is exact: the
-largest absolute deviation between mean softmax attention and the target fraction is
-\AttnMaxDevPts{} percentage points (\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$) across the
-canonical replicated sweeps. However, we found that the decoded sequence marker can fall short
-of this target after finite-temperature sampling, reconstruction from unit-normalized principal component analysis (PCA)
-coordinates, and argmax decoding. We termed
-this discrepancy the calibration gap and examined its association with a simple geometric
-quantity, the separation index $S$, which measures how well PCA separates designated from
-background sequences. Across five Pfam families, an exploratory linear fit gave
-$R^{2}=\RelationRsq$, but leave-one-family-out fits ranged from
-$R^{2}=\RelationLooRsqMin$ to $\RelationLooRsqMax$. We therefore treat $S$ as a diagnostic
-descriptor to investigate, rather than a validated decision rule.
+In this study, we answered that question with multiplicity weighting. Stochastic attention
+encodes each aligned sequence as a column in a memory matrix. At each step the sampler
+computes attention weights over these stored sequences and moves toward their weighted average.
+A bias added to the attention scores makes it spend more time near selected sequences. We
+assigned a multiplicity weight $r_k > 0$ to each stored sequence and added $\log r_k$ to its
+attention score before the softmax normalization. All designated sequences share one weight and all
+background sequences share another, so a single number, the multiplicity ratio $\rho$ between
+the two weights, controls the strength of the bias: $\rho = 1$ recovers standard SA (no
+preference), while increasing $\rho$ shifts generation toward the designated subset. 
+The method is agnostic to what the designated subset represents (binding, thermostability, organism of origin); it simply biases the sampler toward the sequences the user points to. 
+The same multiplicity-weighted mechanism has also been applied to synthetic patient generation
+from small longitudinal clinical cohorts~\cite{varnerSAPatient2026}, so the conditioning is not
+specific to sequence data. We compared multiplicity weighting against the obvious alternative,
+hard curation, which builds the memory matrix from the designated sequences alone and leaves
+the rest of the family out. Those discarded sequences are what show which
+positions the fold holds fixed and which are free to vary, so dropping them leaves the sampler
+with far fewer examples to work from. We tested both on five
+Pfam protein families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) spanning a range of
+family sizes ($K = 55$--$420$) and designated-subset geometries. Hard curation retained the
+selected marker completely from as few as three designated inputs. Those inputs were chosen
+because they carry the marker, so recovering it demonstrated control over the sampler and not
+that the generated sequences had the function the marker stands for. The multiplicity weights,
+by contrast, enter the sampler as a simple logit bias, preserving the analytic score function and
+$\mathcal{O}(dK)$ per-step cost of the original method. The conditioning has two stages, and only the
+first was exact. Inside the sampler, the mean attention mass on the designated patterns matched
+the fraction that $\rho$ sets to within \AttnMaxDevPts{} percentage points at worst
+(\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$) across the canonical replicated sweeps. Turning
+those continuous states back into discrete sequences cost part of that conditioning: after
+finite-temperature sampling, reconstruction from unit-normalized principal component analysis
+(PCA) coordinates, and argmax decoding, the fraction of generated sequences carrying the marker
+could fall below the attention mass the sampler had placed on the designated set. We termed that
+shortfall the calibration gap and examined it against a simple geometric quantity, the
+separation index $S$, which measures how well PCA separates designated from background
+sequences. Multiplicity weighting therefore offers a practical route to
+conditioning generative models in the scarce-data regime, and the calibration gap is the
+quantity anyone applying such conditioning should measure before trusting it.

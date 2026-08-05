@@ -39,8 +39,9 @@ pattern $\mathbf{m}_k$ and a query state $\boldsymbol{\xi}$ has variance
 $1/d$ for a random query on the unit sphere $\mathbb{S}^{d-1}$, so when $d$
 is large all scores concentrate near zero and the inverse temperature $\beta$
 must be set extremely high to differentiate among patterns, making Langevin
-sampling inefficient. PCA removes this redundancy by projecting onto the
-$d \ll d_{\mathrm{full}}$ directions of actual variation in the alignment.
+sampling inefficient. Principal component analysis removes this redundancy
+by projecting onto the $d \ll d_{\mathrm{full}}$ directions of actual
+variation in the alignment.
 
 We computed PCA from the one-hot encoded alignment by first centering the data:
 $\bar{\mathbf{x}} = K^{-1}\sum_{k=1}^K \mathbf{x}_k$ (the family's
