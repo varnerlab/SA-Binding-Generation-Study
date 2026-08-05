@@ -246,7 +246,7 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
     \toprule
     Source & pLDDT & TM & PPL & P1 K/R & KL ($\times 10^{3}$) & $D$ \\
     \midrule
-    Stored (natural)      & $89.3 \pm 3.2$  & $0.83 \pm 0.03$ & $4.97 \pm 0.98$ & 0.32 & 0 & 0.63 \\
+    Stored (natural)      & $89.3 \pm 3.2$  & $0.83 \pm 0.02$ & $4.97 \pm 0.98$ & 0.32 & 0 & 0.63 \\
     SA (full family)      & $90.4 \pm 1.2$  & $0.84 \pm 0.01$ & $4.78 \pm 0.64$ & $0.38 \pm 0.03$ & $7.6 \pm 0.9$ & 0.56 \\
     SA (K/R-positive)     & $90.7 \pm 1.1$  & $0.83 \pm 0.01$ & $4.72 \pm 0.60$ & $1.00 \pm 0.00$ & $18.7 \pm 0.9$ & 0.50 \\
     SA (K/R-negative)     & $91.0 \pm 1.2$  & $0.85 \pm 0.01$ & $4.73 \pm 0.72$ & $0.00 \pm 0.00$ & $11.2 \pm 0.2$ & 0.53 \\
@@ -259,33 +259,40 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
 \end{table}
 
 % -----------------------------------------------------------------------
-% Table: AF2 cross-validation
+% Table: Cross-predictor structure-model comparison (AF2 + ESMFold)
 % -----------------------------------------------------------------------
 \begin{table}[p]
   \centering
-  \caption{\textbf{AlphaFold2-ptm structure-model comparison.}
-  Independent structure predictions via ColabFold (AlphaFold2-ptm, 1 model,
-  3 recycles, MMseqs2 MSA) for 50 sequences per source.
-  pLDDT: mean predicted confidence ($0$--$100$).
-  TM: TM-score against experimental reference (1BPI chain~A for Kunitz,
-  1OMG chain~A for $\omega$-conotoxin).
-  The group summaries are consistent with the ESMFold comparison. They are
-  model-derived quantities and do not establish experimental folding or binding.}
-  \label{tab:af2-validation}
+  \caption{\textbf{Cross-predictor structure-model comparison for Kunitz and
+  $\omega$-conotoxin.}
+  Two independent predictors scored the same 50 sequences per source:
+  AlphaFold2-ptm via ColabFold (1 model, 3 recycles, MMseqs2 MSA) and ESMFold.
+  pLDDT: mean predicted confidence ($0$--$100$; $>70$ = confident).
+  TM: TM-score against the experimental reference (1BPI chain~A for Kunitz,
+  1OMG chain~A for $\omega$-conotoxin; $>0.5$ = same fold).
+  Values are mean $\pm$ s.d.\ across the 50 sequences.
+  The two predictors agree on the ordering within each family. For the 26-residue
+  $\omega$-conotoxins, TM-scores are low for the stored natural sequences as well as
+  the generated ones, which reflects TM-score normalization at short chain length
+  rather than a fold difference introduced by conditioning. These are model-derived
+  quantities and do not establish experimental folding or binding.}
+  \label{tab:structure-model-comparison}
   \small
-  \begin{tabular}{llcccc}
+  \begin{tabular}{llccccc}
     \toprule
-    Family & Source & $n$ & pLDDT & TM-score \\
+    & & & \multicolumn{2}{c}{AlphaFold2-ptm} & \multicolumn{2}{c}{ESMFold} \\
+    \cmidrule(lr){4-5}\cmidrule(lr){6-7}
+    Family & Source & $n$ & pLDDT & TM & pLDDT & TM \\
     \midrule
     \multirow{3}{*}{Kunitz}
-      & Stored (natural)       & 50 & $93.5 \pm 4.0$ & $0.83 \pm 0.03$ \\
-      & SA (K/R-positive)      & 50 & $94.6 \pm 1.4$ & $0.84 \pm 0.01$ \\
-      & SA (full family)       & 50 & $95.0 \pm 1.3$ & $0.85 \pm 0.01$ \\
+      & Stored (natural)       & 50 & $93.5 \pm 4.0$  & $0.83 \pm 0.03$ & $89.3 \pm 3.2$ & $0.83 \pm 0.02$ \\
+      & SA (K/R-positive)      & 50 & $94.6 \pm 1.4$  & $0.84 \pm 0.01$ & $90.7 \pm 1.1$ & $0.83 \pm 0.01$ \\
+      & SA (full family)       & 50 & $95.0 \pm 1.3$  & $0.85 \pm 0.01$ & $90.4 \pm 1.2$ & $0.84 \pm 0.01$ \\
     \midrule
     \multirow{3}{*}{$\omega$-Conotoxin}
-      & Stored (natural)       & 50 & $67.9 \pm 9.8$ & $0.35 \pm 0.11$ \\
-      & SA (designated subset) & 50 & $78.5 \pm 4.1$ & $0.47 \pm 0.02$ \\
-      & SA (full family)       & 50 & $73.9 \pm 10.4$ & $0.39 \pm 0.12$ \\
+      & Stored (natural)       & 50 & $67.9 \pm 9.9$  & $0.35 \pm 0.12$ & $76.8 \pm 7.7$ & $0.43 \pm 0.07$ \\
+      & SA (designated subset) & 50 & $78.5 \pm 4.2$  & $0.47 \pm 0.02$ & $78.4 \pm 2.6$ & $0.46 \pm 0.03$ \\
+      & SA (full family)       & 50 & $73.9 \pm 10.5$ & $0.39 \pm 0.12$ & $78.4 \pm 2.4$ & $0.46 \pm 0.03$ \\
     \bottomrule
   \end{tabular}
 \end{table}

@@ -208,23 +208,37 @@ sequence statistics into a new library; it did not establish target binding.
 \subsection{Generated Sequences Retain Plausibility and Fold Similarity}
 
 Finally, we asked whether marker control came at the expense of global sequence or structural
-plausibility (Fig.~\ref{fig:plddt-tmscore-scatter}). For 50 Kunitz sequences from each source---stored, full-family SA,
-marker-positive SA, marker-negative SA, and profile-HMM emission---ESMFold assigned similar
-model scores to SA and stored sequences (Table~\ref{tab:structure-validation}). Mean
-pLDDT was $90.4\pm1.2$ for full-family SA, $90.7\pm1.1$ for marker-positive SA, and
+plausibility (Fig.~\ref{fig:plddt-tmscore-scatter}). We scored 50 Kunitz sequences from each of
+five sources: stored, full-family SA, marker-positive SA, marker-negative SA, and unconditional
+profile-HMM emission. Across those sources, ESMFold assigned similar model scores to SA and
+stored sequences (Table~\ref{tab:structure-validation}). Mean pLDDT was $90.4\pm1.2$ for
+full-family SA, $90.7\pm1.1$ for marker-positive SA, $91.0\pm1.2$ for marker-negative SA, and
 $89.3\pm3.2$ for stored sequences, with every SA sequence above 70. Corresponding TM-scores
-against the experimental Kunitz structure (1BPI, chain~A) were $0.84\pm0.01$,
-$0.83\pm0.01$, and $0.83\pm0.03$. Sequences emitted by the profile HMM scored lower and more
-variably, with mean pLDDT $60.4\pm13.1$, 20\% above 70, and mean TM-score $0.60\pm0.19$.
-Independent AlphaFold2-ptm predictions gave the same qualitative picture: Kunitz TM-scores
-were 0.83--0.85 at pLDDT 93--95, whereas the shorter $\omega$-conotoxins had TM-scores of
-0.35--0.47 at pLDDT 68--79 (Table~\ref{tab:af2-validation})
-~\cite{jumperHighlyAccurate2021,mirdita2022colabfold}. Sequence scoring with ESM2 also placed SA
+against the experimental Kunitz structure (1BPI, chain~A) were $0.84\pm0.01$, $0.83\pm0.01$,
+$0.85\pm0.01$, and $0.83\pm0.02$. Sequences emitted by the unconditional profile HMM, built with
+default \texttt{hmmbuild} settings on the seed alignment rather than the weighted build used for
+the matched benchmark, scored lower and more variably, with mean pLDDT $60.4\pm13.1$, 20\% above
+70, and mean TM-score $0.60\pm0.19$.
+Independent AlphaFold2-ptm predictions reproduced the Kunitz picture, with TM-scores of
+0.83--0.85 at pLDDT 93--95 (Table~\ref{tab:structure-model-comparison})
+~\cite{jumperHighlyAccurate2021,mirdita2022colabfold}. The 26-residue $\omega$-conotoxins scored
+lower against their reference structure (1OMG, chain~A), but so did the stored natural sequences
+scored alongside them. Under AlphaFold2-ptm, TM-scores were $0.35\pm0.12$ for stored
+$\omega$-conotoxins, $0.39\pm0.12$ for full-family generation, and $0.47\pm0.02$ for
+designated-subset generation, at pLDDT 68--79; ESMFold gave $0.43\pm0.07$, $0.46\pm0.03$, and
+$0.46\pm0.03$ for the same three groups (Table~\ref{tab:structure-model-comparison}). Generated
+peptides therefore matched or exceeded stored ones under both predictors, and the low absolute
+values track TM-score normalization at 26 residues rather than a loss of fold similarity under
+conditioning.
+Sequence scoring with ESM2 also placed SA
 near the stored family distribution. Pseudo-perplexity was $4.78\pm0.64$ for full-family SA,
 $4.72\pm0.60$ for marker-positive SA, and $4.97\pm0.98$ for stored sequences, compared with
-$16.1\pm4.2$ for HMM emission.
-A separate unconditional Kunitz benchmark confirmed the distinction among generation,
-conditioning, and resampling. Across five HMMER3 emissions and five bootstrap
+$16.1\pm4.2$ for unconditional HMM emission. The weighted profile HMM of the matched benchmark,
+fitted to the cleaned alignment without entropy weighting, instead scored
+$\HMMRhoFiveHundredPPL\pm\HMMRhoFiveHundredPPLSD$, so the contrast drawn here is with
+unconditional emission and not with profile HMMs in general.
+Sequence-marker metrics from the same unconditional baseline confirmed the distinction among
+generation, conditioning, and resampling. Across five HMMER3 emissions and five bootstrap
 resamples~\cite{hmmer3},
 full-family SA gave a P1~K/R fraction of $0.38\pm0.03$ and KL divergence
 $0.0076\pm0.0009$, compared with $0.17\pm0.04$ and $0.027\pm0.002$ for HMM emission.

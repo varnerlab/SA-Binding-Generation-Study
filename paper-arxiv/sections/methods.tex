@@ -76,7 +76,9 @@ extracted from the B-factor column and TM-scores computed against experimental r
 structures (1BPI chain~A for Kunitz and 1OMG chain~A for $\omega$-conotoxin) using
 TM-align~\cite{tmAlign2005}. We also ran AlphaFold2-ptm through
 ColabFold~\cite{jumperHighlyAccurate2021,mirdita2022colabfold} with one model, three recycles,
-an MMseqs2 MSA, and no relaxation, on a Google Colab T4 GPU. Sequence
+an MMseqs2 MSA, and no relaxation, on a Google Colab T4 GPU. Both predictors scored the same
+sequence sets, so their summaries are directly comparable
+(Table~\ref{tab:structure-model-comparison}). Sequence
 plausibility was assessed with ESM2-650M pseudo-perplexity from masked marginal scoring over all
 positions~\cite{meierZeroShot2021}, using the ESM2 model~\cite{esmfold2022}. Formal within-chain effective sample sizes and convergence
 diagnostics were not used, and instead, at $\rho\in\{1,10,500\}$, we compared
@@ -129,6 +131,18 @@ alignment coordinates used for SA. For the Kunitz comparison at $\rho=500$, we a
 scored the first 50 sequences of the first replicate from each method with the same local
 ESM2-650M masked-marginal pseudo-perplexity implementation. The benchmark used
 HMMER~3.4~\cite{hmmer3}.
+Two unconditional Kunitz baselines were built separately from the matched benchmark. The first
+was an unconditional profile HMM fitted to the raw Kunitz seed alignment with default
+\texttt{hmmbuild} settings, so it used the default match-state occupancy threshold, the default
+sequence weighting, and entropy weighting, none of which were applied in the matched benchmark
+above. That baseline carries no designation labels; we emitted 150 sequences per replicate with
+\texttt{hmmemit} across five replicates. The two profile-HMM conditions reported in
+Table~\ref{tab:structure-validation} are therefore different models and are not interchangeable.
+The second was a bootstrap resampling control that drew 150 stored sequences per replicate,
+uniformly with replacement from the $K=99$ cleaned Kunitz patterns, over the same five
+replicates and with the same metrics. Because every draw is a stored sequence, this control
+reproduces the input composition by construction and generates nothing novel, which bounds what
+composition fidelity alone can establish.
 
 \subsection{Implementation}
 
