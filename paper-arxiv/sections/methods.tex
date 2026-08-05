@@ -45,15 +45,29 @@ memories, so the resulting operating point does not depend on alignment order. T
 for the canonical family sweeps and the hard-mask comparison, 60 points for the exact-equilibrium
 benchmark, and 80 points for the entropy curves in Fig.~\ref{fig:phase-transition}. This is a
 descriptive operating point rather than an estimate of a thermodynamic phase transition, and
-entropy is evaluated at stored memory vectors rather than at samples. Twenty to fifty independently seeded chains were run per
+entropy is evaluated at stored memory vectors rather than at samples. Alongside $\beta^{*}$ we
+report the effective pattern count
+\begin{equation}\label{eq:k-eff}
+  K_{\mathrm{eff}}(\vr) = \frac{\bigl(\sum_k r_k\bigr)^{2}}{\sum_k r_k^{2}},
+\end{equation}
+which measures how concentrated the multiplicity weights have become. It equals $K$ when the
+multiplicities are all equal and falls toward $K_{\mathrm{des}}$ as $\rho\rightarrow\infty$. Twenty to fifty independently seeded chains were run per
 condition, yielding 620--1{,}550 retained states after burn-in and thinning, with the canonical
 six-family sweeps using five replicate runs of 20 chains and reported uncertainty computed
 across replicate summaries rather than across retained states within a chain.
 
 Marker fidelity was the fraction of generated sequences with the designated residue at the
-marker position; attention diagnostics recorded the mean softmax weight on designated patterns;
-sequence diversity was one minus mean pairwise sequence identity, estimated from 300--500
-random pairs drawn with a replicate-local RNG; and amino acid composition fidelity was
+marker position. Attention diagnostics recorded the designated attention mass
+\begin{equation}\label{eq:a-des}
+  \bar{a}_{\mathrm{des}}
+  = \frac{1}{|\mathcal{T}|}\sum_{t \in \mathcal{T}}\;\sum_{k \in \mathcal{D}} a_k(\vxi_t),
+  \qquad
+  a(\vxi) = \softmax\!\bigl(\beta\,\vX^{\!\top}\vxi + \log\vr\bigr),
+\end{equation}
+the attention weight summed over the designated index set $\mathcal{D}$
+($|\mathcal{D}| = K_{\mathrm{des}}$) and averaged over the retained states $\mathcal{T}$.
+Sequence diversity was one minus mean pairwise sequence identity, estimated from 300--500
+random pairs drawn with a replicate-local RNG, and amino acid composition fidelity was
 $D_{\mathrm{KL}}(\text{reference}\parallel\text{generated})$. The separation
 index $S$ was computed from pairwise cosine similarities between unit-norm PCA vectors within
 and between designated and background groups. Structural validation used

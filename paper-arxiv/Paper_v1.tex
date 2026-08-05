@@ -347,12 +347,11 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   \caption{\textbf{Sequence properties vary with the number of designated inputs.}
   Subsampling $K_{\mathrm{des}} \in \{3,5,8,10,15,20,25,32\}$ sequences from
   the Kunitz K/R-positive set (3 replicates each; shaded bands show $\pm 1$
-  s.d.). P1 K/R fraction was 1.0 at every sample size (not shown).
-  \textit{Left:} Pairwise sequence diversity increases from 0.35
-  ($K_{\mathrm{des}}=3$) to 0.50 ($K_{\mathrm{des}}=32$).
-  \textit{Right:} KL divergence of amino acid composition decreases from 0.070
-  to 0.009 over the same range. All input sizes retained the selected marker.
-  Larger input sets produced more diverse libraries.}
+  s.d.). P1 K/R fraction was 1.0 at every sample size (not shown), so every input
+  size retained the selected marker.
+  \textit{Left:} Pairwise sequence diversity increases with the number of
+  designated inputs. \textit{Right:} KL divergence of amino acid composition
+  decreases over the same range.}
   \label{fig:scaling}
 \end{figure}
 
@@ -469,13 +468,13 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   highly conserved position ($11/11$), all six cysteines ($6/6$), and carry K or R
   at P1, while introducing $19$--$26$ substitutions concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-family
-  generation (blue), and SA K/R-positive-subset-conditioned generation (red). The
-  full-family entropy correlation is $r = 0.988$, showing similar position-specific
-  conservation in the generated and stored sequences.
-  The K/R-positive-subset correlation is slightly lower ($r = 0.932$), with
-  the largest deviation at the P1 position (column~25): conditioning collapses P1
-  diversity to K/R, reducing entropy at this site while preserving the entropy
-  profile elsewhere.}
+  generation (blue), and SA K/R-positive-subset-conditioned generation (red).
+  Full-family generation tracks the stored entropy profile closely, showing similar
+  position-specific conservation in the generated and stored sequences. The
+  K/R-positive-subset profile tracks it slightly less closely, with the largest
+  deviation at the P1 position (column~25): conditioning collapses P1 diversity to
+  K/R, reducing entropy at this site while preserving the entropy profile
+  elsewhere.}
   \label{fig:sequence-analysis}
 \end{figure}
 
@@ -497,9 +496,9 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   carry Tyr at the marker position, while introducing $5$--$11$ substitutions
   concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-seeded
-  generation (blue), and SA designated-seeded generation (red). The full-seeded entropy
-  correlation is $r = 0.997$. The designated-seeded correlation is lower
-  ($r = 0.745$), reflecting lower diversity after conditioning on the 23-sequence
+  generation (blue), and SA designated-seeded generation (red). Full-seeded generation
+  tracks the stored entropy profile closely. The designated-seeded profile tracks it
+  less closely, reflecting lower diversity after conditioning on the 23-sequence
   designated subset, including at Tyr13 and co-varying loop residues.}
   \label{fig:conotoxin-sequence-analysis}
 \end{figure}

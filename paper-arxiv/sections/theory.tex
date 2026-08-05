@@ -196,8 +196,8 @@ signal chain separate the one from the other:
   \;\xrightarrow{\;\text{nonlinear}\;}\;
   f_{\mathrm{obs}},
 \end{equation}
-where $\bar{a}_{\mathrm{des}}$ is the mean attention weight on designated patterns during
-sampling, and $f_{\mathrm{soft}}$ is the continuous-valued probability of the designated residue
+where $\bar{a}_{\mathrm{des}}$ is the attention weight summed over the designated patterns and
+averaged over the retained states of the sampler (Eq.~\ref{eq:a-des}), and $f_{\mathrm{soft}}$ is the continuous-valued probability of the designated residue
 at the marker position, read off before the decoder commits to a letter. The labels say what
 each step does to the number handed to it. \emph{Exact} means the step introduces no
 approximation of its own. Eq.~\eqref{eq:f-eff} turns $\rho$ into $f_{\mathrm{eff}}$ by algebra,
