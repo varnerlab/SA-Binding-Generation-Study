@@ -230,8 +230,9 @@ $0.46\pm0.03$ for the same three groups (Table~\ref{tab:structure-model-comparis
 peptides therefore matched or exceeded stored ones under both predictors, and the low absolute
 values track TM-score normalization at 26 residues rather than a loss of fold similarity under
 conditioning.
-Sequence scoring with ESM2 also placed SA
-near the stored family distribution. Pseudo-perplexity was $4.78\pm0.64$ for full-family SA,
+
+Sequence scoring with ESM2 also placed SA near the stored family distribution
+(Table~\ref{tab:structure-validation}). Pseudo-perplexity was $4.78\pm0.64$ for full-family SA,
 $4.72\pm0.60$ for marker-positive SA, and $4.97\pm0.98$ for stored sequences, compared with
 $16.1\pm4.2$ for unconditional HMM emission. The weighted profile HMM of the matched benchmark,
 fitted to the cleaned alignment without entropy weighting, instead scored
@@ -239,8 +240,7 @@ $\HMMRhoFiveHundredPPL\pm\HMMRhoFiveHundredPPLSD$, so the contrast drawn here is
 unconditional emission and not with profile HMMs in general.
 Sequence-marker metrics from the same unconditional baseline confirmed the distinction among
 generation, conditioning, and resampling. Across five HMMER3 emissions and five bootstrap
-resamples~\cite{hmmer3},
-full-family SA gave a P1~K/R fraction of $0.38\pm0.03$ and KL divergence
+resamples~\cite{hmmer3}, full-family SA gave a P1~K/R fraction of $0.38\pm0.03$ and KL divergence
 $0.0076\pm0.0009$, compared with $0.17\pm0.04$ and $0.027\pm0.002$ for HMM emission.
 Bootstrap resampling matched composition most closely (KL $\approx0.001$) but produced no novel
 sequences. Marker-positive SA, by contrast, reached P1~K/R $1.0\pm0.0$, a conditioning control
