@@ -55,7 +55,7 @@ marker fraction and the decoded one is the calibration gap $\Delta$
 Increasing $\rho$ also produced modest global changes:
 sequence diversity decreased from 0.56 to 0.51, KL divergence increased from 0.007 to 0.017,
 and $\beta^{*}$ shifted from 4.4 at $\rho=1$ to 9.3 at $\rho=1{,}000$. Over that range the
-effective pattern count (Eq.~\ref{eq:k-eff}), a measure of how concentrated the multiplicity
+effective pattern count, a measure of how concentrated the multiplicity
 weights have become, fell from 99 to 32.1. Thus, essentially only the 32
 designated patterns remained in play while the decoded marker fraction stayed far below its
 target.
@@ -83,24 +83,29 @@ at most 0.016. The calibration gap therefore persisted at exact equilibrium and 
 after latent sampling, during reconstruction and decoding.
 
 The Kunitz result suggested that conditioning should transfer most effectively when the PCA
-representation separates the designated and background subsets. We tested that hypothesis on
-four additional Pfam families, using Trp for SH3 (PF00018; $K=55$), a middle-third residue for
-WW (PF00397; $K=420$), Gln for Homeobox (PF00046; $K=136$), and His/Asn for Forkhead
-(PF00250; $K=246$) as the tracked markers. Together, the five Pfam splits sampled distinct
+representation separates the designated and background subsets. We tested this hypothesis on
+four additional Pfam families, tracking Trp at the peptide-groove column for SH3 (PF00018;
+$K=55$), a specificity-loop residue for WW (PF00397; $K=420$), Gln at position~50 of the
+recognition helix for Homeobox (PF00046; $K=136$), and His or Asn at the H3 recognition-helix
+position for Forkhead (PF00250; $K=246$). Together, the five Pfam splits sampled distinct
 PCA geometries at comparable conditioning strengths (Table~\ref{tab:per-family-rho}). The
-separation index ranged from \WWSeparation{} for WW to \HomeoboxSeparation{} for Homeobox.
-The latent weighting remained accurate across the panel: over all six replicated family
-sweeps, the largest absolute deviation between designated attention and its target was
-\AttnMaxDevPts{} percentage points (\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$). What varied
-was how much of that latent mass survived decoding. Calibration gaps decreased with separation
+separation index, larger when PCA resolves the two subsets more cleanly, ranged from
+\WWSeparation{} for WW to \HomeoboxSeparation{} for Homeobox.
+The attention tracked its target across the panel: over all six replicated family
+sweeps, the largest absolute deviation between the attention on designated patterns and the
+target marker fraction was \AttnMaxDevPts{} percentage points (\AttnMaxDevFamily{},
+$\rho=\AttnMaxDevRho$). What varied was how much of that attention survived decoding. 
+Calibration gaps decreased with separation
 overall, although not monotonically, and an exploratory five-family fit gave
 $\Delta\approx\RelationIntercept{} \RelationSlope\,S$ with $R^{2}=\RelationRsq$
-(Fig.~\ref{fig:separation-vs-gap}). The small panel does not support a universal rule:
+(Fig.~\ref{fig:separation-vs-gap}). However, the small panel did not support a universal rule:
 leave-one-family-out slopes ranged from \RelationLooSlopeMin{} to \RelationLooSlopeMax{}, and
 $R^{2}$ ranged from \RelationLooRsqMin{} to \RelationLooRsqMax{}. We therefore treated the fit
-as a preliminary association, with the $\omega$-conotoxin point shown only as an external
-comparison. Hard curation, in contrast, retained the selected marker in every family because
-its subset-only basis contained no background mass to resolve.
+as a preliminary association. The $\omega$-conotoxin family appears in
+Fig.~\ref{fig:separation-vs-gap} but not in the fit, because it is not a Pfam seed family and
+its designation came from curated accession IDs rather than a marker position. Hard curation,
+in contrast, retained the selected marker in every family, because a memory built from the
+designated subset alone holds no background sequences to be confused with.
 
 The calibration gap raised a natural comparator question: is the attenuation specific to
 SA's PCA decoder? We fitted a multiplicity-weighted profile HMM to each cleaned alignment and
