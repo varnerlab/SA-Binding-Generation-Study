@@ -107,45 +107,51 @@ its designation came from curated accession IDs rather than a marker position. H
 in contrast, retained the selected marker in every family, because a memory built from the
 designated subset alone holds no background sequences to be confused with.
 
-The calibration gap raised a natural comparator question: is the attenuation specific to
-SA's PCA decoder? We fitted a multiplicity-weighted profile HMM to each cleaned alignment and
-gave it the same labels and $\rho$ grid (Table~\ref{tab:profile-hmm-benchmark}). At
+The calibration gap raised a natural comparator question: is it specific to SA's PCA decoder? 
+We fitted a multiplicity-weighted profile HMM to each cleaned alignment, weighting every
+designated sequence by $\rho$ and every background sequence by 1, so the HMM saw the same
+split and the same multiplicity ratios as SA (Table~\ref{tab:profile-hmm-benchmark}). At
 $\rho=500$, the profile HMM recovered the tracked marker at frequencies of 0.988--1.000 in the
-five Pfam families, closer than SA to the weighted single-position marginal. This behavior was
-expected because a profile HMM estimates match-state emissions directly, whereas SA passes a
-latent sample through PCA reconstruction and argmax decoding. The $\omega$-conotoxin HMM
-recovered Tyr13 at 0.834 because its weights followed accession designation, which overlapped
-with but was not identical to the Tyr13 marker.
-More literal marker transfer did not imply a better overall sequence score. In the matched
-Kunitz $\rho=500$ comparison, ESM2 assigned pseudo-perplexity
+five Pfam families, essentially reaching the target marker fraction that SA fell short of. The
+gap therefore belongs to SA's decoder path rather than to weighted conditioning in general: a
+profile HMM estimates match-state emissions directly, whereas SA passes a latent sample through
+PCA reconstruction and argmax decoding. The $\omega$-conotoxin HMM produced Tyr13 in 0.834 of
+its sequences, short of the 0.996 target and essentially tied with SA at 0.838. Both sit at the
+ceiling their designation allows: only 19 of the 23 designated conotoxin sequences carry Tyr13,
+so even perfect conditioning on that set would yield the marker in $19/23 = 0.83$ of the
+output. Matching the marker more closely did not, however, make for better sequences overall. In the matched Kunitz
+$\rho=500$ comparison, the ESM2 protein language model assigned pseudo-perplexity
 $\SARhoFiveHundredPPL\pm\SARhoFiveHundredPPLSD$ to SA and
-$\HMMRhoFiveHundredPPL\pm\HMMRhoFiveHundredPPLSD$ to the weighted profile HMM. Thus the HMM
-matched the selected marginal more closely, whereas the SA library received the stronger ESM2
-sequence-plausibility score under the same multiplicity ratio.
+$\HMMRhoFiveHundredPPL\pm\HMMRhoFiveHundredPPLSD$ to the weighted profile HMM, where a lower
+value means the model finds a sequence more plausible. Thus, at the same multiplicity ratio,
+the HMM came closer to the target marker fraction while SA produced the sequences ESM2 rated
+more plausible.
 
 \subsection{Retrieval Sharpness Trades Marker Recovery against Novelty}
 
-The preceding results separated two controls (Fig.~\ref{fig:mask-betasweep}): $\rho$ sets the
-intended designated mass, whereas $\beta/\beta^{*}$ sets retrieval sharpness. Increasing $\beta/\beta^{*}$ from 0.5 to 3.0 at
-$\rho=10$, 50, and 200 transferred more Kunitz P1 signal through the PCA representation, but
-reduced diversity. At $\rho=200$, for example, P1~K/R rose from 0.61 at $\beta^{*}$ to 0.71
-at $3\beta^{*}$ while diversity fell from 0.53 to 0.46 (Supporting Information).
-We next removed the background attention entirely and swept $\beta$ to probe the
-decode-limited recovery ceiling (Table~\ref{tab:mask-recovery}). This hard mask is the $\rho\rightarrow\infty$ endpoint on the
-full-family basis: it sets $\Delta_{\mathrm{attn}}=0$ while leaving PCA reconstruction and
-argmax decoding unchanged. Under the mask, P1~K/R increased from 0.46 at $\beta=2$ to 1.00 at
-$\beta=512$ without reaching a fixed recovery floor. The gain came at a cost, as novelty fell
-from 0.42 at the mask's $\beta^{*}$ to 0.16 at $\beta=512$.
-Matched-$\beta$ comparisons led to the same conclusion. The mask exceeded finite-$\rho$
-weighting by 0.085 (SE 0.028) at $f_{\mathrm{eff}}=0.5$ and 0.053 (SE 0.029) at
-$f_{\mathrm{eff}}=0.7$, but by only 0.003 (SE 0.030) at $f_{\mathrm{eff}}=0.99$, where the
-intended masses nearly coincided. Notably, a 0.5 change in intended mass produced only a 0.085
-change in decoded marker fraction, illustrating again how strongly the latent-to-sequence map
-attenuates the response. Hard curation avoided that attenuation at low $\beta$ and achieved
-complete marker retention with novelty 0.32 because it rebuilt the PCA basis from the
-designated subset. Together, these experiments showed that sharper retrieval can compensate for
-decoder loss, but only by sacrificing novelty; rebuilding the representation is more direct
-when strict marker retention is required.
+We next asked whether the marker signal lost in decoding could be recovered by sampling more
+sharply, without changing the memory (Fig.~\ref{fig:mask-betasweep}). Two separate controls act
+here: $\rho$ sets the target marker fraction, whereas the inverse temperature $\beta$ sets how
+sharply the sampler retrieves individual stored patterns rather than blending them. We report
+$\beta$ as the ratio $\beta/\beta^{*}$, since the crossover $\beta^{*}$ at which blending gives
+way to retrieval itself shifts with $\rho$, so the ratio measures sharpness relative to each
+condition's own operating point. Increasing $\beta/\beta^{*}$ from 0.5 to 3.0 at
+$\rho=10$, 50, and 200 raised the decoded Kunitz P1 marker fraction but reduced diversity. At
+$\rho=200$, for example, P1~K/R rose from 0.56 at $\beta^{*}$ to 0.70 at $3\beta^{*}$ while
+diversity fell from 0.52 to 0.46 (Supporting Information). The target at that $\rho$ was 0.99,
+so tripling the sharpness recovered about a third of the shortfall and cost 0.06 in diversity.
+That left two candidates for the shortfall that remained: the attention that still lands on
+background patterns at finite $\rho$, or the decoder. We therefore gave background patterns
+zero weight inside the softmax and swept $\beta$ (Table~\ref{tab:mask-recovery}). This hard
+mask puts all of the attention on designated patterns while leaving PCA reconstruction and
+argmax decoding unchanged. Every remaining shortfall is
+therefore the decoder's, because a lossless decoder would return K/R at P1 for every sample.
+Under the hard mask, P1~K/R was only 0.51 at the operating point, $\beta/\beta^{*}\approx1$,
+and reached 1.00 only near $\beta/\beta^{*}\approx160$. Lossless recovery therefore takes a
+sampler running two orders of magnitude sharper than its own operating point. At that sharpness
+the sampler stops exploring the memory set and settles onto the stored sequences themselves,
+and novelty fell from 0.42 to 0.16 over the same range. Together, these experiments showed that
+sharper retrieval can compensate for decoder loss, but only by sacrificing novelty.
 
 \subsection{Curated Conditioning Transfers Conotoxin Sequence Features}
 
