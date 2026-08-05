@@ -55,6 +55,10 @@
 \newcommand{\veps}{\bm{\epsilon}}
 \newcommand{\R}{\mathbb{R}}
 \DeclareMathOperator{\softmax}{softmax}
+% Point at an SI appendix section from the shared section files, sentence-initial. The
+% appendix is inlined here, so the section number resolves. In paper-jcim the appendix is a
+% separate document, so \SIRef is defined there as plain prose that drops the number.
+\newcommand{\SIRef}[1]{Section~\ref{#1} of the Supporting Information}
 \input{sections/generated/numbers}
 
 \title{Conditioning Protein Generation via Hopfield Pattern Multiplicity}

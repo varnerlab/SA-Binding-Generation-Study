@@ -312,6 +312,22 @@ input marginal more closely than it does after SA's PCA reconstruction and argma
 \end{table}
 \FloatBarrier
 
+\section{Masking Compared with Multiplicity Weighting at the Same Temperature}
+\label{app:matched-beta}
+The hard mask and multiplicity weighting differ in one respect: the mask places the entire
+equilibrium mixture on designated patterns, whereas a finite $\rho$ places a chosen share of it
+there. Comparing the two at the same $\beta$ isolates that difference. We set $\rho$ so the
+requested share was 0.5, 0.7, 0.9, 0.95, and 0.99 in turn, and ran the mask at each of the five
+resulting temperatures on the Kunitz domain.
+
+The decoded marker fractions barely separated. At a requested share of 0.5, the mask reached
+0.510 and multiplicity weighting 0.425, a difference of 0.085 (SE 0.028), even though the two
+conditions differed by 50 percentage points in what they requested. That difference shrank to
+0.053 (SE 0.029) at a requested share of 0.7, 0.025 at 0.9, 0.012 at 0.95, and 0.003
+(SE 0.030) at 0.99, where the two requests nearly coincide. Doubling the requested designated
+mass therefore bought less than a tenth of a unit of decoded marker, which is the reconstruction
+loss described in the main text seen from a second direction.
+
 \section{Cav2.2 Complex-Prediction Diagnostic}
 We modeled SA-generated and natural $\omega$-conotoxins with the Cav2.2 pore-domain target
 using ColabFold AlphaFold2-multimer. This calculation was treated as a diagnostic rather than
