@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Prepare input FASTA files for ColabFold AF2 predictions.
-Takes first 50 sequences from each source, removes gaps, writes clean FASTA.
+Prepare input FASTA files for ColabFold AF2 predictions, removes gaps, writes clean FASTA.
+Stored sequences and Kunitz sources take the first 50; conotoxin SA_full/SA_strong take one
+chain-representative state per chain (see chain_representative_sample) to match what
+run_conotoxin_structure_validation.jl submits to ESMFold for the same groups.
 """
 import os
 import re
@@ -37,6 +39,25 @@ def clean_seq(s):
     return re.sub(r'[^ACDEFGHIKLMNPQRSTVWY]', '', s.upper())
 
 
+N_CHAINS = 50  # must match n_chains in run_omega_conotoxin_experiment.jl and
+               # N_CHAINS in run_conotoxin_structure_validation.jl
+
+
+def chain_representative_sample(seqs, n_chains=N_CHAINS):
+    """Pick one (the last, most-equilibrated) state per chain.
+
+    Generation writes each chain's post-burn-in, thinned states consecutively, so
+    taking the first N sequences samples only the first few chains rather than the
+    full chain population (see run_conotoxin_structure_validation.jl). This must select
+    the exact same sequences ESMFold scores, or the two predictors are not comparable.
+    """
+    n = len(seqs)
+    stride, remainder = divmod(n, n_chains)
+    if remainder != 0:
+        raise ValueError(f"{n} sequences do not evenly divide into {n_chains} chains")
+    return [seqs[c * stride - 1] for c in range(1, n_chains + 1)]
+
+
 def write_fasta(seqs, path, max_n=50):
     """Write first max_n sequences to FASTA."""
     with open(path, 'w') as f:
@@ -55,13 +76,19 @@ os.makedirs(os.path.join(OUT, "omega_conotoxin"), exist_ok=True)
 stored = read_fasta(os.path.join(BASE, "omega_conotoxin/omega_conotoxin_full_family.fasta"))
 write_fasta(stored, os.path.join(OUT, "omega_conotoxin/stored.fasta"), 50)
 
-# SA strong-seeded
+# SA strong-seeded and SA full-seeded: select one state per chain (the last, most-
+# equilibrated state of each of the 50 sampling chains), matching exactly what
+# run_conotoxin_structure_validation.jl submits to ESMFold. The previous "first 50"
+# selection sampled only the first 1-2 of 50 chains and is no longer used anywhere in
+# this pipeline; both predictors must score the identical 50 sequences per source for
+# the cross-predictor comparison in the paper to be valid.
 strong = read_fasta(os.path.join(BASE, "omega_conotoxin/generated_strong_seeded.fasta"))
-write_fasta(strong, os.path.join(OUT, "omega_conotoxin/sa_strong.fasta"), 50)
+strong_selected = chain_representative_sample(strong)
+write_fasta(strong_selected, os.path.join(OUT, "omega_conotoxin/sa_strong.fasta"), 50)
 
-# SA full-seeded
 full = read_fasta(os.path.join(BASE, "omega_conotoxin/generated_full_seeded.fasta"))
-write_fasta(full, os.path.join(OUT, "omega_conotoxin/sa_full.fasta"), 50)
+full_selected = chain_representative_sample(full)
+write_fasta(full_selected, os.path.join(OUT, "omega_conotoxin/sa_full.fasta"), 50)
 
 # ---- Kunitz ----
 print("\n=== Kunitz ===")

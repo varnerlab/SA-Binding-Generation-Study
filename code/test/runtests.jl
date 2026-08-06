@@ -20,4 +20,5 @@ using Test
     include("test_rng_reproducibility.jl")
     include("test_conotoxin_labels.jl")
     include("test_conotoxin_sar_frame.jl")
+    include("test_conotoxin_generator_frame.jl")
 end

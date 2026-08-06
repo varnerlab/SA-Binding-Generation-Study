@@ -16,6 +16,7 @@ _SCRIPT_DIR = @__DIR__
 _CODE_DIR = dirname(_SCRIPT_DIR)
 cd(_CODE_DIR)
 include(joinpath(_CODE_DIR, "Include.jl"))
+include(joinpath(_CODE_DIR, "experiments", "canonical_family_registry.jl"))
 
 using StatsBase
 
@@ -27,16 +28,12 @@ mkpath(FIG_DIR)
 
 # ── Load stored MSA (aligned) ───────────────────────────────────────────────
 @info "Loading stored alignment"
-raw_full = parse_fasta(joinpath(DATA_DIR, "omega_conotoxin_full_family_aligned.fasta"))
-char_full, names_full = clean_alignment(raw_full; max_gap_frac_col=0.5, max_gap_frac_seq=0.4)
+conotoxin_spec = only(filter(s -> s.family == "Conotoxin", CANONICAL_FAMILIES))
+char_full, names_full, strong_ids = canonical_load_alignment(conotoxin_spec, joinpath(_CODE_DIR, "data"))
+group_A, _, _, _ = canonical_split(conotoxin_spec, char_full, names_full, strong_ids)
 K, L = size(char_full)
 @info "  $K sequences × $L positions"
-
-# Also load strong binders aligned
-raw_strong = parse_fasta(joinpath(DATA_DIR, "strong_cav22_binders_aligned.fasta"))
-char_strong, names_strong = clean_alignment(raw_strong; max_gap_frac_col=0.5, max_gap_frac_seq=0.4)
-K_strong, L_strong = size(char_strong)
-@info "  Strong binders: $K_strong sequences × $L_strong positions"
+@info "  Designated subset: $(length(group_A)) sequences"
 
 # ── Identify Tyr13 pharmacophore position ────────────────────────────────────
 tyr_freqs = zeros(L)

@@ -29,6 +29,7 @@ _SCRIPT_DIR = @__DIR__
 _CODE_DIR = dirname(_SCRIPT_DIR)
 cd(_CODE_DIR)
 include(joinpath(_CODE_DIR, "Include.jl"))
+include(joinpath(_CODE_DIR, "experiments", "canonical_family_registry.jl"))
 
 # --- configuration ---
 const DATA_DIR  = joinpath(_CODE_DIR, "data", "omega_conotoxin")
@@ -36,25 +37,25 @@ const FIG_DIR   = joinpath(_CODE_DIR, "figs", "omega_conotoxin")
 mkpath(DATA_DIR)
 mkpath(FIG_DIR)
 
-# aligned FASTA files (produced by MAFFT --auto)
-const FULL_FAMILY_FASTA   = joinpath(DATA_DIR, "omega_conotoxin_full_family_aligned.fasta")
-const STRONG_BINDERS_FASTA = joinpath(DATA_DIR, "strong_cav22_binders_aligned.fasta")
+const CONOTOXIN_SPEC = only(filter(s -> s.family == "Conotoxin", CANONICAL_FAMILIES))
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Step 1: Load and clean alignments
 # ══════════════════════════════════════════════════════════════════════════════
 @info "Step 1: Loading ω-conotoxin alignments"
 
-function fasta_to_stockholm_tuples(filepath::String)
-    # parse_fasta returns (name, seq); same format as parse_stockholm
-    return parse_fasta(filepath)
-end
-
-raw_full   = fasta_to_stockholm_tuples(FULL_FAMILY_FASTA)
-raw_strong = fasta_to_stockholm_tuples(STRONG_BINDERS_FASTA)
-
-char_full,   names_full   = clean_alignment(raw_full;   max_gap_frac_col=0.5, max_gap_frac_seq=0.4)
-char_strong, names_strong = clean_alignment(raw_strong; max_gap_frac_col=0.5, max_gap_frac_seq=0.4)
+# The designated ("strong binder") matrix must be a row-slice of the same canonical
+# full-family alignment used everywhere else in the paper (SAR table, multiplicity
+# sweep, marker registry), not a separately MAFFT-realigned copy. Progressive
+# alignment is context-dependent: re-aligning 23 sequences alone vs. slicing them out
+# of the 74-sequence alignment can place gaps differently for indel-bearing
+# sequences, desynchronizing what "column 15" etc. means between the two.
+# strong_cav22_binders_aligned.fasta is used only to supply the accession-ID list.
+char_full, names_full, strong_ids =
+    canonical_load_alignment(CONOTOXIN_SPEC, joinpath(_CODE_DIR, "data"))
+group_A, group_B, _, _ = canonical_split(CONOTOXIN_SPEC, char_full, names_full, strong_ids)
+char_strong = char_full[group_A, :]
+names_strong = names_full[group_A]
 
 K_full,   L_full   = size(char_full)
 K_strong, L_strong = size(char_strong)
@@ -83,21 +84,18 @@ function find_pharmacophore_pos(char_mat::Matrix{Char}, aa::Char)
     return freqs
 end
 
-# Tyr (Y) position — primary pharmacophore
-tyr_freqs_full   = find_pharmacophore_pos(char_full,   'Y')
-tyr_freqs_strong = find_pharmacophore_pos(char_strong, 'Y')
-
+# Tyr (Y) position — primary pharmacophore. char_strong is now a row-slice of
+# char_full, so both share the same column coordinates; compute the marker once.
+tyr_freqs_full = find_pharmacophore_pos(char_full, 'Y')
 tyr_pos_full   = argmax(tyr_freqs_full)
-tyr_pos_strong = argmax(tyr_freqs_strong)
+tyr_pos_strong = tyr_pos_full
 
-@info "  Full family   — Tyr (pharmacophore) position: col $tyr_pos_full " *
+@info "  Tyr (pharmacophore) position: col $tyr_pos_full " *
       "(freq=$(round(tyr_freqs_full[tyr_pos_full], digits=2)))"
-@info "  Strong binders — Tyr (pharmacophore) position: col $tyr_pos_strong " *
-      "(freq=$(round(tyr_freqs_strong[tyr_pos_strong], digits=2)))"
 
 # define binding loop window (±4 around Tyr position)
-loop_full   = collect(max(1, tyr_pos_full   - 4):min(L_full,   tyr_pos_full   + 4))
-loop_strong = collect(max(1, tyr_pos_strong - 4):min(L_strong, tyr_pos_strong + 4))
+loop_full   = collect(max(1, tyr_pos_full - 4):min(L_full, tyr_pos_full + 4))
+loop_strong = loop_full
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Step 3: Build memory matrices
@@ -306,7 +304,7 @@ if isdir(FIG_DIR) && !isempty(readdir(FIG_DIR))
         end
         dest = joinpath(PAPER_FIG_DIR, basename(f))
         cp(f, dest; force=true)
-        n_copied += 1
+        global n_copied += 1
     end
     @info "  Copied $n_copied figures → $PAPER_FIG_DIR"
 else

@@ -271,11 +271,12 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   TM: TM-score against the experimental reference (1BPI chain~A for Kunitz,
   1OMG chain~A for $\omega$-conotoxin; $>0.5$ = same fold).
   Values are mean $\pm$ s.d.\ across the 50 sequences.
-  The two predictors agree on the ordering within each family. For the 26-residue
-  $\omega$-conotoxins, TM-scores are low for the stored natural sequences as well as
-  the generated ones, which reflects TM-score normalization at short chain length
-  rather than a fold difference introduced by conditioning. These are model-derived
-  quantities and do not establish experimental folding or binding.}
+  Both predictors gave each generated group a mean TM-score at least as high as that of
+  the stored group. For the $\omega$-conotoxins, TM-scores are low for the stored natural
+  sequences as well as the generated ones, which is consistent with normalization to the
+  25-residue reference chain rather than with a fold difference introduced by
+  conditioning. These are model-derived quantities and do not establish experimental
+  folding or binding.}
   \label{tab:structure-model-comparison}
   \small
   \begin{tabular}{llccccc}
@@ -328,7 +329,7 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
 % -----------------------------------------------------------------------
 \begin{table}[ht]
   \caption{\textbf{Residue frequencies at reported $\omega$-conotoxin SAR positions.}
-  Published structure--activity relationship (SAR) data for $\omega$-conotoxin
+  Published structure-activity relationship (SAR) data for $\omega$-conotoxin
   binding to Cav2.2 identify critical residues whose mutation abolishes or
   substantially reduces channel block~\cite{kimTyr13Essential1995,satoBasicResidues1993,satoAlaScanMVIIC2000,schroederLys2Effects2012,lewisConotoxinSAR2012,schroederChiralityTyr131999}.
   For each reported position, the table gives the fraction retaining the listed residue
@@ -451,10 +452,10 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   \textit{Left column:} Per-position amino acid frequency heatmaps for the input sequences
   (designated subset, $n=23$, panel~a; full O-superfamily, $n=74$, panel~c).
   \textit{Right column:} Residual heatmaps (generated $-$ input) showing the change in
-  frequency at each position--residue pair after SA generation. Panel~(b): designated-seeded
-  residual frequencies differ from the input by at most 0.15 in absolute value at every
-  position--residue pair. The Tyr marker at position~13, the conserved Cys framework
-  (positions~14--16), and the variable-loop diversity (positions~9--12) are reproduced
+  frequency at each position-residue pair after SA generation. Panel~(b): designated-seeded
+  residual frequencies differ from the input by at most 0.16 in absolute value at every
+  position-residue pair. The Tyr marker at position~13, the adjacent cysteines at
+  positions~15 and~16, and the variable-loop diversity (positions~9--12) are reproduced
   within that bound. Panel~(d):
   full-seeded residuals are slightly larger, reflecting the broader sequence diversity of
   the input. Blue: enrichment; red: depletion; white: no change.}
@@ -503,8 +504,8 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
   ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
   gold; the Tyr13 marker position is highlighted in green. All five sequences
-  preserve every highly conserved position ($6/6$), all six cysteines ($6/6$), and
-  carry Tyr at the marker position, while introducing $5$--$11$ substitutions
+  preserve all six highly conserved cysteine positions ($6/6$) and
+  carry Tyr at the marker position, while introducing $6$--$11$ substitutions
   concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-seeded
   generation (blue), and SA designated-seeded generation (red). Full-seeded generation

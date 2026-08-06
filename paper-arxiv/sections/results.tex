@@ -116,10 +116,12 @@ five Pfam families, essentially reaching the target marker fraction that SA fell
 gap therefore belongs to SA's decoder path rather than to weighted conditioning in general: a
 profile HMM estimates match-state emissions directly, whereas SA passes a latent sample through
 PCA reconstruction and argmax decoding. The $\omega$-conotoxin HMM produced Tyr13 in 0.834 of
-its sequences, short of the 0.996 target and essentially tied with SA at 0.838. Both sit at the
-ceiling their designation allows: only 19 of the 23 designated conotoxin sequences carry Tyr13,
-so even perfect conditioning on that set would yield the marker in $19/23 = 0.83$ of the
-output. Matching the marker more closely did not, however, make for better sequences overall. In the matched Kunitz
+its sequences, short of the 0.996 target and essentially tied with SA at 0.838. Both landed near
+the marker prevalence of the designated input itself: only 19 of the 23 designated conotoxin
+sequences carry Tyr13, so a generator that reproduces the designated marginals would yield the
+marker in $19/23 = 0.83$ of the output. That prevalence is a reference point rather than an
+upper bound, because a decoder that sharpens toward the mode can exceed it, as hard curation
+does below. Matching the marker more closely did not, however, make for better sequences overall. In the matched Kunitz
 $\rho=500$ comparison, the ESM2 protein language model assigned pseudo-perplexity
 $\SARhoFiveHundredPPL\pm\SARhoFiveHundredPPLSD$ to SA and
 $\HMMRhoFiveHundredPPL\pm\HMMRhoFiveHundredPPLSD$ to the weighted profile HMM, where a lower
@@ -165,9 +167,11 @@ includes MVIIA (ziconotide), an approved non-opioid analgesic~\cite{ziconotideRe
 Tyr13 is a reported Cav2.2 marker whose hydroxyl group contacts the channel
 pore~\cite{kimTyr13Essential1995}, while basic residues elsewhere in the peptide contribute to
 electrostatic complementarity~\cite{satoBasicResidues1993}. We aligned 74 SwissProt
-$\omega$-conotoxins and retained 26 positions after gap filtering. Of those, 23 accessions
+$\omega$-conotoxins and retained 26 positions after gap filtering. Residue numbers below denote
+retained alignment columns mapped onto MVIIA, so the marker is retained column 13, corresponding
+to MVIIA Tyr13. Of those 74 sequences, 23 accessions
 appeared on the curated list and formed the designated subset. The remaining 51 formed the
-background, which we treated as unlabeled rather than as nonbinders.
+background, for which we assumed no activity label.
 Importantly, accession designation and Tyr13 were related but
 distinct labels: they agreed for 64 of 74 sequences (86.5\%), with 19 Tyr13-positive sequences
 in the designated set and six in the background. We therefore reported accession conditioning
@@ -178,26 +182,30 @@ per condition, Tyr occurred at the marker position in 46.9\% of full-family gene
 33.8\% of its input, and in 98.3\% of designated-subset generation versus 82.6\% of its input
 (Table~\ref{tab:conotoxin-pharmacophore}). Designated-subset generation also contained 20.1\%
 Lys or Arg, close to 19.7\% in its input and above the 12.0\% in full-family generation.
-Multiplicity weighting transferred the marker in this family as well, and did so better than in
-any Pfam family. Sweeping $\rho$ to 500 raised decoded Tyr13 to $0.838 \pm 0.035$ (Supporting
-Information), against 0.587 for Kunitz at the same ratio. Because only 19 of the 23 designated
-accessions carry Tyr13, perfect conditioning would itself yield about 0.83, so the weighting
-reached the ceiling its designation allows. That is what the geometry predicts:
-$\omega$-conotoxin has the cleanest PCA separation in the panel
+Multiplicity weighting transferred the marker in this family as well, and produced the largest
+gain in the panel. Sweeping $\rho$ from 1 to 500 raised decoded Tyr13 from $0.463 \pm 0.040$ to
+$0.838 \pm 0.035$ (Supporting Information), against 0.587 for Kunitz at the same ratio. That
+endpoint sits near the 0.83 prevalence of Tyr13 among the 19 of 23 designated accessions that
+carry it, which again marks where a generator reproducing the designated marginals would land
+rather than a bound on what decoding can reach. The $\omega$-conotoxin split also has the
+cleanest PCA separation in the panel
 ($S = \ConotoxinSeparation$, against \WWSeparation{}--\HomeoboxSeparation{} for the Pfam
-families).
+families), qualitatively consistent with the preliminary association reported above; because
+this family was held out of that fit, the agreement does not establish a predictive
+relationship.
 
 The broader sequence pattern was retained alongside these marker shifts. Frequency heatmaps
 preserved Tyr13, the cysteine framework, and variable-loop diversity
-(Fig.~\ref{fig:conotoxin-loop}); per-position entropy correlations were $r=0.745$ for the
-designated subset and $r=0.997$ for the full family. The five highest-pLDDT designated-subset
-sequences retained all six highly conserved positions and all six cysteines while introducing
-5--11 substitutions at variable sites (Fig.~\ref{fig:conotoxin-sequence-analysis}).
-Comparison with 12 published structure--activity relationship positions gave a consistent but
+(Fig.~\ref{fig:conotoxin-loop}); measured against the full-family input entropy profile,
+per-position correlations were $r=0.745$ for designated-subset generation and $r=0.997$ for
+full-family generation. The five highest-pLDDT designated-subset
+sequences retained all six highly conserved cysteine positions while introducing
+6--11 substitutions at variable sites (Fig.~\ref{fig:conotoxin-sequence-analysis}).
+Comparison with 12 published structure-activity relationship positions gave a consistent but
 strictly sequence-level result. Designated-subset generation retained Tyr13 at 98.3\% and the
 six invariant disulfide-forming cysteines at frequencies of at least 97.4\%. It also increased
-K/R at reported interaction positions, including Arg10 (82.3\% versus 69.6\% in the designated
-input) and position~21 (66.2\% versus 47.8\%). These enrichments agreed with residues highlighted
+K/R at reported interaction positions, including the Arg10-aligned column (82.3\% versus 69.6\%
+in the designated input) and position~21 (66.2\% versus 47.8\%). These enrichments agreed with residues highlighted
 by prior mutagenesis, but they did not test mutation effects in the generated
 backgrounds~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}. The top
 three sequences nevertheless had predicted disulfide-constrained loop architectures consistent
@@ -205,7 +213,7 @@ with an inhibitor cystine-knot-like fold (Fig.~\ref{fig:fold-superposition}). Th
 retraining or a Cav2.2 target structure, hard curation transferred the designated accessions'
 sequence statistics into a new library; it did not establish target binding.
 
-\subsection{Generated Sequences Retain Plausibility and Fold Similarity}
+\subsection{Generated Sequences Retain Plausibility and Predicted Fold Similarity}
 
 Finally, we asked whether marker control came at the expense of global sequence or structural
 plausibility (Fig.~\ref{fig:plddt-tmscore-scatter}). We scored 50 Kunitz sequences from each of
@@ -218,18 +226,18 @@ against the experimental Kunitz structure (1BPI, chain~A) were $0.84\pm0.01$, $0
 $0.85\pm0.01$, and $0.83\pm0.02$. Sequences emitted by the unconditional profile HMM, built with
 default \texttt{hmmbuild} settings on the seed alignment rather than the weighted build used for
 the matched benchmark, scored lower and more variably, with mean pLDDT $60.4\pm13.1$, 20\% above
-70, and mean TM-score $0.60\pm0.19$.
-Independent AlphaFold2-ptm predictions reproduced the Kunitz picture, with TM-scores of
+70, and mean TM-score $0.60\pm0.19$. Independent AlphaFold2-ptm predictions reproduced the Kunitz picture, with TM-scores of
 0.83--0.85 at pLDDT 93--95 (Table~\ref{tab:structure-model-comparison})
-~\cite{jumperHighlyAccurate2021,mirdita2022colabfold}. The 26-residue $\omega$-conotoxins scored
-lower against their reference structure (1OMG, chain~A), but so did the stored natural sequences
-scored alongside them. Under AlphaFold2-ptm, TM-scores were $0.35\pm0.12$ for stored
+~\cite{jumperHighlyAccurate2021,mirdita2022colabfold}. The $\omega$-conotoxins, at 24 to 35
+residues, scored lower against their reference structure (1OMG, chain~A), but so did the stored
+natural sequences scored alongside them. Under AlphaFold2-ptm, TM-scores were $0.35\pm0.12$ for stored
 $\omega$-conotoxins, $0.39\pm0.12$ for full-family generation, and $0.47\pm0.02$ for
 designated-subset generation, at pLDDT 68--79; ESMFold gave $0.43\pm0.07$, $0.46\pm0.03$, and
 $0.46\pm0.03$ for the same three groups (Table~\ref{tab:structure-model-comparison}). Generated
-peptides therefore matched or exceeded stored ones under both predictors, and the low absolute
-values track TM-score normalization at 26 residues rather than a loss of fold similarity under
-conditioning.
+peptides therefore had mean TM-scores equal to or higher than stored ones under both predictors.
+Because every score was normalized to the 25-residue reference chain, and the stored and
+generated distributions overlapped, the low absolute values are consistent with short-chain
+TM-score behavior rather than with a loss of predicted fold similarity under conditioning.
 
 Sequence scoring with ESM2 also placed SA near the stored family distribution
 (Table~\ref{tab:structure-validation}). Pseudo-perplexity was $4.78\pm0.64$ for full-family SA,

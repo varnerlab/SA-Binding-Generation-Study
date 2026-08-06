@@ -5,7 +5,8 @@ For each experiment, we followed the stochastic attention pipeline
 of~\cite{varnerSAProtein2026} without modification to the core sampler. Seed alignments were
 downloaded from InterPro/Pfam in Stockholm format, while the $\omega$-conotoxin O-superfamily
 was compiled from SwissProt and aligned with MAFFT~\cite{mafft2013}. We removed columns with
-$>50\%$ gaps and sequences with $>30\%$ gaps in the remaining columns, then one-hot encoded the
+$>50\%$ gaps and sequences with $>30\%$ gaps in the remaining columns, raising the sequence
+threshold to $>40\%$ for the $\omega$-conotoxins to accommodate their broader length range, then one-hot encoded the
 cleaned alignment with 20 amino acid channels per position and mapped gaps to zero vectors.
 Principal component analysis retained 95\% of the variance, and the resulting columns were
 normalized to unit norm.

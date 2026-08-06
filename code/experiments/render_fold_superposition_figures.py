@@ -5,6 +5,7 @@ Top row: Kunitz (two views), Bottom row: ω-conotoxin (two views).
 SA variants colored by per-residue pLDDT; reference in gray with alpha.
 """
 
+import csv
 import subprocess
 import tempfile
 import os
@@ -63,7 +64,11 @@ def run_tmalign_and_get_aligned(mobile_pdb, target_pdb):
         lines = result.stdout.strip().split('\n')
         tm_score = None
         for line in lines:
-            if line.startswith("TM-score=") and "Chain_1" in line:
+            # Chain_2 (the second TMalign argument, the experimental reference) gives the
+            # reference-length-normalized TM-score, matching the convention used by
+            # run_conotoxin_structure_validation.jl and the Methods/tables throughout the
+            # paper. Chain_1 (query-length normalization) is not used elsewhere.
+            if line.startswith("TM-score=") and "Chain_2" in line:
                 tm_score = float(line.split("=")[1].split("(")[0].strip())
 
         with open(matrix_file) as f:
@@ -224,18 +229,38 @@ def render_panel(ax, ref_coords, aligned_coords, aligned_bfactors, tm_score,
         leg.get_frame().set_linewidth(0.5)
 
 
+def best_pdb_by_tmscore(raw_csv, source):
+    """Return the pdb_path of the highest-tmscore successful row for `source`."""
+    best_path, best_tm = None, -1.0
+    with open(raw_csv, newline="") as f:
+        for row in csv.DictReader(f):
+            if row["source"] != source or row["success"].lower() != "true":
+                continue
+            tm = float(row["tmscore"])
+            if tm > best_tm:
+                best_tm, best_path = tm, row["pdb_path"]
+    if best_path is None:
+        raise ValueError(f"No successful '{source}' rows found in {raw_csv}")
+    return Path(best_path), best_tm
+
+
 if __name__ == "__main__":
     for output in OUTPUTS:
         output.parent.mkdir(parents=True, exist_ok=True)
 
     # ---- Data ----
-    # Kunitz: best SA variant by TM-score
+    # Kunitz: best SA variant by TM-score (selection unaffected by the conotoxin
+    # alignment-frame fix; left as the pre-selected best-scoring sequence).
     kunitz_ref_pdb = CODE_DIR / "data" / "kunitz" / "structures" / "1BPI_A.pdb"
     kunitz_sa_pdb = CODE_DIR / "data" / "kunitz" / "structures" / "SA_strong_SA_strong_0022.pdb"
 
-    # Conotoxin: best SA variant by TM-score
+    # Conotoxin: highest reference-length-normalized TM-score among the corrected
+    # SA (designated-subset) structures, picked dynamically since regeneration changes
+    # which sequence (and its cache filename) scores best.
     conot_ref_pdb = CODE_DIR / "data" / "omega_conotoxin" / "structures" / "1OMG_A.pdb"
-    conot_sa_pdb = CODE_DIR / "data" / "omega_conotoxin" / "structures" / "SA_strong_SA_strong_0024.pdb"
+    conot_raw_csv = CODE_DIR / "data" / "omega_conotoxin" / "structure_validation_raw.csv"
+    conot_sa_pdb, conot_best_tm = best_pdb_by_tmscore(conot_raw_csv, "SA_strong")
+    print(f"Selected conotoxin SA_strong structure: {conot_sa_pdb.name} (tmscore={conot_best_tm:.4f})")
 
     # ---- Align ----
     print("=== Kunitz ===")
@@ -248,7 +273,7 @@ if __name__ == "__main__":
     conot_ref, _ = extract_ca_coords_and_bfactors(conot_ref_pdb)
     conot_aligned, conot_bf, conot_tm = run_tmalign_and_get_aligned(conot_sa_pdb, conot_ref_pdb)
     c_plddt = conot_bf * 100 if conot_bf.max() <= 1.0 else conot_bf
-    print(f"  SA_strong_0024: TM = {conot_tm:.4f}, mean pLDDT = {c_plddt.mean():.1f}")
+    print(f"  {conot_sa_pdb.name}: TM = {conot_tm:.4f}, mean pLDDT = {c_plddt.mean():.1f}")
 
     # ---- Figure: 2x2 grid, compact ----
     fig = plt.figure(figsize=(10, 8.8))
