@@ -4,6 +4,22 @@ Scratch status file, not meant to be committed. Delete once this work is finishe
 merged into the paper. If resuming in a fresh Claude Code session, paste this whole file
 as context and say "pick up from here."
 
+## FINAL STATUS (2026-08-07): COMPLETE, awaiting commit
+
+The ESMFold blocker and every downstream task in this handoff are resolved. A tailored Colab
+ESMFold v1 fallback completed the remaining structures; its calibration prediction matched an
+existing REST-API structure over all 26 residues (TM-score 0.97721, RMSD 0.15 Å, pLDDT difference
+0.1483). The importer preserved the one structure recovered by the concurrent API retry and added
+the other 16. Final coverage is 50/50 stored, 50/50 SA_strong, and 50/50 SA_full.
+
+Final ESMFold summary (mean ± sample SD, n=50 each): stored 76.7508±7.6870 pLDDT /
+0.426514±0.072408 TM; SA_strong 78.0537±2.4961 / 0.473077±0.029130; SA_full
+78.0980±3.2837 / 0.469542±0.025999. The sequence-analysis and fold-superposition figures were
+regenerated, all hand-typed arXiv numbers and flagged wording were updated, and `paper-arxiv/make`
+completed successfully (35 pages; no undefined references/citations or overfull boxes). The
+alignment-frame regression test passes 4/4. The work remains uncommitted because the user has not
+requested a commit.
+
 ## The original bug (from section-review.md, Codex review)
 
 `code/experiments/run_omega_conotoxin_experiment.jl` built its "designated" (strong-binder)
@@ -91,7 +107,7 @@ sequences are present during alignment. Column 13 (Tyr13 marker) was never affec
      verified byte-identical to the Julia version via SHA-256) so AF2 and ESMFold score the
      same sequences.
 
-## What's IN PROGRESS / BLOCKED right now
+## Historical blocker (resolved 2026-08-07)
 
 **ESMFold structure validation — INCOMPLETE, blocked on a degraded/intermittent public API.**
 - `stored`: 50/50 done.
@@ -144,7 +160,10 @@ sequences are present during alignment. Column 13 (Tyr13 marker) was never affec
   (~15GB download, untested feasibility), or (c) shipping with disclosed partial n=38,n=45
   samples. No fallback decision has been made.
 
-## What's NOT STARTED (blocked on ESMFold completion above)
+## Previously blocked follow-on tasks (completed 2026-08-07)
+
+All four items below were completed after the Colab fallback filled the cache. Their original
+descriptions are retained only as a record of the required work.
 
 - **Task #7**: rerun `code/experiments/render_conotoxin_sequence_analysis.jl` (entropy
   correlation r, top-5-by-pLDDT sequence figure) — needs complete `structure_validation_raw.csv`

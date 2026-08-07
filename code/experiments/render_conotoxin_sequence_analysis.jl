@@ -287,14 +287,22 @@ xticks!(p_ent, collect(1:L))
 p_combined = plot(p_aln, p_ent; layout=grid(2, 1, heights=[0.55, 0.45]),
     size=(900, 700), dpi=300)
 
-savefig(p_combined, joinpath(FIG_DIR, "sequence_analysis_conotoxin.pdf"))
-savefig(p_combined, joinpath(FIG_DIR, "sequence_analysis_conotoxin.png"))
-@info "Saved to $(joinpath(FIG_DIR, "sequence_analysis_conotoxin.pdf"))"
+pdf_path = joinpath(FIG_DIR, "sequence_analysis_conotoxin.pdf")
+pdf_tmp_path = joinpath(FIG_DIR, "sequence_analysis_conotoxin.tmp.pdf")
+png_path = joinpath(FIG_DIR, "sequence_analysis_conotoxin.png")
+
+# GR can leave an existing PDF untouched while still returning successfully.
+# Render to a fresh path and replace atomically so the paper cannot silently copy
+# a stale vector figure while the PNG preview updates.
+savefig(p_combined, pdf_tmp_path)
+mv(pdf_tmp_path, pdf_path; force=true)
+savefig(p_combined, png_path)
+@info "Saved to $pdf_path"
 
 # Copy to paper figs
-cp(joinpath(FIG_DIR, "sequence_analysis_conotoxin.pdf"),
+cp(pdf_path,
    joinpath(PAPER_FIG_DIR, "sequence_analysis_conotoxin.pdf"); force=true)
-cp(joinpath(FIG_DIR, "sequence_analysis_conotoxin.png"),
+cp(png_path,
    joinpath(PAPER_FIG_DIR, "sequence_analysis_conotoxin.png"); force=true)
 @info "Copied to paper-arxiv/sections/figs/"
 

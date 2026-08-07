@@ -197,19 +197,19 @@ relationship.
 The broader sequence pattern was retained alongside these marker shifts. Frequency heatmaps
 preserved Tyr13, the cysteine framework, and variable-loop diversity
 (Fig.~\ref{fig:conotoxin-loop}); measured against the full-family input entropy profile,
-per-position correlations were $r=0.745$ for designated-subset generation and $r=0.997$ for
-full-family generation. The five highest-pLDDT designated-subset
-sequences retained all six highly conserved cysteine positions while introducing
-6--11 substitutions at variable sites (Fig.~\ref{fig:conotoxin-sequence-analysis}).
+per-position correlations were $r=0.776$ for designated-subset generation and $r=0.997$ for
+full-family generation. Among the 50 modeled designated-subset sequences, the five
+highest-pLDDT sequences retained all six highly conserved cysteine positions while introducing
+3--9 substitutions at variable sites (Fig.~\ref{fig:conotoxin-sequence-analysis}).
 Comparison with 12 published structure-activity relationship positions gave a consistent but
 strictly sequence-level result. Designated-subset generation retained Tyr13 at 98.3\% and the
 six invariant disulfide-forming cysteines at frequencies of at least 97.4\%. It also increased
 K/R at reported interaction positions, including the Arg10-aligned column (82.3\% versus 69.6\%
 in the designated input) and position~21 (66.2\% versus 47.8\%). These enrichments agreed with residues highlighted
 by prior mutagenesis, but they did not test mutation effects in the generated
-backgrounds~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}. The top
-three sequences nevertheless had predicted disulfide-constrained loop architectures consistent
-with an inhibitor cystine-knot-like fold (Fig.~\ref{fig:fold-superposition}). Thus, without
+backgrounds~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012}. The single
+highest-TM-score sequence nevertheless had a predicted disulfide-constrained loop architecture
+consistent with an inhibitor cystine-knot-like fold (Fig.~\ref{fig:fold-superposition}). Thus, without
 retraining or a Cav2.2 target structure, hard curation transferred the designated accessions'
 sequence statistics into a new library; it did not establish target binding.
 
@@ -230,11 +230,13 @@ the matched benchmark, scored lower and more variably, with mean pLDDT $60.4\pm1
 0.83--0.85 at pLDDT 93--95 (Table~\ref{tab:structure-model-comparison})
 ~\cite{jumperHighlyAccurate2021,mirdita2022colabfold}. The $\omega$-conotoxins, at 24 to 35
 residues, scored lower against their reference structure (1OMG, chain~A), but so did the stored
-natural sequences scored alongside them. Under AlphaFold2-ptm, TM-scores were $0.35\pm0.12$ for stored
-$\omega$-conotoxins, $0.39\pm0.12$ for full-family generation, and $0.47\pm0.02$ for
-designated-subset generation, at pLDDT 68--79; ESMFold gave $0.43\pm0.07$, $0.46\pm0.03$, and
-$0.46\pm0.03$ for the same three groups (Table~\ref{tab:structure-model-comparison}). Generated
-peptides therefore had mean TM-scores equal to or higher than stored ones under both predictors.
+natural sequences scored alongside them. Under AlphaFold2-ptm, TM-scores were $0.35\pm0.11$ for stored
+$\omega$-conotoxins, $0.35\pm0.13$ for full-family generation, and $0.47\pm0.02$ for
+designated-subset generation, at pLDDT 68--80; ESMFold gave $0.43\pm0.07$, $0.47\pm0.03$, and
+$0.47\pm0.03$ for the same three groups (Table~\ref{tab:structure-model-comparison}). The
+designated-subset group had a higher mean TM-score than the stored group under both predictors.
+The full-family group also had a higher mean under ESMFold; under AlphaFold2-ptm, its mean exceeded
+the stored mean by only 0.0027, negligible relative to the within-group standard deviations.
 Because every score was normalized to the 25-residue reference chain, and the stored and
 generated distributions overlapped, the low absolute values are consistent with short-chain
 TM-score behavior rather than with a loss of predicted fold similarity under conditioning.

@@ -271,8 +271,10 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   TM: TM-score against the experimental reference (1BPI chain~A for Kunitz,
   1OMG chain~A for $\omega$-conotoxin; $>0.5$ = same fold).
   Values are mean $\pm$ s.d.\ across the 50 sequences.
-  Both predictors gave each generated group a mean TM-score at least as high as that of
-  the stored group. For the $\omega$-conotoxins, TM-scores are low for the stored natural
+  The designated-subset $\omega$-conotoxins had a higher mean TM-score than the stored group
+  under both predictors. For full-family generation, the ESMFold mean was higher, whereas the
+  AlphaFold2-ptm mean exceeded the stored mean by only 0.0027, negligible relative to the
+  within-group standard deviations. For the $\omega$-conotoxins, TM-scores are low for the stored natural
   sequences as well as the generated ones, which is consistent with normalization to the
   25-residue reference chain rather than with a fold difference introduced by
   conditioning. These are model-derived quantities and do not establish experimental
@@ -291,9 +293,9 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
       & SA (full family)       & 50 & $95.0 \pm 1.3$  & $0.85 \pm 0.01$ & $90.4 \pm 1.2$ & $0.84 \pm 0.01$ \\
     \midrule
     \multirow{3}{*}{$\omega$-Conotoxin}
-      & Stored (natural)       & 50 & $67.9 \pm 9.9$  & $0.35 \pm 0.12$ & $76.8 \pm 7.7$ & $0.43 \pm 0.07$ \\
-      & SA (designated subset) & 50 & $78.5 \pm 4.2$  & $0.47 \pm 0.02$ & $78.4 \pm 2.6$ & $0.46 \pm 0.03$ \\
-      & SA (full family)       & 50 & $73.9 \pm 10.5$ & $0.39 \pm 0.12$ & $78.4 \pm 2.4$ & $0.46 \pm 0.03$ \\
+      & Stored (natural)       & 50 & $67.9 \pm 9.8$  & $0.35 \pm 0.11$ & $76.8 \pm 7.7$ & $0.43 \pm 0.07$ \\
+      & SA (designated subset) & 50 & $79.5 \pm 4.0$  & $0.47 \pm 0.02$ & $78.1 \pm 2.5$ & $0.47 \pm 0.03$ \\
+      & SA (full family)       & 50 & $70.0 \pm 11.1$ & $0.35 \pm 0.13$ & $78.1 \pm 3.3$ & $0.47 \pm 0.03$ \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -309,7 +311,9 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   K+R\%: basic residue fraction (electrostatic complementarity). KL: amino acid composition
   divergence. Novelty: mean cosine distance to nearest stored pattern. Designated-subset seeding
   increased the Tyr13 frequency from 82.6\% to 98.3\% and produced a similar
-  basic-residue fraction (19.7\% against 20.1\%), while full-family seeding reduced both.}
+  basic-residue fraction (19.7\% against 20.1\%). Full-family seeding produced lower values than
+  designated-subset seeding, although both Tyr13 and the basic-residue fraction increased relative
+  to the full-family input.}
   \label{tab:conotoxin-pharmacophore}
   \small
   \begin{tabular}{lccccc}
@@ -498,14 +502,14 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_conotoxin.pdf}
   \caption{\textbf{Sequence-level analysis of SA-generated $\omega$-conotoxin sequences
   conditioned on the designated subset.}
-  \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
-  SA designated-subset-conditioned sequences (ranked by ESMFold pLDDT). Positions are
+  \textbf{(A)}~Alignment of the family consensus with the five highest-confidence sequences
+  among the 50 modeled SA designated-subset-conditioned sequences (ranked by ESMFold pLDDT). Positions are
   colored by conservation in the stored MSA: highly conserved ($>90\%$, red),
   conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
   ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
   gold; the Tyr13 marker position is highlighted in green. All five sequences
   preserve all six highly conserved cysteine positions ($6/6$) and
-  carry Tyr at the marker position, while introducing $6$--$11$ substitutions
+  carry Tyr at the marker position, while introducing $3$--$9$ substitutions
   concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-seeded
   generation (blue), and SA designated-seeded generation (red). Full-seeded generation
@@ -529,14 +533,14 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   (front and $90^{\circ}$ rotation) to reveal the full three-dimensional architecture.
   \textbf{(A)}~Kunitz domain, front view. \textbf{(B)}~Kunitz domain, $90^{\circ}$
   rotation. The SA-generated variant aligns to the BPTI crystal structure
-  (1BPI chain~A) with TM $= 0.94$, reproducing the double-loop architecture,
+  (1BPI chain~A) with TM $= 0.86$, reproducing the double-loop architecture,
   three-stranded antiparallel $\beta$-sheet, and $\alpha$-helical turn;
-  pLDDT $> 90$ throughout (deep blue) indicates high-confidence prediction.
+  mean pLDDT $= 96.3$ indicates high-confidence prediction.
   \textbf{(C)}~$\omega$-Conotoxin, front view. \textbf{(D)}~$\omega$-Conotoxin,
   $90^{\circ}$ rotation. The SA-generated variant aligns to the MVIIA NMR structure
   (1OMG chain~A) with TM $= 0.53$, consistent with the small peptide length
   (26 residues) where TM-score normalization is noisy; the cystine-knot topology
-  and loop architecture appear in the prediction, with pLDDT $\sim 80$ (cyan/green).
+  and loop architecture appear in the prediction, with mean pLDDT $= 85.7$.
   Colorbar: pLDDT confidence scale (red $= 50$, blue $= 100$).
   Structures predicted by ESMFold~\cite{esmfold2022}; alignment by
   TM-align~\cite{tmAlign2005}.}
