@@ -68,11 +68,9 @@ sequences are present during alignment. Column 13 (Tyr13 marker) was never affec
      0.04 to 0.0027 — well within one SD of either group. Word this comparison carefully for
      sa_full specifically rather than stating it as flatly as before; sa_strong's margin is
      still solid and, if anything, slightly wider than before.
-5. **AF2 footnote — MUST BE REMOVED.** `paper-arxiv/Paper_v1.tex` currently has a `$^{\dagger}$`
-   footnote on the AF2 designated-subset row (Table structure-model-comparison) saying AF2
-   predates the fix. This is now FALSE — AF2 was rerun and is current. Remove the `$^{\dagger}$`
-   markers (two places: the caption sentence, and the `SA (designated subset)$^{\dagger}$` row
-   label) and the corresponding NOTE comment in `code/experiments/prepare_af2_input.py`.
+5. **AF2 footnote — REMOVED.** `paper-arxiv/Paper_v1.tex` no longer has the `$^{\dagger}$`
+   footnote or row marker claiming AF2 predates the fix. The corresponding stale NOTE comment
+   is also absent from `code/experiments/prepare_af2_input.py`.
 6. **Fixed bugs found along the way** (all committed to working tree, verified):
    - `run_omega_conotoxin_experiment.jl`: Julia 1.12 soft-scope bug in the figure-copy loop
      (`n_copied += 1` -> `global n_copied += 1`), unrelated pre-existing bug, blocked the script
@@ -95,13 +93,21 @@ sequences are present during alignment. Column 13 (Tyr13 marker) was never affec
 
 ## What's IN PROGRESS / BLOCKED right now
 
-**ESMFold structure validation — INCOMPLETE, blocked on a degraded/down public API.**
+**ESMFold structure validation — INCOMPLETE, blocked on a degraded/intermittent public API.**
 - `stored`: 50/50 done.
-- `SA_strong`: 16/50 done (34 missing).
-- `SA_full`: 11/50 done (39 missing).
-- The free `api.esmatlas.com` REST API has been returning HTTP 504 (Gateway Timeout, ~29s)
-  consistently for hours across this session. The most recent full retry got **zero** new
-  successes out of 73 attempts — this looks like a sustained outage, not ordinary flakiness.
+- `SA_strong`: **38/50 done (12 missing)**.
+- `SA_full`: **45/50 done (5 missing)**.
+- Restart checkpoint (2026-08-06): the user explicitly approved sending the unpublished
+  generated sequences to the public `api.esmatlas.com` REST API. The earlier three cache-safe
+  attempts brought coverage to 27/50 SA_strong and 36/50 SA_full. On resumption, three more
+  complete cache-safe passes were run. Despite mostly HTTP 504s, intermittent recovery windows
+  added 20 PDBs total: pass 1 added 3 strong + 3 full, pass 2 added 6 strong + 5 full, and pass 3
+  added 2 strong + 1 full. All successful PDBs were written immediately to the content-addressed
+  cache, and the final pass rewrote the CSVs and figure from the exact current cache.
+- Latest fully aggregated partial summary: stored 76.7508±7.6871 pLDDT /
+  0.426514±0.072408 TM (n=50); SA_strong 77.9095±2.3906 / 0.475446±0.027869
+  (n=38); SA_full 78.1080±3.3347 / 0.470464±0.026439 (n=45). These remain partial and must
+  not replace the hand-typed ESMFold values in the paper until all 50/50 are complete.
 - Caching is content-hash-keyed and safe to retry indefinitely with zero risk of wasted work
   or reusing stale data — every retry only attempts sequences not already cached.
 - **To resume**: `cd code && julia experiments/run_conotoxin_structure_validation.jl`
@@ -132,10 +138,11 @@ sequences are present during alignment. Column 13 (Tyr13 marker) was never affec
       println("$label: $n_cached / 50")
   end'
   ```
-- **Decision point deferred**: if the outage persists much longer, the user was about to be
-  asked whether to (a) keep waiting/retrying [recommended, free], (b) try a local ESMFold
-  install (~15GB download, untested feasibility), or (c) ship with partial/disclosed n=16,n=11
-  samples. No decision was made yet — user asked to save state and pause instead.
+- **Decision point deferred**: the third resumed pass still recovered 3 PDBs, but returns were
+  diminishing and the endpoint was again in a sustained 504 window at the end. Continue
+  cache-safe public-API retries later [still free], or reconsider (b) a local ESMFold install
+  (~15GB download, untested feasibility), or (c) shipping with disclosed partial n=38,n=45
+  samples. No fallback decision has been made.
 
 ## What's NOT STARTED (blocked on ESMFold completion above)
 
@@ -148,7 +155,7 @@ sequences are present during alignment. Column 13 (Tyr13 marker) was never affec
 - **Task #10**: update hand-typed numbers in `paper-arxiv/sections/results.tex` and
   `paper-arxiv/Paper_v1.tex` (Table conotoxin-pharmacophore, Table structure-model-comparison,
   Table sar-agreement is auto-generated already) with the final regenerated values. Also
-  includes: removing the AF2 footnote (see above), the sa_full TM-margin wording nuance (see
+  includes: the sa_full TM-margin wording nuance (see
   above), and the three original wording fixes from section-review.md:
   1. "five highest-pLDDT" should read "among the 50 modeled sequences" (not implying top-5-of-
      1,550) — results.tex, near "The five highest-pLDDT designated-subset sequences..."
