@@ -166,7 +166,13 @@
   $\beta$ under a hard attention mask. The mask is the
   $\Delta_{\mathrm{attn}}=0$ envelope: recovery increases from 0.46 at
   $\beta=2$ to 1.00 at $\beta=512$. Finite-$\rho$ multiplicity conditions
-  sit below this envelope at matched $\beta$, while hard curation reaches complete
+  sit below this envelope at matched $\beta$: hard masking recovers more marker
+  signal than soft weighting by 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$,
+  contracting into the noise as $\rho \to \infty$ (0.002, SE 0.030, at
+  $f_{\mathrm{eff}} = 0.99$). Because each condition's attention already matches its
+  own target ($\Delta_{\mathrm{attn}} \approx 0$), this shrinking margin tracks the
+  difference in intended designated mass between the two conditions rather than a
+  residual attention error. Hard curation reaches complete
   K/R marker retention on its subset-only basis.}
   \label{fig:mask-betasweep}
 \end{figure}
@@ -182,7 +188,9 @@
   K+R\%: basic residue fraction (electrostatic complementarity). KL: amino acid composition
   divergence. Novelty: mean cosine distance to nearest stored pattern. Designated-subset seeding
   increased the Tyr13 frequency from 82.6\% to 98.3\% and produced a similar
-  basic-residue fraction (19.7\% against 20.1\%), while full-family seeding reduced both.}
+  basic-residue fraction (19.7\% against 20.1\%). Full-family seeding produced lower values than
+  designated-subset seeding, although both Tyr13 and the basic-residue fraction increased relative
+  to the full-family input.}
   \label{tab:conotoxin-pharmacophore}
   \small
   \begin{tabular}{lccccc}
@@ -207,9 +215,9 @@
   (designated subset, $n=23$, panel~a; full O-superfamily, $n=74$, panel~c).
   \textit{Right column:} Residual heatmaps (generated $-$ input) showing the change in
   frequency at each position--residue pair after SA generation. Panel~(b): designated-seeded
-  residual frequencies differ from the input by at most 0.15 in absolute value at every
-  position--residue pair. The Tyr marker at position~13, the conserved Cys framework
-  (positions~14--16), and the variable-loop diversity (positions~9--12) are reproduced
+  residual frequencies differ from the input by at most 0.16 in absolute value at every
+  position--residue pair. The Tyr marker at position~13, the adjacent cysteines at
+  positions~15 and~16, and the variable-loop diversity (positions~9--12) are reproduced
   within that bound. Panel~(d):
   full-seeded residuals are slightly larger, reflecting the broader sequence diversity of
   the input. Blue: enrichment; red: depletion; white: no change.}
@@ -222,19 +230,19 @@
   \includegraphics[width=\textwidth]{sections/figs/sequence_analysis_conotoxin.pdf}
   \caption{\textbf{Sequence-level analysis of SA-generated $\omega$-conotoxin sequences
   conditioned on the designated subset.}
-  \textbf{(A)}~Alignment of the family consensus with the five highest-confidence
-  SA designated-subset-conditioned sequences (ranked by ESMFold pLDDT). Positions are
+  \textbf{(A)}~Alignment of the family consensus with the five highest-confidence sequences
+  among the 50 modeled SA designated-subset-conditioned sequences (ranked by ESMFold pLDDT). Positions are
   colored by conservation in the stored MSA: highly conserved ($>90\%$, red),
   conserved ($70$--$90\%$, orange), moderate ($50$--$70\%$, yellow), and variable
   ($<50\%$, blue). Cysteines forming the three disulfide bonds are highlighted in
   gold; the Tyr13 marker position is highlighted in green. All five sequences
-  preserve every highly conserved position ($6/6$), all six cysteines ($6/6$), and
-  carry Tyr at the marker position, while introducing $5$--$11$ substitutions
+  preserve all six highly conserved cysteine positions ($6/6$) and
+  carry Tyr at the marker position, while introducing $3$--$9$ substitutions
   concentrated at variable sites.
   \textbf{(B)}~Per-position Shannon entropy for the stored MSA (gray), SA full-seeded
-  generation (blue), and SA designated-seeded generation (red). The full-seeded entropy
-  correlation is $r = 0.997$. The designated-seeded correlation is lower
-  ($r = 0.745$), reflecting lower diversity after conditioning on the 23-sequence
+  generation (blue), and SA designated-seeded generation (red). Full-seeded generation
+  tracks the stored entropy profile closely. The designated-seeded profile tracks it
+  less closely, reflecting lower diversity after conditioning on the 23-sequence
   designated subset, including at Tyr13 and co-varying loop residues.}
   \label{fig:conotoxin-sequence-analysis}
 \end{figure}
@@ -273,14 +281,13 @@
   sequence (colored by per-residue pLDDT confidence) onto the experimental reference
   structure (gray, semi-transparent), shown in two orthogonal views.
   \textbf{(A,\,B)}~Kunitz domain: the SA-generated variant aligns to the BPTI crystal
-  structure (1BPI chain~A) with TM $= 0.94$, reproducing the characteristic double-loop
+  structure (1BPI chain~A) with TM $= 0.86$, reproducing the characteristic double-loop
   architecture, three-stranded antiparallel $\beta$-sheet, and $\alpha$-helical turn;
-  pLDDT $> 90$ throughout (deep blue) indicates high-confidence prediction.
+  mean pLDDT $= 96.3$ indicates high-confidence prediction.
   \textbf{(C,\,D)}~$\omega$-Conotoxin: the SA-generated variant aligns to the MVIIA
   NMR structure (1OMG chain~A) with TM $= 0.53$, consistent with the small peptide
   length (26 residues) where TM-score normalization is noisy; the cystine-knot
-  topology and loop architecture appear in the prediction, with pLDDT $\sim 80$
-  (cyan/green).
+  topology and loop architecture appear in the prediction, with mean pLDDT $= 85.7$.
   Colorbar: pLDDT confidence scale (red $= 50$, blue $= 100$).
   Structures predicted by ESMFold~\cite{esmfold2022}; alignment by
   TM-align~\cite{tmAlign2005}.}
@@ -325,9 +332,9 @@
   sequence-level metrics are mean $\pm$ s.d.\ across 5 replicates.
   Structure-model scores were not computed for the additional weighted profile-HMM
   benchmark.
-  SA-generated and stored sequences have similar structure-model and language-model
-  summaries. Conditioning on the K/R-positive subset yields complete K/R marker
-  retention; this is not an experimental binding measurement.}
+  Sequences generated by SA have structure-model and language-model summaries similar to
+  those of stored sequences. Conditioning on the K/R-positive subset yields complete K/R marker retention;
+  this is not an experimental binding measurement.}
   \label{tab:structure-validation}
   \small
   \resizebox{\textwidth}{!}{%
@@ -335,7 +342,7 @@
     \toprule
     Source & pLDDT & TM & PPL & P1 K/R & KL ($\times 10^{3}$) & $D$ \\
     \midrule
-    Stored (natural)      & $89.3 \pm 3.2$  & $0.83 \pm 0.03$ & $4.97 \pm 0.98$ & 0.32 & 0 & 0.63 \\
+    Stored (natural)      & $89.3 \pm 3.2$  & $0.83 \pm 0.02$ & $4.97 \pm 0.98$ & 0.32 & 0 & 0.63 \\
     SA (full family)      & $90.4 \pm 1.2$  & $0.84 \pm 0.01$ & $4.78 \pm 0.64$ & $0.38 \pm 0.03$ & $7.6 \pm 0.9$ & 0.56 \\
     SA (K/R-positive)     & $90.7 \pm 1.1$  & $0.83 \pm 0.01$ & $4.72 \pm 0.60$ & $1.00 \pm 0.00$ & $18.7 \pm 0.9$ & 0.50 \\
     SA (K/R-negative)     & $91.0 \pm 1.2$  & $0.85 \pm 0.01$ & $4.73 \pm 0.72$ & $0.00 \pm 0.00$ & $11.2 \pm 0.2$ & 0.53 \\
@@ -349,29 +356,39 @@
 
 \begin{table}[htbp]
   \centering
-  \caption{\textbf{AlphaFold2-ptm structure-model comparison.}
-  Independent structure predictions via ColabFold (AlphaFold2-ptm, 1 model,
-  3 recycles, MMseqs2 MSA) for 50 sequences per source.
-  pLDDT: mean predicted confidence ($0$--$100$).
-  TM: TM-score against experimental reference (1BPI chain~A for Kunitz,
-  1OMG chain~A for $\omega$-conotoxin).
-  These model-derived summaries are consistent with the ESMFold comparison.
-  They do not establish experimental folding or binding.}
-  \label{tab:af2-validation}
+  \caption{\textbf{Cross-predictor structure-model comparison for Kunitz and
+  $\omega$-conotoxin.}
+  Two independent predictors scored the same 50 sequences per source:
+  AlphaFold2-ptm via ColabFold (1 model, 3 recycles, MMseqs2 MSA) and ESMFold.
+  pLDDT: mean predicted confidence ($0$--$100$; $>70$ = confident).
+  TM: TM-score against the experimental reference (1BPI chain~A for Kunitz,
+  1OMG chain~A for $\omega$-conotoxin; $>0.5$ = same fold).
+  Values are mean $\pm$ s.d.\ across the 50 sequences.
+  The designated-subset $\omega$-conotoxins had a higher mean TM-score than the stored group
+  under both predictors. For full-family generation, the ESMFold mean was higher, whereas the
+  AlphaFold2-ptm mean exceeded the stored mean by only 0.0027, negligible relative to the
+  within-group standard deviations. For the $\omega$-conotoxins, TM-scores are low for the stored natural
+  sequences as well as the generated ones, which is consistent with normalization to the
+  25-residue reference chain rather than with a fold difference introduced by
+  conditioning. These are model-derived quantities and do not establish experimental
+  folding or binding.}
+  \label{tab:structure-model-comparison}
   \small
-  \begin{tabular}{llcccc}
+  \begin{tabular}{llccccc}
     \toprule
-    Family & Source & $n$ & pLDDT & TM-score \\
+    & & & \multicolumn{2}{c}{AlphaFold2-ptm} & \multicolumn{2}{c}{ESMFold} \\
+    \cmidrule(lr){4-5}\cmidrule(lr){6-7}
+    Family & Source & $n$ & pLDDT & TM & pLDDT & TM \\
     \midrule
     \multirow{3}{*}{Kunitz}
-      & Stored (natural)       & 50 & $93.5 \pm 4.0$ & $0.83 \pm 0.03$ \\
-      & SA (K/R-positive)      & 50 & $94.6 \pm 1.4$ & $0.84 \pm 0.01$ \\
-      & SA (full family)       & 50 & $95.0 \pm 1.3$ & $0.85 \pm 0.01$ \\
+      & Stored (natural)       & 50 & $93.5 \pm 4.0$  & $0.83 \pm 0.03$ & $89.3 \pm 3.2$ & $0.83 \pm 0.02$ \\
+      & SA (K/R-positive)      & 50 & $94.6 \pm 1.4$  & $0.84 \pm 0.01$ & $90.7 \pm 1.1$ & $0.83 \pm 0.01$ \\
+      & SA (full family)       & 50 & $95.0 \pm 1.3$  & $0.85 \pm 0.01$ & $90.4 \pm 1.2$ & $0.84 \pm 0.01$ \\
     \midrule
     \multirow{3}{*}{$\omega$-Conotoxin}
-      & Stored (natural)       & 50 & $67.9 \pm 9.8$ & $0.35 \pm 0.11$ \\
-      & SA (designated subset) & 50 & $78.5 \pm 4.1$ & $0.47 \pm 0.02$ \\
-      & SA (full family)       & 50 & $73.9 \pm 10.4$ & $0.39 \pm 0.12$ \\
+      & Stored (natural)       & 50 & $67.9 \pm 9.8$  & $0.35 \pm 0.11$ & $76.8 \pm 7.7$ & $0.43 \pm 0.07$ \\
+      & SA (designated subset) & 50 & $79.5 \pm 4.0$  & $0.47 \pm 0.02$ & $78.1 \pm 2.5$ & $0.47 \pm 0.03$ \\
+      & SA (full family)       & 50 & $70.0 \pm 11.1$ & $0.35 \pm 0.13$ & $78.1 \pm 3.3$ & $0.47 \pm 0.03$ \\
     \bottomrule
   \end{tabular}
 \end{table}

@@ -39,8 +39,9 @@ pattern $\mathbf{m}_k$ and a query state $\boldsymbol{\xi}$ has variance
 $1/d$ for a random query on the unit sphere $\mathbb{S}^{d-1}$, so when $d$
 is large all scores concentrate near zero and the inverse temperature $\beta$
 must be set extremely high to differentiate among patterns, making Langevin
-sampling inefficient. PCA removes this redundancy by projecting onto the
-$d \ll d_{\mathrm{full}}$ directions of actual variation in the alignment.
+sampling inefficient. Principal component analysis removes this redundancy
+by projecting onto the $d \ll d_{\mathrm{full}}$ directions of actual
+variation in the alignment.
 
 We computed PCA from the one-hot encoded alignment by first centering the data:
 $\bar{\mathbf{x}} = K^{-1}\sum_{k=1}^K \mathbf{x}_k$ (the family's
@@ -176,8 +177,9 @@ $\omega$-conotoxin.
 $f_{\mathrm{eff}}$ is the effective designated fraction computed from the
 multiplicity vector; $f_{\mathrm{obs}}$ is the hard-decoded marker fraction
 averaged across five independent replicates (620 retained samples per replicate);
-$\bar{a}_{\mathrm{des}}$ is the mean softmax attention weight on designated
-patterns; and $D$ is the mean pairwise diversity. Uncertainties are replicate
+$\bar{a}_{\mathrm{des}}$ is the softmax attention weight summed over the designated
+patterns and averaged over retained states; and $D$ is the mean pairwise
+diversity. Uncertainties are replicate
 standard deviations. Marker fraction and diversity are reported as a function
 of $\beta/\beta^{*}$ for three fixed $\rho$ values on the Kunitz domain
 (Table~\ref{tab:beta-sweep}). Across all 250 predicted Kunitz structures,
@@ -309,6 +311,22 @@ input marginal more closely than it does after SA's PCA reconstruction and argma
   }
 \end{table}
 \FloatBarrier
+
+\section{Masking Compared with Multiplicity Weighting at the Same Temperature}
+\label{app:matched-beta}
+The hard mask and multiplicity weighting differ in one respect: the mask places the entire
+equilibrium mixture on designated patterns, whereas a finite $\rho$ places a chosen share of it
+there. Comparing the two at the same $\beta$ isolates that difference. We set $\rho$ so the
+requested share was 0.5, 0.7, 0.9, 0.95, and 0.99 in turn, and ran the mask at each of the five
+resulting temperatures on the Kunitz domain.
+
+The decoded marker fractions barely separated. At a requested share of 0.5, the mask reached
+0.510 and multiplicity weighting 0.425, a difference of 0.085 (SE 0.028), even though the two
+conditions differed by 50 percentage points in what they requested. That difference shrank to
+0.053 (SE 0.029) at a requested share of 0.7, 0.025 at 0.9, 0.012 at 0.95, and 0.003
+(SE 0.030) at 0.99, where the two requests nearly coincide. Doubling the requested designated
+mass therefore bought less than a tenth of a unit of decoded marker, which is the reconstruction
+loss described in the main text seen from a second direction.
 
 \section{Cav2.2 Complex-Prediction Diagnostic}
 We modeled SA-generated and natural $\omega$-conotoxins with the Cav2.2 pore-domain target

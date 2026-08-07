@@ -59,6 +59,7 @@
 % appendix is inlined here, so the section number resolves. In paper-jcim the appendix is a
 % separate document, so \SIRef is defined there as plain prose that drops the number.
 \newcommand{\SIRef}[1]{Section~\ref{#1} of the Supporting Information}
+\newcommand{\SIFigRef}[1]{Fig.~\ref{#1}}
 \input{sections/generated/numbers}
 
 \title{Conditioning Protein Generation via Hopfield Pattern Multiplicity}
@@ -438,8 +439,10 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   marker signal than soft weighting by 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$,
   contracting into the noise as $\rho \to \infty$ (0.002, SE 0.030, at
   $f_{\mathrm{eff}} = 0.99$); faint red points show the mask run at each matched
-  $\beta$. Since $\Delta_{\mathrm{attn}} \approx 0$ (attention tracks $f_{\mathrm{eff}}$), this
-  is a decode effect, not an attention effect. Hard curation (green triangle) reaches complete transfer at low $\beta$ on
+  $\beta$. Because each condition's attention already matches its own target
+  ($\Delta_{\mathrm{attn}} \approx 0$), this shrinking margin tracks the difference in
+  intended designated mass between the two conditions rather than a residual attention
+  error. Hard curation (green triangle) reaches complete transfer at low $\beta$ on
   its subset-only basis; unconditional generation (gray square) is shown for
   reference.}
   \label{fig:mask-betasweep}

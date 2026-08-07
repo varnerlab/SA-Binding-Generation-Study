@@ -35,6 +35,10 @@
 \newcommand{\veps}{\bm{\epsilon}}
 \newcommand{\R}{\mathbb{R}}
 \DeclareMathOperator{\softmax}{softmax}
+% The appendix is a separate Supporting Information document here, so a cross-document
+% \ref target would not resolve; \SIRef drops the section number and reads as plain prose.
+\newcommand{\SIRef}[1]{The Supporting Information}
+\newcommand{\SIFigRef}[1]{a Supporting Information figure}
 \input{sections/generated/numbers}
 \input{sections/display_items}
 
