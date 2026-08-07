@@ -4,14 +4,14 @@ set -euo pipefail
 paper_dir="$(cd "$(dirname "$0")" && pwd)"
 repo_dir="$(cd "$paper_dir/.." && pwd)"
 output_dir="${1:-$repo_dir/output/arxiv}"
-archive="$output_dir/SA-Binding-Generation-Study-arxiv-2026-08-04.tar.gz"
+archive="$output_dir/SA-Binding-Generation-Study-arxiv-v2.tar.gz"
 
 files=(
   Paper_v1.tex
   Paper_v1.bbl
   References_v1.bib
   neurips_2026.sty
-  figs/fold_superposition_combined.pdf
+  sections/figs/fold_superposition_combined.pdf
   sections/abstract.tex
   sections/appendix.tex
   sections/discussion.tex

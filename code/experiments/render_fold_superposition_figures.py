@@ -23,8 +23,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CODE_DIR = REPO_ROOT / "code"
 TMALIGN = CODE_DIR / "bin" / "TMalign"
 OUTPUTS = [
-    REPO_ROOT / "paper-jcim" / "figs" / "fold_superposition_combined.pdf",
-    REPO_ROOT / "paper-arxiv" / "figs" / "fold_superposition_combined.pdf",
+    REPO_ROOT / "paper-jcim" / "sections" / "figs" / "fold_superposition_combined.pdf",
+    REPO_ROOT / "paper-arxiv" / "sections" / "figs" / "fold_superposition_combined.pdf",
 ]
 
 parser = PDBParser(QUIET=True)

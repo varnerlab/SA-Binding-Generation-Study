@@ -38,10 +38,10 @@ encodes each aligned sequence as a column in a memory matrix. At each step the s
 computes attention weights over these stored sequences and moves toward their weighted average.
 A bias added to the attention scores makes it spend more time near selected sequences. We
 assigned a multiplicity weight $r_k > 0$ to each stored sequence and added $\log r_k$ to its
-attention score before the softmax normalization. All designated sequences share one weight and all
-background sequences share another, so a single number, the multiplicity ratio $\rho$ between
-the two weights, controls the strength of the bias: $\rho = 1$ recovers standard SA (no
-preference), while increasing $\rho$ shifts generation toward the designated subset. 
+attention score before the softmax normalization. All designated sequences share one weight and
+all background sequences share another. A single number, the multiplicity ratio $\rho$,
+therefore controls the bias: $\rho = 1$ recovers standard SA, while increasing $\rho$ shifts
+generation toward the designated subset.
 The method is agnostic to what the designated subset represents (binding, thermostability, organism of origin); it simply biases the sampler toward the sequences the user points to. 
 The same multiplicity-weighted mechanism has also been applied to synthetic patient generation
 from small longitudinal clinical cohorts~\cite{varnerSAPatient2026}, so the conditioning is not
@@ -51,21 +51,18 @@ the rest of the family out. Those discarded sequences are what show which
 positions the fold holds fixed and which are free to vary, so dropping them leaves the sampler
 with far fewer examples to work from. We tested both on five
 Pfam protein families (Kunitz, SH3, WW, Homeobox, and Forkhead domains) spanning a range of
-family sizes ($K = 55$--$420$) and designated-subset geometries. Hard curation retained the
-selected marker completely from as few as three designated inputs. Those inputs were chosen
-because they carry the marker, so recovering it demonstrated control over the sampler and not
-that the generated sequences had the function the marker stands for. The multiplicity weights,
+family sizes ($K = 55$--$420$) and designated-subset geometries. In Kunitz, hard curation
+retained the selected marker from as few as three designated inputs. Those inputs were chosen
+because they carry the marker, so recovery demonstrated control over the sampler, not the
+function associated with that marker. The multiplicity weights,
 by contrast, enter the sampler as a simple logit bias, preserving the analytic score function and
-$\mathcal{O}(dK)$ per-step cost of the original method. The conditioning has two stages, and only the
-first was exact. Inside the sampler, the mean attention mass on the designated patterns matched
-the fraction that $\rho$ sets to within \AttnMaxDevPts{} percentage points at worst
-(\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$) across the canonical replicated sweeps. Turning
-those continuous states back into discrete sequences cost part of that conditioning: after
-finite-temperature sampling, reconstruction from unit-normalized principal component analysis
-(PCA) coordinates, and argmax decoding, the fraction of generated sequences carrying the marker
-could fall below the attention mass the sampler had placed on the designated set. We termed that
-shortfall the calibration gap and examined it against a simple geometric quantity, the
-separation index $S$, which measures how well PCA separates designated from background
-sequences. Multiplicity weighting therefore offers a practical route to
-conditioning generative models in the scarce-data regime, and the calibration gap is the
-quantity anyone applying such conditioning should measure before trusting it.
+$\mathcal{O}(dK)$ per-step cost of the original method. At ideal equilibrium, $\rho$ sets the
+latent mixture share exactly. In the finite replicated runs, mean attention on designated
+patterns remained within \AttnMaxDevPts{} percentage points of that share at worst
+(\AttnMaxDevFamily{}, $\rho=\AttnMaxDevRho$). The discrete outputs were less faithful.
+Finite-temperature sampling, reconstruction from unit-normalized principal component analysis
+(PCA) coordinates, and argmax decoding could leave the marker frequency below the designated
+mixture share. We called this difference the calibration gap when designation and marker were
+the same label. We then compared it with the separation index $S$, a simple measure of how well
+PCA separates designated and background sequences. Multiplicity weighting therefore offers a
+practical route to scarce-data conditioning, but its decoded output must be calibrated.
