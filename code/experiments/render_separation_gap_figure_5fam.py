@@ -2,12 +2,13 @@
 """
 Two-panel figure for the S-vs-Δ relationship (5 Pfam families + conotoxin).
 
-Panel A: Calibration trajectories — f_obs vs f_eff for all 6 families across ρ values.
-         Diagonal = perfect calibration. Distance below diagonal = calibration gap.
+Panel A: Sequence-readout trajectories — f_obs vs f_eff for all 6 families across ρ values.
+         For the five Pfam families, the diagonal denotes perfect calibration.
 
-Panel B: Summary — S vs Δ with linear fit and R² (5 Pfam + conotoxin open marker).
+Panel B: Summary — S vs f_eff - f_obs with a five-Pfam linear fit and conotoxin
+         shown as an external open marker.
 """
-import csv, pathlib, numpy as np
+import csv, pathlib, sys, numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -24,8 +25,14 @@ if REPO_ROOT == pathlib.Path("."):
     raise RuntimeError("Could not locate repository root from script path")
 
 DATA = REPO_ROOT / "code" / "data"
-OUTS = [REPO_ROOT / "paper-jcim"  / "sections" / "figs" / "fig2_separation_vs_gap.pdf",
-        REPO_ROOT / "paper-arxiv" / "sections" / "figs" / "fig2_separation_vs_gap.pdf"]
+TARGETS = {
+    "jcim": REPO_ROOT / "paper-jcim" / "sections" / "figs" / "fig2_separation_vs_gap.pdf",
+    "arxiv": REPO_ROOT / "paper-arxiv" / "sections" / "figs" / "fig2_separation_vs_gap.pdf",
+}
+target = sys.argv[1] if len(sys.argv) == 2 else "both"
+if target not in ("arxiv", "jcim", "both"):
+    raise SystemExit("Usage: render_separation_gap_figure_5fam.py [arxiv|jcim|both]")
+OUTS = list(TARGETS.values()) if target == "both" else [TARGETS[target]]
 
 # --- family definitions ---
 families = {
@@ -104,15 +111,16 @@ for fam_name in fam_order:
                      arrowprops=dict(arrowstyle="<->", color=d["color"], lw=1.5, alpha=0.6))
         mid = (fe + fo) / 2
         x_txt = x_arrow + 0.015
-        ax1.text(x_txt, mid, f"$\\Delta$={gap:.2f}",
+        symbol = "\\Delta" if fam_name != "Conotoxin" else "d"
+        ax1.text(x_txt, mid, f"${symbol}$={gap:.2f}",
                 fontsize=7.5, color=d["color"], va="center", fontstyle="italic")
 
 ax1.set_xlabel("Effective designated fraction  $f_{\\mathrm{eff}}$", fontsize=11)
-ax1.set_ylabel("Observed phenotype fraction  $f_{\\mathrm{obs}}$", fontsize=11)
+ax1.set_ylabel("Observed sequence-readout fraction  $f_{\\mathrm{obs}}$", fontsize=11)
 ax1.set_xlim(0, 1.08)
 ax1.set_ylim(0, 1.08)
 ax1.set_aspect("equal")
-ax1.text(0.05, 0.95, "perfect\ncalibration", transform=ax1.transAxes,
+ax1.text(0.05, 0.95, "identity\nreference", transform=ax1.transAxes,
          fontsize=8, color="#999", va="top", fontstyle="italic")
 
 # legend
@@ -179,7 +187,7 @@ ax2.text(0.55, 0.88, f"$\\Delta \\approx {intercept:.2f} {slope:+.1f}\\,S$\n$R^2
          va="top")
 
 ax2.set_xlabel("Separation index  $S$", fontsize=11)
-ax2.set_ylabel("Calibration gap  $\\Delta = f_{\\mathrm{eff}} - f_{\\mathrm{obs}}$", fontsize=11)
+ax2.set_ylabel("Difference  $f_{\\mathrm{eff}} - f_{\\mathrm{obs}}$", fontsize=11)
 ax2.set_xlim(0.05, 0.90)
 ax2.set_ylim(-0.05, 0.75)
 ax2.text(-0.15, 1.05, "B", transform=ax2.transAxes, fontsize=14, fontweight="bold")

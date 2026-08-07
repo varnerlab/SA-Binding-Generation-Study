@@ -54,19 +54,6 @@ end
     @test occursin("tab:docking-validation", appendix)
 end
 
-@testset "JCIM and arXiv section sources stay in sync" begin
-    repo = normpath(joinpath(@__DIR__, "..", ".."))
-    jcim = joinpath(repo, "paper-jcim", "sections")
-    arxiv = joinpath(repo, "paper-arxiv", "sections")
-    for name in SHARED_SECTIONS
-        jcim_path = joinpath(jcim, name)
-        arxiv_path = joinpath(arxiv, name)
-        @test isfile(jcim_path)
-        @test isfile(arxiv_path)
-        @test manuscript_body(jcim_path) == manuscript_body(arxiv_path)
-    end
-end
-
 # Stripping the \Display macros above hides them from the cross-tree diff, so
 # check separately that every one invoked in the JCIM text is defined, and that
 # display_items.tex carries no orphan definitions.
@@ -118,14 +105,58 @@ kl_pm1(row) =
     @sprintf("\$%.1f \\pm %.1f\$", 1000 * row.kl_mean, 1000 * row.kl_std)
 div2(row) = @sprintf("%.2f", row.diversity_mean)
 
-function table_row(text, label)
+function table_row(text, label; ampersands=6)
     rows = filter(
-        line -> occursin(label, line) && count(==('&'), line) == 6 &&
+        line -> occursin(label, line) && count(==('&'), line) == ampersands &&
                 occursin("\\\\", line),
         split(text, '\n'),
     )
     @test length(rows) == 1
     return only(rows)
+end
+
+function labeled_table(text, table_label)
+    label_pos = findfirst(table_label, text)
+    @test label_pos !== nothing
+    table_start = findprev("\\begin{table}", text, first(label_pos))
+    table_stop = findnext("\\end{table}", text, last(label_pos))
+    @test table_start !== nothing
+    @test table_stop !== nothing
+    return text[first(table_start):last(table_stop)]
+end
+
+@testset "Kunitz mask-recovery table matches its CSV sources" begin
+    repo = normpath(joinpath(@__DIR__, "..", ".."))
+    experiment = CSV.read(
+        joinpath(repo, "code", "data", "kunitz", "mask_experiment.csv"),
+        DataFrame,
+    )
+    beta_sweep = CSV.read(
+        joinpath(repo, "code", "data", "kunitz", "mask_betasweep.csv"),
+        DataFrame,
+    )
+    text = read(joinpath(repo, "paper-arxiv", "Paper_v1.tex"), String)
+    table = labeled_table(text, "\\label{tab:mask-recovery}")
+
+    checks = [
+        ("Unconditional", only(filter(:condition => ==("unconditional"), experiment))),
+        ("Multiplicity", only(filter(r -> r.condition == "multiplicity" &&
+                                          r.f_target == maximum(experiment.f_target[experiment.condition .== "multiplicity"]),
+                                      experiment))),
+        ("at \$\\beta^{*}\$", only(filter(:condition => ==("mask"), experiment))),
+        ("Hard curation", only(filter(:condition => ==("curation"), experiment))),
+    ]
+    for (label, source) in checks
+        row = table_row(table, label; ampersands=3)
+        @test occursin(@sprintf("%.1f", source.beta), row)
+        @test occursin(@sprintf("\$%.2f \\pm %.2f\$", source.p1_kr, source.p1_kr_se), row)
+        @test occursin(@sprintf("%.2f", source.novelty), row)
+    end
+
+    sharp = only(filter(Symbol("β") => ==(512.0), beta_sweep))
+    row = table_row(table, "\\beta = 512"; ampersands=3)
+    @test occursin(@sprintf("\$%.2f \\pm %.2f\$", sharp.p1_kr, sharp.p1_kr_se), row)
+    @test occursin(@sprintf("%.2f", sharp.novelty), row)
 end
 
 @testset "Kunitz sequence-metric table matches its CSV sources" begin
@@ -154,11 +185,25 @@ end
         ("paper-arxiv", ["Paper_v1.tex"]),
     )
         text = join((read(joinpath(repo, tree, w), String) for w in wrappers), '\n')
+        table = labeled_table(text, "\\label{tab:structure-validation}")
         for (label, source) in source_rows
-            row = table_row(text, label)
+            row = table_row(table, label)
             @test occursin(pm2(source, :p1_kr_mean, :p1_kr_std), row)
             @test occursin(kl_pm1(source), row)
             @test occursin("& $(div2(source)) \\\\", row)
         end
+    end
+end
+
+@testset "JCIM and arXiv section sources stay in sync" begin
+    repo = normpath(joinpath(@__DIR__, "..", ".."))
+    jcim = joinpath(repo, "paper-jcim", "sections")
+    arxiv = joinpath(repo, "paper-arxiv", "sections")
+    for name in SHARED_SECTIONS
+        jcim_path = joinpath(jcim, name)
+        arxiv_path = joinpath(arxiv, name)
+        @test isfile(jcim_path)
+        @test isfile(arxiv_path)
+        @test manuscript_body(jcim_path) == manuscript_body(arxiv_path)
     end
 end

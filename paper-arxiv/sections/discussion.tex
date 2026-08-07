@@ -10,15 +10,15 @@ finite-step ULA error was not the main source of that gap. A single scalar $\rho
 interpolates between unconditioned generation and hard subset curation, and the value required
 for a target designated fraction follows directly from the family composition
 (Eq.~\ref{eq:rho-inverse}). In the Kunitz domain, curated memory retained the selected
-K/R-at-P1 marker with as few as three designated inputs, while full-family multiplicity
-weighting increased marker fidelity from 32\% to \KunitzFobsFiveHundred{} $\pm$
-\KunitzFobsFiveHundredSD{} at $\rho = 500$, and results across five Pfam families showed an
-association between PCA-space geometry and conditioning effectiveness.
+K/R-at-P1 marker with as few as three designated inputs. Full-family multiplicity weighting
+increased decoded marker frequency from $0.382\pm0.031$ at $\rho=1$ to
+\KunitzFobsFiveHundred{} $\pm$ \KunitzFobsFiveHundredSD{} at $\rho=500$. Across five Pfam
+families, PCA-space geometry was associated with conditioning effectiveness.
 
 The matched profile-HMM benchmark narrows the claim of advantage. When the objective is direct
 recovery of a selected single-position marginal, sequence-weighted profile HMMs were stronger:
 at $\rho=500$ they reproduced the tracked marker at 0.988--1.000 across the five Pfam
-families, whereas SA retained a decoder-dependent calibration gap. Conversely, in the matched
+families, whereas SA retained a latent-to-sequence calibration gap. Conversely, in the matched
 Kunitz sample, ESM2 assigned lower pseudo-perplexity to SA than to the weighted profile HMM
 ($\SARhoFiveHundredPPL\pm\SARhoFiveHundredPPLSD$ versus
 $\HMMRhoFiveHundredPPL\pm\HMMRhoFiveHundredPPLSD$). These observations support a tradeoff,
@@ -43,12 +43,13 @@ individual families, since leave-one-family-out slopes ranged from \RelationLooS
 separation index should therefore be treated as a descriptive diagnostic rather than an
 \emph{a priori} predictor or decision threshold, and broader prospective validation is
 required before it can guide the choice between multiplicity weighting and hard curation. The
-gap is therefore a property of the decoder rather than of the conditioning. The same
+Kunitz loss therefore arose mainly downstream of latent weighting. The same
 multiplicity weights have been used to generate synthetic patients from small clinical
 cohorts~\cite{varnerSAPatient2026}, where the generated values are clinical measurements that
 never have to be turned back into discrete symbols. Protein generation has no such option, since
 every sample must be reconstructed from PCA coordinates and then reduced to a single amino acid
-at each position. That last step, and not the multiplicity weights, is what costs us the marker.
+at each position. Finite-temperature variation, reconstruction, and decoding compressed the
+marker response.
 
 Small characterized sets of the kind hard curation requires arise routinely from screens,
 functional selections, and literature curation, and SA can expand such a set into additional
@@ -59,19 +60,18 @@ does not assign a biological meaning to the designation. The scaling study showe
 diversity increased with the number of designated inputs and changed little beyond
 $K_{\mathrm{des}}=20$. The $\omega$-conotoxin experiment provides a second example of
 conditioning from a small designated subset, and it also contrasts full-family with
-curated-subset seeding. Full-family seeding is appropriate when the goal is to generate novel
-family members with broad structural diversity, whereas curated seeding is necessary when the
-goal is to preserve a specific sequence marker. That contrast is sharp in the O-superfamily,
-which is structurally coherent, with all members sharing the C--C--CC--C--C disulfide
-framework, yet functionally heterogeneous, with members blocking N-type, P/Q-type, or sodium
-channels at varying selectivity. Full-family seeding therefore dilutes the Tyr13-associated
-marker, because its PCA encoding reflects the full sequence diversity. Curated seeding instead
+curated-subset seeding. In this experiment, full-family seeding favored broader diversity,
+whereas curated seeding favored retention of a specific sequence marker. That contrast is sharp
+in the O-superfamily,
+which shares the C--C--CC--C--C cysteine framework but spans distinct channel targets and
+selectivity profiles. Full-family seeding yielded less Tyr13, consistent with a PCA encoding
+that reflects the broader sequence diversity. Curated seeding instead
 restricts the PCA basis to variation among the 23 designated accessions, and it recovered
-Tyr13 at 98\% frequency. Because the accession designation and the Tyr13 marker agree for only
-86.5\% of stored sequences, these two outcomes are related but not interchangeable. The
-comparison also shows how the separation index should be read, since even at moderate $S$ hard
-curation can achieve high marker retention by restricting the memory to the designated subset.
-That retention costs sequence diversity and novelty (0.46 vs.\ 0.60), a cost that reflects the
+Tyr13 at 98.5\% frequency. Because the accession designation and the Tyr13 marker agree for only
+86.5\% of stored sequences, these two outcomes are related but not interchangeable.
+Hard curation can achieve high marker retention by restricting the memory to the designated
+subset, even when full-family weighting has a sizable marker gap. That retention costs sequence
+diversity and novelty (0.45 vs.\ 0.59), a cost that reflects the
 narrower PCA basis and is consistent with the Kunitz scaling study.
 
 Several limitations should be acknowledged. The Supporting Information AlphaFold2-multimer
@@ -92,7 +92,7 @@ also not experimentally validated the binding activity of generated sequences, a
 fidelity is not evidence of functional binding. For the $\omega$-conotoxin family, we compared
 generated residue frequencies with positions reported by alanine-scanning and site-directed
 mutagenesis studies~\cite{kimTyr13Essential1995,satoBasicResidues1993,lewisConotoxinSAR2012},
-and designated-seeded generation retained the cysteine scaffold and Tyr13 signal and enriched
+and designated-seeded generation retained the cysteine scaffold and Tyr13 signal and shifted
 several reported positions (Table~\ref{tab:sar-agreement}), but this does not establish their
 effects in the new sequence backgrounds. For the Kunitz domain, deep mutational scanning data
 for the BPTI--trypsin interaction are available~\cite{heyneBPTIDMS2021} and could provide

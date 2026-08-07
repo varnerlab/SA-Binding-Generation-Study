@@ -40,18 +40,18 @@ end
 # abbreviated role and effect strings are typesetting choices and stay here. The key set
 # is the authoritative list of rows the table must contain.
 const SAR_LABELS = Dict(
-    13 => ("Tyr", "Primary reported marker", "Ala: abolishes activity"),
+    13 => ("Tyr", "Reported Tyr marker", "Ala: large activity loss"),
     2  => ("Lys", "Loop 2 stabilization", "Ala: 40\$\\times\$ loss (GVIA)"),
-    10 => ("Arg", "Loop 2 binding", "Critical for interaction"),
-    11 => ("Leu", "Loop 2 binding", "Critical for interaction"),
-    1  => ("Cys", "Disulfide framework", "Required for fold"),
-    8  => ("Cys", "Disulfide framework", "Required for fold"),
-    15 => ("Cys", "Disulfide framework", "Required for fold"),
-    16 => ("Cys", "Disulfide framework", "Required for fold"),
-    20 => ("Cys", "Disulfide framework", "Required for fold"),
-    25 => ("Cys", "Disulfide framework", "Required for fold"),
-    21 => ("Arg", "Electrostatic", "Ala: reduced potency"),
-    4  => ("Lys", "P/Q selectivity", "Ala: important for P/Q"),
+    10 => ("Arg", "Reported loop 2 residue", "MVIIA binding region"),
+    11 => ("Leu", "Reported loop 2 residue", "MVIIA binding region"),
+    1  => ("Cys", "Cysteine framework", "Disulfide-forming"),
+    8  => ("Cys", "Cysteine framework", "Disulfide-forming"),
+    15 => ("Cys", "Cysteine framework", "Disulfide-forming"),
+    16 => ("Cys", "Cysteine framework", "Disulfide-forming"),
+    20 => ("Cys", "Cysteine framework", "Disulfide-forming"),
+    25 => ("Cys", "Cysteine framework", "Disulfide-forming"),
+    21 => ("Arg", "Reported MVIIA SAR", "Ala: reduced potency"),
+    4  => ("Lys", "MVIIC P/Q selectivity", "Ala: affects P/Q"),
 )
 
 function validate_inputs()

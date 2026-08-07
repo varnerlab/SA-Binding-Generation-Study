@@ -123,17 +123,19 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   \caption{\textbf{Cross-family summary of all protein families tested.}
   For each family: source database, number of sequences ($K$), aligned length ($L$), PCA
   dimensionality ($d$, capturing 95\% variance), designated subset size ($K_{\mathrm{des}}$),
-  sequence marker, natural designated fraction ($f_{\mathrm{nat}}$), separation index
-  ($S$), observed marker fraction under hard curation ($f_{\mathrm{obs}}^{\mathrm{hard}}$),
-  and calibration gap ($\Delta$ at $\rho=500$). All six families were tested with both
-  multiplicity weighting and hard curation.}
+  sequence readout, designated input fraction ($f_{\mathrm{des}}$), separation index
+  ($S$), and observed readout fraction under hard curation
+  ($f_{\mathrm{obs}}^{\mathrm{hard}}$). For the five Pfam families, $\Delta$ is the
+  calibration gap at $\rho=500$. The conotoxin designation is accession based,
+  whereas its readout is Tyr13, so its $\Delta$ compares different quantities.
+  All six families were tested with both multiplicity weighting and hard curation.}
   \label{tab:cross-family}
   \small
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{lcccccccccc}
     \toprule
-    Family & Source & $K$ & $L$ & $d$ & $K_{\mathrm{des}}$ & Marker
-           & $f_{\mathrm{nat}}$ & $S$
+    Family & Source & $K$ & $L$ & $d$ & $K_{\mathrm{des}}$ & Readout
+           & $f_{\mathrm{des}}$ & $S$
            & $f_{\mathrm{obs}}^{\mathrm{hard}}$ & $\Delta$ \\
     \midrule
     \input{sections/generated/tab_cross_family}
@@ -159,8 +161,8 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
     Condition & $\beta$ & P1~K/R $\uparrow$ & Novelty \\
     \midrule
     Unconditional ($b = 0$)                      & 3.8 & $0.39 \pm 0.02$ & 0.42 \\
-    Multiplicity (strongest finite $\rho$)       & 7.7 & $0.59 \pm 0.02$ & 0.39 \\
-    Hard mask ($b = -\infty$), at $\beta^{*}$    & 3.2 & $0.50 \pm 0.02$ & 0.42 \\
+    Multiplicity ($f_{\mathrm{eff}}=0.99$)       & 7.7 & $0.56 \pm 0.02$ & 0.40 \\
+    Hard mask ($b = -\infty$), at $\beta^{*}$    & 3.2 & $0.50 \pm 0.02$ & 0.43 \\
     Hard mask ($b = -\infty$), $\beta = 512$     & 512 & $1.00 \pm 0.00$ & 0.16 \\
     Hard curation (subset basis)                 & 3.2 & $1.00 \pm 0.00$ & 0.32 \\
     \bottomrule
@@ -184,7 +186,9 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   within finite-sample uncertainty, but $f_{\mathrm{obs}}$ converges fastest
   for Homeobox ($S=\HomeoboxSeparation$) and slowest for WW
   ($S=\WWSeparation$), reflecting the
-  observed latent-to-sequence calibration gap.}
+  observed latent-to-sequence calibration gap. In conotoxin, designation is
+  accession based while $f_{\mathrm{obs}}$ measures Tyr13, so the difference is
+  descriptive rather than a calibration gap.}
   \label{tab:per-family-rho}
   \small
   \resizebox{\textwidth}{!}{%
@@ -209,8 +213,9 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   Both methods receive the same cleaned alignment, designation labels, and relative
   sequence weights. Marker fractions are mean $\pm$ s.d.\ across five independent
   replicates of 620 sequences. $D$ is mean pairwise sequence diversity. The profile
-  HMM transfers the selected single-position marginal directly; SA additionally passes
-  through its PCA decoder.}
+  HMM transfers the selected single-position marginal directly in the five Pfam splits;
+  SA additionally passes through its PCA decoder. For conotoxin, $f_{\mathrm{eff}}$
+  refers to accession designation and the marker column reports Tyr13.}
   \label{tab:profile-hmm-benchmark}
   \small
   \begin{tabular}{lccccc}
@@ -228,7 +233,7 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   \centering
   \caption{\textbf{Structure-model, language-model, and sequence-marker evaluation on the Kunitz domain.}
   pLDDT: ESMFold predicted confidence (0--100; $>70$ = confident).
-  TM: TM-score against 1BPI chain~A ($>0.5$ = same fold).
+  TM: TM-score against 1BPI chain~A ($>0.5$ is a conventional same-fold reference).
   PPL: ESM2-650M masked-marginal pseudo-perplexity (lower = more plausible).
   P1~K/R: fraction with Lys/Arg at the primary trypsin contact.
   KL: amino acid composition divergence ($\times 10^{3}$).
@@ -266,20 +271,20 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   \centering
   \caption{\textbf{Cross-predictor structure-model comparison for Kunitz and
   $\omega$-conotoxin.}
-  Two independent predictors scored the same 50 sequences per source:
+  Two structure predictors scored the same 50 sequences per source:
   AlphaFold2-ptm via ColabFold (1 model, 3 recycles, MMseqs2 MSA) and ESMFold.
   pLDDT: mean predicted confidence ($0$--$100$; $>70$ = confident).
   TM: TM-score against the experimental reference (1BPI chain~A for Kunitz,
-  1OMG chain~A for $\omega$-conotoxin; $>0.5$ = same fold).
+  1OMG chain~A for $\omega$-conotoxin; $>0.5$ is a conventional same-fold reference).
   Values are mean $\pm$ s.d.\ across the 50 sequences.
   The designated-subset $\omega$-conotoxins had a higher mean TM-score than the stored group
   under both predictors. For full-family generation, the ESMFold mean was higher, whereas the
   AlphaFold2-ptm mean exceeded the stored mean by only 0.0027, negligible relative to the
-  within-group standard deviations. For the $\omega$-conotoxins, TM-scores are low for the stored natural
-  sequences as well as the generated ones, which is consistent with normalization to the
-  25-residue reference chain rather than with a fold difference introduced by
-  conditioning. These are model-derived quantities and do not establish experimental
-  folding or binding.}
+  within-group standard deviations. For $\omega$-conotoxin, the overlap between stored
+  and generated groups gives no evidence of a conditioning-induced loss. The low absolute
+  TM-scores alone cannot distinguish short-chain metric behavior from structural
+  differences. These model-derived quantities do not establish experimental folding or
+  binding.}
   \label{tab:structure-model-comparison}
   \small
   \begin{tabular}{llccccc}
@@ -309,9 +314,9 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   \caption{\textbf{$\omega$-Conotoxin Tyr13 marker retention under curated vs.\
   full-family seeding.}
   Tyr13\%: fraction with tyrosine at the selected marker position (col.~13).
-  K+R\%: basic residue fraction (electrostatic complementarity). KL: amino acid composition
+  K+R\%: overall basic-residue fraction. KL: amino acid composition
   divergence. Novelty: mean cosine distance to nearest stored pattern. Designated-subset seeding
-  increased the Tyr13 frequency from 82.6\% to 98.3\% and produced a similar
+  increased the Tyr13 frequency from 82.6\% to 98.5\% and produced a similar
   basic-residue fraction (19.7\% against 20.1\%). Full-family seeding produced lower values than
   designated-subset seeding, although both Tyr13 and the basic-residue fraction increased relative
   to the full-family input.}
@@ -323,8 +328,8 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
     \midrule
     Input: full family          &   74 & 33.8 &  9.9 & 0      & 0 \\
     Input: designated subset    &   23 & 82.6 & 19.7 & 0      & 0 \\
-    Generated: full-seeded      & 1550 & 46.9 & 12.0 & 0.0075 & 0.60 \\
-    Generated: designated-seeded & 1550 & 98.3 & 20.1 & 0.0083 & 0.46 \\
+    Generated: full-seeded      & 1550 & 48.5 & 12.0 & 0.0084 & 0.59 \\
+    Generated: designated-seeded & 1550 & 98.5 & 20.1 & 0.0084 & 0.45 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -334,22 +339,22 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
 % -----------------------------------------------------------------------
 \begin{table}[ht]
   \caption{\textbf{Residue frequencies at reported $\omega$-conotoxin SAR positions.}
-  Published structure-activity relationship (SAR) data for $\omega$-conotoxin
-  binding to Cav2.2 identify critical residues whose mutation abolishes or
-  substantially reduces channel block~\cite{kimTyr13Essential1995,satoBasicResidues1993,satoAlaScanMVIIC2000,schroederLys2Effects2012,lewisConotoxinSAR2012,schroederChiralityTyr131999}.
+  Published SAR and structural studies across $\omega$-conotoxins report roles for
+  these positions in activity, binding, or fold
+  maintenance~\cite{kimTyr13Essential1995,satoBasicResidues1993,satoAlaScanMVIIC2000,schroederLys2Effects2012,lewisConotoxinSAR2012,schroederChiralityTyr131999}.
   For each reported position, the table gives the fraction retaining the listed residue
   (or a K/R substitution at basic positions). The six framework cysteines are invariant
   across the designated input, so the table reports their retention rather than their
   enrichment. Designated-subset generation retains the Tyr13 signal and the cysteine
-  scaffold, and raises the frequency at Tyr13, Arg10, position~21 and Lys4 relative to
-  the designated input. These
+  scaffold, and increases the listed frequencies at Tyr13, Arg10, position~21, and
+  Lys4 relative to the designated input. These
   frequencies do not test the effects of mutations in the generated backgrounds.}
   \label{tab:sar-agreement}
   \centering
   \small
   \begin{tabular}{clllccc}
     \toprule
-    Pos. & WT & Role & Mutation effect & Input & SA des. & SA full \\
+    Pos. & WT & Reported role & Evidence & Input & SA des. & SA full \\
     \midrule
     \input{sections/generated/tab_sar_agreement}
   \end{tabular}
@@ -400,24 +405,24 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth]{sections/figs/fig2_separation_vs_gap.pdf}
-  \caption{\textbf{Calibration trajectories reveal family-dependent gaps associated with
-  PCA-space separation.}
-  \textbf{(A)}~Observed marker fraction $f_{\mathrm{obs}}$ versus effective designated
+  \caption{\textbf{Decoded sequence readouts vary with PCA-space separation.}
+  \textbf{(A)}~Observed readout fraction $f_{\mathrm{obs}}$ versus effective designated
   fraction $f_{\mathrm{eff}}$ as the multiplicity ratio $\rho$ increases from 1 to 500
   for six protein families. The dashed diagonal marks perfect calibration
   ($f_{\mathrm{obs}} = f_{\mathrm{eff}}$). Homeobox
   ($S = \HomeoboxSeparation$) and SH3 ($S = \SHThreeSeparation$)
   domains track the diagonal closely; Kunitz ($S = \KunitzSeparation$) and Forkhead
   ($S = \ForkheadSeparation$) curve below; WW domains ($S = \WWSeparation$) show the
-  largest departure; $\omega$-conotoxin ($S = \ConotoxinSeparation$) shows a moderate gap
-  despite high PCA separation. Double-headed arrows
-  indicate the calibration gap at $\rho = 500$.
+  largest departure. The $\omega$-conotoxin curve compares accession-based designation
+  with a Tyr13 readout rather than like quantities. For the five Pfam families,
+  double-headed arrows indicate the calibration gap at $\rho = 500$.
   \textbf{(B)}~Separation index $S$ versus calibration gap $\Delta$ at $\rho = 500$.
   Error bars show replicate s.d. An exploratory linear fit to the five Pfam families
   (filled markers; $\Delta \approx \RelationIntercept{} \RelationSlope\,S$,
   $R^{2}=\RelationRsq$) summarizes the association without defining a prospective
   threshold. The $\omega$-conotoxin point (open diamond) is displayed as an external
-  comparison and is not included in the fit.}
+  comparison and is not included in the fit; its vertical difference is descriptive,
+  not a calibration error.}
   \label{fig:separation-vs-gap}
 \end{figure}
 
@@ -427,17 +432,16 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
 \begin{figure}[p]
   \centering
   \includegraphics[width=0.72\textwidth]{sections/figs/fig_mask_betasweep.pdf}
-  \caption{\textbf{Recovery is set by retrieval sharpness and conditioning strength, both
-  acting through the decode gap.}
+  \caption{\textbf{Recovery depends on retrieval sharpness and conditioning strength.}
   P1~K/R fraction for the Kunitz designated subset versus inverse temperature
   $\beta$ (log scale) under the hard attention mask ($b = -\infty$ on background
   patterns; red curve, 30 chains per point, error bars are standard error across
-  chains). The mask is the $\Delta_{\mathrm{attn}} = 0$ envelope: recovery climbs
-  monotonically from 0.46 at $\beta = 2$ to 1.00 at $\beta = 512$ with no plateau.
+  chains). Under the mask, all attention is restricted to designated memories. Recovery
+  climbs monotonically from 0.47 at $\beta = 2$ to 1.00 at $\beta = 512$ with no plateau.
   The finite-$\rho$ multiplicity conditions (blue diamonds, each at its own
   $\beta^{*}(\vr)$) sit below this envelope at matched $\beta$: hard masking recovers more
-  marker signal than soft weighting by 0.111 (SE 0.027) at $f_{\mathrm{eff}} = 0.5$,
-  contracting into the noise as $\rho \to \infty$ (0.002, SE 0.030, at
+  marker signal than soft weighting by 0.085 (SE 0.028) at $f_{\mathrm{eff}} = 0.5$,
+  contracting into the noise as $\rho \to \infty$ (0.003, SE 0.030, at
   $f_{\mathrm{eff}} = 0.99$); faint red points show the mask run at each matched
   $\beta$. Because each condition's attention already matches its own target
   ($\Delta_{\mathrm{attn}} \approx 0$), this shrinking margin tracks the difference in
@@ -538,12 +542,13 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
   rotation. The SA-generated variant aligns to the BPTI crystal structure
   (1BPI chain~A) with TM $= 0.86$, reproducing the double-loop architecture,
   three-stranded antiparallel $\beta$-sheet, and $\alpha$-helical turn;
-  mean pLDDT $= 96.3$ indicates high-confidence prediction.
+  mean C$\alpha$ confidence is 96.3.
   \textbf{(C)}~$\omega$-Conotoxin, front view. \textbf{(D)}~$\omega$-Conotoxin,
   $90^{\circ}$ rotation. The SA-generated variant aligns to the MVIIA NMR structure
-  (1OMG chain~A) with TM $= 0.53$, consistent with the small peptide length
-  (26 residues) where TM-score normalization is noisy; the cystine-knot topology
-  and loop architecture appear in the prediction, with mean pLDDT $= 85.7$.
+  (1OMG chain~A) with TM $= 0.53$; its predicted backbone follows the reference
+  in this illustrative alignment, with mean C$\alpha$ confidence 85.7.
+  These highest-scoring examples are not group-level validation; group summaries
+  appear in Table~\ref{tab:structure-model-comparison}.
   Colorbar: pLDDT confidence scale (red $= 50$, blue $= 100$).
   Structures predicted by ESMFold~\cite{esmfold2022}; alignment by
   TM-align~\cite{tmAlign2005}.}
@@ -571,13 +576,12 @@ emissions, ESM2 scoring outputs, source code, and experiment scripts are availab
 \begin{figure}[p]
   \centering
   \includegraphics[width=0.72\textwidth]{sections/figs/plddt_vs_tmscore_scatter.pdf}
-  \caption{\textbf{pLDDT and TM-score are positively correlated; SA sequences cluster in
-  the high model-score region.}
-  Each point represents one predicted structure (50 per source). Stored (gray) and SA-generated
-  (blue, red, green) sequences cluster tightly above pLDDT $>85$ and TM-score $>0.8$ (upper
-  right quadrant). Profile HMM sequences (orange) scatter broadly, with many falling below the
-  pLDDT $>70$ confidence threshold (vertical dashed line) and the TM-score $>0.5$ same-fold
-  threshold (horizontal dashed line).}
+  \caption{\textbf{Joint pLDDT and TM-score distributions for Kunitz sequences.}
+  Each point represents one predicted structure (50 per source). SA-generated
+  (blue, red, green) and most stored (gray) sequences occupy the high-score region near
+  pLDDT $>85$ and TM-score $>0.8$. Profile HMM sequences (orange) scatter broadly, with many falling below the
+  pLDDT $>70$ confidence reference (vertical dashed line) and the conventional TM-score
+  $>0.5$ same-fold reference (horizontal dashed line).}
   \label{fig:plddt-tmscore-scatter}
 \end{figure}
 

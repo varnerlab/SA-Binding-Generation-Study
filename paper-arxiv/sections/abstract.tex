@@ -1,16 +1,14 @@
 % abstract.tex -- Abstract
-Small protein-family alignments often contain a user-designated subset of interest but too
-little labeled data for training a conditional generator; we address this regime by adding one
-multiplicity ratio to the attention logits of a training-free stochastic-attention sampler,
-continuously shifting generation from the full family toward the designated sequences. For
-unit-norm memories, the resulting Boltzmann target is an exact Gaussian mixture with normalized
-multiplicities as component weights, which separates exact latent conditioning from the
-calibration gap introduced by dimensionality reduction, reconstruction, and sequence decoding.
-Across five Pfam families and an $\omega$-conotoxin peptide family, the attention mass tracked
-the analytic target while decoded single-position markers depended on subset separation; a
-matched multiplicity-weighted profile-HMM benchmark transferred those marginal markers more
-directly, whereas stochastic attention gave lower ESM2 pseudo-perplexity in the matched Kunitz
-comparison. Curated seeding of 23 $\omega$-conotoxin accessions also produced diverse sequences
-that retained the cysteine scaffold, Tyr13 marker, and several residue frequencies reported in
-prior mutagenesis studies, generating experimentally testable candidates without establishing
-binding.
+Small protein-family alignments may contain a subset of interest but too little labeled data
+for training a conditional generator. We address this regime by adding one multiplicity ratio
+to the logits of a training-free stochastic-attention sampler, shifting generation from the
+full family toward designated sequences. For unit-norm memories, the Boltzmann target is an
+exact Gaussian mixture whose component weights are the normalized multiplicities. This result
+separates exact latent conditioning from losses introduced by finite-temperature variation,
+PCA reconstruction, and discrete decoding. Across five Pfam families, attention tracked the
+analytic target, while decoded single-position markers depended on subset separation. A matched
+weighted profile HMM transferred these markers more directly, whereas stochastic attention had
+lower ESM2 pseudo-perplexity in the matched Kunitz comparison. Curated seeding of 23
+$\omega$-conotoxin accessions produced diverse sequences that retained the cysteine scaffold,
+Tyr13, and several reported residue frequencies. These sequences are testable candidates, not
+evidence of binding.

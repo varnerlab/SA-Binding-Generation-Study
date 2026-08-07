@@ -36,6 +36,9 @@ JuliaLocalPreferences.toml
 __pycache__/
 *.pyc
 
+# Local Python virtual environments
+.venv/
+
 # Generated LaTeX outputs; source figures under sections/figs and figs remain tracked.
 /texput.log
 /paper-arxiv/**/*.aux

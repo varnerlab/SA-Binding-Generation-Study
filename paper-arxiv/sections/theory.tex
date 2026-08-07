@@ -24,7 +24,7 @@ attention update~\cite{varnerSAProtein2026}:
     + \sqrt{2\alpha/\beta}\;\veps_{t},
   \qquad \veps_{t} \sim \mathcal{N}(\mathbf{0},\,\mathbf{I}_{d}).
 \end{equation}
-We extend this framework to condition generation on a functional subset by assigning a
+We extend this framework to condition generation on a designated subset by assigning a
 multiplicity weight $r_k > 0$ to each stored pattern. The \emph{multiplicity-weighted} Hopfield
 energy is given by:
 \begin{equation}\label{eq:weighted-energy}
@@ -180,49 +180,23 @@ equals the Shannon entropy $H_{\vr}(0)$ only when the weights are equal.
 
 \subsection{The Calibration Gap}\label{sec:gap}
 
-Setting $\rho$ fixes $f_{\mathrm{eff}}$, the share of the equilibrium mixture that sits on
-designated components. That share is a statement about the latent state $\vxi$. What we can
-count in the output is a different quantity, the fraction of generated sequences that carry the
-designated marker after argmax decoding, which we write $f_{\mathrm{obs}}$. Four steps of the
-signal chain separate the one from the other:
-\begin{equation}\label{eq:signal-chain}
-  \rho
-  \;\xrightarrow{\;\text{exact}\;}\;
-  f_{\mathrm{eff}}
-  \;\xrightarrow{\;\text{exact}\;}\;
-  \bar{a}_{\mathrm{des}}
-  \;\xrightarrow{\;\text{lossy}\;}\;
-  f_{\mathrm{soft}}
-  \;\xrightarrow{\;\text{nonlinear}\;}\;
-  f_{\mathrm{obs}},
-\end{equation}
-where $\bar{a}_{\mathrm{des}}$ is the attention weight summed over the designated patterns and
-averaged over the retained states of the sampler (Eq.~\ref{eq:a-des}), and $f_{\mathrm{soft}}$ is the continuous-valued probability of the designated residue
-at the marker position, read off before the decoder commits to a letter. The labels say what
-each step does to the number handed to it. \emph{Exact} means the step introduces no
-approximation of its own. Eq.~\eqref{eq:f-eff} turns $\rho$ into $f_{\mathrm{eff}}$ by algebra,
-and the multiplicities enter the attention logits directly in Eq.~\eqref{eq:weighted-ula}, which
-is why the measured $\bar{a}_{\mathrm{des}}$ tracks $f_{\mathrm{eff}}$. \emph{Lossy} means the
-step discards information it was given. The PCA reconstruction returns a blend of amino acid
-frequencies, and the marker distinction can be buried in that blend when designated and
-background patterns sit close together in PCA space. \emph{Nonlinear} means the step is a
-threshold rather than a proportion. Argmax keeps only the residue with the highest probability,
-so a shift of $f_{\mathrm{soft}}$ from 0.45 to 0.55 flips every decoded letter at that position,
-while an equal shift from 0.05 to 0.15 flips none. The calibration gap is what the chain loses
-end to end, $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$, and each step contributes a term
-that can be measured on its own:
-\begin{equation}\label{eq:gap-decomp}
-  \Delta = \underbrace{(f_{\mathrm{eff}} - \bar{a}_{\mathrm{des}})}_{\Delta_{\mathrm{attn}}\;\approx\;0}
-  + \underbrace{(\bar{a}_{\mathrm{des}} - f_{\mathrm{soft}})}_{\Delta_{\mathrm{PCA}}}
-  + \underbrace{(f_{\mathrm{soft}} - f_{\mathrm{obs}})}_{\Delta_{\mathrm{argmax}}}.
-\end{equation}
-The first term asks whether the sampler delivered the mixture it was asked for, the second how
-much of the marker distinction survived the representation, and the third how much of what
-survived cleared the threshold.
+Setting $\rho$ fixes $f_{\mathrm{eff}}$, the share of the equilibrium mixture assigned to
+designated components. At exact equilibrium, attention is the posterior responsibility of each
+mixture component, so its expected designated mass is also $f_{\mathrm{eff}}$. A finite ULA run
+only estimates that expectation, which is why we measure $\bar{a}_{\mathrm{des}}$ directly
+(Eq.~\ref{eq:a-des}).
 
-The decomposition locates where the number is lost. It does not say what a matched number would
-prove. Because the target is exactly a mixture, we can also describe the final step by
-conditioning on which component actually produced the sample.
+The discrete output is a different quantity. We write $f_{\mathrm{obs}}$ for the fraction of
+decoded sequences carrying the tracked marker and define
+$\Delta=f_{\mathrm{eff}}-f_{\mathrm{obs}}$. When designation and marker are the same label, as
+in the five Pfam experiments, $\Delta$ is a calibration gap across latent sampling, PCA
+reconstruction, and argmax decoding. It can be negative because decoding may produce more
+marker-positive sequences than the designated mixture share. For $\omega$-conotoxin,
+designation is an accession list and Tyr13 is a separate readout, so the same difference is
+descriptive rather than a calibration error.
+
+Because the target is exactly a mixture, we can describe the complete reconstruction and
+decoding path by conditioning on which component produced the sample.
 Let $C$ be that component and let $\mathcal{D}$ be the index set of the designated patterns, so
 that $C\in\mathcal{D}$ says the draw came from a designated component. We define:
 \[
@@ -233,9 +207,11 @@ q_{\mathrm{bg}}
   &= \Pr(\text{decoded marker positive}\mid C\notin\mathcal{D}).
 \end{aligned}
 \]
-These are decoding rates, one per group. The rate $q_{\mathrm{des}}$ is how often a draw from a
-designated component decodes to a marker-positive sequence, which is the outcome we want, and
-$q_{\mathrm{bg}}$ is how often a background draw does the same, which is an error. Combining these rates gives:
+These are latent-to-sequence transfer rates, one per group. They include the
+finite-temperature spread around each component as well as reconstruction and decoding.
+The rate $q_{\mathrm{des}}$ is how often a draw from a designated component becomes a
+marker-positive sequence; $q_{\mathrm{bg}}$ is the corresponding rate for a background draw.
+Combining these rates gives:
 \begin{equation}\label{eq:decoder-pushforward}
   f_{\mathrm{obs}}
   = f_{\mathrm{eff}}q_{\mathrm{des}}
@@ -252,13 +228,12 @@ the whole path from latent state to sequence, not a diagnostic for tuning that
 path. Matching $f_{\mathrm{obs}}$ to $f_{\mathrm{eff}}$ in particular does not
 identify a correct PCA scaling, because a decoder that carries no information at
 all can match the two by trading one error rate against the other.
-Both the lossy step and the nonlinear step depend on how the designated and background
-sequences sit relative to each other in PCA space, so we need one number for that geometry,
-comparable across families.
+The transfer rates depend on how the designated and background sequences sit relative to each
+other in PCA space, so we need one number for that geometry, comparable across families.
 We define the separation index
 $S = (\bar{c}_{\mathrm{within}} - \bar{c}_{\mathrm{between}}) /
 [\tfrac{1}{2}(\sigma_{\mathrm{within}} + \sigma_{\mathrm{between}})]$, where $\bar{c}$ and
 $\sigma$ denote the mean and standard deviation of pairwise cosine similarities within and
-between functional groups in PCA space. This is a Fisher-type ratio defined for this study
+between designated and background groups in PCA space. This is a Fisher-type ratio defined for this study
 on pairwise cosine similarities, not the classical Fisher discriminant criterion,
 which is computed from class means and scatter matrices.

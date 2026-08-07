@@ -145,14 +145,17 @@ First, the PCA subspace is independent of $\rho$: the principal directions
 $\mathbf{W}_d$, the centering vector $\bar{\mathbf{x}}$, and the retained
 dimension $d$ are all determined by the alignment alone. This fixes the
 representation through which the conditioning signal must pass, but it does
-not make the calibration gap $\Delta = f_{\mathrm{eff}} - f_{\mathrm{obs}}$
-constant: both terms vary with $\rho$ in the replicated sweeps. Second,
+not fix the decoded marker response: both the latent share and the response
+vary with $\rho$ in the replicated sweeps. For the five Pfam families,
+designation and marker status coincide, so their difference is a calibration
+gap. The conotoxin designation is accession based and does not coincide with
+Tyr13 status; its analogous difference is descriptive. Second,
 $\rho$ controls attention, not
 geometry: increasing $\rho$ adds $\log\rho$ to the designated logits, shifting
 attention weight toward designated patterns, but this shift must still pass
 through finite-temperature latent noise, the normalized-coordinate PCA
 reconstruction, and argmax decoding to produce discrete residues. These
-operations jointly determine the observed calibration gap. Third, $\rho$ shifts the
+operations jointly determine the decoded response. Third, $\rho$ shifts the
 entropy crossover: the logit biases make the attention uneven at $\beta = 0$
 before $\beta$ does anything, reducing the weighted entropy there to the Shannon
 entropy $H_{\mathbf{r}}(0) = -\sum_k w_k \log w_k < \log K$ with
@@ -165,9 +168,9 @@ memory matrix is built from the designated subset only) \emph{does} change
 the PCA: the centering vector, principal directions, and retained dimension
 are all computed from $K_{\mathrm{des}}$ sequences, capturing
 subset-specific variation that may be orthogonal to the leading components
-of the full-family PCA. This is why hard curation achieved 100\% marker
-transfer regardless of the separation index $S$, while multiplicity
-weighting was limited by the full-family PCA geometry.
+of the full-family PCA. Hard curation achieved 100\% marker transfer in the
+five Pfam families and 97.9\% in conotoxin, whereas multiplicity weighting
+retained the full-family PCA geometry.
 
 \section{Supplementary Tables and Figures}\label{app:tables-figures}
 
@@ -180,7 +183,11 @@ averaged across five independent replicates (620 retained samples per replicate)
 $\bar{a}_{\mathrm{des}}$ is the softmax attention weight summed over the designated
 patterns and averaged over retained states; and $D$ is the mean pairwise
 diversity. Uncertainties are replicate
-standard deviations. Marker fraction and diversity are reported as a function
+standard deviations. For the five Pfam families, designated sequences are
+exactly the marker-positive sequences. For conotoxin, designation follows
+curated accession membership, so $f_{\mathrm{eff}}-f_{\mathrm{obs}}$ compares
+an accession share with a Tyr13 readout and is not a calibration error between
+like quantities. Marker fraction and diversity are reported as a function
 of $\beta/\beta^{*}$ for three fixed $\rho$ values on the Kunitz domain
 (Table~\ref{tab:beta-sweep}). Across all 250 predicted Kunitz structures,
 SA-generated sequences cluster tightly in the high-pLDDT, high-TM-score region
@@ -325,8 +332,8 @@ The decoded marker fractions barely separated. At a requested share of 0.5, the 
 conditions differed by 50 percentage points in what they requested. That difference shrank to
 0.053 (SE 0.029) at a requested share of 0.7, 0.025 at 0.9, 0.012 at 0.95, and 0.003
 (SE 0.030) at 0.99, where the two requests nearly coincide. Doubling the requested designated
-mass therefore bought less than a tenth of a unit of decoded marker, which is the reconstruction
-loss described in the main text seen from a second direction.
+mass therefore bought less than a tenth of a unit of decoded marker. This result
+again shows compression across reconstruction and discrete decoding.
 
 \section{Cav2.2 Complex-Prediction Diagnostic}
 We modeled SA-generated and natural $\omega$-conotoxins with the Cav2.2 pore-domain target
@@ -357,7 +364,7 @@ geometry.
 \end{table}
 
 Group-level comparisons among the SA designated-subset, SA full-family, and
-natural $\omega$-conotoxin controls) were evaluated using exact two-sided
+natural $\omega$-conotoxin controls were evaluated using exact two-sided
 permutation tests on mean complex-level scores (iPTM, pTM, confidence, and
 interface pLDDT), with sample sizes 10, 10, and 5, respectively. No pairwise
 contrast reached significance at $\alpha=0.05$ (all $p > 0.05$; smallest observed

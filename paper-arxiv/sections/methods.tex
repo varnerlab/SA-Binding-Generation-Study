@@ -29,8 +29,9 @@ highest-entropy column in the middle third of the alignment for WW ($K_{\mathrm{
 Gln at position~50 in the recognition helix for Homeobox ($K_{\mathrm{des}}=102$); and His or
 Asn at the H3 recognition-helix position for Forkhead ($K_{\mathrm{des}}=122$). For
 $\omega$-conotoxin, the designation was instead defined by 23 accession IDs in the study's
-curated input FASTA, with the other 51 accessions serving as conditioning background rather
-than demonstrated nonbinders. The tracked accession audit records the designation, Tyr13
+curated input FASTA, with the other 51 accessions serving as conditioning background; we did
+not treat the background as experimentally inactive. The tracked accession audit records the
+designation, Tyr13
 marker, and available repository activity metadata, and only 5 designated and 2 background
 accessions have exact accession matches in that activity table, while the accession designation
 and Tyr13 marker agree for 64 of 74 sequences (86.5\%).
@@ -72,13 +73,13 @@ random pairs drawn with a replicate-local RNG, and amino acid composition fideli
 $D_{\mathrm{KL}}(\text{reference}\parallel\text{generated})$. The separation
 index $S$ was computed from pairwise cosine similarities between unit-norm PCA vectors within
 and between designated and background groups. Structural validation used
-ESMFold~\cite{esmfold2022} to predict structures for 50 sequences per source, with pLDDT
-extracted from the B-factor column and TM-scores computed against experimental reference
+ESMFold~\cite{esmfold2022} to predict structures for 50 sequences per source. We averaged
+pLDDT over populated atom records in the output B-factor column and computed TM-scores against experimental reference
 structures (1BPI chain~A for Kunitz and 1OMG chain~A for $\omega$-conotoxin) using
 TM-align~\cite{tmAlign2005}. We also ran AlphaFold2-ptm through
 ColabFold~\cite{jumperHighlyAccurate2021,mirdita2022colabfold} with one model, three recycles,
 an MMseqs2 MSA, and no relaxation, on a Google Colab T4 GPU. Both predictors scored the same
-sequence sets, so their summaries are directly comparable
+sequence sets, allowing source-group patterns to be compared across predictors
 (Table~\ref{tab:structure-model-comparison}). Sequence
 plausibility was assessed with ESM2-650M pseudo-perplexity from masked marginal scoring over all
 positions~\cite{meierZeroShot2021}, using the ESM2 model~\cite{esmfold2022}. Formal within-chain effective sample sizes and convergence

@@ -2,13 +2,13 @@
 # compute_conotoxin_sar_agreement.jl
 #
 # Compute agreement between SA-generated conotoxin sequences and published
-# SAR data for ω-conotoxin binding to Cav2.2.
+# SAR data reported across several ω-conotoxins and calcium-channel subtypes.
 #
 # Published SAR critical residues (MVIIA numbering → alignment column):
-#   Tyr13 — primary pharmacophore (hydroxyl contacts pore)
+#   Tyr13 — conserved activity and binding determinant
 #   Lys2  — stabilizes loop 2 conformation
-#   Arg10 — loop 2, critical for binding
-#   Leu11 — loop 2, critical for binding
+#   Arg10 — reported MVIIA loop 2 binding-region residue
+#   Leu11 — reported MVIIA loop 2 binding-region residue
 #   Cys1,8,15,16,20,25 — disulfide framework (structural integrity)
 #
 # Sources:
@@ -17,7 +17,7 @@
 #   Sato et al. 2000 (FEBS Lett) — Thr11,Tyr13,Lys2 essential (MVIIC)
 #   Schroeder et al. 2012 (Biopolymers) — Lys2→Ala destabilizes loop 2
 #   Lewis et al. 2012 (Mar Drugs) — Arg10, Leu11 crucial for binding
-#   Schroeder et al. 1999 (Biochemistry) — D-Tyr13: 1000× loss
+#   Schroeder et al. 1999 (Biochemistry) — Tyr13 chirality affects potency
 # ──────────────────────────────────────────────────────────────────────────────
 
 _SCRIPT_DIR = @__DIR__
@@ -56,18 +56,18 @@ end
 
 sar_residues = [
     # (column, MVIIA_pos, wt_residue, role, effect, citation)
-    (13, 13, 'Y', "Primary pharmacophore", "Ala: abolishes activity; Phe: 100× loss", "Kim et al. 1995; Schroeder et al. 1999"),
+    (13, 13, 'Y', "Reported Tyr marker", "Ala: large activity loss", "Kim et al. 1995; Schroeder et al. 1999"),
     (2,   2, 'K', "Loop 2 stabilization", "Ala: 40× potency loss (GVIA)", "Sato et al. 1993; Schroeder et al. 2012"),
-    (10, 10, 'R', "Loop 2 binding", "Critical for channel interaction", "Lewis et al. 2012"),
-    (11, 11, 'L', "Loop 2 binding", "Critical for channel interaction", "Lewis et al. 2012"),
-    (1,   1, 'C', "Disulfide framework", "Required for fold", "structural"),
-    (8,   8, 'C', "Disulfide framework", "Required for fold", "structural"),
-    (15, 15, 'C', "Disulfide framework", "Required for fold", "structural"),
-    (16, 16, 'C', "Disulfide framework", "Required for fold", "structural"),
-    (20, 20, 'C', "Disulfide framework", "Required for fold", "structural"),
-    (25, 25, 'C', "Disulfide framework", "Required for fold", "structural"),
-    (21, 21, 'R', "Electrostatic complementarity", "Ala: reduced potency", "Lewis et al. 2012"),
-    (4,   4, 'K', "P/Q selectivity", "Ala: important for P/Q binding", "Sato et al. 2000"),
+    (10, 10, 'R', "Reported loop 2 residue", "MVIIA binding region", "Lewis et al. 2012"),
+    (11, 11, 'L', "Reported loop 2 residue", "MVIIA binding region", "Lewis et al. 2012"),
+    (1,   1, 'C', "Cysteine framework", "Disulfide-forming", "structural"),
+    (8,   8, 'C', "Cysteine framework", "Disulfide-forming", "structural"),
+    (15, 15, 'C', "Cysteine framework", "Disulfide-forming", "structural"),
+    (16, 16, 'C', "Cysteine framework", "Disulfide-forming", "structural"),
+    (20, 20, 'C', "Cysteine framework", "Disulfide-forming", "structural"),
+    (25, 25, 'C', "Cysteine framework", "Disulfide-forming", "structural"),
+    (21, 21, 'R', "Reported MVIIA SAR", "Ala: reduced potency", "Lewis et al. 2012"),
+    (4,   4, 'K', "MVIIC P/Q selectivity", "Ala: affects P/Q binding", "Sato et al. 2000"),
 ]
 
 # ── Load generated sequences ────────────────────────────────────────────────
