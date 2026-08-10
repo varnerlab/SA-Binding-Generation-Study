@@ -4,7 +4,7 @@
 
 - [x] Article type and `jcisd8` journal configuration selected in `Paper_JCIM.tex`.
 - [x] Eight-word title (within the journal’s preferred concise-title range).
-- [x] Abstract reduced to four sentences.
+- [x] Abstract remains within the 250-word limit after synchronization with the arXiv version.
 - [x] Eight keywords supplied.
 - [x] 3.25 by 1.75 inch, 300 dpi TOC graphic supplied.
 - [x] Data and Software Availability section supplied.
@@ -30,7 +30,7 @@
 
 ## Items to confirm in the submission portal
 
-- [ ] Replace the bracketed preprint/exclusivity note in `cover-letter.md` with the correct
+- [x] Replace the bracketed preprint/exclusivity note in `cover-letter.md` with the correct
   statement and disclose any posted preprint URL/DOI.
 - [ ] Confirm that the GitHub repository contains the exact submitted revision and is publicly
   accessible.

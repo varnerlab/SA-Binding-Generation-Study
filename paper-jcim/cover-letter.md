@@ -30,8 +30,9 @@ All curated inputs, canonical per-replicate outputs, benchmark emissions, scorin
 reproduction scripts are provided in the public study repository. The author declares no
 competing financial interest.
 
-[Before submission, insert one sentence stating whether a preprint has been posted and, if so,
-provide its DOI or URL. Also confirm that the manuscript is not under consideration elsewhere.]
+A preprint of this manuscript is available on arXiv at
+https://arxiv.org/abs/2603.20115 (https://doi.org/10.48550/arXiv.2603.20115). This manuscript
+is not under consideration elsewhere.
 
 Thank you for your consideration.
 

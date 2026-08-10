@@ -34,6 +34,34 @@ function manuscript_body(path)
     return body
 end
 
+# Pull each labeled table or figure from a wrapper file and remove only its float-placement
+# option. The arXiv wrapper uses [p], while the JCIM display macros use [htbp]; everything
+# inside the environments should otherwise stay identical.
+function labeled_displays(path)
+    text = read(path, String)
+    displays = Dict{String,String}()
+    for label_match in eachmatch(r"\\label\{((?:tab|fig):[^}]+)\}", text)
+        label = label_match.captures[1]
+        label_pos = label_match.offset
+        table_start = findprev("\\begin{table}", text, label_pos)
+        figure_start = findprev("\\begin{figure}", text, label_pos)
+        candidates = filter(!isnothing, (table_start, figure_start))
+        @test !isempty(candidates)
+        start_range = candidates[argmax(first.(candidates))]
+        kind = start_range == table_start ? "table" : "figure"
+        stop_range = findnext("\\end{$kind}", text, label_pos)
+        @test stop_range !== nothing
+        block = text[first(start_range):last(stop_range)]
+        block = replace(
+            block,
+            Regex("\\\\begin\\{$kind\\}\\[[^]]+\\]") => "\\begin{$kind}",
+        )
+        @test !haskey(displays, label)
+        displays[label] = block
+    end
+    return displays
+end
+
 @testset "JCIM submission sections and benchmark positioning" begin
     repo = normpath(joinpath(@__DIR__, "..", ".."))
     wrapper = read(joinpath(repo, "paper-jcim", "Paper_JCIM.tex"), String)
@@ -205,5 +233,33 @@ end
         @test isfile(jcim_path)
         @test isfile(arxiv_path)
         @test manuscript_body(jcim_path) == manuscript_body(arxiv_path)
+    end
+end
+
+@testset "JCIM and arXiv references, display items, and shared figures stay in sync" begin
+    repo = normpath(joinpath(@__DIR__, "..", ".."))
+    jcim = joinpath(repo, "paper-jcim")
+    arxiv = joinpath(repo, "paper-arxiv")
+
+    @test read(joinpath(jcim, "References_v1.bib")) ==
+          read(joinpath(arxiv, "References_v1.bib"))
+
+    arxiv_displays = labeled_displays(joinpath(arxiv, "Paper_v1.tex"))
+    jcim_displays = labeled_displays(joinpath(jcim, "sections", "display_items.tex"))
+    merge!(jcim_displays, labeled_displays(joinpath(jcim, "Paper_JCIM_SI.tex")))
+    @test keys(jcim_displays) == keys(arxiv_displays)
+    for label in keys(arxiv_displays)
+        @test jcim_displays[label] == arxiv_displays[label]
+    end
+
+    arxiv_figs = joinpath(arxiv, "sections", "figs")
+    jcim_figs = joinpath(jcim, "sections", "figs")
+    arxiv_names = Set(readdir(arxiv_figs))
+    jcim_names = Set(readdir(jcim_figs))
+    @test setdiff(arxiv_names, jcim_names) ==
+          Set(["loop_heatmap_with_residuals.png", "sequence_analysis_conotoxin.png"])
+    @test setdiff(jcim_names, arxiv_names) == Set(["toc_graphic.png"])
+    for name in intersect(arxiv_names, jcim_names)
+        @test read(joinpath(arxiv_figs, name)) == read(joinpath(jcim_figs, name))
     end
 end

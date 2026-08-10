@@ -69,7 +69,12 @@ Per-family subdirectories contain Stockholm seed alignments, generated FASTA fil
 
 Two sibling trees, not nested. The arXiv version is `paper-arxiv/Paper_v1.tex`, one document with the appendix and GMM derivation inlined. The JCIM submission is `paper-jcim/Paper_JCIM.tex` plus a separate supporting-information document `paper-jcim/Paper_JCIM_SI.tex` that carries the appendix and the GMM SI table. Build either tree with `make`.
 
-Each tree has its own `sections/`, `References*.bib`, and `sections/figs/`. The nine shared section files are kept byte-identical across the trees by `code/test/test_manuscript_consistency.jl`, so edit them in both. Files that live only in `Paper_JCIM.tex` or `Paper_v1.tex`, including figure and table wrappers, are not covered and must be edited twice by hand.
+Each tree has its own `sections/`, `References*.bib`, and `sections/figs/`. The nine shared
+section files, bibliography, labeled display-item contents, and common figure assets are kept
+in sync by `code/test/test_manuscript_consistency.jl`, so edit them in both. The test permits
+only layout-specific section lines, float-placement options, the two arXiv-only PNG companions,
+and the JCIM-only TOC graphic to differ. Journal metadata and float-placement macros remain
+specific to their wrapper files.
 
 Tables and prose numbers under `sections/generated/` are produced by `code/experiments/generate_paper_tables.jl` from the canonical CSVs and byte-compared against both trees by `code/test/test_generated_paper_tables.jl`. Never hand-edit them; regenerate instead.
 
